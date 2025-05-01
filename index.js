@@ -7,18 +7,7 @@ dotenv.config({
 });
 const PORT = process.env.PORT || 4000;
 
-connectDB().then(() =>
-  app.get("/", (req, res) => {
-    res.status(200).json({
-      message: "Server is running",
-      success: true,
-      data: { Health: "OK" },
-    });
-  })
-);
+connectDB();
 app.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
-  console.log(
-    `Server is running on ${process.env.BASE_URL}:${process.env.PORT}`
-  );
 });

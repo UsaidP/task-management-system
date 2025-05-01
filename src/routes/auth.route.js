@@ -10,9 +10,10 @@ import {
   resetPassword,
   resendVerifyEmail,
   refreshAccessToken,
+  getUserProfile,
 } from "../controllers/auth.controller.js";
 import { asyncHandler } from "../utils/async-handler.js";
-
+import { protect, authorize } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.route("/register").post(
@@ -32,4 +33,8 @@ router.route("/logout").get(asyncHandler(logoutUser));
 router.route("/refresh-token").post(asyncHandler(refreshAccessToken));
 router.route("/forget-password").post(asyncHandler(forgetPassword));
 router.route("/reset-password/:token").post(asyncHandler(resetPassword));
+
+//Protected Routes
+router.get("/getprofile", protect, asyncHandler(getUserProfile));
+
 export default router;

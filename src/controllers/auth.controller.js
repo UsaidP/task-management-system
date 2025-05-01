@@ -1,4 +1,3 @@
-import ApiError from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { ApiResponse } from "../utils/api-response.js";
 import {
@@ -11,6 +10,7 @@ import {
   resendVerificationEmailService,
 } from "../services/auth.service.js";
 import { User } from "../models/user.model.js";
+import ApiError from "../utils/api-error.js";
 
 const registerUser = asyncHandler(async (req, res, next) => {
   const { email, password, username, fullname, avatar, role } = req.body;
@@ -92,6 +92,26 @@ const loginUser = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const getUserProfile = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id); // req.user;
+  if (!user) {
+    throw new ApiError(404, "User not found", [], undefined, false);
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User fetched successfully"));
+});
+
+const getActiveSession = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id); // req.user;
+  if (!user) {
+    throw new ApiError(404, "User not found", [], undefined, false);
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User fetched successfully"));
+});
 const logoutUser = asyncHandler(async (req, res, next) => {
   const { token } = req.cookies;
 
@@ -144,6 +164,7 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
   res.status(202).json(new ApiResponse(202, user, "Tokens updated"));
   next();
 });
+
 const forgetPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -195,4 +216,5 @@ export {
   resetPassword,
   resendVerifyEmail,
   refreshAccessToken,
+  getUserProfile,
 };
