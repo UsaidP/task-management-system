@@ -35,6 +35,6 @@ router.route("/forget-password").post(asyncHandler(forgetPassword));
 router.route("/reset-password/:token").post(asyncHandler(resetPassword));
 
 //Protected Routes
-router.get("/getprofile", protect, asyncHandler(getUserProfile));
+router.get("/get-profile", protect, asyncHandler(getUserProfile));
 
 export default router;
