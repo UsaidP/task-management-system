@@ -100,7 +100,7 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "User fetched successfully"));
+    .json(new ApiResponse(200, user, "User Profile fetched successfully"));
 });
 
 const getActiveSession = asyncHandler(async (req, res, next) => {
@@ -219,5 +219,6 @@ export {
   resendVerifyEmail,
   refreshAccessToken,
   getUserProfile,
+  getActiveSession,
   getActiveSession,
 };
