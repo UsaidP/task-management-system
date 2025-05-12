@@ -126,5 +126,4 @@ export const blacklistedToken = async function (token) {
     return false;
   }
 };
-export const storeRefreshToken = async function (refreshToken) {};
 export const User = mongoose.model("User", userSchema);
