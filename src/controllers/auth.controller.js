@@ -106,19 +106,21 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
 const getActiveSession = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user._id); // req.user;
   if (!user) {
-    throw new ApiError(404, "User not found", [], undefined, false);
+    return res
+      .status(404)
+      .json(new ApiError(404, "User not found", [], undefined, false));
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "User fetched successfully"));
+    .json(new ApiResponse(200, user, "Active session fetched successfully"));
 });
 const logoutUser = asyncHandler(async (req, res, next) => {
-  const { token } = req.cookies;
-
-  if (!token) {
+  const { refreshToken } = req.cookies;
+  // console.log(token);
+  if (!refreshToken) {
     throw new ApiError(401, "Token not found in cookie", [], undefined, false);
   }
-  const logoutUser = await logoutUserService(token, req, res, next);
+  const logoutUser = await logoutUserService(refreshToken, req, res, next);
 
   if (logoutUser) {
     res
@@ -217,4 +219,5 @@ export {
   resendVerifyEmail,
   refreshAccessToken,
   getUserProfile,
+  getActiveSession,
 };

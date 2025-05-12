@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import ApiError from "../utils/api-error.js";
 
 const protect = asyncHandler(async (req, res, next) => {
-  console.log("req.cookies", req.cookies);
+  // console.log("req.cookies", req.cookies);
   const extractTokenFromRequest = (req) => {
     if (req.headers.authorization?.startsWith("Bearer")) {
       return req.headers.authorization.split(" ")[1];
@@ -37,7 +37,10 @@ const protect = asyncHandler(async (req, res, next) => {
       false
     );
   }
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
+    ignoreExpiration: false,
+  });
+  console.log(decoded);
   if (!decoded) {
     throw new ApiError(
       401,

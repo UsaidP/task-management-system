@@ -11,6 +11,7 @@ import {
   resendVerifyEmail,
   refreshAccessToken,
   getUserProfile,
+  getActiveSession,
 } from "../controllers/auth.controller.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { protect, authorize } from "../middlewares/auth.middleware.js";
@@ -36,5 +37,13 @@ router.route("/reset-password/:token").post(asyncHandler(resetPassword));
 
 //Protected Routes
 router.get("/getprofile", protect, asyncHandler(getUserProfile));
+// router.get(
+//   "/getprofile/:id",
+//   protect,
+//   authorize("admin"),
+//   asyncHandler(getUserProfile)
+// );
+
+router.get("/get-active-sessions", protect, asyncHandler(getActiveSession));
 
 export default router;

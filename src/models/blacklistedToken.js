@@ -36,7 +36,7 @@ blacklistedTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 // The model also has an index on the expiresAt field. This index is used to remove blacklisted
 // tokens that have expired from the database. The expireAfterSeconds option is set to 0, which
 // means that the documents will be removed from the database as soon as they expire.
-export const blacklistedToken = mongoose.model(
+const BlacklistedToken = mongoose.model(
   "BlacklistedToken",
   blacklistedTokenSchema
 );
@@ -48,4 +48,4 @@ export const blacklistedToken = mongoose.model(
 // We need this because we want to make sure that once a user logs out, they cannot access the
 // API with the same token again. This is a security feature that prevents unauthorized access
 // to the API.
-export default blacklistedToken;
+export default BlacklistedToken;

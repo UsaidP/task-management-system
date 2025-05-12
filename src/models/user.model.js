@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { AvailableUserRole } from "../utils/constants.js";
+import BlacklistedToken from "./blacklistedToken.js";
+import RefreshToken from "./refreshToken.model.js";
 
 const userSchema = new Schema(
   {
@@ -36,8 +38,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-
-      
     },
     role: {
       type: String,
@@ -59,12 +59,7 @@ const userSchema = new Schema(
     forgotPasswordExpiry: {
       type: Date,
     },
-    refreshToken: {
-      type: String,
-    },
-    accessToken: {
-      type: String,
-    },
+
     emailVerificationToken: {
       type: String,
     },
@@ -91,7 +86,6 @@ userSchema.methods.generateAccessToken = async function () {
   return await jwt.sign(
     {
       _id: this._id,
-      email: this.email,
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
@@ -102,7 +96,6 @@ userSchema.methods.generateRefreshToken = async function () {
   return await jwt.sign(
     {
       _id: this._id,
-      email: this.email,
     },
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
@@ -120,4 +113,18 @@ userSchema.methods.generateTemporaryToken = async function () {
   return { unHashedToken, hashToken, tokenExpiry };
 };
 
+export const blacklistedToken = async function (token) {
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    await BlacklistedToken.create({
+      token: token,
+      user: decoded._id,
+      expiresAt: decoded ? new Date(decoded.exp * 1000) : null,
+    });
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+export const storeRefreshToken = async function (refreshToken) {};
 export const User = mongoose.model("User", userSchema);

@@ -1,5 +1,9 @@
 import { asyncHandler } from "../utils/async-handler.js";
-import { User } from "../models/user.model.js";
+import {
+  blacklistedToken,
+  storeRefreshToken,
+  User,
+} from "../models/user.model.js";
 import { ApiResponse } from "../utils/api-response.js";
 import ApiError from "../utils/api-error.js";
 import {
@@ -9,6 +13,7 @@ import {
 } from "../utils/mail.js";
 import crypto from "crypto";
 import { sendMail } from "../utils/mail.js";
+import RefreshToken from "../models/refreshToken.model.js";
 
 const registerUserService = asyncHandler(async (data, req, res, next) => {
   const { email, password, username, fullname, avatar, role } = data;
@@ -76,7 +81,7 @@ const verifyUserService = asyncHandler(async (unHashedToken, req, res) => {
     .update(unHashedToken)
     .digest("hex");
   const user = await User.findOne({ emailVerificationToken: hashToken });
-  console.log(user);
+  // console.log(user);
   if (!user) {
     throw new ApiError(
       401,
@@ -143,17 +148,17 @@ const resendVerificationEmailService = asyncHandler(async (email, req, res) => {
 const loginUserService = asyncHandler(async (data, res) => {
   const { username, email, password } = data;
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email, username });
 
   const isMatch = user.isPasswordCorrect(password);
   if (!isMatch) {
     throw new ApiError(402, "Provide valid credentials");
   }
 
-  const accessToken = await user.generateAccessToken();
-  const refreshToken = await user.generateRefreshToken();
+  const accessTokens = await user.generateAccessToken();
+  const refreshTokens = await user.generateRefreshToken();
 
-  if (!accessToken || !refreshToken) {
+  if (!accessTokens || !refreshTokens) {
     throw new ApiError(
       402,
       "Something went wrong while generating token",
@@ -162,10 +167,37 @@ const loginUserService = asyncHandler(async (data, res) => {
       false
     );
   }
-  user.refreshToken = refreshToken;
-  user.accessToken = accessToken;
+  // console.log(refreshTokens);
+  // console.log(accessTokens);
+  const isBlacklisted = await blacklistedToken(refreshTokens);
+  if (isBlacklisted) {
+    throw new ApiError(401, "Token is blacklisted", undefined, "", false);
+  }
 
-  await user.save();
+  const isRefreshTokenStored = await RefreshToken.create({
+    token: refreshTokens,
+    user: user._id,
+    deviceInfo: "unknown",
+    ipAddress: "unknown",
+    issuedAt: new Date(),
+    lastUsedAt: new Date(),
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+  });
+
+  console.log(isRefreshTokenStored);
+
+  if (!isRefreshTokenStored) {
+    throw new ApiError(
+      402,
+      "Something went wrong while storing refresh token",
+      undefined,
+      "",
+      false
+    );
+  }
+
+  isRefreshTokenStored.save();
+  // console.log(refreshTokens);
   console.log(user);
   const cookieOptions = {
     httpOnly: true,
@@ -173,42 +205,38 @@ const loginUserService = asyncHandler(async (data, res) => {
     maxAge: 24 * 60 * 60 * 1000,
   };
 
-  res.cookie("token", accessToken, cookieOptions);
+  res.cookie("accessToken", accessTokens, cookieOptions);
+  res.cookie("refreshToken", refreshTokens, cookieOptions);
 
   res.status(201).json(new ApiResponse(201, user, "User logged In"));
 });
 
-const logoutUserService = asyncHandler.service(
-  async (token, req, res, next) => {
-    const user = await User.findOne({ accessToken: token });
-
-    if (!user) {
-      throw new ApiError(
-        401,
-        "Please provide valid token ",
-        undefined,
-        "",
-        false
-      );
-    }
-
-    req.cookies.token = null;
-
-    res.clearCookie("token");
-
-    user.accessToken = "";
-    user.refreshToken = "";
-    await user.save();
-
-    res
-      .status(200)
-      .json(
-        new ApiResponse(200, user.username, "User logged out successfully")
-      );
-    console.log(user);
-    return next();
+const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
+  // console.log(token);
+  const user = await RefreshToken.findOne({ refreshToken });
+  console.log(user);
+  if (!user) {
+    throw new ApiError(
+      401,
+      "Please provide valid token ",
+      undefined,
+      "",
+      false
+    );
   }
-);
+
+  req.cookies.token = null;
+
+  res.clearCookie("refreshToken");
+  res.clearCookie("accessToken");
+
+  await user.save();
+  res
+    .status(200)
+    .json(new ApiResponse(200, user.username, "User logged out successfully"));
+  console.log(user);
+  return next();
+});
 
 const forgetPasswordService = asyncHandler(async (data, req, res) => {
   const { email } = data;

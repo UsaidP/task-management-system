@@ -5,7 +5,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: [process.env.BASE_URL, "http://localhost:3200"], // kahase request aane dena chahtahu mai.
+    origin: [process.env.BASE_URL, "http://localhost:3000"], // kahase request aane dena chahtahu mai.
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
