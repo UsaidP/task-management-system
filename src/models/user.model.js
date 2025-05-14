@@ -4,7 +4,7 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { AvailableUserRole } from "../utils/constants.js";
 import BlacklistedToken from "./blacklistedToken.js";
-import RefreshToken from "./refreshToken.model.js";
+import ApiError from "../utils/api-error.js";
 
 const userSchema = new Schema(
   {
@@ -115,15 +115,24 @@ userSchema.methods.generateTemporaryToken = async function () {
 
 export const blacklistedToken = async function (token) {
   try {
+    console.log(token);
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     await BlacklistedToken.create({
       token: token,
       user: decoded._id,
       expiresAt: decoded ? new Date(decoded.exp * 1000) : null,
     });
+
     return true;
   } catch (err) {
-    return false;
+    return new ApiError(
+      401,
+      "Token is not blacklisted",
+      undefined,
+      "",
+      false,
+      err
+    );
   }
 };
 export const User = mongoose.model("User", userSchema);

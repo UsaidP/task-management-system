@@ -1,9 +1,5 @@
 import { asyncHandler } from "../utils/async-handler.js";
-import {
-  blacklistedToken,
-  storeRefreshToken,
-  User,
-} from "../models/user.model.js";
+import { blacklistedToken, User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/api-response.js";
 import ApiError from "../utils/api-error.js";
 import {
@@ -170,8 +166,15 @@ const loginUserService = asyncHandler(async (data, res) => {
   // console.log(refreshTokens);
   // console.log(accessTokens);
   const isBlacklisted = await blacklistedToken(refreshTokens);
-  if (isBlacklisted) {
-    throw new ApiError(401, "Token is blacklisted", undefined, "", false);
+
+  if (!isBlacklisted) {
+    throw new ApiError(
+      401,
+      "Error while blacklisting token",
+      undefined,
+      "",
+      false
+    );
   }
 
   const isRefreshTokenStored = await RefreshToken.create({

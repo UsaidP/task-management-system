@@ -220,5 +220,4 @@ export {
   refreshAccessToken,
   getUserProfile,
   getActiveSession,
-  getActiveSession,
 };
