@@ -5,11 +5,15 @@ import ApiError from "../utils/api-error.js";
 
 // Create a project
 const createProject = asyncHandler(async (req, res, next) => {
-  const { name, description, createdBy } = req.body;
-  const project = new Project({ name, description, createdBy });
-  await project.save();
+  const { name, description } = req.body;
+  const project = await Project.create({
+    name,
+    description,
+    createdBy: req.user._id,
+  });
+  // await project.save();
 
-  res
+  return res
     .status(201)
     .json(new ApiResponse(201, project, "Project created successfully"));
 });
