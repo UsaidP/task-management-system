@@ -145,7 +145,7 @@ const loginUserService = asyncHandler(async (data, res) => {
   const { username, email, password } = data;
 
   const user = await User.findOne({ email, username });
-
+  console.log(user);
   const isMatch = user.isPasswordCorrect(password);
   if (!isMatch) {
     throw new ApiError(402, "Provide valid credentials");
@@ -199,9 +199,9 @@ const loginUserService = asyncHandler(async (data, res) => {
     );
   }
 
-  isRefreshTokenStored.save();
+  await isRefreshTokenStored.save();
   // console.log(refreshTokens);
-  console.log(user);
+  // console.log(user);
   const cookieOptions = {
     httpOnly: true,
     secure: true,
@@ -215,9 +215,11 @@ const loginUserService = asyncHandler(async (data, res) => {
 });
 
 const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
-  // console.log(token);
-  const user = await RefreshToken.findOne({ refreshToken });
-  console.log(user);
+  console.log(refreshToken);
+  const user = await RefreshToken.findOneAndDelete({
+    token: refreshToken,
+  });
+
   if (!user) {
     throw new ApiError(
       401,
@@ -228,16 +230,12 @@ const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
     );
   }
 
-  req.cookies.token = null;
-
   res.clearCookie("refreshToken");
   res.clearCookie("accessToken");
 
-  await user.save();
   res
     .status(200)
     .json(new ApiResponse(200, user.username, "User logged out successfully"));
-  console.log(user);
   return next();
 });
 

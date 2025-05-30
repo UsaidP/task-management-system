@@ -36,7 +36,7 @@ router.route("/forget-password").post(asyncHandler(forgetPassword));
 router.route("/reset-password/:token").post(asyncHandler(resetPassword));
 
 //Protected Routes
-router.get("/getprofile", protect, asyncHandler(getUserProfile));
+router.get("/getprofile/:id", protect, asyncHandler(getUserProfile));
 // router.get(
 //   "/getprofile/:id",
 //   protect,
