@@ -117,7 +117,7 @@ const getActiveSession = asyncHandler(async (req, res, next) => {
 
 const logoutUser = asyncHandler(async (req, res, next) => {
   const { refreshToken } = req.cookies;
-  console.log(refreshToken);
+  // console.log(refreshToken);
   if (!refreshToken) {
     throw new ApiError(401, "Token not found in cookie", [], undefined, false);
   }

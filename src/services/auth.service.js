@@ -215,27 +215,20 @@ const loginUserService = asyncHandler(async (data, res) => {
 });
 
 const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
-  console.log(refreshToken);
-  const user = await RefreshToken.findOneAndDelete({
-    token: refreshToken,
-  });
+  const tokenDoc = await RefreshToken.findOne({ token: refreshToken });
 
-  if (!user) {
-    throw new ApiError(
-      401,
-      "Please provide valid token ",
-      undefined,
-      "",
-      false
-    );
+  if (!tokenDoc) {
+    throw new ApiError(401, "Invalid token provided", [], undefined, false);
   }
+
+  await RefreshToken.deleteOne({ token: refreshToken });
 
   res.clearCookie("refreshToken");
   res.clearCookie("accessToken");
 
   res
     .status(200)
-    .json(new ApiResponse(200, user.username, "User logged out successfully"));
+    .json(new ApiResponse(200, null, "User logged out successfully"));
   return next();
 });
 

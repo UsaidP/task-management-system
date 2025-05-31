@@ -1,6 +1,9 @@
 import { Router } from "express";
 import validator from "../middlewares/validator.middleware.js";
-import { userRegistrationValidator } from "../validators/auth.validator.js";
+import {
+  userLoginValidator,
+  userRegistrationValidator,
+} from "../validators/auth.validator.js";
 import {
   forgetPassword,
   loginUser,
@@ -29,7 +32,9 @@ router.route("/register").post(
 
 router.route("/verify/:token").get(asyncHandler(verifyUser));
 router.route("/resend-verification").post(asyncHandler(resendVerifyEmail));
-router.route("/login").post(asyncHandler(loginUser));
+router
+  .route("/login")
+  .post(userLoginValidator(), validator, asyncHandler(loginUser));
 router.route("/logout").get(asyncHandler(logoutUser));
 router.route("/refresh-token").post(asyncHandler(refreshAccessToken));
 router.route("/forget-password").post(asyncHandler(forgetPassword));
