@@ -141,12 +141,21 @@ const resendVerificationEmailService = asyncHandler(async (email, req, res) => {
     .json(new ApiResponse(201, "Resend Email Successfully "));
 });
 
-const loginUserService = asyncHandler(async (data, res) => {
+const loginUserService = asyncHandler(async (data, req, res) => {
   const { username, email, password } = data;
 
-  const user = await User.findOne({ email, username });
-  console.log(user);
-  const isMatch = user.isPasswordCorrect(password);
+  // Find user by email or username
+  const user = await User.findOne({
+    $or: [email ? { email } : null, username ? { username } : null].filter(
+      Boolean
+    ),
+  });
+
+  if (!user) {
+    throw new ApiError(401, "User not found");
+  }
+
+  const isMatch = await user.isPasswordCorrect(password);
   if (!isMatch) {
     throw new ApiError(402, "Provide valid credentials");
   }
@@ -177,26 +186,21 @@ const loginUserService = asyncHandler(async (data, res) => {
     );
   }
 
+  const now = Date.now();
   const isRefreshTokenStored = await RefreshToken.create({
     token: refreshTokens,
     user: user._id,
-    deviceInfo: "unknown",
-    ipAddress: "unknown",
-    issuedAt: new Date(),
-    lastUsedAt: new Date(),
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    deviceInfo: req.headers["user-agent"] || "unknown",
+    ipAddress: req.ip || req.connection?.remoteAddress || "unknown",
+    issuedAt: new Date(now),
+    lastUsedAt: new Date(now),
+    expiresAt: new Date(now + 30 * 24 * 60 * 60 * 1000), // 30 days
   });
 
   console.log(isRefreshTokenStored);
 
   if (!isRefreshTokenStored) {
-    throw new ApiError(
-      402,
-      "Something went wrong while storing refresh token",
-      undefined,
-      "",
-      false
-    );
+    throw new ApiError(500, "Failed to store refresh token");
   }
 
   await isRefreshTokenStored.save();

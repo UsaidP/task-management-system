@@ -35,7 +35,7 @@ router.route("/resend-verification").post(asyncHandler(resendVerifyEmail));
 router
   .route("/login")
   .post(userLoginValidator(), validator, asyncHandler(loginUser));
-router.route("/logout").get(asyncHandler(logoutUser));
+router.route("/logout").post(asyncHandler(logoutUser));
 router.route("/refresh-token").post(asyncHandler(refreshAccessToken));
 router.route("/forget-password").post(asyncHandler(forgetPassword));
 router.route("/reset-password/:token").post(asyncHandler(resetPassword));
