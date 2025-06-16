@@ -1,8 +1,10 @@
 import { Router } from "express";
 import validator from "../middlewares/validator.middleware.js";
 import {
+  userForgotPasswordValidator,
   userLoginValidator,
   userRegistrationValidator,
+  userResetPasswordValidator,
 } from "../validators/auth.validator.js";
 import {
   forgetPassword,
@@ -32,13 +34,21 @@ router.route("/register").post(
 
 router.route("/verify/:token").get(asyncHandler(verifyUser));
 router.route("/resend-verification").post(asyncHandler(resendVerifyEmail));
+
 router
   .route("/login")
   .post(userLoginValidator(), validator, asyncHandler(loginUser));
+
 router.route("/logout").post(asyncHandler(logoutUser));
+
 router.route("/refresh-token").post(asyncHandler(refreshAccessToken));
-router.route("/forget-password").post(asyncHandler(forgetPassword));
-router.route("/reset-password/:token").post(asyncHandler(resetPassword));
+
+router
+  .route("/forget-password")
+  .post(userForgotPasswordValidator(), validator, asyncHandler(forgetPassword));
+router
+  .route("/reset-password/:token")
+  .post(userResetPasswordValidator(), validator, asyncHandler(resetPassword));
 
 //Protected Routes
 router.get("/getprofile/:id", protect, asyncHandler(getUserProfile));
