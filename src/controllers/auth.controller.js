@@ -78,18 +78,17 @@ const resendVerifyEmail = asyncHandler(async (req, res, next) => {
 
 const loginUser = asyncHandler(async (req, res, next) => {
   const { username, email, password } = req.body;
+  //console.log(username, email, password);
   if ((!(username || email), !password)) {
     throw new ApiError(401, "Provide full login details", [], undefined, false);
   }
-  const loginUser = await loginUserService(
+  await loginUserService(
     {
       username,
       email,
       password,
     },
-    req,
-    res,
-    next
+    res
   );
   next();
 });
@@ -106,19 +105,19 @@ const getUserProfile = asyncHandler(async (req, res, next) => {
 });
 
 const getActiveSession = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user._id); // req.user;
+  const user = await User.findById(req.user._id);
+
   if (!user) {
-    return res
-      .status(404)
-      .json(new ApiError(404, "User not found", [], undefined, false));
+    return next(new ApiError(404, "User not found", [], undefined, false));
   }
   return res
     .status(200)
     .json(new ApiResponse(200, user, "Active session fetched successfully"));
 });
+
 const logoutUser = asyncHandler(async (req, res, next) => {
   const { refreshToken } = req.cookies;
-  // console.log(token);
+  // console.log(refreshToken);
   if (!refreshToken) {
     throw new ApiError(401, "Token not found in cookie", [], undefined, false);
   }

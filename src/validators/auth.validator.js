@@ -38,8 +38,55 @@ const userRegistrationValidator = () => {
 
 const userLoginValidator = () => {
   return [
+    body("username").notEmpty().withMessage("Username cannot be empty"),
     body("email").isEmail().withMessage("Email is not valid"),
     body("password").notEmpty().withMessage("Password cannot be empty"),
   ];
 };
-export { userRegistrationValidator, userLoginValidator };
+
+const userForgotPasswordValidator = () => {
+  return [
+    body("email")
+      .notEmpty()
+      .withMessage("Email is required")
+      .isEmail()
+      .withMessage("Email is invalid"),
+  ];
+};
+const userResetPasswordValidator = () => {
+  return [body("password").notEmpty().withMessage("Password is required")];
+};
+
+// Provide the validators to be used in routes
+
+const createProjectValidator = () => {
+  return [
+    body("name").notEmpty().withMessage("Name is required"),
+    body("description").optional(),
+  ];
+};
+
+const addMemberToProjectValidator = () => {
+  return [
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("Email is required")
+      .isEmail()
+      .withMessage("Email is invalid"),
+    body("role")
+      .notEmpty()
+      .withMessage("Role is required")
+      .isIn(AvailableUserRoles)
+      .withMessage("Role is invalid"),
+  ];
+};
+
+export {
+  userRegistrationValidator,
+  userLoginValidator,
+  userForgotPasswordValidator,
+  userResetPasswordValidator,
+  createProjectValidator,
+  addMemberToProjectValidator,
+};

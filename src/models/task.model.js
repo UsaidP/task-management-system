@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { TaskStatusEnum, AvailableTaskStatus } from "../utils/constants";
+import { TaskStatusEnum, AvailableTaskStatus } from "../utils/constants.js";
 
 const taskSchema = new Schema(
   {

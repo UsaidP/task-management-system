@@ -31,6 +31,12 @@ const getAllProjects = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, projects, "Projects fetched successfully"));
 });
 
+const getAllProjects = asyncHandler(async (req, res, next) => {
+  const projects = await Project.find({ createdBy: req.user._id });
+  res
+    .status(200)
+    .json(new ApiResponse(200, projects, "Projects fetched successfully"));
+});
 // Read a project by ID
 const getProjectById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -72,10 +78,4 @@ const deleteProject = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, project, "Project deleted successfully"));
 });
 
-export {
-  createProject,
-  getAllProjects,
-  getProjectById,
-  updateProject,
-  deleteProject,
-};
+export { createProject, getProjectById, updateProject, deleteProject };

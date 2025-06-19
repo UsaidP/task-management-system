@@ -1,18 +1,25 @@
-import { Task } from "../models/task.model";
+import { Task } from "../models/task.model.js";
+import { asyncHandler } from "../utils/async-handler.js";
 
 const createTask = asyncHandler(async (req, res, next) => {
-  const { title, description } = req.body;
-  const task = await Task.create({
-    title,
-    description,
-    createdBy: req.user._id,
-  });
-  if (!task) {
-    throw new ApiError(400, "Task creation failed");
+  const { name, description } = req.body;
+  if (!name || !description) {
+    return res.status(400).json({
+      success: false,
+      message: "Name and description are required",
+    });
   }
-  // await task.save();
+  const task = new Task({
+    name,
+    description,
+    user: req.user._id, // Assuming req.user is set by authentication middleware
+  });
 
-  return res
-    .status(201)
-    .json(new ApiResponse(201, task, "Task created successfully"));
+  await task.save();
+  return res.status(201).json({
+    success: true,
+    message: "Task created successfully",
+    task,
+  });
 });
+export { createTask };

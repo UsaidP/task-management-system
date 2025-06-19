@@ -142,14 +142,21 @@ const resendVerificationEmailService = asyncHandler(async (email, req, res) => {
 });
 
 const loginUserService = asyncHandler(async (data, req, res, next) => {
+const loginUserService = asyncHandler(async (data, req, res) => {
   const { username, email, password } = data;
 
-  const user = await User.findOne({ email, username });
+  // Find user by email or username
+  const user = await User.findOne({
+    $or: [email ? { email } : null, username ? { username } : null].filter(
+      Boolean
+    ),
+  });
+
   if (!user) {
-    throw new ApiError(402, "User not found", undefined, "", false);
+    throw new ApiError(401, "User not found");
   }
 
-  const isMatch = user.isPasswordCorrect(password);
+  const isMatch = await user.isPasswordCorrect(password);
   if (!isMatch) {
     throw new ApiError(402, "Provide valid credentials");
   }
@@ -182,33 +189,26 @@ const loginUserService = asyncHandler(async (data, req, res, next) => {
   const issuedAt = new Date();
   const expiresAt = new Date(issuedAt.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
+  const now = Date.now();
   const isRefreshTokenStored = await RefreshToken.create({
     token: refreshTokens,
     user: user._id,
-    deviceInfo: req.get("User-Agent") || "unknown",
-    ipAddress: req.ip || "unknown",
-    issuedAt,
-    lastUsedAt: issuedAt,
-    expiresAt, // 30 days
+    deviceInfo: req.headers["user-agent"] || "unknown",
+    ipAddress: req.ip || req.connection?.remoteAddress || "unknown",
+    issuedAt: new Date(now),
+    lastUsedAt: new Date(now),
+    expiresAt: new Date(now + 30 * 24 * 60 * 60 * 1000), // 30 days
   });
 
   console.log(isRefreshTokenStored);
 
   if (!isRefreshTokenStored) {
-    throw new ApiError(
-      402,
-      "Something went wrong while storing refresh token",
-      undefined,
-      "",
-      false
-    );
+    throw new ApiError(500, "Failed to store refresh token");
   }
 
+  await isRefreshTokenStored.save();
   // console.log(refreshTokens);
   // console.log(user);
-
-  const sevenDays = 7 * 24 * 60 * 60 * 1000;
-  const thirtyDays = 7 * 24 * 60 * 60 * 1000;
   const cookieOptions = {
     httpOnly: true,
     secure: true,
@@ -229,29 +229,20 @@ const loginUserService = asyncHandler(async (data, req, res, next) => {
 });
 
 const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
-  console.log(refreshToken);
-  const user = await RefreshToken.findOne({ refreshToken });
-  console.log(user);
-  if (!user) {
-    throw new ApiError(
-      401,
-      "Please provide valid token ",
-      undefined,
-      "",
-      false
-    );
+  const tokenDoc = await RefreshToken.findOne({ token: refreshToken });
+
+  if (!tokenDoc) {
+    throw new ApiError(401, "Invalid token provided", [], undefined, false);
   }
 
-  req.cookies.token = null;
+  await RefreshToken.deleteOne({ token: refreshToken });
 
   res.clearCookie("refreshToken");
   res.clearCookie("accessToken");
 
-  await user.save();
   res
     .status(200)
-    .json(new ApiResponse(200, user.username, "User logged out successfully"));
-  console.log(user);
+    .json(new ApiResponse(200, null, "User logged out successfully"));
   return next();
 });
 
