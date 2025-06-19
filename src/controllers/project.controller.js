@@ -23,16 +23,6 @@ const createProject = asyncHandler(async (req, res, next) => {
 
 const getAllProjects = asyncHandler(async (req, res, next) => {
   const projects = await Project.find({ createdBy: req.user._id });
-  if (!projects) {
-    throw new ApiError(404, "No projects found");
-  }
-  return res
-    .status(200)
-    .json(new ApiResponse(200, projects, "Projects fetched successfully"));
-});
-
-const getAllProjects = asyncHandler(async (req, res, next) => {
-  const projects = await Project.find({ createdBy: req.user._id });
   res
     .status(200)
     .json(new ApiResponse(200, projects, "Projects fetched successfully"));
@@ -78,4 +68,10 @@ const deleteProject = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, project, "Project deleted successfully"));
 });
 
-export { createProject, getProjectById, updateProject, deleteProject };
+export {
+  createProject,
+  getProjectById,
+  updateProject,
+  deleteProject,
+  getAllProjects,
+};
