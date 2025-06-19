@@ -11,11 +11,24 @@ const createProject = asyncHandler(async (req, res, next) => {
     description,
     createdBy: req.user._id,
   });
+  if (!project) {
+    throw new ApiError(400, "Project creation failed");
+  }
   // await project.save();
 
   return res
     .status(201)
     .json(new ApiResponse(201, project, "Project created successfully"));
+});
+
+const getAllProjects = asyncHandler(async (req, res, next) => {
+  const projects = await Project.find({ createdBy: req.user._id });
+  if (!projects) {
+    throw new ApiError(404, "No projects found");
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, projects, "Projects fetched successfully"));
 });
 
 // Read a project by ID
@@ -59,4 +72,10 @@ const deleteProject = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, project, "Project deleted successfully"));
 });
 
-export { createProject, getProjectById, updateProject, deleteProject };
+export {
+  createProject,
+  getAllProjects,
+  getProjectById,
+  updateProject,
+  deleteProject,
+};

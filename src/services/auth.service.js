@@ -141,10 +141,13 @@ const resendVerificationEmailService = asyncHandler(async (email, req, res) => {
     .json(new ApiResponse(201, "Resend Email Successfully "));
 });
 
-const loginUserService = asyncHandler(async (data, res) => {
+const loginUserService = asyncHandler(async (data, req, res, next) => {
   const { username, email, password } = data;
 
   const user = await User.findOne({ email, username });
+  if (!user) {
+    throw new ApiError(402, "User not found", undefined, "", false);
+  }
 
   const isMatch = user.isPasswordCorrect(password);
   if (!isMatch) {
@@ -176,15 +179,17 @@ const loginUserService = asyncHandler(async (data, res) => {
       false
     );
   }
+  const issuedAt = new Date();
+  const expiresAt = new Date(issuedAt.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
   const isRefreshTokenStored = await RefreshToken.create({
     token: refreshTokens,
     user: user._id,
-    deviceInfo: "unknown",
-    ipAddress: "unknown",
-    issuedAt: new Date(),
-    lastUsedAt: new Date(),
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    deviceInfo: req.get("User-Agent") || "unknown",
+    ipAddress: req.ip || "unknown",
+    issuedAt,
+    lastUsedAt: issuedAt,
+    expiresAt, // 30 days
   });
 
   console.log(isRefreshTokenStored);
@@ -199,23 +204,32 @@ const loginUserService = asyncHandler(async (data, res) => {
     );
   }
 
-  isRefreshTokenStored.save();
   // console.log(refreshTokens);
-  console.log(user);
+  // console.log(user);
+
+  const sevenDays = 7 * 24 * 60 * 60 * 1000;
+  const thirtyDays = 7 * 24 * 60 * 60 * 1000;
   const cookieOptions = {
     httpOnly: true,
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   };
-
-  res.cookie("accessToken", accessTokens, cookieOptions);
-  res.cookie("refreshToken", refreshTokens, cookieOptions);
-
-  res.status(201).json(new ApiResponse(201, user, "User logged In"));
+  res
+    .cookie("accessToken", accessTokens, {
+      ...cookieOptions,
+      maxAge: sevenDays,
+    })
+    .cookie("refreshToken", refreshTokens, {
+      ...cookieOptions,
+      maxAge: thirtyDays,
+    })
+    .status(201)
+    .json(new ApiResponse(201, user, "User logged In"));
+  next();
 });
 
 const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
-  // console.log(token);
+  console.log(refreshToken);
   const user = await RefreshToken.findOne({ refreshToken });
   console.log(user);
   if (!user) {

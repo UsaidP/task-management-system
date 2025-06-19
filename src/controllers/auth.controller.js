@@ -87,7 +87,9 @@ const loginUser = asyncHandler(async (req, res, next) => {
       email,
       password,
     },
-    res
+    req,
+    res,
+    next
   );
   next();
 });
