@@ -59,7 +59,7 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 const authorize = async (...roles) => {
-  // console.log(roles);
+  console.log(roles);
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       console.log(req);

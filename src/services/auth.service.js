@@ -309,45 +309,49 @@ const forgetPasswordService = asyncHandler(async (data, req, res) => {
     );
 });
 
-const resetPasswordService = asyncHandler(async (token, newPassword, res) => {
-  if (!token || !newPassword) {
-    throw new ApiError(
-      400,
-      "Token and new password are required",
-      [],
-      undefined,
-      false
-    );
+const resetPasswordService = asyncHandler(
+  async (token, newPassword, res, next) => {
+    if (!token || !newPassword) {
+      throw new ApiError(
+        400,
+        "Token and new password are required",
+        [],
+        undefined,
+        false
+      );
+    }
+
+    const hashToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+      forgotPasswordToken: hashToken,
+      forgotPasswordExpiry: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      throw new ApiError(
+        401,
+        "Invalid or expired reset token",
+        [],
+        undefined,
+        false
+      );
+    }
+
+    user.password = newPassword;
+    user.forgotPasswordToken = undefined;
+    user.forgotPasswordExpiry = undefined;
+
+    await user.save();
+    console.log(user);
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, user.password, "Password updated successfully")
+      );
+    next();
   }
-
-  const hashToken = crypto.createHash("sha256").update(token).digest("hex");
-
-  const user = await User.findOne({
-    forgotPasswordToken: hashToken,
-    forgotPasswordExpiry: { $gt: Date.now() },
-  });
-
-  if (!user) {
-    throw new ApiError(
-      401,
-      "Invalid or expired reset token",
-      [],
-      undefined,
-      false
-    );
-  }
-
-  user.password = newPassword;
-  user.forgotPasswordToken = undefined;
-  user.forgotPasswordExpiry = undefined;
-
-  await user.save();
-  console.log(user);
-  res
-    .status(200)
-    .json(new ApiResponse(200, user.password, "Password updated successfully"));
-  next();
-});
+);
 
 export {
   registerUserService,

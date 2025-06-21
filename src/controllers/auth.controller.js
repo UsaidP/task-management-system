@@ -208,10 +208,10 @@ const forgetPassword = asyncHandler(async (req, res) => {
 
 const resetPassword = asyncHandler(async (req, res, next) => {
   const { token } = req.params;
-  const { newPassword } = req.body;
+  const { password } = req.body;
 
-  console.log(newPassword);
-  if (!token || !newPassword) {
+  console.log(password);
+  if (!token || !password) {
     throw new ApiError(
       400,
       "Token and new password are required",
@@ -221,23 +221,9 @@ const resetPassword = asyncHandler(async (req, res, next) => {
     );
   }
 
-  const resetPassword = await resetPasswordService(
-    token,
-    newPassword,
-    res,
-    next
-  );
-  if (!resetPassword) {
-    throw new ApiError(
-      500,
-      "Failed to reset password",
-      undefined,
-      undefined,
-      false
-    );
-  }
+  const resetPassword = await resetPasswordService(token, password, res, next);
+  next();
 });
-
 export {
   registerUser,
   verifyUser,

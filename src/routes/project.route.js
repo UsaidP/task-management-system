@@ -8,7 +8,7 @@ import {
 } from "../controllers/project.controller.js";
 
 import { asyncHandler } from "../utils/async-handler.js";
-import { protect } from "../middlewares/auth.middleware.js";
+import { authorize, protect } from "../middlewares/auth.middleware.js";
 import { createProjectValidator } from "../validators/auth.validator.js";
 
 const router = Router();
