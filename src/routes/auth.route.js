@@ -41,7 +41,7 @@ router
 
 router.route("/logout").post(asyncHandler(logoutUser));
 
-router.route("/refresh-token").post(asyncHandler(refreshAccessToken));
+router.route("/refresh-token").post(protect, asyncHandler(refreshAccessToken));
 
 router
   .route("/forget-password")

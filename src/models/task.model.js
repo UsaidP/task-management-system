@@ -24,7 +24,7 @@ const taskSchema = new Schema(
     assignedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "Assigned by who is required!"],
 
       //required:[true, "Assigned by who is required!"], // we can use array for error handling.
     },

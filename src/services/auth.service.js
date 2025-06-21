@@ -15,7 +15,7 @@ const registerUserService = asyncHandler(async (data, req, res, next) => {
   const { email, password, username, fullname, avatar, role } = data;
   // console.log(email);
   // check if all field are present or not in request body
-  if ((!email, !password, !username, !role)) {
+  if (!email || !password || !username || !fullname || !role) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -142,9 +142,8 @@ const resendVerificationEmailService = asyncHandler(async (email, req, res) => {
 });
 
 const loginUserService = asyncHandler(async (data, req, res, next) => {
-const loginUserService = asyncHandler(async (data, req, res) => {
   const { username, email, password } = data;
-
+  // console.info(req);
   // Find user by email or username
   const user = await User.findOne({
     $or: [email ? { email } : null, username ? { username } : null].filter(
@@ -160,7 +159,6 @@ const loginUserService = asyncHandler(async (data, req, res) => {
   if (!isMatch) {
     throw new ApiError(402, "Provide valid credentials");
   }
-
   const accessTokens = await user.generateAccessToken();
   const refreshTokens = await user.generateRefreshToken();
 
@@ -173,8 +171,7 @@ const loginUserService = asyncHandler(async (data, req, res) => {
       false
     );
   }
-  // console.log(refreshTokens);
-  // console.log(accessTokens);
+
   const isBlacklisted = await blacklistedToken(refreshTokens);
 
   if (!isBlacklisted) {
@@ -186,10 +183,10 @@ const loginUserService = asyncHandler(async (data, req, res) => {
       false
     );
   }
-  const issuedAt = new Date();
-  const expiresAt = new Date(issuedAt.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
   const now = Date.now();
+  const expiryDate = new Date(now + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+
   const isRefreshTokenStored = await RefreshToken.create({
     token: refreshTokens,
     user: user._id,
@@ -197,7 +194,7 @@ const loginUserService = asyncHandler(async (data, req, res) => {
     ipAddress: req.ip || req.connection?.remoteAddress || "unknown",
     issuedAt: new Date(now),
     lastUsedAt: new Date(now),
-    expiresAt: new Date(now + 30 * 24 * 60 * 60 * 1000), // 30 days
+    expiresAt: expiryDate,
   });
 
   console.log(isRefreshTokenStored);
@@ -214,17 +211,11 @@ const loginUserService = asyncHandler(async (data, req, res) => {
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   };
-  res
-    .cookie("accessToken", accessTokens, {
-      ...cookieOptions,
-      maxAge: sevenDays,
-    })
-    .cookie("refreshToken", refreshTokens, {
-      ...cookieOptions,
-      maxAge: thirtyDays,
-    })
-    .status(201)
-    .json(new ApiResponse(201, user, "User logged In"));
+  console.log();
+  res.cookie("accessToken", accessTokens, cookieOptions);
+  res.cookie("refreshToken", refreshTokens, cookieOptions);
+
+  res.status(201).json(new ApiResponse(201, user, "User logged In"));
   next();
 });
 
@@ -236,7 +227,6 @@ const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
   }
 
   await RefreshToken.deleteOne({ token: refreshToken });
-
   res.clearCookie("refreshToken");
   res.clearCookie("accessToken");
 

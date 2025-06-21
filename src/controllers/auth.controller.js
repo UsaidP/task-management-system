@@ -11,6 +11,7 @@ import {
 } from "../services/auth.service.js";
 import { User } from "../models/user.model.js";
 import ApiError from "../utils/api-error.js";
+import RefreshToken from "../models/refreshToken.model.js";
 
 const registerUser = asyncHandler(async (req, res, next) => {
   const { email, password, username, fullname, avatar, role } = req.body;
@@ -88,7 +89,9 @@ const loginUser = asyncHandler(async (req, res, next) => {
       email,
       password,
     },
-    res
+    req,
+    res,
+    next
   );
   next();
 });
@@ -132,17 +135,17 @@ const logoutUser = asyncHandler(async (req, res, next) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res, next) => {
-  const { token } = req.cookies;
-  console.log(token);
-  if (!token) {
+  const refreshToken = req.cookies.refreshToken;
+  // console.log(refreshToken);
+  if (!refreshToken) {
     throw new ApiError(404, "Token not found", [], undefined, false);
   }
-  const user = await User.findOne({ refreshToken: token });
-  if (!user) {
+  const RefreshTokenDoc = await RefreshToken.findOne({ token: refreshToken });
+  console.log(RefreshTokenDoc);
+  if (!RefreshTokenDoc) {
     throw new ApiError(404, "Invalid Token", [], undefined, false);
   }
-  console.log(user);
-  const refreshToken = user.refreshToken;
+
   if (!refreshToken || refreshToken.expiresAt < new Date()) {
     throw new ApiError(
       404,
@@ -152,19 +155,44 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
       false
     );
   }
-  user.refreshToken = "";
 
-  const newAccessToken = await user.generateAccessToken();
-  const newRefreshToken = await user.generateRefreshToken();
+  RefreshTokenDoc.token = "";
+  const userId = await User.findById(RefreshTokenDoc.user);
+  // console.log(userId);
 
-  user.accessToken = newAccessToken;
-  user.refreshToken = newRefreshToken;
+  if (!userId) {
+    throw new ApiError(404, "User not found", [], undefined, false);
+  }
+  const user = await User.findById(userId._id);
+  if (!user) {
+    throw new ApiError(404, "User not found", [], undefined, false);
+  }
 
-  await user.save();
+  const accessTokens = await user.generateAccessToken();
+  const refreshTokens = await user.generateRefreshToken();
 
-  console.log(user);
+  if (!accessTokens || !refreshTokens) {
+    throw new ApiError(
+      402,
+      "Something went wrong while generating token",
+      undefined,
+      "",
+      false
+    );
+  }
 
-  res.status(202).json(new ApiResponse(202, user, "Tokens updated"));
+  const token = await RefreshToken.create({
+    token: refreshTokens,
+    user: user._id,
+    deviceInfo: req.headers["user-agent"] || "unknown",
+    ipAddress: req.ip || "unknown",
+  });
+  if (!token) {
+    throw new ApiError(500, "Failed to store refresh token");
+  }
+  await token.save();
+
+  res.status(202).json(new ApiResponse(202, token, "Tokens updated"));
   next();
 });
 
