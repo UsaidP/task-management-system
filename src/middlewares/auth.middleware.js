@@ -3,6 +3,8 @@ import blacklistedToken from "../models/blacklistedToken.js";
 import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import ApiError from "../utils/api-error.js";
+import { ProjectMember } from "../models/projectmember.model.js";
+import mongoose from "mongoose";
 
 const protect = asyncHandler(async (req, res, next) => {
   // console.log("req.cookies", req.cookies);
@@ -40,7 +42,7 @@ const protect = asyncHandler(async (req, res, next) => {
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
     ignoreExpiration: false,
   });
-  console.log(decoded);
+
   if (!decoded) {
     throw new ApiError(
       401,
@@ -58,21 +60,49 @@ const protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
-const authorize = async (...roles) => {
-  console.log(roles);
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      console.log(req);
+// const authorize = async (...roles) => {
+//   console.log(roles);
+//   return (req, res, next) => {
+//     if (!roles.includes(req.user.role)) {
+//       throw new ApiError(
+//         403,
+//         `User role ${req.user.role} is not authorized to access this route`,
+//         [],
+//         undefined,
+//         false
+//       );
+//     }
+//     next();
+//   };
+// };
+
+export const validateProjectPermission = (role = []) => {
+  return asyncHandler(async (req, res, next) => {
+    const { projectId } = req.params;
+    if (!projectId) {
+      throw new ApiError(403, error?.message || "Project Id is invalid!.");
+    }
+    const project = await ProjectMember.findOne({
+      project: mongoose.Types.ObjectId(projectId),
+      user: mongoose.Types.ObjectId(req.user._id),
+    });
+    if (!project) {
+      throw new ApiError(401, "Project not found");
+    }
+    const givenRole = project?.role;
+    req.user.role = givenRole;
+
+    if (!role.includes(givenRole)) {
       throw new ApiError(
         403,
-        `User role ${req.user.role} is not authorized to access this route`,
+        "You do not have permission to perform this action.",
         [],
-        undefined,
-        false
+        "",
+        false,
+        error
       );
     }
-    next();
-  };
+  });
 };
 
-export { protect, authorize };
+export { protect };

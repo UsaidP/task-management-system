@@ -1,20 +1,23 @@
-const createNote = async (req, res) => {
-  const { title, content } = req.body;
+import { ProjectNote } from "../models/note.model.js";
+import ApiError from "../utils/api-error.js";
+import { ApiResponse } from "../utils/api-response.js";
+import { asyncHandler } from "../utils/async-handler.js";
 
-  if (!title || !content) {
-    return res.status(400).json({ message: "Title and content are required" });
+const createNotes = asyncHandler(async (req, res, next) => {
+  const { content } = req.body;
+  if (!content) {
+    throw new ApiError(401, "provide notes");
   }
-
-  try {
-    const note = new Note({
-      title,
-      content,
-      user: req.user._id, // Assuming req.user is set by authentication middleware
-    });
-
-    await note.save();
-    return res.status(201).json({ message: "Note created successfully", note });
-  } catch (error) {
-    return res.status(500).json({ message: "Error creating note", error });
+  const note = await ProjectNote.create({ content });
+  if (!note) {
+    throw new ApiError(401, "note is not created");
   }
-};
+  res
+    .status(201)
+    .json(new ApiResponse(201, note, "Note is created successfully"));
+  next();
+});
+const getNotes = asyncHandler(async (req, res, next) => {
+  console.log("Here");
+});
+export { createNotes, getNotes };

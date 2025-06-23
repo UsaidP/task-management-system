@@ -3,12 +3,35 @@ import { ApiResponse } from "../utils/api-response.js";
 import { Project } from "../models/project.model.js";
 import ApiError from "../utils/api-error.js";
 
+const validateProjectData = (name, description) => {
+  if (!name || name.trim().length === 0) {
+    throw new ApiError(400, "Project Name is required");
+  }
+  if (!description || description.trim().length === 0) {
+    throw new ApiError(400, "Project Description is required");
+  }
+  if (description && description.trim().length > 500) {
+    throw new ApiError(
+      400,
+      "Project Description is too long, max 500 characters allowed"
+    );
+  }
+};
 // Create a project
-const createProject = asyncHandler(async (req, res, next) => {
+const createProject = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
+  validateProjectData(name, description);
+  // Check if project with the same name already exists
+  const existingProject = await Project.findOne({
+    name: name.trim(),
+    createdBy: req.user._id,
+  });
+  if (existingProject) {
+    throw new ApiError(409, "Project with this name already exists");
+  }
   const project = await Project.create({
-    name,
-    description,
+    name: name.trim(),
+    description: description?.trim() || "",
     createdBy: req.user._id,
   });
   if (!project) {
@@ -16,17 +39,50 @@ const createProject = asyncHandler(async (req, res, next) => {
   }
   // await project.save();
 
-  return res
+  res
     .status(201)
     .json(new ApiResponse(201, project, "Project created successfully"));
 });
 
-const getAllProjects = asyncHandler(async (req, res, next) => {
-  const projects = await Project.find({ createdBy: req.user._id });
-  res
-    .status(200)
-    .json(new ApiResponse(200, projects, "Projects fetched successfully"));
+const getAllProjects = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10, search = "" } = req.query;
+
+  // Build query
+  const query = { createdBy: req.user._id };
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  // Execute paginated query
+  const projects = await Project.find(query)
+    .sort({ createdAt: -1 })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .select("-__v");
+
+  const totalProjects = await Project.countDocuments(query);
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        projects,
+        pagination: {
+          currentPage: parseInt(page),
+          totalPages: Math.ceil(totalProjects / limit),
+          totalProjects,
+          hasNextPage: page < Math.ceil(totalProjects / limit),
+          hasPrevPage: page > 1,
+        },
+      },
+      "Projects fetched successfully"
+    )
+  );
 });
+
 // Read a project by ID
 const getProjectById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -37,6 +93,7 @@ const getProjectById = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json(new ApiResponse(200, project, "Project fetched successfully"));
+  next();
 });
 
 // Update a project
@@ -54,6 +111,7 @@ const updateProject = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json(new ApiResponse(200, project, "Project updated successfully"));
+  next();
 });
 
 // Delete a project
@@ -66,6 +124,7 @@ const deleteProject = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json(new ApiResponse(200, project, "Project deleted successfully"));
+  next();
 });
 
 export {

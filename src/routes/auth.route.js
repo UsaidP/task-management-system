@@ -19,7 +19,7 @@ import {
   getActiveSession,
 } from "../controllers/auth.controller.js";
 import { asyncHandler } from "../utils/async-handler.js";
-import { protect, authorize } from "../middlewares/auth.middleware.js";
+import { protect } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.route("/register").post(
