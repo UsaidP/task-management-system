@@ -76,33 +76,36 @@ const protect = asyncHandler(async (req, res, next) => {
 //   };
 // };
 
-export const validateProjectPermission = (role = []) => {
-  return asyncHandler(async (req, res, next) => {
+export const validateProjectPermission = (allowedRoles = []) =>
+  asyncHandler(async (req, res, next) => {
     const { projectId } = req.params;
-    if (!projectId) {
-      throw new ApiError(403, error?.message || "Project Id is invalid!.");
+    console.log(String(req.user._id));
+    if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
+      throw new ApiError(400, "Project Id is missing or invalid.");
     }
-    const project = await ProjectMember.findOne({
-      project: mongoose.Types.ObjectId(projectId),
-      user: mongoose.Types.ObjectId(req.user._id),
-    });
-    if (!project) {
-      throw new ApiError(401, "Project not found");
-    }
-    const givenRole = project?.role;
-    req.user.role = givenRole;
 
-    if (!role.includes(givenRole)) {
+    const membership = await ProjectMember.findOne({
+      project: projectId,
+      user: String(req.user._id),
+    });
+    console.log(membership);
+
+    if (!membership) {
+      throw new ApiError(404, "You are not a member of this project.");
+    }
+
+    const userRole = membership.role;
+    req.user.role = userRole;
+
+    if (!allowedRoles.includes(userRole)) {
       throw new ApiError(
         403,
-        "You do not have permission to perform this action.",
-        [],
-        "",
-        false,
-        error
+        "You do not have permission to perform this action."
       );
     }
+
+    // ✅ All checks passed; proceed:
+    next();
   });
-};
 
 export { protect };
