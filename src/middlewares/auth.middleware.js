@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import ApiError from "../utils/api-error.js";
 import { ProjectMember } from "../models/projectmember.model.js";
+import { Project } from "../models/project.model.js";
 import mongoose from "mongoose";
 
 const protect = asyncHandler(async (req, res, next) => {
@@ -79,22 +80,26 @@ const protect = asyncHandler(async (req, res, next) => {
 export const validateProjectPermission = (allowedRoles = []) =>
   asyncHandler(async (req, res, next) => {
     const { projectId } = req.params;
-    console.log(String(req.user._id));
+    const userId = req.user._id;
+    console.log("User ID:", typeof new mongoose.Types.ObjectId(projectId));
+    console.log("Project ID:", typeof projectId);
+
     if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
       throw new ApiError(400, "Project Id is missing or invalid.");
     }
 
-    const membership = await ProjectMember.findOne({
-      project: projectId,
-      user: String(req.user._id),
+    const AdminUser = await Project.findOne({
+      project: new mongoose.Types.ObjectId(projectId),
+      user: new mongoose.Types.ObjectId(userId),
     });
-    console.log(membership);
+    console.log(AdminUser);
 
-    if (!membership) {
-      throw new ApiError(404, "You are not a member of this project.");
+    if (!AdminUser) {
+      throw new ApiError(404, "You are not a admin of this project.");
     }
 
-    const userRole = membership.role;
+    const userRole = AdminUser.role;
+    console.log(userRole);
     req.user.role = userRole;
 
     if (!allowedRoles.includes(userRole)) {

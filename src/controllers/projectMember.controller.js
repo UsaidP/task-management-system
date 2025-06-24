@@ -131,8 +131,29 @@ export const removeMember = asyncHandler(async (req, res, next) => {
   next();
 });
 
+export const getAllMembers = asyncHandler(async (req, res, next) => {
+  const { projectId } = req.params;
+
+  if (!projectId) {
+    throw new ApiError(400, "Project ID is required.");
+  }
+
+  const members = await ProjectMember.find({ project: projectId })
+    .populate("user", "name email")
+    .populate("project", "name description");
+
+  if (!members || members.length === 0) {
+    throw new ApiError(404, "No members found for this project.");
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, members, "Project members retrieved"));
+  next();
+});
 export const projectMemberController = {
   addMember,
   updateMember,
   removeMember,
+  getAllMembers,
 };
