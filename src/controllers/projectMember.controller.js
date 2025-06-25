@@ -64,6 +64,12 @@ export const updateMember = asyncHandler(async (req, res, next) => {
   if (!projectId) {
     throw new ApiError(401, "Project Id not found from params");
   }
+  if (!userId) {
+    throw new ApiError(400, "User ID is required.");
+  }
+  if (!role) {
+    throw new ApiError(400, "Role is required.");
+  }
   const project = await Project.findById(projectId);
   if (!project) {
     throw new ApiError(404, "Project not found in database.");

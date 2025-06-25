@@ -2,6 +2,8 @@ import { asyncHandler } from "../utils/async-handler.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { Project } from "../models/project.model.js";
 import ApiError from "../utils/api-error.js";
+import { ProjectMember } from "../models/projectmember.model.js";
+import { UserRoleEnum } from "../utils/constants.js";
 
 const validateProjectData = (name, description) => {
   if (!name || name.trim().length === 0) {
@@ -34,14 +36,33 @@ const createProject = asyncHandler(async (req, res) => {
     description: description?.trim() || "",
     createdBy: req.user._id,
   });
+
   if (!project) {
     throw new ApiError(400, "Project creation failed");
   }
+  // Optionally, you can add the creator as a admin of the project
+  const projectMember = await ProjectMember.create({
+    project: project._id,
+    user: req.user._id,
+    role: UserRoleEnum.PROJECT_ADMIN, // or "admin" based on your role definitions
+  });
+
+  if (!projectMember) {
+    throw new ApiError(400, "Failed to add creator as project admin");
+  }
+
   // await project.save();
 
   res
     .status(201)
-    .json(new ApiResponse(201, project, "Project created successfully"));
+    .json(
+      new ApiResponse(
+        201,
+        { project, projectMember },
+        "Project created successfully"
+      )
+    );
+  next();
 });
 
 const getAllProjects = asyncHandler(async (req, res) => {

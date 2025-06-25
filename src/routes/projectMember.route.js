@@ -9,19 +9,30 @@ import {
   protect,
   validateProjectPermission,
 } from "../middlewares/auth.middleware.js";
+import { UserRoleEnum } from "../utils/constants.js";
 
 const router = Router();
 
 router
   .route("/add/:projectId")
-  .post(protect, validateProjectPermission(["admin"]), addMember);
-router.route("/update/:projectId").post(protect, updateMember);
+  .post(
+    protect,
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    addMember
+  );
+router
+  .route("/update/:projectId")
+  .post(
+    protect,
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    updateMember
+  );
 router.route("/remove/:projectId").post(protect, removeMember);
 router
   .route("/all-members/:projectId")
   .get(
     protect,
-    validateProjectPermission(["admin"]),
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
     projectMemberController.getAllMembers
   );
 export default router;

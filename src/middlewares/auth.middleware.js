@@ -88,7 +88,7 @@ export const validateProjectPermission = (allowedRoles = []) =>
       throw new ApiError(400, "Project Id is missing or invalid.");
     }
 
-    const AdminUser = await Project.findOne({
+    const AdminUser = await ProjectMember.findOne({
       project: new mongoose.Types.ObjectId(projectId),
       user: new mongoose.Types.ObjectId(userId),
     });
@@ -101,7 +101,8 @@ export const validateProjectPermission = (allowedRoles = []) =>
     const userRole = AdminUser.role;
     console.log(userRole);
     req.user.role = userRole;
-
+    console.log(allowedRoles);
+    console.log(!allowedRoles.includes(userRole));
     if (!allowedRoles.includes(userRole)) {
       throw new ApiError(
         403,
