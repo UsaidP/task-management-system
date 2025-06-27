@@ -7,7 +7,7 @@ import { ProjectMember } from "../models/projectmember.model.js";
 import { Project } from "../models/project.model.js";
 import mongoose from "mongoose";
 
-const protect = asyncHandler(async (req, res, next) => {
+export const protect = asyncHandler(async (req, res, next) => {
   // console.log("req.cookies", req.cookies);
   const extractTokenFromRequest = (req) => {
     if (req.headers.authorization?.startsWith("Bearer")) {
@@ -61,47 +61,28 @@ const protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// const authorize = async (...roles) => {
-//   console.log(roles);
-//   return (req, res, next) => {
-//     if (!roles.includes(req.user.role)) {
-//       throw new ApiError(
-//         403,
-//         `User role ${req.user.role} is not authorized to access this route`,
-//         [],
-//         undefined,
-//         false
-//       );
-//     }
-//     next();
-//   };
-// };
-
 export const validateProjectPermission = (allowedRoles = []) =>
   asyncHandler(async (req, res, next) => {
     const { projectId } = req.params;
     const userId = req.user._id;
-    console.log("User ID:", typeof new mongoose.Types.ObjectId(projectId));
-    console.log("Project ID:", typeof projectId);
-
     if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
       throw new ApiError(400, "Project Id is missing or invalid.");
     }
 
-    const AdminUser = await ProjectMember.findOne({
+    const user = await ProjectMember.findOne({
       project: new mongoose.Types.ObjectId(projectId),
       user: new mongoose.Types.ObjectId(userId),
     });
-    console.log(AdminUser);
+    console.log(user);
 
-    if (!AdminUser) {
+    if (!user) {
       throw new ApiError(404, "You are not a admin of this project.");
     }
 
-    const userRole = AdminUser.role;
+    const userRole = user.role;
     console.log(userRole);
     req.user.role = userRole;
-    console.log(allowedRoles);
+    // console.log(allowedRoles);
     console.log(!allowedRoles.includes(userRole));
     if (!allowedRoles.includes(userRole)) {
       throw new ApiError(
@@ -113,5 +94,3 @@ export const validateProjectPermission = (allowedRoles = []) =>
     // ✅ All checks passed; proceed:
     next();
   });
-
-export { protect };

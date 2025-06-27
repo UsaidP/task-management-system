@@ -145,8 +145,8 @@ export const getAllMembers = asyncHandler(async (req, res, next) => {
   }
 
   const members = await ProjectMember.find({ project: projectId })
-    .populate("user", "name email")
-    .populate("project", "name description");
+    .populate("user", "email")
+    .populate("project", "name ");
 
   if (!members || members.length === 0) {
     throw new ApiError(404, "No members found for this project.");
