@@ -150,11 +150,13 @@ const loginUserService = asyncHandler(async (data, req, res, next) => {
       Boolean
     ),
   });
-
+  console.log("User found:", user);
   if (!user) {
     throw new ApiError(401, "User not found");
   }
-
+  if (!user.isEmailVerified) {
+    throw new ApiError(401, "Verify your email first ", [], undefined, false);
+  }
   const isMatch = await user.isPasswordCorrect(password);
   if (!isMatch) {
     throw new ApiError(402, "Provide valid credentials");
@@ -197,7 +199,7 @@ const loginUserService = asyncHandler(async (data, req, res, next) => {
     expiresAt: expiryDate,
   });
 
-  console.log(isRefreshTokenStored);
+  // console.log(isRefreshTokenStored);
 
   if (!isRefreshTokenStored) {
     throw new ApiError(500, "Failed to store refresh token");
@@ -217,23 +219,6 @@ const loginUserService = asyncHandler(async (data, req, res, next) => {
 
   res.status(201).json(new ApiResponse(201, user, "User logged In"));
   next();
-});
-
-const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
-  const tokenDoc = await RefreshToken.findOne({ token: refreshToken });
-
-  if (!tokenDoc) {
-    throw new ApiError(401, "Invalid token provided", [], undefined, false);
-  }
-
-  await RefreshToken.deleteOne({ token: refreshToken });
-  res.clearCookie("refreshToken");
-  res.clearCookie("accessToken");
-
-  res
-    .status(200)
-    .json(new ApiResponse(200, null, "User logged out successfully"));
-  return next();
 });
 
 const forgetPasswordService = asyncHandler(async (data, req, res) => {
@@ -352,6 +337,22 @@ const resetPasswordService = asyncHandler(
     next();
   }
 );
+const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
+  const tokenDoc = await RefreshToken.findOne({ token: refreshToken });
+
+  if (!tokenDoc) {
+    throw new ApiError(401, "Invalid token provided", [], undefined, false);
+  }
+
+  await RefreshToken.deleteOne({ token: refreshToken });
+  res.clearCookie("refreshToken");
+  res.clearCookie("accessToken");
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, null, "User logged out successfully"));
+  return next();
+});
 
 export {
   registerUserService,

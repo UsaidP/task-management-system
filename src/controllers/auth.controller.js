@@ -80,9 +80,10 @@ const resendVerifyEmail = asyncHandler(async (req, res, next) => {
 const loginUser = asyncHandler(async (req, res, next) => {
   const { username, email, password } = req.body;
   //console.log(username, email, password);
-  if ((!(username || email), !password)) {
+  if (!(username || email) && !password) {
     throw new ApiError(401, "Provide full login details", [], undefined, false);
   }
+
   await loginUserService(
     {
       username,

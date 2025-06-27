@@ -29,7 +29,7 @@ const createProject = asyncHandler(async (req, res) => {
     createdBy: req.user._id,
   });
   if (existingProject) {
-    throw new ApiError(409, "Project with this name already exists");
+    throw new ApiError(409, "You already have a project with this name. Please choose a different name.");
   }
   const project = await Project.create({
     name: name.trim(),
@@ -65,7 +65,7 @@ const createProject = asyncHandler(async (req, res) => {
   next();
 });
 
-const getAllProjects = asyncHandler(async (req, res) => {
+const getAllProjects = asyncHandler(async (req, res, next) => {
   const { page = 1, limit = 10, search = "" } = req.query;
 
   // Build query
@@ -102,6 +102,7 @@ const getAllProjects = asyncHandler(async (req, res) => {
       "Projects fetched successfully"
     )
   );
+  next();
 });
 
 // Read a project by ID

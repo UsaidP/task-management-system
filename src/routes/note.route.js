@@ -1,18 +1,43 @@
 import { Router } from "express";
 
-import { createNotes, getNotes } from "../controllers/note.controller.js";
-import { validateProjectPermission } from "../middlewares/auth.middleware.js";
+import {
+  createNotes,
+  getNoteById,
+  getNotes,
+} from "../controllers/note.controller.js";
+import {
+  protect,
+  validateProjectPermission,
+} from "../middlewares/auth.middleware.js";
 import { UserRoleEnum } from "../utils/constants.js";
 
 const router = Router();
-router.get(
+router
+  .get(
+    "/:projectId/n/:noteId",
+    protect,
+    validateProjectPermission([
+      UserRoleEnum.MEMBER,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.ADMIN,
+    ]),
+    getNoteById
+  )
+  .get(
+    "/:noteId",
+    protect,
+    validateProjectPermission([
+      UserRoleEnum.MEMBER,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.ADMIN,
+    ]),
+    getNoteById
+  );
+router.post(
   "/:projectId",
-  validateProjectPermission(UserRoleEnum.MEMBER),
-  getNotes
+  protect,
+  validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+  createNotes
 );
-
-router.post("/:projectId", (req, res) => {
-  res.json({ message: "POST notes working", projectId: req.params.projectId });
-});
 
 export default router;
