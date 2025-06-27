@@ -20,7 +20,7 @@ const validateProjectData = (name, description) => {
   }
 };
 // Create a project
-const createProject = asyncHandler(async (req, res) => {
+const createProject = asyncHandler(async (req, res, next) => {sssssss
   const { name, description } = req.body;
   validateProjectData(name, description);
   // Check if project with the same name already exists
@@ -44,7 +44,7 @@ const createProject = asyncHandler(async (req, res) => {
   const projectMember = await ProjectMember.create({
     project: project._id,
     user: req.user._id,
-    role: UserRoleEnum.PROJECT_ADMIN, // or "admin" based on your role definitions
+    role: UserRoleEnum.ADMIN, // or "admin" based on your role definitions
   });
 
   if (!projectMember) {
@@ -122,6 +122,13 @@ const getProjectById = asyncHandler(async (req, res, next) => {
 const updateProject = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { name, description } = req.body;
+  if (!id) {
+    throw new ApiError(400, "Create a project first, then update it");
+  }
+  if (!name || !description) {
+    throw new ApiError(400, "Project name and description are required");
+  }
+
   const project = await Project.findByIdAndUpdate(
     id,
     { name, description },

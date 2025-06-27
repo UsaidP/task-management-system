@@ -6,7 +6,7 @@ import ApiError from "../utils/api-error.js";
 import { ProjectMember } from "../models/projectmember.model.js";
 import mongoose from "mongoose";
 
-export const protect = asyncHandler(async (req, res, next) => {
+const protect = asyncHandler(async (req, res, next) => {
   // console.log("req.cookies", req.cookies);
   const extractTokenFromRequest = (req) => {
     if (req.headers.authorization?.startsWith("Bearer")) {
@@ -60,26 +60,10 @@ export const protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// const authorize = async (...roles) => {
-//   console.log(roles);
-//   return (req, res, next) => {
-//     if (!roles.includes(req.user.role)) {
-//       throw new ApiError(
-//         403,
-//         `User role ${req.user.role} is not authorized to access this route`,
-//         [],
-//         undefined,
-//         false
-//       );
-//     }
-//     next();
-//   };
-// };
-
 export const validateProjectPermission = (allowedRoles = []) =>
   asyncHandler(async (req, res, next) => {
     const { projectId } = req.params;
-    const { noteId } = req.params;
+
     const userId = req.user?._id;
     if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
       throw new ApiError(400, "Project Id is missing or invalid.");

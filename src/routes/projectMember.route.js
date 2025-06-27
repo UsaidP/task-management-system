@@ -27,12 +27,14 @@ router
     validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
     updateMember
   );
-router.route("/remove/:projectId").post(protect, removeMember);
+router
+  .route("/remove/:projectId")
+  .post(protect, validateProjectPermission([UserRoleEnum.ADMIN]), removeMember);
 router
   .route("/all-members/:projectId")
   .get(
     protect,
-    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    validateProjectPermission([UserRoleEnum.ADMIN]),
     projectMemberController.getAllMembers
   );
 export default router;
