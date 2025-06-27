@@ -6,7 +6,7 @@ import ApiError from "../utils/api-error.js";
 import { ProjectMember } from "../models/projectmember.model.js";
 import mongoose from "mongoose";
 
-const protect = asyncHandler(async (req, res, next) => {
+export const protect = asyncHandler(async (req, res, next) => {
   // console.log("req.cookies", req.cookies);
   const extractTokenFromRequest = (req) => {
     if (req.headers.authorization?.startsWith("Bearer")) {
