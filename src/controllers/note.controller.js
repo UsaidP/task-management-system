@@ -87,4 +87,71 @@ const getNoteById = asyncHandler(async (req, res, next) => {
   res.status(200).json(new ApiResponse(200, note, "Note fetched successfully"));
   next();
 });
-export { createNotes, getNotes, getNoteById };
+
+const updateNote = asyncHandler(async (req, res, next) => {
+  const { projectId, noteId } = req.params;
+  console.log("projectID:", projectId);
+  console.log("noteID:", noteId);
+  if (!projectId || !mongoose.isValidObjectId(projectId)) {
+    throw new ApiError(401, "project is not found");
+  }
+  if (!noteId || !mongoose.isValidObjectId(noteId)) {
+    throw new ApiError(401, "note is not found");
+  }
+  const { content } = req.body;
+  const userID = req.user._id;
+
+  const project = await Project.findById(projectId);
+  if (!project) {
+    throw new ApiError(404, "Project not found create project first");
+  }
+
+  const note = await ProjectNote.findByIdAndUpdate(
+    noteId,
+    { content, updatedBy: userID },
+    { new: true }
+  );
+
+  if (!note) {
+    throw new ApiError("402", "something went wrong while updating the note.");
+  }
+  res.status(202).json(new ApiResponse(202, note, "Note updated successfully"));
+  next();
+});
+
+const deleteNote = asyncHandler(async (req, res, next) => {
+  const { projectId, noteId } = req.params;
+  console.log("projectID:", projectId);
+  console.log("noteID:", noteId);
+  if (!projectId || !mongoose.isValidObjectId(projectId)) {
+    throw new ApiError(401, "projectID is not found in project");
+  }
+  if (!noteId || !mongoose.isValidObjectId(noteId)) {
+    throw new ApiError(401, "note is not found");
+  }
+  const project = await Project.findOne({ projectId });
+  if (!project) {
+    throw new ApiError(
+      404,
+      "Project not found",
+      [],
+      "Project not found",
+      false
+    );
+  }
+  const deleteNote = await ProjectNote.findOneAndDelete(noteId);
+  if (!deleteNote) {
+    throw new ApiError(
+      402,
+      "Something went wrong while deleting the note.",
+      [],
+      "",
+      false
+    );
+  }
+  res
+    .status(203)
+    .json(new ApiResponse(203, deleteNote, "Note deleted successfully"));
+  next();
+});
+export { createNotes, getNotes, getNoteById, updateNote, deleteNote };
