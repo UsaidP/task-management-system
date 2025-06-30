@@ -2,15 +2,19 @@ import mongoose from "mongoose";
 import { Task } from "../models/task.model.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { Project } from "../models/project.model.js";
+import { ProjectNote } from "../models/note.model.js";
+import ApiError from "../utils/api-error.js";
+import { ApiResponse } from "../utils/api-response.js";
 
 const createTask = asyncHandler(async (req, res, next) => {
-  const { title, description, assignedTo, assignedBy, status, attachments } = req.body;
+  const { title, description, assignedTo, status, attachments } = req.body;
   const { projectId, noteId } = req.params;
   const userID = req.user._id;
+
   if (!title || !description) {
     return res.status(400).json({
       success: false,
-      message: "Name and description are required",
+      message: "Title and description are required",
     });
   }
 
@@ -20,15 +24,9 @@ const createTask = asyncHandler(async (req, res, next) => {
       message: "Project ID is required",
     });
   }
-  if (!noteId) {
-    return res.status(400).json({
-      success: false,
-      message: "Note ID is required",
-    });
-  }
 
   if (!userID) {
-    return res.status(400).json({
+    return res.status(401).json({
       success: false,
       message: "Login to create task",
     });
@@ -42,23 +40,31 @@ const createTask = asyncHandler(async (req, res, next) => {
     });
   }
 
-  const task = await Task.create({
+  const taskData = {
     title,
     description,
     project: projectId,
-    assignedBy: new mongoose.Types.ObjectId(userID), // Assuming req.user is set by authentication middleware
+    assignedBy: new mongoose.Types.ObjectId(userID),
     assignedTo,
     status,
-  });
-  if (!task) {
-    throw new ApiError(400, "Task creation failed");
-  }
+    attachments,
+  };
 
   if (noteId) {
     const note = await ProjectNote.findById(noteId);
     if (!note) {
       throw new ApiError(404, "Note not found");
     }
+    taskData.note = noteId; // Assuming Task model has a 'note' field
+  }
+
+  const task = await Task.create(taskData);
+  if (!task) {
+    throw new ApiError(400, "Task creation failed");
+  }
+
+  if (noteId) {
+    const note = await ProjectNote.findById(noteId);
     note.tasks.push(task._id);
     await note.save();
   }
@@ -69,4 +75,19 @@ const createTask = asyncHandler(async (req, res, next) => {
     task,
   });
 });
-export { createTask };
+
+const getTasks = asyncHandler(async (req, res, next) => {
+  const { projectId } = req.params;
+
+  if (!projectId) {
+    return res.status(400).json({
+      success: false,
+      message: "Project ID is required",
+    });
+  }
+
+  const tasks = await Task.find({ project: projectId }).populate("assignedTo", "name email");
+
+  return res.status(200).json(new ApiResponse(200, tasks, "Tasks fetched successfully"));
+});
+export { createTask, getTasks };

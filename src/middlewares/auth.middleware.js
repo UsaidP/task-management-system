@@ -79,5 +79,32 @@ export const validateProjectPermission = (allowedRoles = []) =>
   });
 
 export const validateTaskPermission = (allowedRoles = []) => {
-  return asyncHandler(async (req, res, next) => {});
+  return asyncHandler(async (req, res, next) => {
+    const { projectId } = req.params;
+    const userId = req.user?._id;
+    console.log("user", userId);
+    console.log("project", new mongoose.Types.ObjectId(projectId));
+    if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
+      throw new ApiError(400, "Task Id is missing or invalid.");
+    }
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      throw new ApiError(400, "User Id is missing or invalid.");
+    }
+
+    const user = await ProjectMember.findOne({
+      project: new mongoose.Types.ObjectId(projectId),
+      user: new mongoose.Types.ObjectId(userId),
+    });
+    console.log(user);
+    if (!user) {
+      throw new ApiError(404, `You are not a part of this task.`);
+    }
+    const userRole = user.role;
+    console.log(userRole);
+    req.user.role = userRole;
+    if (!allowedRoles.includes(userRole)) {
+      throw new ApiError(403, "You do not have permission to perform this action.");
+    }
+    next();
+  });
 };
