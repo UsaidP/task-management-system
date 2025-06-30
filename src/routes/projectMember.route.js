@@ -5,10 +5,7 @@ import {
   removeMember,
   updateMember,
 } from "../controllers/projectMember.controller.js";
-import {
-  protect,
-  validateProjectPermission,
-} from "../middlewares/auth.middleware.js";
+import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js";
 import { UserRoleEnum } from "../utils/constants.js";
 
 const router = Router();

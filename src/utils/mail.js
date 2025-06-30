@@ -25,9 +25,7 @@ const sendMail = async (options) => {
       copyright: `Copyright © ${new Date().getFullYear()} Mailgen. All rights reserved.`,
     },
   });
-  const emailPlainText = mailGenerator.generatePlaintext(
-    options.mailgenContent
-  );
+  const emailPlainText = mailGenerator.generatePlaintext(options.mailgenContent);
   const emailHTML = mailGenerator.generate(options.mailgenContent);
   const transporter = nodemailer.createTransport({
     host: process.env.MAILTRAP_HOST,
@@ -74,8 +72,7 @@ const emailVerificationMailGenContent = function (username, verificationUrl) {
           text: "Verify your email",
           link: verificationUrl,
         },
-        outro:
-          "Need help, or have questions? Just reply to this email, we'd love to help.",
+        outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
       },
     },
   };
@@ -92,8 +89,7 @@ const reEmailVerificationMailGenContent = function (username, verificationUrl) {
           text: "Verify your email",
           link: verificationUrl,
         },
-        outro:
-          "Need help, or have questions? Just reply to this email, we'd love to help.",
+        outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
       },
     },
   };
@@ -105,16 +101,14 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
       name: username,
       intro: "We got a request to reset the password of your account",
       action: {
-        instructions:
-          "To reset your password click on the following button or link:",
+        instructions: "To reset your password click on the following button or link:",
         button: {
           color: "#22BC66", // Optional action button color
           text: "Reset password",
           link: passwordResetUrl,
         },
       },
-      outro:
-        "Need help, or have questions? Just reply to this email, we'd love to help.",
+      outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
     },
   };
 };

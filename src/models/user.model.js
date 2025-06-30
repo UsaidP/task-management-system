@@ -42,11 +42,7 @@ const userSchema = new Schema(
     role: {
       type: String,
       required: true,
-      enum: [
-        AvailableUserRole.ADMIN,
-        AvailableUserRole.PROJECT_ADMIN,
-        AvailableUserRole.MEMBER,
-      ],
+      enum: [AvailableUserRole.ADMIN, AvailableUserRole.PROJECT_ADMIN, AvailableUserRole.MEMBER],
       default: "user",
     },
     isEmailVerified: {
@@ -104,10 +100,7 @@ userSchema.methods.generateRefreshToken = async function () {
 
 userSchema.methods.generateTemporaryToken = async function () {
   const unHashedToken = crypto.randomBytes(32).toString("hex");
-  const hashToken = crypto
-    .createHash("sha256")
-    .update(unHashedToken)
-    .digest("hex");
+  const hashToken = crypto.createHash("sha256").update(unHashedToken).digest("hex");
   const tokenExpiry = Date.now() + 20 * 60 * 1000;
 
   return { unHashedToken, hashToken, tokenExpiry };
@@ -125,14 +118,7 @@ export const blacklistedToken = async function (token) {
 
     return true;
   } catch (err) {
-    return new ApiError(
-      401,
-      "Token is not blacklisted",
-      undefined,
-      "",
-      false,
-      err
-    );
+    return new ApiError(401, "Token is not blacklisted", undefined, "", false, err);
   }
 };
 

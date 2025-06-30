@@ -1,6 +1,6 @@
 /**
  * @fileoverview Enterprise-grade API Error class for standardized error handling
- * 
+ *
  * This implementation follows industry best practices for error handling in large-scale
  * Node.js applications with features like:
  * - Error categorization (operational vs. programming)
@@ -45,28 +45,28 @@ export const ERROR_CATEGORIES = {
    * Examples: validation errors, resource not found, bad user input
    * These can be handled gracefully and don't necessarily need alerts
    */
-  OPERATIONAL: 'operational',
+  OPERATIONAL: "operational",
 
   /**
    * Programming errors represent unexpected bugs/defects in the code
    * Examples: trying to read property of undefined, null reference errors
    * These indicate bugs that need to be fixed and should trigger alerts
    */
-  PROGRAMMING: 'programming',
+  PROGRAMMING: "programming",
 
   /**
    * System errors represent issues with the system environment
    * Examples: out of memory, file system errors, network failures
    * These may require system-level intervention
    */
-  SYSTEM: 'system',
+  SYSTEM: "system",
 
   /**
    * External errors represent failures in external services/dependencies
    * Examples: database connection failures, third-party API failures
    * These may require failover mechanisms or retries
    */
-  EXTERNAL: 'external'
+  EXTERNAL: "external",
 };
 
 /**
@@ -75,50 +75,122 @@ export const ERROR_CATEGORIES = {
  */
 export const ERROR_CODES = {
   // Authentication errors (401)
-  AUTHENTICATION_REQUIRED: { code: 'AUTH_001', status: HTTP_STATUS.UNAUTHORIZED, message: 'Authentication required' },
-  INVALID_CREDENTIALS: { code: 'AUTH_002', status: HTTP_STATUS.UNAUTHORIZED, message: 'Invalid credentials' },
-  EXPIRED_TOKEN: { code: 'AUTH_003', status: HTTP_STATUS.UNAUTHORIZED, message: 'Expired token' },
-  INVALID_TOKEN: { code: 'AUTH_004', status: HTTP_STATUS.UNAUTHORIZED, message: 'Invalid token' },
+  AUTHENTICATION_REQUIRED: {
+    code: "AUTH_001",
+    status: HTTP_STATUS.UNAUTHORIZED,
+    message: "Authentication required",
+  },
+  INVALID_CREDENTIALS: {
+    code: "AUTH_002",
+    status: HTTP_STATUS.UNAUTHORIZED,
+    message: "Invalid credentials",
+  },
+  EXPIRED_TOKEN: {
+    code: "AUTH_003",
+    status: HTTP_STATUS.UNAUTHORIZED,
+    message: "Expired token",
+  },
+  INVALID_TOKEN: {
+    code: "AUTH_004",
+    status: HTTP_STATUS.UNAUTHORIZED,
+    message: "Invalid token",
+  },
 
   // Authorization errors (403)
-  PERMISSION_DENIED: { code: 'PERM_001', status: HTTP_STATUS.FORBIDDEN, message: 'Permission denied' },
-  INSUFFICIENT_PRIVILEGES: { code: 'PERM_002', status: HTTP_STATUS.FORBIDDEN, message: 'Insufficient privileges' },
+  PERMISSION_DENIED: {
+    code: "PERM_001",
+    status: HTTP_STATUS.FORBIDDEN,
+    message: "Permission denied",
+  },
+  INSUFFICIENT_PRIVILEGES: {
+    code: "PERM_002",
+    status: HTTP_STATUS.FORBIDDEN,
+    message: "Insufficient privileges",
+  },
 
   // Resource errors (404)
-  RESOURCE_NOT_FOUND: { code: 'RES_001', status: HTTP_STATUS.NOT_FOUND, message: 'Resource not found' },
-  USER_NOT_FOUND: { code: 'RES_002', status: HTTP_STATUS.NOT_FOUND, message: 'User not found' },
+  RESOURCE_NOT_FOUND: {
+    code: "RES_001",
+    status: HTTP_STATUS.NOT_FOUND,
+    message: "Resource not found",
+  },
+  USER_NOT_FOUND: {
+    code: "RES_002",
+    status: HTTP_STATUS.NOT_FOUND,
+    message: "User not found",
+  },
 
   // Validation errors (400)
-  VALIDATION_ERROR: { code: 'VAL_001', status: HTTP_STATUS.BAD_REQUEST, message: 'Validation error' },
-  INVALID_INPUT: { code: 'VAL_002', status: HTTP_STATUS.BAD_REQUEST, message: 'Invalid input' },
-  MISSING_REQUIRED_FIELD: { code: 'VAL_003', status: HTTP_STATUS.BAD_REQUEST, message: 'Missing required field' },
+  VALIDATION_ERROR: {
+    code: "VAL_001",
+    status: HTTP_STATUS.BAD_REQUEST,
+    message: "Validation error",
+  },
+  INVALID_INPUT: {
+    code: "VAL_002",
+    status: HTTP_STATUS.BAD_REQUEST,
+    message: "Invalid input",
+  },
+  MISSING_REQUIRED_FIELD: {
+    code: "VAL_003",
+    status: HTTP_STATUS.BAD_REQUEST,
+    message: "Missing required field",
+  },
 
   // Conflict errors (409)
-  DUPLICATE_ENTRY: { code: 'CONF_001', status: HTTP_STATUS.CONFLICT, message: 'Duplicate entry' },
-  RESOURCE_CONFLICT: { code: 'CONF_002', status: HTTP_STATUS.CONFLICT, message: 'Resource conflict' },
+  DUPLICATE_ENTRY: {
+    code: "CONF_001",
+    status: HTTP_STATUS.CONFLICT,
+    message: "Duplicate entry",
+  },
+  RESOURCE_CONFLICT: {
+    code: "CONF_002",
+    status: HTTP_STATUS.CONFLICT,
+    message: "Resource conflict",
+  },
 
   // Rate limiting (429)
-  RATE_LIMIT_EXCEEDED: { code: 'RATE_001', status: HTTP_STATUS.TOO_MANY_REQUESTS, message: 'Rate limit exceeded' },
+  RATE_LIMIT_EXCEEDED: {
+    code: "RATE_001",
+    status: HTTP_STATUS.TOO_MANY_REQUESTS,
+    message: "Rate limit exceeded",
+  },
 
   // Server errors (500)
-  INTERNAL_ERROR: { code: 'SRV_001', status: HTTP_STATUS.INTERNAL_SERVER_ERROR, message: 'Internal server error' },
-  DATABASE_ERROR: { code: 'SRV_002', status: HTTP_STATUS.INTERNAL_SERVER_ERROR, message: 'Database error' },
-  EXTERNAL_SERVICE_ERROR: { code: 'SRV_003', status: HTTP_STATUS.INTERNAL_SERVER_ERROR, message: 'External service error' },
+  INTERNAL_ERROR: {
+    code: "SRV_001",
+    status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    message: "Internal server error",
+  },
+  DATABASE_ERROR: {
+    code: "SRV_002",
+    status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    message: "Database error",
+  },
+  EXTERNAL_SERVICE_ERROR: {
+    code: "SRV_003",
+    status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    message: "External service error",
+  },
 
   // Custom error code for fallback
-  UNKNOWN_ERROR: { code: 'UNK_001', status: HTTP_STATUS.INTERNAL_SERVER_ERROR, message: 'Unknown error' }
+  UNKNOWN_ERROR: {
+    code: "UNK_001",
+    status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+    message: "Unknown error",
+  },
 };
 
 /**
  * Enterprise-grade ApiError class for standardized error handling
- * 
+ *
  * @class ApiError
  * @extends Error
  */
 class ApiError extends Error {
   /**
    * Creates a new API Error instance with standardized properties
-   * 
+   *
    * @param {number} statusCode - HTTP status code (defaults to 500)
    * @param {string} message - Human-readable error message
    * @param {Array|Object} [errors=[]] - Validation errors or additional error details
@@ -214,9 +286,7 @@ class ApiError extends Error {
    */
   _mapStatusCodeToErrorCode(statusCode) {
     // Find matching error code from our defined ERROR_CODES
-    const matchingErrorCode = Object.values(ERROR_CODES).find(
-      err => err.status === statusCode
-    );
+    const matchingErrorCode = Object.values(ERROR_CODES).find((err) => err.status === statusCode);
 
     // If found, return the code, otherwise use UNKNOWN_ERROR
     return matchingErrorCode ? matchingErrorCode.code : ERROR_CODES.UNKNOWN_ERROR.code;
@@ -225,18 +295,18 @@ class ApiError extends Error {
   /**
    * Serializes the error to a plain object for API responses
    * Adapts based on environment (development vs. production)
-   * 
+   *
    * @param {boolean} [includeStack=false] - Whether to include stack trace
    * @returns {Object} Serialized error object
    */
-  toJSON(includeStack = process.env.NODE_ENV === 'development') {
+  toJSON(includeStack = process.env.NODE_ENV === "development") {
     const serialized = {
       statusCode: this.statusCode,
       errorCode: this.errorCode,
       message: this.message,
       errors: this.errors,
       success: this.success,
-      timestamp: this.timestamp
+      timestamp: this.timestamp,
     };
 
     // Only include stack in development or if explicitly requested
@@ -245,7 +315,7 @@ class ApiError extends Error {
     }
 
     // Include metadata in development or if it has content
-    if (process.env.NODE_ENV === 'development' || Object.keys(this.metadata).length > 0) {
+    if (process.env.NODE_ENV === "development" || Object.keys(this.metadata).length > 0) {
       serialized.metadata = this.metadata;
     }
 
@@ -254,14 +324,14 @@ class ApiError extends Error {
 
   /**
    * Creates an ApiError instance from an error code defined in ERROR_CODES
-   * 
+   *
    * @static
    * @param {string} errorCodeKey - Key from ERROR_CODES (e.g., 'RESOURCE_NOT_FOUND')
    * @param {string} [customMessage=null] - Optional custom message to override default
    * @param {Array|Object} [errors=[]] - Additional error details
    * @param {Object} [metadata={}] - Additional error metadata
    * @returns {ApiError} New ApiError instance
-   * 
+   *
    * @example
    * Create a not found error
    * throw ApiError.fromCode('RESOURCE_NOT_FOUND', 'User with id 123 not found');
@@ -393,7 +463,7 @@ class ApiError extends Error {
    * @param {Object} [metadata={}] - Additional context
    * @returns {ApiError} New ApiError instance
    */
-  static internal(message = 'Internal server error', errors = [], metadata = {}) {
+  static internal(message = "Internal server error", errors = [], metadata = {}) {
     return new ApiError(
       HTTP_STATUS.INTERNAL_SERVER_ERROR,
       message,
@@ -417,17 +487,15 @@ class ApiError extends Error {
    * @param {Object} [metadata={}] - Additional context
    * @returns {ApiError} New ApiError instance
    */
-  static custom(statusCode, message, errors = [], errorCode = null, category = ERROR_CATEGORIES.OPERATIONAL, metadata = {}) {
-    return new ApiError(
-      statusCode,
-      message,
-      errors,
-      null,
-      false,
-      errorCode,
-      category,
-      metadata
-    );
+  static custom(
+    statusCode,
+    message,
+    errors = [],
+    errorCode = null,
+    category = ERROR_CATEGORIES.OPERATIONAL,
+    metadata = {}
+  ) {
+    return new ApiError(statusCode, message, errors, null, false, errorCode, category, metadata);
   }
 
   /**
@@ -438,20 +506,19 @@ class ApiError extends Error {
    * @param {string} [defaultMessage='An unexpected error occurred'] - Default message if not provided
    * @returns {ApiError} ApiError instance
    */
-  static from(error, defaultStatusCode = 500, defaultMessage = 'An unexpected error occurred') {
+  static from(error, defaultStatusCode = 500, defaultMessage = "An unexpected error occurred") {
     // If already an ApiError, return as is
     if (error instanceof ApiError) {
       return error;
     }
 
     // Determine if this is likely a programming error based on error type
-    const isProgrammingError = error instanceof TypeError
-      || error instanceof ReferenceError
-      || error instanceof SyntaxError;
+    const isProgrammingError =
+      error instanceof TypeError || error instanceof ReferenceError || error instanceof SyntaxError;
 
-    const category = isProgrammingError ?
-      ERROR_CATEGORIES.PROGRAMMING :
-      ERROR_CATEGORIES.OPERATIONAL;
+    const category = isProgrammingError
+      ? ERROR_CATEGORIES.PROGRAMMING
+      : ERROR_CATEGORIES.OPERATIONAL;
 
     // Convert to ApiError
     return new ApiError(

@@ -7,10 +7,7 @@ import {
   getNotes,
   updateNote,
 } from "../controllers/note.controller.js";
-import {
-  protect,
-  validateProjectPermission,
-} from "../middlewares/auth.middleware.js";
+import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js";
 import { UserRoleEnum } from "../utils/constants.js";
 
 const router = Router();
@@ -36,11 +33,17 @@ router
     deleteNote
   );
 
-router.post(
-  "/:projectId",
-  protect,
-  validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-  createNotes
-);
+router
+  .route("/:projectId")
+  .post(
+    protect,
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    createNotes
+  )
+  .get(
+    protect,
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    getNotes
+  );
 
 export default router;

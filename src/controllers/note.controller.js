@@ -38,9 +38,7 @@ const createNotes = asyncHandler(async (req, res, next) => {
   if (!note) {
     throw new ApiError(401, "note is not created");
   }
-  res
-    .status(201)
-    .json(new ApiResponse(201, note, "Note is created successfully"));
+  res.status(201).json(new ApiResponse(201, note, "Note is created successfully"));
   next();
 });
 const getNotes = asyncHandler(async (req, res, next) => {
@@ -64,13 +62,8 @@ const getNotes = asyncHandler(async (req, res, next) => {
   if (!project) {
     throw new ApiError(404, "Project not found create project first");
   }
-  const notes = await ProjectNote.find({ project }).populate(
-    "createdBy",
-    "name"
-  );
-  res
-    .status(200)
-    .json(new ApiResponse(200, notes, "Notes fetched successfully"));
+  const notes = await ProjectNote.find({ project }).populate("createdBy", "name");
+  res.status(200).json(new ApiResponse(200, notes, "Notes fetched successfully"));
   next();
 });
 
@@ -129,29 +122,15 @@ const deleteNote = asyncHandler(async (req, res, next) => {
   if (!noteId || !mongoose.isValidObjectId(noteId)) {
     throw new ApiError(401, "note is not found");
   }
-  const project = await Project.findOne({ projectId });
+  const project = await Project.findOne({ _id: projectId });
   if (!project) {
-    throw new ApiError(
-      404,
-      "Project not found",
-      [],
-      "Project not found",
-      false
-    );
+    throw new ApiError(404, "Project not found", [], "Project not found", false);
   }
   const deleteNote = await ProjectNote.findOneAndDelete(noteId);
   if (!deleteNote) {
-    throw new ApiError(
-      402,
-      "Something went wrong while deleting the note.",
-      [],
-      "",
-      false
-    );
+    throw new ApiError(402, "Something went wrong while deleting the note.", [], "", false);
   }
-  res
-    .status(203)
-    .json(new ApiResponse(203, deleteNote, "Note deleted successfully"));
+  res.status(203).json(new ApiResponse(203, deleteNote, "Note deleted successfully"));
   next();
 });
 export { createNotes, getNotes, getNoteById, updateNote, deleteNote };

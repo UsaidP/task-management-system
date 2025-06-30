@@ -13,14 +13,12 @@ const validateProjectData = (name, description) => {
     throw new ApiError(400, "Project Description is required");
   }
   if (description && description.trim().length > 500) {
-    throw new ApiError(
-      400,
-      "Project Description is too long, max 500 characters allowed"
-    );
+    throw new ApiError(400, "Project Description is too long, max 500 characters allowed");
   }
 };
 // Create a project
-const createProject = asyncHandler(async (req, res, next) => {sssssss
+const createProject = asyncHandler(async (req, res, next) => {
+  sssssss;
   const { name, description } = req.body;
   validateProjectData(name, description);
   // Check if project with the same name already exists
@@ -29,7 +27,10 @@ const createProject = asyncHandler(async (req, res, next) => {sssssss
     createdBy: req.user._id,
   });
   if (existingProject) {
-    throw new ApiError(409, "You already have a project with this name. Please choose a different name.");
+    throw new ApiError(
+      409,
+      "You already have a project with this name. Please choose a different name."
+    );
   }
   const project = await Project.create({
     name: name.trim(),
@@ -55,13 +56,7 @@ const createProject = asyncHandler(async (req, res, next) => {sssssss
 
   res
     .status(201)
-    .json(
-      new ApiResponse(
-        201,
-        { project, projectMember },
-        "Project created successfully"
-      )
-    );
+    .json(new ApiResponse(201, { project, projectMember }, "Project created successfully"));
   next();
 });
 
@@ -112,9 +107,7 @@ const getProjectById = asyncHandler(async (req, res, next) => {
   if (!project) {
     throw new ApiError(404, "Project not found");
   }
-  res
-    .status(200)
-    .json(new ApiResponse(200, project, "Project fetched successfully"));
+  res.status(200).json(new ApiResponse(200, project, "Project fetched successfully"));
   next();
 });
 
@@ -129,17 +122,11 @@ const updateProject = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "Project name and description are required");
   }
 
-  const project = await Project.findByIdAndUpdate(
-    id,
-    { name, description },
-    { new: true }
-  );
+  const project = await Project.findByIdAndUpdate(id, { name, description }, { new: true });
   if (!project) {
     throw new ApiError(404, "Project not found");
   }
-  res
-    .status(200)
-    .json(new ApiResponse(200, project, "Project updated successfully"));
+  res.status(200).json(new ApiResponse(200, project, "Project updated successfully"));
   next();
 });
 
@@ -150,16 +137,8 @@ const deleteProject = asyncHandler(async (req, res, next) => {
   if (!project) {
     throw new ApiError(404, "Project not found");
   }
-  res
-    .status(200)
-    .json(new ApiResponse(200, project, "Project deleted successfully"));
+  res.status(200).json(new ApiResponse(200, project, "Project deleted successfully"));
   next();
 });
 
-export {
-  createProject,
-  getProjectById,
-  updateProject,
-  deleteProject,
-  getAllProjects,
-};
+export { createProject, getProjectById, updateProject, deleteProject, getAllProjects };

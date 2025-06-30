@@ -8,10 +8,7 @@ import {
 } from "../controllers/project.controller.js";
 
 import { asyncHandler } from "../utils/async-handler.js";
-import {
-  protect,
-  validateProjectPermission,
-} from "../middlewares/auth.middleware.js";
+import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js";
 import { createProjectValidator } from "../validators/auth.validator.js";
 import { UserRoleEnum } from "../utils/constants.js";
 
@@ -32,11 +29,6 @@ router.post(
   validateProjectPermission([UserRoleEnum.ADMIN]),
   asyncHandler(deleteProject)
 );
-router.get(
-  "/all-projects",
-  protect,
-  validateProjectPermission([UserRoleEnum.ADMIN]),
-  asyncHandler(getAllProjects)
-);
+router.get("/all-projects", protect, asyncHandler(getAllProjects));
 
 export default router;

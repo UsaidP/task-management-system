@@ -41,8 +41,7 @@ const registerUserService = asyncHandler(async (data, req, res, next) => {
       false
     );
   }
-  const { hashToken, unHashedToken, tokenExpiry } =
-    await createUser.generateTemporaryToken();
+  const { hashToken, unHashedToken, tokenExpiry } = await createUser.generateTemporaryToken();
 
   // console.log(`${hashToken}\n  , ${unHashedToken} \n, ${tokenExpiry}`);
   createUser.emailVerificationToken = hashToken;
@@ -50,42 +49,26 @@ const registerUserService = asyncHandler(async (data, req, res, next) => {
   await createUser.save();
 
   //Email
-  const verificationUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/users/verify/${unHashedToken}`;
+  const verificationUrl = `${req.protocol}://${req.get("host")}/api/v1/users/verify/${unHashedToken}`;
 
   console.log(verificationUrl);
 
-  const mailgenContent = emailVerificationMailGenContent(
-    createUser.username,
-    verificationUrl
-  );
+  const mailgenContent = emailVerificationMailGenContent(createUser.username, verificationUrl);
   console.log(mailgenContent);
   await sendMail({
     email,
     subject: "verify user",
     mailgenContent: mailgenContent,
   });
-  res
-    .status(201)
-    .json(new ApiResponse(201, createUser, "User Create Successfully"));
+  res.status(201).json(new ApiResponse(201, createUser, "User Create Successfully"));
 });
 
 const verifyUserService = asyncHandler(async (unHashedToken, req, res) => {
-  const hashToken = crypto
-    .createHash("sha256")
-    .update(unHashedToken)
-    .digest("hex");
+  const hashToken = crypto.createHash("sha256").update(unHashedToken).digest("hex");
   const user = await User.findOne({ emailVerificationToken: hashToken });
   // console.log(user);
   if (!user) {
-    throw new ApiError(
-      401,
-      "Please provide valid token ",
-      [],
-      undefined,
-      false
-    );
+    throw new ApiError(401, "Please provide valid token ", [], undefined, false);
   }
   if (Date.now() > user.emailVerificationExpiry) {
     throw new ApiError(401, "Token is expired ", undefined, "", false);
@@ -94,24 +77,15 @@ const verifyUserService = asyncHandler(async (unHashedToken, req, res) => {
   user.emailVerificationToken = "";
   await user.save();
   console.log(user);
-  return res
-    .status(202)
-    .json(new ApiResponse(202, "Email verified successfully"));
+  return res.status(202).json(new ApiResponse(202, "Email verified successfully"));
 });
 
 const resendVerificationEmailService = asyncHandler(async (email, req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
-    throw new ApiError(
-      401,
-      "User not found with this email",
-      [],
-      undefined,
-      false
-    );
+    throw new ApiError(401, "User not found with this email", [], undefined, false);
   }
-  const { hashToken, unHashedToken, tokenExpiry } =
-    await user.generateTemporaryToken();
+  const { hashToken, unHashedToken, tokenExpiry } = await user.generateTemporaryToken();
   if ((!hashToken, !unHashedToken, !tokenExpiry)) {
     throw new ApiError(404, "Tokens not found", [], undefined, false);
   }
@@ -119,14 +93,9 @@ const resendVerificationEmailService = asyncHandler(async (email, req, res) => {
   user.emailVerificationExpiry = tokenExpiry;
   user.save();
 
-  const reVerificationUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/users/verify/${unHashedToken}`;
+  const reVerificationUrl = `${req.protocol}://${req.get("host")}/api/v1/users/verify/${unHashedToken}`;
 
-  const mailgenContent = reEmailVerificationMailGenContent(
-    user.username,
-    reVerificationUrl
-  );
+  const mailgenContent = reEmailVerificationMailGenContent(user.username, reVerificationUrl);
 
   if (!mailgenContent) {
     throw new ApiError(403, "Email not send", [], undefined, false);
@@ -136,9 +105,7 @@ const resendVerificationEmailService = asyncHandler(async (email, req, res) => {
     subject: "verify user",
     mailgenContent: mailgenContent,
   });
-  return res
-    .status(201)
-    .json(new ApiResponse(201, "Resend Email Successfully "));
+  return res.status(201).json(new ApiResponse(201, "Resend Email Successfully "));
 });
 
 const loginUserService = asyncHandler(async (data, req, res, next) => {
@@ -146,9 +113,7 @@ const loginUserService = asyncHandler(async (data, req, res, next) => {
   // console.info(req);
   // Find user by email or username
   const user = await User.findOne({
-    $or: [email ? { email } : null, username ? { username } : null].filter(
-      Boolean
-    ),
+    $or: [email ? { email } : null, username ? { username } : null].filter(Boolean),
   });
   console.log("User found:", user);
   if (!user) {
@@ -165,25 +130,13 @@ const loginUserService = asyncHandler(async (data, req, res, next) => {
   const refreshTokens = await user.generateRefreshToken();
 
   if (!accessTokens || !refreshTokens) {
-    throw new ApiError(
-      402,
-      "Something went wrong while generating token",
-      undefined,
-      "",
-      false
-    );
+    throw new ApiError(402, "Something went wrong while generating token", undefined, "", false);
   }
 
   const isBlacklisted = await blacklistedToken(refreshTokens);
 
   if (!isBlacklisted) {
-    throw new ApiError(
-      401,
-      "Error while blacklisting token",
-      undefined,
-      "",
-      false
-    );
+    throw new ApiError(401, "Error while blacklisting token", undefined, "", false);
   }
 
   const now = Date.now();
@@ -231,26 +184,13 @@ const forgetPasswordService = asyncHandler(async (data, req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new ApiError(
-      404,
-      "User not found with this email",
-      [],
-      undefined,
-      false
-    );
+    throw new ApiError(404, "User not found with this email", [], undefined, false);
   }
 
-  const { hashToken, unHashedToken, tokenExpiry } =
-    await user.generateTemporaryToken();
+  const { hashToken, unHashedToken, tokenExpiry } = await user.generateTemporaryToken();
 
   if (!hashToken || !unHashedToken || !tokenExpiry) {
-    throw new ApiError(
-      500,
-      "Failed to generate reset token",
-      [],
-      undefined,
-      false
-    );
+    throw new ApiError(500, "Failed to generate reset token", [], undefined, false);
   }
 
   user.forgotPasswordToken = hashToken;
@@ -258,14 +198,9 @@ const forgetPasswordService = asyncHandler(async (data, req, res) => {
 
   await user.save();
 
-  const passwordResetUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/users/reset-password/${unHashedToken}`;
+  const passwordResetUrl = `${req.protocol}://${req.get("host")}/api/v1/users/reset-password/${unHashedToken}`;
 
-  const mailgenContent = forgotPasswordMailgenContent(
-    user.username,
-    passwordResetUrl
-  );
+  const mailgenContent = forgotPasswordMailgenContent(user.username, passwordResetUrl);
 
   try {
     await sendMail({
@@ -274,13 +209,7 @@ const forgetPasswordService = asyncHandler(async (data, req, res) => {
       mailgenContent,
     });
   } catch (error) {
-    throw new ApiError(
-      500,
-      "Failed to send reset email",
-      [],
-      error.stack,
-      false
-    );
+    throw new ApiError(500, "Failed to send reset email", [], error.stack, false);
   }
 
   return res
@@ -294,49 +223,31 @@ const forgetPasswordService = asyncHandler(async (data, req, res) => {
     );
 });
 
-const resetPasswordService = asyncHandler(
-  async (token, newPassword, res, next) => {
-    if (!token || !newPassword) {
-      throw new ApiError(
-        400,
-        "Token and new password are required",
-        [],
-        undefined,
-        false
-      );
-    }
-
-    const hashToken = crypto.createHash("sha256").update(token).digest("hex");
-
-    const user = await User.findOne({
-      forgotPasswordToken: hashToken,
-      forgotPasswordExpiry: { $gt: Date.now() },
-    });
-
-    if (!user) {
-      throw new ApiError(
-        401,
-        "Invalid or expired reset token",
-        [],
-        undefined,
-        false
-      );
-    }
-
-    user.password = newPassword;
-    user.forgotPasswordToken = undefined;
-    user.forgotPasswordExpiry = undefined;
-
-    await user.save();
-    console.log(user);
-    res
-      .status(200)
-      .json(
-        new ApiResponse(200, user.password, "Password updated successfully")
-      );
-    next();
+const resetPasswordService = asyncHandler(async (token, newPassword, res, next) => {
+  if (!token || !newPassword) {
+    throw new ApiError(400, "Token and new password are required", [], undefined, false);
   }
-);
+
+  const hashToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    forgotPasswordToken: hashToken,
+    forgotPasswordExpiry: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new ApiError(401, "Invalid or expired reset token", [], undefined, false);
+  }
+
+  user.password = newPassword;
+  user.forgotPasswordToken = undefined;
+  user.forgotPasswordExpiry = undefined;
+
+  await user.save();
+  console.log(user);
+  res.status(200).json(new ApiResponse(200, user.password, "Password updated successfully"));
+  next();
+});
 const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
   const tokenDoc = await RefreshToken.findOne({ token: refreshToken });
 
@@ -348,9 +259,7 @@ const logoutUserService = asyncHandler(async (refreshToken, req, res, next) => {
   res.clearCookie("refreshToken");
   res.clearCookie("accessToken");
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, null, "User logged out successfully"));
+  res.status(200).json(new ApiResponse(200, null, "User logged out successfully"));
   return next();
 });
 

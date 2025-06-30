@@ -21,36 +21,18 @@ export const protect = asyncHandler(async (req, res, next) => {
   };
   const token = req.cookies.token || extractTokenFromRequest(req);
   if (!token) {
-    throw new ApiError(
-      401,
-      "Not Authorized access route",
-      [],
-      undefined,
-      false
-    );
+    throw new ApiError(401, "Not Authorized access route", [], undefined, false);
   }
   const isBlacklisted = await blacklistedToken.findOne({ token });
   if (isBlacklisted) {
-    throw new ApiError(
-      401,
-      "Session expired, please login again",
-      [],
-      undefined,
-      false
-    );
+    throw new ApiError(401, "Session expired, please login again", [], undefined, false);
   }
   const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
     ignoreExpiration: false,
   });
 
   if (!decoded) {
-    throw new ApiError(
-      401,
-      "Not Authorized access route",
-      [],
-      undefined,
-      false
-    );
+    throw new ApiError(401, "Not Authorized access route", [], undefined, false);
   }
   const user = await User.findById(decoded._id);
   if (!user) {
@@ -89,12 +71,13 @@ export const validateProjectPermission = (allowedRoles = []) =>
     // console.log(allowedRoles);
     // console.log(!allowedRoles.includes(userRole));
     if (!allowedRoles.includes(userRole)) {
-      throw new ApiError(
-        403,
-        "You do not have permission to perform this action."
-      );
+      throw new ApiError(403, "You do not have permission to perform this action.");
     }
 
     // ✅ All checks passed; proceed:
     next();
   });
+
+export const validateTaskPermission = (allowedRoles = []) => {
+  return asyncHandler(async (req, res, next) => {});
+};
