@@ -78,11 +78,21 @@ export const validateProjectPermission = (allowedRoles = []) =>
     next();
   });
 
-export const validateTaskPermission = (allowedRoles = []) => {
-  return asyncHandler(async (req, res, next) => {
+/**
+ * Validate that the user making the request has permission to interact with the task specified in the route.
+ * @param {string[]} allowedRoles - The roles that are allowed to interact with the task. If empty, all roles are allowed.
+ * @returns {import('express').RequestHandler}
+ */
+
+export const validateTaskPermission =
+  (allowedRoles = []) =>
+  async (req, res, next) => {
+    console.log("params", req.params);
     const { projectId } = req.params;
     const userId = req.user?._id;
+
     console.log("user", userId);
+    console.log("taskID", projectId);
     console.log("project", new mongoose.Types.ObjectId(projectId));
     if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
       throw new ApiError(400, "Task Id is missing or invalid.");
@@ -106,5 +116,4 @@ export const validateTaskPermission = (allowedRoles = []) => {
       throw new ApiError(403, "You do not have permission to perform this action.");
     }
     next();
-  });
-};
+  };

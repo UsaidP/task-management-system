@@ -62,12 +62,7 @@ const createTask = asyncHandler(async (req, res, next) => {
   if (!task) {
     throw new ApiError(400, "Task creation failed");
   }
-
-  if (noteId) {
-    const note = await ProjectNote.findById(noteId);
-    note.tasks.push(task._id);
-    await note.save();
-  }
+  console.log("TASK", task);
 
   return res.status(201).json({
     success: true,
@@ -90,4 +85,61 @@ const getTasks = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json(new ApiResponse(200, tasks, "Tasks fetched successfully"));
 });
-export { createTask, getTasks };
+
+const getTaskById = asyncHandler(async (req, res, next) => {
+  const { taskId } = req.params;
+  console.log(taskId);
+  if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
+    throw new ApiError(400, "Invalid task ID");
+  }
+  const task = await Task.findById(taskId).populate("assignedTo", "name email");
+  if (!task) {
+    throw new ApiError(404, "Task not found");
+  }
+  return res.status(200).json(new ApiResponse(200, task, "Task fetched successfully"));
+});
+
+const updateTask = asyncHandler(async (req, res, next) => {
+  const { taskId } = req.params;
+  const { title, description, assignedTo, status, attachments } = req.body;
+  if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
+    throw new ApiError(400, "Invalid task ID");
+  }
+  if (!title || !description) {
+    throw new ApiError(400, "Title and description are required");
+  }
+  if (!assignedTo || !Array.isArray(assignedTo)) {
+    throw new ApiError(400, "AssignedTo must be an array of user IDs");
+  }
+
+  const task = await Task.findByIdAndUpdate(
+    taskId,
+    { title, description, assignedTo, status, attachments },
+    { new: true }
+  );
+  console.log(task);
+  if (!task) {
+    throw new ApiError(404, "Task not found");
+  }
+  return res.status(200).json(new ApiResponse(200, task, "Task updated successfully"));
+});
+const deleteTask = asyncHandler(async (req, res, next) => {
+  const { taskId, projectId } = req.params;
+  if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
+    throw new ApiError(400, "Invalid task ID");
+  }
+  if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
+    throw new ApiError(400, "Invalid project ID");
+  }
+  const project = await Task.findOne({ project: projectId });
+  if (!project) {
+    throw new ApiError(404, "Project not found for this task");
+  }
+
+  const task = await Task.findByIdAndDelete(taskId);
+  if (!task) {
+    throw new ApiError(404, "Task not found");
+  }
+  return res.status(200).json(new ApiResponse(200, null, "Task deleted successfully"));
+});
+export { createTask, getTasks, getTaskById, updateTask, deleteTask };
