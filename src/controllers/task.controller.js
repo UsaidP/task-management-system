@@ -123,6 +123,7 @@ const updateTask = asyncHandler(async (req, res, next) => {
   }
   return res.status(200).json(new ApiResponse(200, task, "Task updated successfully"));
 });
+
 const deleteTask = asyncHandler(async (req, res, next) => {
   const { taskId, projectId } = req.params;
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
@@ -142,4 +143,5 @@ const deleteTask = asyncHandler(async (req, res, next) => {
   }
   return res.status(200).json(new ApiResponse(200, null, "Task deleted successfully"));
 });
+
 export { createTask, getTasks, getTaskById, updateTask, deleteTask };

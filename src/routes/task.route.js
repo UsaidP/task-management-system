@@ -18,10 +18,10 @@ import {
 import { UserRoleEnum } from "../utils/constants.js";
 import { asyncHandler } from "../utils/async-handler.js";
 
-// router
-//   .route("/:projectId")
-//   .get(protect, validateTaskPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]), getTasks)
-//   .post(protect, createTask);
+router
+  .route("/:projectId")
+  .get(protect, validateTaskPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]), getTasks)
+  .post(protect, createTask);
 
 router
   .route("/:projectId")
@@ -38,11 +38,7 @@ router
 
 router
   .route("/:projectId/n/:taskId")
-  .get(
-    protect,
-    validateTaskPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-    asyncHandler(getTaskById)
-  )
+  .get(protect, asyncHandler(getTaskById))
   .put(
     protect,
     validateTaskPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),

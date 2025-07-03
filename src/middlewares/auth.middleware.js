@@ -85,7 +85,7 @@ export const validateProjectPermission = (allowedRoles = []) =>
  */
 
 export const validateTaskPermission = (allowedRoles = []) => {
-  asyncHandler(async (req, res, next) => {
+  return asyncHandler(async (req, res, next) => {
     console.log("params", req.params);
     const { projectId } = req.params;
     const userId = req.user?._id;
