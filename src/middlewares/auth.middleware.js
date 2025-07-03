@@ -84,9 +84,8 @@ export const validateProjectPermission = (allowedRoles = []) =>
  * @returns {import('express').RequestHandler}
  */
 
-export const validateTaskPermission =
-  (allowedRoles = []) =>
-  async (req, res, next) => {
+export const validateTaskPermission = (allowedRoles = []) => {
+  asyncHandler(async (req, res, next) => {
     console.log("params", req.params);
     const { projectId } = req.params;
     const userId = req.user?._id;
@@ -116,4 +115,5 @@ export const validateTaskPermission =
       throw new ApiError(403, "You do not have permission to perform this action.");
     }
     next();
-  };
+  });
+};
