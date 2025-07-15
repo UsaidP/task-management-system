@@ -163,7 +163,10 @@ const loginUserService = asyncHandler(async (data, req, res, next) => {
   // console.log(user);
   const cookieOptions = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    partitioned: true,
+    path: "/",
     maxAge: 24 * 60 * 60 * 1000,
   };
   console.log();

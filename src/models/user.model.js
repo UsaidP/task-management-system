@@ -110,7 +110,10 @@ userSchema.methods.generateTemporaryToken = async function () {
   if (!pepper) {
     throw new Error("HASH_PEPPER environment variable not configured");
   }
-  const hashToken = crypto.createHash("sha256").update(unHashedToken + pepper).digest("hex");
+  const hashToken = crypto
+    .createHash("sha256")
+    .update(unHashedToken + pepper)
+    .digest("hex");
   const tokenExpiry = Date.now() + 20 * 60 * 1000;
 
   return { unHashedToken, hashToken, tokenExpiry };
