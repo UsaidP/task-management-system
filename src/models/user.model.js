@@ -84,7 +84,10 @@ userSchema.methods.generateAccessToken = async function () {
       _id: this._id,
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    {
+      algorithm: "HS256",
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
   );
 };
 
@@ -94,13 +97,20 @@ userSchema.methods.generateRefreshToken = async function () {
       _id: this._id,
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
+    {
+      algorithm: "HS256",
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
   );
 };
 
 userSchema.methods.generateTemporaryToken = async function () {
   const unHashedToken = crypto.randomBytes(32).toString("hex");
-  const hashToken = crypto.createHash("sha256").update(unHashedToken).digest("hex");
+  const pepper = process.env.HASH_PEPPER;
+  if (!pepper) {
+    throw new Error("HASH_PEPPER environment variable not configured");
+  }
+  const hashToken = crypto.createHash("sha256").update(unHashedToken + pepper).digest("hex");
   const tokenExpiry = Date.now() + 20 * 60 * 1000;
 
   return { unHashedToken, hashToken, tokenExpiry };
