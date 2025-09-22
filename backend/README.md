@@ -11,7 +11,7 @@ npm install task-management-system
 ## Usage
 
 ```bash
-node index.js
+npm start
 ```
 
 ## License
