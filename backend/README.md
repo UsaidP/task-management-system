@@ -2,12 +2,6 @@
 
 A Node.js application for managing tasks and projects.
 
-## Installation
-
-```bash
-npm install task-management-system
-```
-
 ## Usage
 
 ```bash
