@@ -42,6 +42,11 @@ class ApiService {
       body: JSON.stringify({ identifier, password }), // ✅ Corrected key
     });
   }
+  async getUserProfile() {
+    return await this.customFetch("/users/me", {
+      method: "GET",
+    });
+  }
 }
 
 const apiService = new ApiService();

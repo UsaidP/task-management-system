@@ -140,7 +140,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({
     $or: [{ email: identifier }, { username: identifier }],
   });
-
+  // console.log(user);
   if (!user) {
     throw new ApiError(404, "User not found");
   }
@@ -184,11 +184,16 @@ export const loginUser = asyncHandler(async (req, res) => {
     ...baseCookieOptions,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   };
-
+  console.log(
+    res
+      .status(200)
+      .cookie("accessToken", accessToken, accessTokenCookieOptions)
+      .cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
+  );
   return res
-    .status(200)
     .cookie("accessToken", accessToken, accessTokenCookieOptions)
     .cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
+    .status(200)
     .json(new ApiResponse(200, { user: loggedInUser }, "User logged in successfully"));
 });
 

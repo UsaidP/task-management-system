@@ -7,6 +7,7 @@ import { Login } from "./components/Login.jsx";
 import { Forget } from "./components/Forget.jsx";
 import { Reset } from "./components/Reset.jsx";
 import { ConfirmEmail } from "./components/ConfirmEmail.jsx";
+import Me from "./components/Me.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/forget-password" element={<Forget />} />
         <Route path="/forget-password" element={<Reset />} />
         <Route path="/confirm" element={<ConfirmEmail />} />
+        <Route path="/profile" element={<Me />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

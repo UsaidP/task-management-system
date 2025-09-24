@@ -49,13 +49,7 @@ router
   .post(userResetPasswordValidator(), validator, asyncHandler(resetPassword));
 
 //Protected Routes
-router.get("/getprofile/:id", protect, asyncHandler(getUserProfile));
-// router.get(
-//   "/getprofile/:id",
-//   protect,
-//   authorize("admin"),
-//   asyncHandler(getUserProfile)
-// );
+router.get("/me", protect, asyncHandler(getUserProfile));
 
 router.get("/get-active-sessions", protect, asyncHandler(getActiveSession));
 

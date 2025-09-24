@@ -6,40 +6,61 @@ import ApiError from "../utils/api-error.js";
 import { ProjectMember } from "../models/projectmember.model.js";
 import mongoose from "mongoose";
 
-export const protect = asyncHandler(async (req, res, next) => {
-  // console.log("req.cookies", req.cookies);
-  const extractTokenFromRequest = (req) => {
-    if (req.headers.authorization?.startsWith("Bearer")) {
-      return req.headers.authorization.split(" ")[1];
-    } else if (req.cookies?.accessToken) {
-      return req.cookies.accessToken;
-    } else if (req.cookies?.token) {
-      // Legacy support
-      return req.cookies.token;
-    }
-    return null;
-  };
-  const token = req.cookies.token || extractTokenFromRequest(req);
-  if (!token) {
-    throw new ApiError(401, "Not Authorized access route", [], undefined, false);
+const extractTokenFromRequest = (req) => {
+  // Prefer Authorization header first as it's the standard
+  if (req.headers.authorization?.startsWith("Bearer ")) {
+    return req.headers.authorization.split(" ")[1];
   }
-  const isBlacklisted = await blacklistedToken.findOne({ token });
-  if (isBlacklisted) {
-    throw new ApiError(401, "Session expired, please login again", [], undefined, false);
-  }
-  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
-    ignoreExpiration: false,
-  });
 
-  if (!decoded) {
-    throw new ApiError(401, "Not Authorized access route", [], undefined, false);
+  // Fallback to cookies
+  if (req.cookies?.accessToken) {
+    return req.cookies.accessToken;
   }
-  const user = await User.findById(decoded._id);
-  if (!user) {
-    throw new ApiError(404, "No user found with this id", [], undefined, false);
+
+  return null;
+};
+
+export const protect = asyncHandler(async (req, res, next) => {
+  const token = extractTokenFromRequest(req);
+
+  if (!token) {
+    // 401: Unauthorized - The client needs to authenticate.
+    throw new ApiError(401, "Unauthorized request. No token provided.");
   }
-  req.user = user;
-  next();
+
+  try {
+    // 1. Verify the token's signature and expiration
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    // 2. Check if the token has been blacklisted (i.e., user logged out)
+    const isBlacklisted = await BlacklistedToken.findOne({ token });
+    if (isBlacklisted) {
+      throw new ApiError(401, "Session has expired. Please log in again.");
+    }
+
+    // 3. Find the user from the token's payload
+    // Use lean() for a performance boost as we only need to read user data
+    const user = await User.findById(decoded?._id).lean();
+
+    if (!user) {
+      // 401: Unauthorized - The user associated with this valid token no longer exists.
+      throw new ApiError(401, "The user belonging to this token does no longer exist.");
+    }
+
+    // 4. Attach the user object to the request for downstream handlers
+    req.user = user;
+    next();
+  } catch (error) {
+    // Catch specific JWT errors for better client feedback
+    if (error instanceof jwt.TokenExpiredError) {
+      throw new ApiError(401, "Session has expired. Please log in again.");
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
+      throw new ApiError(401, "Invalid token. Please log in again.");
+    }
+    // Forward any other caught errors
+    throw error;
+  }
 });
 
 export const validateProjectPermission = (allowedRoles = []) =>
