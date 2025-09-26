@@ -10,6 +10,7 @@ import {
   forgotPasswordMailgenContent,
   reEmailVerificationMailGenContent,
 } from "../utils/mail.js";
+import BlacklistedToken from "../models/blacklistedToken.js";
 
 // --- User Registration ---
 export const registerUser = asyncHandler(async (req, res) => {
@@ -170,30 +171,25 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   const baseCookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production", // Only secure in production (HTTPS)
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 'lax' is safer for development
     path: "/",
   };
 
   const accessTokenCookieOptions = {
     ...baseCookieOptions,
-    maxAge: 15 * 60 * 1000, // 15 minutes
+    maxAge: 7 * 60 * 60 * 1000, //7 days
   };
 
   const refreshTokenCookieOptions = {
     ...baseCookieOptions,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   };
-  console.log(
-    res
-      .status(200)
-      .cookie("accessToken", accessToken, accessTokenCookieOptions)
-      .cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
-  );
+
   return res
+    .status(200)
     .cookie("accessToken", accessToken, accessTokenCookieOptions)
     .cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
-    .status(200)
     .json(new ApiResponse(200, { user: loggedInUser }, "User logged in successfully"));
 });
 
@@ -201,16 +197,38 @@ export const loginUser = asyncHandler(async (req, res) => {
 export const logoutUser = asyncHandler(async (req, res) => {
   const { refreshToken } = req.cookies;
 
+  // Even if the refresh token is missing, we proceed to clear the cookies on the client
   if (refreshToken) {
-    // Delete the refresh token from the database to invalidate it
-    await RefreshToken.deleteOne({ token: refreshToken });
+    try {
+      // Invalidate the refresh token in the database
+      await RefreshToken.deleteOne({ token: refreshToken });
+      await BlacklistedToken.insertOne({
+        token: refreshToken,
+        user: req.user._id,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 days
+      });
+    } catch (error) {
+      // It's good practice to log potential DB errors, but we don't want to
+      // block the user from logging out if the DB operation fails.
+      console.error("Error deleting refresh token from DB:", error);
+    }
   }
 
-  // Clear cookies from the browser
-  res.clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: "none" });
-  res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: "none" });
+  // [FIX] Define the cookie options to match exactly what was used during login.
+  // This is crucial for res.clearCookie to work correctly in all environments.
+  const cookieOptions = {
+    httpOnly: true,
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  };
 
-  return res.status(200).json(new ApiResponse(200, {}, "User logged out successfully"));
+  // Clear both cookies by passing the correct options
+  return res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
 
 // --- Refresh Access Token ---

@@ -5,6 +5,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import ApiError from "../utils/api-error.js";
 import { ProjectMember } from "../models/projectmember.model.js";
 import mongoose from "mongoose";
+import BlacklistedToken from "../models/blacklistedToken.js";
 
 const extractTokenFromRequest = (req) => {
   // Prefer Authorization header first as it's the standard

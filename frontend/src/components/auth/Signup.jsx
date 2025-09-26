@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Assuming you use React Router for navigation
-import apiService from "../../service/apiService.js";
+import apiService from "../../../service/apiService.js";
 
 export const Signup = () => {
   // 1. Consolidated form state into a single object

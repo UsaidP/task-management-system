@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import apiService from "../../service/apiService";
+import { useAuth } from "../../context/AuthContext";
 
 export const Login = () => {
   // 1. Call hooks at the top level of the component
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // 2. Simplified form state for a better user experience
   const [formData, setFormData] = useState({
@@ -31,11 +32,8 @@ export const Login = () => {
 
     try {
       // Your backend should be able to accept either username or email in the 'identifier' field
-      const response = await apiService.login(
-        formData.identifier,
-        formData.password
-      );
-      if (response) {
+      const response = await login(formData.identifier, formData.password);
+      if (response.success) {
         // 4. Handle the success case properly
         console.log("Login successful:", response);
         navigate("/");

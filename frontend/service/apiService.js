@@ -20,12 +20,26 @@ class ApiService {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("API response" + data);
+        console.log("API response" + JSON.stringify(data));
         return data;
+      } else {
+        // If the response is not OK, try to parse the error body
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          // If the error body is not JSON, use the status text
+          errorData = { message: response.statusText };
+        }
+        const error = new Error(errorData.message || "An API error occurred");
+        error.response = response;
+        error.data = errorData;
+        throw error;
       }
     } catch (error) {
       console.log("API Error", error);
-      throw new Error(error);
+      // Re-throw the original or newly created error
+      throw error;
     }
   }
   async signup(username, fullname, password, email, role) {
@@ -45,6 +59,12 @@ class ApiService {
   async getUserProfile() {
     return await this.customFetch("/users/me", {
       method: "GET",
+    });
+  }
+
+  async logout() {
+    return await this.customFetch("/users/logout", {
+      method: "POST",
     });
   }
 }

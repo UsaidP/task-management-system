@@ -7,6 +7,7 @@ import {
 } from "../controllers/projectMember.controller.js";
 import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js";
 import { UserRoleEnum } from "../utils/constants.js";
+import { asyncHandler } from "../utils/async-handler.js";
 
 const router = Router();
 
@@ -15,23 +16,23 @@ router
   .post(
     protect,
     validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-    addMember
+    asyncHandler(addMember)
   );
 router
   .route("/update/:projectId")
   .post(
     protect,
     validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-    updateMember
+    asyncHandler(updateMember)
   );
 router
   .route("/remove/:projectId")
-  .post(protect, validateProjectPermission([UserRoleEnum.ADMIN]), removeMember);
+  .post(protect, validateProjectPermission([UserRoleEnum.ADMIN]), asyncHandler(removeMember));
 router
   .route("/all-members/:projectId")
   .get(
     protect,
     validateProjectPermission([UserRoleEnum.ADMIN]),
-    projectMemberController.getAllMembers
+    asyncHandler(projectMemberController.getAllMembers)
   );
 export default router;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import apiService from "../../service/apiService";
+import apiService from "../../../service/apiService";
 
 const Me = () => {
   const [userProfile, setUserProfile] = useState(null);

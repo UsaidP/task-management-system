@@ -2,12 +2,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Signup } from "./components/Signup.jsx";
-import { Login } from "./components/Login.jsx";
-import { Forget } from "./components/Forget.jsx";
-import { Reset } from "./components/Reset.jsx";
-import { ConfirmEmail } from "./components/ConfirmEmail.jsx";
-import Me from "./components/Me.jsx";
+import { Signup } from "./components/auth/Signup.jsx";
+import { Login } from "./components/auth/Login.jsx";
+import { Forget } from "./components/auth/Forget.jsx";
+import { Reset } from "./components/auth/Reset.jsx";
+import { ConfirmEmail } from "./components/auth/ConfirmEmail.jsx";
+import Me from "./components/auth/Me.jsx";
+import Logout from "./components/auth/Logout.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/forget-password" element={<Reset />} />
         <Route path="/confirm" element={<ConfirmEmail />} />
         <Route path="/profile" element={<Me />} />
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
