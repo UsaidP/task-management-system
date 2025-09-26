@@ -1,12 +1,12 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import apiService from "../../service/apiService";
+import apiService from "../../../service/apiService.js";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Initial auth check loading state
-
+  console.log(user + "User");
   useEffect(() => {
     // Check if the user is already logged in when the app loads
     const checkLoggedIn = async () => {

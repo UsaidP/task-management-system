@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "./AuthContext";
 
 export const Login = () => {
   // 1. Call hooks at the top level of the component
   const navigate = useNavigate();
   const { login } = useAuth();
+  console.log("login" + login);
 
   // 2. Simplified form state for a better user experience
   const [formData, setFormData] = useState({
