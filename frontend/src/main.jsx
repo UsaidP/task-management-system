@@ -20,7 +20,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/register" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forget-password" element={<Forget />} />
-          <Route path="/forget-password" element={<Reset />} />
+          <Route path="/reset-password/:token" element={<Reset />} />
           <Route path="/confirm" element={<ConfirmEmail />} />
           <Route path="/profile" element={<Me />} />
           <Route path="/logout" element={<Logout />} />

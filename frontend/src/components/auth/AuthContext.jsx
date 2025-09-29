@@ -6,7 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Initial auth check loading state
-  console.log(user + "User");
+  // console.log(user + "User");
   useEffect(() => {
     // Check if the user is already logged in when the app loads
     const checkLoggedIn = async () => {
@@ -43,16 +43,29 @@ export const AuthProvider = ({ children }) => {
     return await apiService.signup(username, fullname, password, email, role);
   };
 
+  const forget_password = async (email) => {
+    return await apiService.forget_password(email);
+  };
+
+  const reset_password = async (password, token) => {
+    return await apiService.reset_password(password, token);
+  };
+
   const value = {
     user,
     loading,
     login,
     logout,
     signup,
+    forget_password,
+    reset_password,
   };
 
   // We don't render the app until we've checked for an active session
   return (
+    // we have the access of Provider which come from "createContext" hook.
+    // which data should be available for other components to use "we have to wrap inside this Provider"
+    // which values we have to send from here "we have set the values which value can be accessible to other components"
     <AuthContext.Provider value={value}>
       {!loading && children}
     </AuthContext.Provider>

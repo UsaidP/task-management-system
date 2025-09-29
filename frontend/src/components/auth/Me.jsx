@@ -14,6 +14,7 @@ const Me = () => {
         const response = await apiService.getUserProfile();
         // Use response.data? to defensively set the profile
         setUserProfile(response.data || null);
+        console.log(response.data);
       } catch (err) {
         // Log the full error object for debugging
         console.error("Error fetching user profile:", err);

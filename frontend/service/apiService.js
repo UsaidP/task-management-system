@@ -20,7 +20,7 @@ class ApiService {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("API response" + JSON.stringify(data));
+        console.info("API response" + data);
         return data;
       } else {
         // If the response is not OK, try to parse the error body
@@ -65,6 +65,18 @@ class ApiService {
   async logout() {
     return await this.customFetch("/users/logout", {
       method: "POST",
+    });
+  }
+  async forget_password(email) {
+    return await this.customFetch("/users/forget-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  }
+  async reset_password(password, token) {
+    return await this.customFetch(`/users/reset-password/${token}`, {
+      method: "POST",
+      body: JSON.stringify({ password }),
     });
   }
 }
