@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import { AvailableUserRole } from "../utils/constants.js";
+import { AvailableUserRole, UserRoleEnum } from "../utils/constants.js";
 import BlacklistedToken from "./blacklistedToken.js";
 import ApiError from "../utils/api-error.js";
 
@@ -42,8 +42,8 @@ const userSchema = new Schema(
     role: {
       type: String,
       required: true,
-      enum: [AvailableUserRole.ADMIN, AvailableUserRole.PROJECT_ADMIN, AvailableUserRole.MEMBER],
-      default: "user",
+      enum: AvailableUserRole,
+      default: UserRoleEnum.MEMBER,
     },
     isEmailVerified: {
       type: Boolean,
@@ -121,7 +121,7 @@ userSchema.methods.generateTemporaryToken = async function () {
 
 export const blacklistedToken = async function (token) {
   try {
-    console.log(token);
+    
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     await BlacklistedToken.create({
       token: token,

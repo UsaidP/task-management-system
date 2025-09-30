@@ -18,7 +18,6 @@ const validateProjectData = (name, description) => {
 };
 // Create a project
 const createProject = asyncHandler(async (req, res, next) => {
-  sssssss;
   const { name, description } = req.body;
   validateProjectData(name, description);
   // Check if project with the same name already exists

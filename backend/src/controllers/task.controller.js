@@ -62,7 +62,6 @@ const createTask = asyncHandler(async (req, res, next) => {
   if (!task) {
     throw new ApiError(400, "Task creation failed");
   }
-  console.log("TASK", task);
 
   return res.status(201).json({
     success: true,
@@ -88,7 +87,6 @@ const getTasks = asyncHandler(async (req, res, next) => {
 
 const getTaskById = asyncHandler(async (req, res, next) => {
   const { taskId } = req.params;
-  console.log(taskId);
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
     throw new ApiError(400, "Invalid task ID");
   }
@@ -117,7 +115,6 @@ const updateTask = asyncHandler(async (req, res, next) => {
     { title, description, assignedTo, status, attachments },
     { new: true }
   );
-  console.log(task);
   if (!task) {
     throw new ApiError(404, "Task not found");
   }

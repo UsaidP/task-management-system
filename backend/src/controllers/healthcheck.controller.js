@@ -6,10 +6,6 @@ const healthCheck = asyncHandler(async (req, res) => {
   // Test actual database connection with ping
   const dbPing = await mongoose.connection.db.admin().ping();
   const dbStatus = dbPing.ok === 1 ? "connected" : "disconnected";
-  console.log(`Database connection state: ${dbStatus}`, {
-    readyState: mongoose.connection.readyState,
-    pingResult: dbPing
-  });
 
   // Convert BigInt values to numbers for JSON serialization
   const memUsage = process.memoryUsage();

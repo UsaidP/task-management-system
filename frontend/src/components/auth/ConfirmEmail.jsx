@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
-// A simple SVG icon for the email envelope
 const EmailIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +13,7 @@ const EmailIcon = () => (
     strokeWidth="1.5"
     strokeLinecap="round"
     strokeLinejoin="round"
-    style={{ color: "#2c3e50" }}
+    className="text-gray-700 dark:text-gray-300 mx-auto"
   >
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
     <polyline points="22,6 12,13 2,6"></polyline>
@@ -22,132 +22,67 @@ const EmailIcon = () => (
 
 export const ConfirmEmail = () => {
   const location = useLocation();
-  // Attempt to get the email from the navigation state, or fallback to a placeholder
   const email = location.state?.email || "your email address";
+  const { resendVerifyEmail } = useAuth();
 
   const [isSending, setIsSending] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleResendEmail = async () => {
     setIsSending(true);
     setFeedbackMessage("");
+    setError("");
     try {
-      // --- Your API call to resend the email would go here ---
-      // For demonstration, we'll simulate a network request
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // On success:
-      setFeedbackMessage(`A new confirmation link has been sent to ${email}.`);
-    } catch (error) {
-      // On failure:
-      setFeedbackMessage("Failed to resend email. Please try again later.");
-      console.error("Resend email failed:", error);
+      const response = await resendVerifyEmail(email);
+      if (response.success) {
+        setFeedbackMessage(`A new confirmation link has been sent to ${email}.`);
+      } else {
+        setError(response.message || "Failed to resend email.");
+      }
+    } catch (err) {
+      setError(err.data?.message || "Failed to resend email. Please try again later.");
     } finally {
       setIsSending(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md p-8 space-y-6 text-center bg-white rounded-lg shadow-md dark:bg-gray-800">
         <EmailIcon />
-        <h1 style={styles.title}>Confirm Your Email</h1>
-        <p style={styles.text}>We've sent a confirmation link to:</p>
-        <p style={styles.emailText}>{email}</p>
-        <p style={styles.text}>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Confirm Your Email
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          We've sent a confirmation link to:
+        </p>
+        <p className="font-medium text-blue-600 dark:text-blue-500">{email}</p>
+        <p className="text-gray-600 dark:text-gray-400">
           Please check your inbox (and spam folder!) and click the link to
           complete your registration.
         </p>
-        <div style={styles.resendContainer}>
-          <p style={styles.text}>Didn't receive the email?</p>
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-gray-600 dark:text-gray-400">Didn't receive the email?</p>
           <button
             onClick={handleResendEmail}
             disabled={isSending}
-            style={
-              isSending
-                ? { ...styles.button, ...styles.buttonDisabled }
-                : styles.button
-            }
+            className="w-full px-4 py-2 mt-4 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             {isSending ? "Sending..." : "Resend Confirmation Link"}
           </button>
         </div>
         {feedbackMessage && (
-          <p style={styles.feedbackText}>{feedbackMessage}</p>
+          <p className="mt-4 text-sm text-green-600">{feedbackMessage}</p>
         )}
-        <Link to="/login" style={styles.link}>
+        {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+        <Link
+          to="/login"
+          className="inline-block mt-6 text-sm text-gray-600 hover:underline dark:text-gray-400"
+        >
           Back to Login
         </Link>
       </div>
     </div>
   );
-};
-
-// --- CSS-in-JS Styles ---
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    backgroundColor: "#f4f7f6",
-    fontFamily: "Arial, sans-serif",
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    padding: "40px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-    textAlign: "center",
-    maxWidth: "450px",
-    width: "90%",
-  },
-  title: {
-    fontSize: "28px",
-    color: "#2c3e50",
-    marginBottom: "15px",
-  },
-  text: {
-    color: "#555",
-    fontSize: "16px",
-    lineHeight: "1.6",
-    margin: "10px 0",
-  },
-  emailText: {
-    color: "#3498db",
-    fontWeight: "bold",
-    fontSize: "18px",
-    margin: "5px 0 20px 0",
-  },
-  resendContainer: {
-    marginTop: "30px",
-    borderTop: "1px solid #eee",
-    paddingTop: "20px",
-  },
-  button: {
-    backgroundColor: "#3498db",
-    color: "white",
-    border: "none",
-    padding: "12px 25px",
-    borderRadius: "5px",
-    fontSize: "16px",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease",
-  },
-  buttonDisabled: {
-    backgroundColor: "#a9d6f5",
-    cursor: "not-allowed",
-  },
-  feedbackText: {
-    marginTop: "15px",
-    fontSize: "14px",
-    color: "#27ae60", // Green for success, could be changed to red for error
-  },
-  link: {
-    display: "inline-block",
-    marginTop: "25px",
-    color: "#7f8c8d",
-    textDecoration: "none",
-    fontSize: "14px",
-  },
 };

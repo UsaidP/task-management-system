@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { AvailableUserRole } from "../utils/constants.js";
 
 const userRegistrationValidator = () => {
   // we want to execute it directly
@@ -69,7 +70,7 @@ const addMemberToProjectValidator = () => {
     body("role")
       .notEmpty()
       .withMessage("Role is required")
-      .isIn(AvailableUserRoles)
+      .isIn(AvailableUserRole)
       .withMessage("Role is invalid"),
   ];
 };

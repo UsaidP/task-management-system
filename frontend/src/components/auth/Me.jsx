@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import apiService from "../../../service/apiService";
+import apiService from "../../../service/apiService.js";
 
 const Me = () => {
   const [userProfile, setUserProfile] = useState(null);
@@ -10,17 +10,12 @@ const Me = () => {
     const fetchUserProfile = async () => {
       try {
         setLoading(true);
-        // Assuming apiService.getUserProfile() is an authenticated call
         const response = await apiService.getUserProfile();
-        // Use response.data? to defensively set the profile
         setUserProfile(response.data || null);
-        console.log(response.data);
       } catch (err) {
-        // Log the full error object for debugging
         console.error("Error fetching user profile:", err);
-        // Display a user-friendly message
         setError(
-          err.response?.data?.message ||
+          err.data?.message ||
             "Could not retrieve user profile. Please try again."
         );
       } finally {
@@ -29,110 +24,77 @@ const Me = () => {
     };
 
     fetchUserProfile();
-    // The dependency array is empty, running once on mount
   }, []);
 
-  // --- Render Guards (API Error Handling) ---
   if (loading) {
-    return (
-      <div style={{ padding: "20px", textAlign: "center", fontSize: "1.2em" }}>
-        Loading profile...
-      </div>
-    );
+    return <div className="p-5 text-center text-lg">Loading profile...</div>;
   }
 
   if (error) {
-    // This catches your data fetching/network errors
     return (
-      <div
-        style={{
-          color: "red",
-          padding: "20px",
-          textAlign: "center",
-          border: "1px solid red",
-          backgroundColor: "#ffe8e8",
-        }}
-      >
+      <div className="p-5 text-center text-red-500 bg-red-100 border border-red-400 rounded-md">
         {error}
       </div>
     );
   }
 
   if (!userProfile) {
-    // Catches the case where the API call succeeds but returns no profile data
     return (
-      <div style={{ padding: "20px", textAlign: "center" }}>
+      <div className="p-5 text-center">
         No user profile found. Please log in again.
       </div>
     );
   }
 
-  // --- Main Render (Defensive Rendering) ---
-
-  // Use optional chaining (?.) and nullish coalescing (??)
-  // to safely access properties, replacing null/undefined values with a default string
-  const fullName = userProfile.fullname ?? "N/A";
-  const username = userProfile.username ?? "N/A";
-  const email = userProfile.email ?? "N/A";
-  const role = userProfile.role ?? "User";
-  const isVerified = userProfile.isEmailVerified ? "Yes" : "No";
+  const {
+    fullname = "N/A",
+    username = "N/A",
+    email = "N/A",
+    role = "User",
+    isEmailVerified,
+  } = userProfile;
+  const isVerified = isEmailVerified ? "Yes" : "No";
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        minWidth: "100vw",
-        backgroundColor: "#f4f7f6b2",
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "#ffffff",
-          padding: "40px",
-          borderRadius: "10px",
-          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
-          textAlign: "left",
-          maxWidth: "500px",
-          width: "90%",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "28px",
-            color: "#2c3e50",
-            marginBottom: "25px",
-            textAlign: "center",
-          }}
-        >
-          My Profile
-        </h1>
+    <div className="w-full max-w-2xl mx-auto mt-8">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <div className="p-8">
+          <div className="text-center mb-8">
+            <img
+              className="w-24 h-24 rounded-full mx-auto border-4 border-gray-200 dark:border-gray-700 shadow-lg"
+              src={
+                userProfile.avatar?.url ||
+                `https://i.pravatar.cc/150?u=${username}`
+              }
+              alt={`${fullname}'s avatar`}
+            />
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-4">
+              {fullname}
+            </h1>
+            <p className="text-md text-gray-500 dark:text-gray-400">
+              @{username}
+            </p>
+          </div>
 
-        {/* Safely rendered details using the prepared variables */}
-        <ProfileDetail label="Full Name" value={fullName} />
-        <ProfileDetail label="Username" value={username} />
-        <ProfileDetail label="Email" value={email} />
-        <ProfileDetail label="Role" value={role} />
-        <ProfileDetail label="Email Verified" value={isVerified} />
+          <div className="space-y-4">
+            <ProfileDetail label="Email" value={email} />
+            <ProfileDetail label="Role" value={role} />
+            <ProfileDetail label="Email Verified" value={isVerified} />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-// Simple reusable component for cleaner JSX
 const ProfileDetail = ({ label, value }) => (
-  <div
-    style={{
-      fontSize: "18px",
-      color: "#34495e",
-      marginBottom: "15px",
-      borderBottom: "1px solid #eee",
-      paddingBottom: "10px",
-    }}
-  >
-    <strong>{label}:</strong> {value}
+  <div className="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700">
+    <span className="text-md font-medium text-gray-600 dark:text-gray-400">
+      {label}
+    </span>
+    <span className="text-md text-gray-900 dark:text-white font-semibold">
+      {value}
+    </span>
   </div>
 );
 

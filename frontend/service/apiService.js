@@ -20,7 +20,7 @@ class ApiService {
 
       if (response.ok) {
         const data = await response.json();
-        console.info("API response" + data);
+        
         return data;
       } else {
         // If the response is not OK, try to parse the error body
@@ -37,7 +37,7 @@ class ApiService {
         throw error;
       }
     } catch (error) {
-      console.log("API Error", error);
+      console.error("API Error", error);
       // Re-throw the original or newly created error
       throw error;
     }
@@ -77,6 +77,92 @@ class ApiService {
     return await this.customFetch(`/users/reset-password/${token}`, {
       method: "POST",
       body: JSON.stringify({ password }),
+    });
+  }
+
+  async getAllProjects() {
+    return await this.customFetch("/projects/all-projects", {
+      method: "GET",
+    });
+  }
+
+  async createProject(name, description) {
+    return await this.customFetch("/projects/create", {
+      method: "POST",
+      body: JSON.stringify({ name, description }),
+    });
+  }
+
+  async getProjectById(projectId) {
+    return await this.customFetch(`/projects/get-project-by-id/${projectId}`, {
+        method: "POST",
+    });
+  }
+
+  async getTasksByProjectId(projectId) {
+    return await this.customFetch(`/tasks/${projectId}`, {
+        method: "GET",
+    });
+  }
+
+  async createTask(projectId, taskData) {
+    return await this.customFetch(`/tasks/${projectId}`, {
+      method: "POST",
+      body: JSON.stringify(taskData),
+    });
+  }
+
+  async updateTask(projectId, taskId, taskData) {
+    return await this.customFetch(`/tasks/${projectId}/n/${taskId}`, {
+      method: "PUT",
+      body: JSON.stringify(taskData),
+    });
+  }
+
+  async getAllMembers(projectId) {
+    return await this.customFetch(`/members/all-members/${projectId}`, {
+      method: "GET",
+    });
+  }
+
+  async addMember(projectId, email, role) {
+    return await this.customFetch(`/members/add/${projectId}`, {
+      method: "POST",
+      body: JSON.stringify({ email, role }),
+    });
+  }
+
+  async removeMember(projectId, userId) {
+    return await this.customFetch(`/members/remove/${projectId}`, {
+      method: "POST",
+      body: JSON.stringify({ userId }),
+    });
+  }
+
+  // Sub-task methods
+  async getSubTasksForTask(taskId) {
+    return await this.customFetch(`/subtasks/${taskId}`, {
+      method: "GET",
+    });
+  }
+
+  async createSubTask(taskId, title) {
+    return await this.customFetch(`/subtasks/${taskId}`, {
+      method: "POST",
+      body: JSON.stringify({ title }),
+    });
+  }
+
+  async updateSubTask(subtaskId, subtaskData) {
+    return await this.customFetch(`/subtasks/subtask/${subtaskId}`, {
+      method: "PUT",
+      body: JSON.stringify(subtaskData),
+    });
+  }
+
+  async deleteSubTask(subtaskId) {
+    return await this.customFetch(`/subtasks/subtask/${subtaskId}`, {
+      method: "DELETE",
     });
   }
 }

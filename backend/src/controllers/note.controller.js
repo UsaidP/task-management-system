@@ -83,8 +83,6 @@ const getNoteById = asyncHandler(async (req, res, next) => {
 
 const updateNote = asyncHandler(async (req, res, next) => {
   const { projectId, noteId } = req.params;
-  console.log("projectID:", projectId);
-  console.log("noteID:", noteId);
   if (!projectId || !mongoose.isValidObjectId(projectId)) {
     throw new ApiError(401, "project is not found");
   }
@@ -114,8 +112,6 @@ const updateNote = asyncHandler(async (req, res, next) => {
 
 const deleteNote = asyncHandler(async (req, res, next) => {
   const { projectId, noteId } = req.params;
-  console.log("projectID:", projectId);
-  console.log("noteID:", noteId);
   if (!projectId || !mongoose.isValidObjectId(projectId)) {
     throw new ApiError(401, "projectID is not found in project");
   }

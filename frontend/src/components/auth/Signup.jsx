@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Assuming you use React Router for navigation
-import apiService from "../../../service/apiService.js";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 export const Signup = () => {
-  // 1. Consolidated form state into a single object
   const [formData, setFormData] = useState({
     username: "",
     fullname: "",
@@ -13,9 +12,9 @@ export const Signup = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Hook for programmatic navigation
+  const navigate = useNavigate();
+  const { signup } = useAuth();
 
-  // 2. A single handler for all input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -30,94 +29,124 @@ export const Signup = () => {
     setError("");
 
     try {
-      // 3. Destructure formData for cleaner API call
       const { username, fullname, email, password } = formData;
-      const response = await apiService.signup(
-        username,
-        fullname,
-        password,
-        email,
-        "user"
-      );
-
-      console.log("Signup successful:", response);
-      // 4. Handle success: navigate to login page or a "check your email" page
-      navigate("/confirm");
+      const response = await signup(username, fullname, password, email, "user");
+      if (response.success) {
+        navigate("/confirm", { state: { email: formData.email } });
+      }
     } catch (err) {
-      // 5. Set a user-friendly error message
       const errorMessage =
-        err.response?.data?.message || "Signup failed. Please try again.";
+        err.data?.message || "Signup failed. Please try again.";
       setError(errorMessage);
-      console.error(err);
     } finally {
-      // 6. ALWAYS set loading to false after the attempt is complete
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
-      {/* 7. Removed unnecessary action and method attributes */}
-      <form onSubmit={handleSubmit}>
-        {/* 8. Added labels for accessibility */}
-        <div>
-          <label htmlFor="fullname">Full Name</label>
-          <input
-            type="text"
-            name="fullname"
-            id="fullname"
-            placeholder="Enter your full name"
-            onChange={handleChange}
-            value={formData.fullname}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Enter your username"
-            onChange={handleChange}
-            value={formData.username}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            placeholder="Enter your email"
-            onChange={handleChange}
-            value={formData.email}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Enter a password"
-            onChange={handleChange}
-            value={formData.password}
-            required
-          />
-        </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+          Create your account
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="fullname"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Full Name
+            </label>
+            <input
+              type="text"
+              name="fullname"
+              id="fullname"
+              placeholder="John Doe"
+              onChange={handleChange}
+              value={formData.fullname}
+              required
+              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              placeholder="johndoe"
+              onChange={handleChange}
+              value={formData.username}
+              required
+              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="you@example.com"
+              onChange={handleChange}
+              value={formData.email}
+              required
+              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="••••••••"
+              onChange={handleChange}
+              value={formData.password}
+              required
+              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            />
+          </div>
 
-        {/* 9. Display the error message if it exists */}
-        {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
-        {/* 10. Disable button and show loading text during submission */}
-        <button type="submit" disabled={loading}>
-          {loading ? "Signing Up..." : "Sign Up"}
-        </button>
-      </form>
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            >
+              {loading ? "Signing Up..." : "Sign Up"}
+            </button>
+          </div>
+          <div className="text-sm text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+              >
+                Login
+              </Link>
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

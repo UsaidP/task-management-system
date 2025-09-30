@@ -17,9 +17,8 @@ const taskSchema = new Schema(
       required: true,
     },
     assignedTo: {
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       ref: "User",
-      required: true,
     },
     assignedBy: {
       type: Schema.Types.ObjectId,
@@ -43,6 +42,12 @@ const taskSchema = new Schema(
       ],
       default: [],
     },
+    subtasks: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "SubTask",
+      },
+    ],
   },
   { timestamps: true }
 );

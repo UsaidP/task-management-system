@@ -76,7 +76,15 @@ export const verifyUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Verification token is missing");
   }
 
-  const hashToken = crypto.createHash("sha256").update(unHashedToken).digest("hex");
+  const pepper = process.env.HASH_PEPPER;
+  if (!pepper) {
+    throw new ApiError(500, "HASH_PEPPER environment variable not configured");
+  }
+
+  const hashToken = crypto
+    .createHash("sha256")
+    .update(unHashedToken + pepper)
+    .digest("hex");
 
   const user = await User.findOne({
     emailVerificationToken: hashToken,
@@ -141,7 +149,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({
     $or: [{ email: identifier }, { username: identifier }],
   });
-  // console.log(user);
+  
   if (!user) {
     throw new ApiError(404, "User not found");
   }
@@ -316,12 +324,20 @@ export const forgetPassword = asyncHandler(async (req, res) => {
 export const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
+  const paper = process.env.HASH_PEPPER;
+
+  if (!token) {
+    throw new ApiError(400, "Password reset token is missing");
+  }
 
   if (!password) {
     throw new ApiError(400, "New password is required");
   }
 
-  const hashToken = crypto.createHash("sha256").update(token).digest("hex");
+  const hashToken = crypto
+    .createHash("sha256")
+    .update(token + paper)
+    .digest("hex");
 
   const user = await User.findOne({
     forgotPasswordToken: hashToken,

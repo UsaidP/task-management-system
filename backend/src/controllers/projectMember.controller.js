@@ -54,7 +54,6 @@ export const addMember = asyncHandler(async (req, res, next) => {
 export const updateMember = asyncHandler(async (req, res, next) => {
   const { projectId } = req.params;
   const { userId, role } = req.body;
-  // console.log(projectId, userId, role);
   if (!projectId) {
     throw new ApiError(401, "Project Id not found from params");
   }

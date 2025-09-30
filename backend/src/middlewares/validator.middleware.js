@@ -12,7 +12,7 @@ import ApiError from "../utils/api-error.js";
  */
 const validator = (req, res, next) => {
   // Get validation errors from the request
-  console.log(req.body);
+  
   const errors = validationResult(req);
 
   const errorMsg = errors

@@ -1,99 +1,119 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
 export const Login = () => {
-  // 1. Call hooks at the top level of the component
   const navigate = useNavigate();
   const { login } = useAuth();
-  console.log("login" + login);
 
-  // 2. Simplified form state for a better user experience
   const [formData, setFormData] = useState({
-    identifier: "", // One field for "Username or Email"
+    identifier: "",
     password: "",
   });
 
-  // 3. Added a loading state for better user feedback
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Using the cleaner implicit return syntax
-    setFormData((prev) => {
-      return { ...prev, [name]: value };
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(""); // Clear previous errors on a new submission
+    setError("");
 
     try {
-      // Your backend should be able to accept either username or email in the 'identifier' field
       const response = await login(formData.identifier, formData.password);
       if (response.success) {
-        // 4. Handle the success case properly
-        console.log("Login successful:", response);
-        navigate("/");
+        navigate("/dashboard");
       }
-      // Example: Store the auth token from the response
-      // localStorage.setItem('authToken', response.token);
-
-      // Navigate to the dashboard or home page after successful login
     } catch (err) {
-      // 5. Set a user-friendly error message from the API response or a fallback
       const errorMessage =
-        err.response?.data?.message || "Invalid credentials. Please try again.";
+        err.data?.message || "Invalid credentials. Please try again.";
       setError(errorMessage);
-      console.error("Login failed:", err);
     } finally {
-      // 6. Ensure loading is always set back to false
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      {/* 7. Removed unnecessary method attribute */}
-      <form onSubmit={handleSubmit}>
-        <div>
-          {/* 8. Added labels for accessibility */}
-          <label htmlFor="identifier">Username or Email</label>
-          <input
-            type="text"
-            name="identifier"
-            id="identifier"
-            placeholder="Enter your username or email"
-            onChange={handleChange}
-            value={formData.identifier}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Enter password"
-            onChange={handleChange}
-            value={formData.password}
-            required
-          />
-        </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+          Login to your account
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="identifier"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Username or Email
+            </label>
+            <input
+              type="text"
+              name="identifier"
+              id="identifier"
+              placeholder="you@example.com"
+              onChange={handleChange}
+              value={formData.identifier}
+              required
+              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="••••••••"
+              onChange={handleChange}
+              value={formData.password}
+              required
+              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            />
+          </div>
 
-        {/* 9. Display the error message to the user */}
-        {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
-        {/* 10. Disable the button during the API call */}
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </div>
+          <div className="text-sm text-center">
+            <Link
+              to="/forget-password"
+              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+            >
+              Forgot your password?
+            </Link>
+          </div>
+          <div className="text-sm text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              Don't have an account?{' '}
+              <Link
+                to="/register"
+                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+              >
+                Sign up
+              </Link>
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

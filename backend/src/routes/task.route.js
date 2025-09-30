@@ -13,15 +13,9 @@ import {
 import {
   protect,
   validateProjectPermission,
-  validateTaskPermission,
 } from "../middlewares/auth.middleware.js";
 import { UserRoleEnum } from "../utils/constants.js";
 import { asyncHandler } from "../utils/async-handler.js";
-
-router
-  .route("/:projectId")
-  .get(protect, validateTaskPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]), getTasks)
-  .post(protect, createTask);
 
 router
   .route("/:projectId")
@@ -32,7 +26,7 @@ router
   )
   .get(
     protect,
-    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN, UserRoleEnum.MEMBER]),
     asyncHandler(getTasks)
   );
 
@@ -41,15 +35,13 @@ router
   .get(protect, asyncHandler(getTaskById))
   .put(
     protect,
-    validateTaskPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
     asyncHandler(updateTask)
   )
   .delete(
     protect,
-    validateTaskPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
     asyncHandler(deleteTask)
   );
-// router.post("/get-all-tasks", protect, getTasks);
-// router.post("/update/:id", protect, updateTask);
-// router.post("/delete/:id", protect, deleteTask);
+
 export default router;
