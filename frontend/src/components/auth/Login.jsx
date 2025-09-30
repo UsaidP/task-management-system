@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from "react-icons/fi";
 import { useAuth } from "./AuthContext";
 
 export const Login = () => {
@@ -13,6 +15,7 @@ export const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,80 +42,131 @@ export const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Login to your account
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="identifier"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Username or Email
-            </label>
-            <input
-              type="text"
-              name="identifier"
-              id="identifier"
-              placeholder="you@example.com"
-              onChange={handleChange}
-              value={formData.identifier}
-              required
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="••••••••"
-              onChange={handleChange}
-              value={formData.password}
-              required
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8"
+        >
+          <Link to="/" className="inline-block">
+            <h1 className="text-3xl font-bold gradient-text mb-2">TaskFlow</h1>
+          </Link>
+          <p className="text-text-secondary">Welcome back! Please sign in to continue.</p>
+        </motion.div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="card"
+        >
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="identifier" className="block text-sm font-medium text-text-primary mb-2">
+                Email or Username
+              </label>
+              <div className="relative">
+                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                <input
+                  type="text"
+                  name="identifier"
+                  id="identifier"
+                  placeholder="Enter your email or username"
+                  onChange={handleChange}
+                  value={formData.identifier}
+                  required
+                  className="input-field pl-12"
+                />
+              </div>
+            </div>
 
-          <div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-text-primary mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  placeholder="Enter your password"
+                  onChange={handleChange}
+                  value={formData.password}
+                  required
+                  className="input-field pl-12 pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+                >
+                  {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 bg-error/10 border border-error/20 rounded-lg text-error text-sm"
+              >
+                {error}
+              </motion.div>
+            )}
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="w-full btn-primary group"
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="loading-dots">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  Sign In
+                  <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
             </button>
-          </div>
-          <div className="text-sm text-center">
-            <Link
-              to="/forget-password"
-              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-            >
-              Forgot your password?
-            </Link>
-          </div>
-          <div className="text-sm text-center">
-            <p className="text-gray-600 dark:text-gray-400">
-              Don't have an account?{' '}
+
+            <div className="text-center">
               <Link
-                to="/register"
-                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                to="/forget-password"
+                className="text-primary hover:text-primary-light transition-colors text-sm"
               >
-                Sign up
+                Forgot your password?
               </Link>
-            </p>
-          </div>
-        </form>
+            </div>
+          </form>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="text-center mt-6"
+        >
+          <p className="text-text-secondary">
+            Don't have an account?{' '}
+            <Link
+              to="/register"
+              className="text-primary hover:text-primary-light transition-colors font-medium"
+            >
+              Sign up for free
+            </Link>
+          </p>
+        </motion.div>
       </div>
     </div>
   );

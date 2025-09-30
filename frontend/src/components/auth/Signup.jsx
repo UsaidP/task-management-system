@@ -1,6 +1,53 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiCheck } from "react-icons/fi";
 import { useAuth } from "./AuthContext";
+
+const PasswordStrengthIndicator = ({ password }) => {
+  const getStrength = (password) => {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    return strength;
+  };
+
+  const strength = getStrength(password);
+  const getColor = () => {
+    if (strength <= 2) return 'bg-error';
+    if (strength <= 3) return 'bg-warning';
+    return 'bg-success';
+  };
+
+  const getLabel = () => {
+    if (strength <= 2) return 'Weak';
+    if (strength <= 3) return 'Medium';
+    return 'Strong';
+  };
+
+  if (!password) return null;
+
+  return (
+    <div className="mt-2">
+      <div className="flex items-center space-x-2 mb-1">
+        <div className="flex-1 bg-surface-light rounded-full h-2">
+          <div
+            className={`h-2 rounded-full transition-all duration-300 ${getColor()}`}
+            style={{ width: `${(strength / 5) * 100}%` }}
+          />
+        </div>
+        <span className={`text-xs font-medium ${
+          strength <= 2 ? 'text-error' : strength <= 3 ? 'text-warning' : 'text-success'
+        }`}>
+          {getLabel()}
+        </span>
+      </div>
+    </div>
+  );
+};
 
 export const Signup = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +59,7 @@ export const Signup = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { signup } = useAuth();
 
@@ -44,108 +92,174 @@ export const Signup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          Create your account
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="fullname"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="fullname"
-              id="fullname"
-              placeholder="John Doe"
-              onChange={handleChange}
-              value={formData.fullname}
-              required
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Username
-            </label>
-            <input
-              type="text"
-              name="username"
-              id="username"
-              placeholder="johndoe"
-              onChange={handleChange}
-              value={formData.username}
-              required
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="you@example.com"
-              onChange={handleChange}
-              value={formData.email}
-              required
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="••••••••"
-              onChange={handleChange}
-              value={formData.password}
-              required
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-            />
-          </div>
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="w-full max-w-md">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8"
+        >
+          <Link to="/" className="inline-block">
+            <h1 className="text-3xl font-bold gradient-text mb-2">TaskFlow</h1>
+          </Link>
+          <p className="text-text-secondary">Create your account and start managing tasks like a pro.</p>
+        </motion.div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="card"
+        >
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="fullname" className="block text-sm font-medium text-text-primary mb-2">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                  <input
+                    type="text"
+                    name="fullname"
+                    id="fullname"
+                    placeholder="John Doe"
+                    onChange={handleChange}
+                    value={formData.fullname}
+                    required
+                    className="input-field pl-12"
+                  />
+                </div>
+              </div>
 
-          <div>
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-text-primary mb-2">
+                  Username
+                </label>
+                <div className="relative">
+                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    placeholder="johndoe"
+                    onChange={handleChange}
+                    value={formData.username}
+                    required
+                    className="input-field pl-12"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="john@example.com"
+                  onChange={handleChange}
+                  value={formData.email}
+                  required
+                  className="input-field pl-12"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-text-primary mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  placeholder="Create a strong password"
+                  onChange={handleChange}
+                  value={formData.password}
+                  required
+                  className="input-field pl-12 pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+                >
+                  {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                </button>
+              </div>
+              <PasswordStrengthIndicator password={formData.password} />
+            </div>
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 bg-error/10 border border-error/20 rounded-lg text-error text-sm"
+              >
+                {error}
+              </motion.div>
+            )}
+
+            <div className="text-xs text-text-muted space-y-2">
+              <div className="flex items-center space-x-2">
+                <FiCheck className="w-4 h-4 text-success" />
+                <span>Free forever, no credit card required</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <FiCheck className="w-4 h-4 text-success" />
+                <span>Unlimited projects and tasks</span>
+              </div>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="w-full btn-primary group"
             >
-              {loading ? "Signing Up..." : "Sign Up"}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="loading-dots">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  Create Account
+                  <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
             </button>
-          </div>
-          <div className="text-sm text-center">
-            <p className="text-gray-600 dark:text-gray-400">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-              >
-                Login
-              </Link>
-            </p>
-          </div>
-        </form>
+          </form>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="text-center mt-6"
+        >
+          <p className="text-text-secondary">
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              className="text-primary hover:text-primary-light transition-colors font-medium"
+            >
+              Sign in
+            </Link>
+          </p>
+        </motion.div>
       </div>
     </div>
   );

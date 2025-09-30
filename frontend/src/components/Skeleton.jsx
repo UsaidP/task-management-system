@@ -1,7 +1,35 @@
 import React from 'react';
 
-const Skeleton = ({ className }) => {
-  return <div className={`bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse ${className}`}></div>;
+const Skeleton = ({ className = '', variant = 'rectangular' }) => {
+  const baseClasses = 'animate-pulse bg-surface-light';
+  
+  const variantClasses = {
+    rectangular: 'rounded-md',
+    circular: 'rounded-full',
+    text: 'rounded-sm h-4',
+  };
+
+  return (
+    <div 
+      className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+      style={{
+        background: 'linear-gradient(90deg, rgba(31, 41, 55, 0.8) 25%, rgba(55, 65, 81, 0.8) 50%, rgba(31, 41, 55, 0.8) 75%)',
+        backgroundSize: '200% 100%',
+        animation: 'shimmer 2s infinite',
+      }}
+    >
+      <style jsx>{`
+        @keyframes shimmer {
+          0% {
+            background-position: -200% 0;
+          }
+          100% {
+            background-position: 200% 0;
+          }
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default Skeleton;
