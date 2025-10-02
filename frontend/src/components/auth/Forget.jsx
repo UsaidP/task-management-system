@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../context/customHook.js";
 import { useNavigate, Link } from "react-router-dom";
 
 export const Forget = () => {

@@ -99,20 +99,14 @@ const getTaskById = asyncHandler(async (req, res, next) => {
 
 const updateTask = asyncHandler(async (req, res, next) => {
   const { taskId } = req.params;
-  const { title, description, assignedTo, status, attachments } = req.body;
+  const updateData = req.body;
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
     throw new ApiError(400, "Invalid task ID");
-  }
-  if (!title || !description) {
-    throw new ApiError(400, "Title and description are required");
-  }
-  if (!assignedTo || !Array.isArray(assignedTo)) {
-    throw new ApiError(400, "AssignedTo must be an array of user IDs");
   }
 
   const task = await Task.findByIdAndUpdate(
     taskId,
-    { title, description, assignedTo, status, attachments },
+    { $set: updateData },
     { new: true }
   );
   if (!task) {

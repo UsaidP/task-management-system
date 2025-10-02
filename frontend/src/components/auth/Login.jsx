@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from "react-icons/fi";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../context/customHook.js"; 
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -53,7 +53,9 @@ export const Login = () => {
           <Link to="/" className="inline-block">
             <h1 className="text-3xl font-bold gradient-text mb-2">TaskFlow</h1>
           </Link>
-          <p className="text-text-secondary">Welcome back! Please sign in to continue.</p>
+          <p className="text-text-secondary">
+            Welcome back! Please sign in to continue.
+          </p>
         </motion.div>
 
         <motion.div
@@ -64,7 +66,10 @@ export const Login = () => {
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="identifier" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="identifier"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Email or Username
               </label>
               <div className="relative">
@@ -83,7 +88,10 @@ export const Login = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Password
               </label>
               <div className="relative">
@@ -103,7 +111,11 @@ export const Login = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
                 >
-                  {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <FiEyeOff className="w-5 h-5" />
+                  ) : (
+                    <FiEye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -158,7 +170,7 @@ export const Login = () => {
           className="text-center mt-6"
         >
           <p className="text-text-secondary">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link
               to="/register"
               className="text-primary hover:text-primary-light transition-colors font-medium"

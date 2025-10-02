@@ -1,13 +1,14 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import apiService from "../../../service/apiService.js";
+import apiService from "../../service/apiService.js";
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Initial auth check loading state
   useEffect(() => {
     // Check if the user is already logged in when the app loads
+    // Inside your useEffect
     const checkLoggedIn = async () => {
       try {
         const response = await apiService.getUserProfile();
@@ -15,8 +16,29 @@ export const AuthProvider = ({ children }) => {
           setUser(response.data);
         }
       } catch (error) {
-        console.error("Not authenticated on load:", error);
-        setUser(null);
+        // Check if the error is because the token expired (e.g., a 401 status)
+        if (error.response && error.response.status === 401) {
+          try {
+            // If it's a 401, try to refresh the session
+            const refreshResponse = await apiService.refreshSession();
+            if (refreshResponse.success) {
+              // If refresh succeeds, the new token is now in a cookie,
+              // so we can fetch the user profile again.
+              const newResponse = await apiService.getUserProfile();
+              setUser(newResponse.data);
+            } else {
+              // If refresh fails, the user is logged out
+              setUser(null);
+            }
+          } catch (refreshError) {
+            console.error("Session refresh failed:", refreshError);
+            setUser(null);
+          }
+        } else {
+          // For any other error, just log it
+          console.error("Not authenticated on load:", error);
+          setUser(null);
+        }
       } finally {
         setLoading(false);
       }
@@ -38,8 +60,15 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const signup = async (username, fullname, password, email, role) => {
-    return await apiService.signup(username, fullname, password, email, role);
+  const signup = async (username, fullname, password, email, role, avatar) => {
+    return await apiService.signup(
+      username,
+      fullname,
+      password,
+      email,
+      role,
+      avatar
+    );
   };
 
   const forget_password = async (email) => {
@@ -48,6 +77,18 @@ export const AuthProvider = ({ children }) => {
 
   const reset_password = async (password, token) => {
     return await apiService.reset_password(password, token);
+  };
+  const refreshSession = async () => {
+    try {
+      const response = await apiService.refreshToken();
+      if (response.success) {
+        setUser(response.data);
+      }
+      return response;
+    } catch (error) {
+      setUser(null);
+      throw error;
+    }
   };
 
   const value = {
@@ -58,6 +99,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     forget_password,
     reset_password,
+    refreshSession,
   };
 
   // We don't render the app until we've checked for an active session

@@ -27,12 +27,20 @@ router
   );
 router
   .route("/remove/:projectId")
-  .post(protect, validateProjectPermission([UserRoleEnum.ADMIN]), asyncHandler(removeMember));
+  .post(
+    protect,
+    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    asyncHandler(removeMember)
+  );
 router
   .route("/all-members/:projectId")
   .get(
     protect,
-    validateProjectPermission([UserRoleEnum.ADMIN]),
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.MEMBER,
+    ]),
     asyncHandler(projectMemberController.getAllMembers)
   );
 export default router;

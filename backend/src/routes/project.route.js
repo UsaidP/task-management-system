@@ -17,14 +17,23 @@ const router = Router();
 router.post("/create", protect, asyncHandler(createProject));
 
 router.post(
-  "/update/:id",
+  "/update/:projectId",
   protect,
-  validateProjectPermission([UserRoleEnum.ADMIN]),
+  validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
   asyncHandler(updateProject)
 );
-router.post("/get-project-by-id/:id", protect, asyncHandler(getProjectById));
+router.get(
+  "/get-project-by-id/:projectId",
+  protect,
+  validateProjectPermission([
+    UserRoleEnum.ADMIN,
+    UserRoleEnum.PROJECT_ADMIN,
+    UserRoleEnum.MEMBER,
+  ]),
+  asyncHandler(getProjectById)
+);
 router.post(
-  "/delete/:id",
+  "/delete/:projectId",
   protect,
   validateProjectPermission([UserRoleEnum.ADMIN]),
   asyncHandler(deleteProject)

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../context/customHook.js";
 
 const EmailIcon = () => (
   <svg
@@ -36,12 +36,16 @@ export const ConfirmEmail = () => {
     try {
       const response = await resendVerifyEmail(email);
       if (response.success) {
-        setFeedbackMessage(`A new confirmation link has been sent to ${email}.`);
+        setFeedbackMessage(
+          `A new confirmation link has been sent to ${email}.`
+        );
       } else {
         setError(response.message || "Failed to resend email.");
       }
     } catch (err) {
-      setError(err.data?.message || "Failed to resend email. Please try again later.");
+      setError(
+        err.data?.message || "Failed to resend email. Please try again later."
+      );
     } finally {
       setIsSending(false);
     }
@@ -63,7 +67,9 @@ export const ConfirmEmail = () => {
           complete your registration.
         </p>
         <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-gray-600 dark:text-gray-400">Didn't receive the email?</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Didn't receive the email?
+          </p>
           <button
             onClick={handleResendEmail}
             disabled={isSending}

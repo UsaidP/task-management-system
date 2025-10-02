@@ -18,7 +18,7 @@ export const addMember = asyncHandler(async (req, res, next) => {
   if (!role) {
     throw new ApiError(403, "Role is required.");
   }
-  const project = await Project.find({ _id: projectId });
+  const project = await Project.findById(projectId);
   // console.log(project);
   if (!project) {
     throw new ApiError(404, "Project not found in database.");
@@ -144,11 +144,15 @@ export const getAllMembers = asyncHandler(async (req, res, next) => {
     .populate("user", "email")
     .populate("project", "name ");
 
-  if (!members || members.length === 0) {
-    throw new ApiError(404, "No members found for this project.");
+  if (!members) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, [], "No members found for this project."));
   }
 
-  res.status(200).json(new ApiResponse(200, members, "Project members retrieved"));
+  res
+    .status(200)
+    .json(new ApiResponse(200, members, "Project members retrieved"));
   next();
 });
 export const projectMemberController = {

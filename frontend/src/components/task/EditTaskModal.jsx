@@ -17,6 +17,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task }) => {
       setTitle(task.title);
       setDescription(task.description);
       setStatus(task.status);
+      setSubtasks([]); // Clear subtasks initially
       apiService.getSubTasksForTask(task._id).then((res) => {
         if (res.success) setSubtasks(res.data);
       });
@@ -37,7 +38,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task }) => {
       });
       if (response.success) {
         toast.success("Task updated successfully!", { id: toastId });
-        onTaskUpdated(response.data);
+        onTaskUpdated(response.data.task);
         onClose();
       }
     } catch (err) {
@@ -95,6 +96,22 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task }) => {
       });
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>

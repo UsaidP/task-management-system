@@ -20,7 +20,7 @@ class ApiService {
 
       if (response.ok) {
         const data = await response.json();
-        
+
         return data;
       } else {
         // If the response is not OK, try to parse the error body
@@ -42,10 +42,17 @@ class ApiService {
       throw error;
     }
   }
-  async signup(username, fullname, password, email, role) {
+  async signup(username, fullname, password, email, role, avatar) {
     return await this.customFetch("/users/register", {
       method: "POST",
-      body: JSON.stringify({ username, email, password, fullname, role }),
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        fullname,
+        role,
+        avatar,
+      }),
     });
   }
 
@@ -79,6 +86,11 @@ class ApiService {
       body: JSON.stringify({ password }),
     });
   }
+  async refreshSession() {
+    return await this.customFetch("/users/refresh-token", {
+      method: "POST",
+    });
+  }
 
   async getAllProjects() {
     return await this.customFetch("/projects/all-projects", {
@@ -95,13 +107,13 @@ class ApiService {
 
   async getProjectById(projectId) {
     return await this.customFetch(`/projects/get-project-by-id/${projectId}`, {
-        method: "POST",
+      method: "GET",
     });
   }
 
   async getTasksByProjectId(projectId) {
     return await this.customFetch(`/tasks/${projectId}`, {
-        method: "GET",
+      method: "GET",
     });
   }
 
@@ -113,9 +125,15 @@ class ApiService {
   }
 
   async updateTask(projectId, taskId, taskData) {
-    return await this.customFetch(`/tasks/${projectId}/n/${taskId}`, {
+    return await this.customFetch(`/tasks/${projectId}/${taskId}`, {
       method: "PUT",
       body: JSON.stringify(taskData),
+    });
+  }
+
+  async deleteTask(projectId, taskId) {
+    return await this.customFetch(`/tasks/${projectId}/${taskId}`, {
+      method: "DELETE",
     });
   }
 

@@ -32,7 +32,7 @@ const ProjectMembers = ({ projectId }) => {
       const response = await apiService.addMember(projectId, email, role);
       if (response.success) {
         toast.success("Member added successfully!", { id: toastId });
-        setMembers([...members, response.data]);
+        setMembers([...members, response.data.member]);
         setEmail("");
       }
     } catch (err) {
@@ -47,7 +47,7 @@ const ProjectMembers = ({ projectId }) => {
     try {
       await apiService.removeMember(projectId, userId);
       toast.success("Member removed successfully!", { id: toastId });
-      setMembers(members.filter((member) => member.user._id !== userId));
+      setMembers(members.filter((member) => member._id !== userId));
     } catch (err) {
       const errorMessage = err.data?.message || "Failed to remove member";
       toast.error(errorMessage, { id: toastId });

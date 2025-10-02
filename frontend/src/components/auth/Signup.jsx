@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiCheck } from "react-icons/fi";
-import { useAuth } from "./AuthContext";
+import {
+  FiUser,
+  FiMail,
+  FiLock,
+  FiEye,
+  FiEyeOff,
+  FiArrowRight,
+  FiCheck,
+} from "react-icons/fi";
+import { useAuth } from "../context/customHook.js";
 
 const PasswordStrengthIndicator = ({ password }) => {
   const getStrength = (password) => {
@@ -17,15 +25,15 @@ const PasswordStrengthIndicator = ({ password }) => {
 
   const strength = getStrength(password);
   const getColor = () => {
-    if (strength <= 2) return 'bg-error';
-    if (strength <= 3) return 'bg-warning';
-    return 'bg-success';
+    if (strength <= 2) return "bg-error";
+    if (strength <= 3) return "bg-warning";
+    return "bg-success";
   };
 
   const getLabel = () => {
-    if (strength <= 2) return 'Weak';
-    if (strength <= 3) return 'Medium';
-    return 'Strong';
+    if (strength <= 2) return "Weak";
+    if (strength <= 3) return "Medium";
+    return "Strong";
   };
 
   if (!password) return null;
@@ -39,9 +47,15 @@ const PasswordStrengthIndicator = ({ password }) => {
             style={{ width: `${(strength / 5) * 100}%` }}
           />
         </div>
-        <span className={`text-xs font-medium ${
-          strength <= 2 ? 'text-error' : strength <= 3 ? 'text-warning' : 'text-success'
-        }`}>
+        <span
+          className={`text-xs font-medium ${
+            strength <= 2
+              ? "text-error"
+              : strength <= 3
+              ? "text-warning"
+              : "text-success"
+          }`}
+        >
           {getLabel()}
         </span>
       </div>
@@ -55,6 +69,8 @@ export const Signup = () => {
     fullname: "",
     email: "",
     password: "",
+    role: "",
+    avatar: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -78,7 +94,13 @@ export const Signup = () => {
 
     try {
       const { username, fullname, email, password } = formData;
-      const response = await signup(username, fullname, password, email, "user");
+      const response = await signup(
+        username,
+        fullname,
+        password,
+        email,
+        "member"
+      );
       if (response.success) {
         navigate("/confirm", { state: { email: formData.email } });
       }
@@ -92,8 +114,8 @@ export const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center p-24 justify-center ">
+      <div className="w-full max-w-xl  p-8 space-y-6 bg-surface card">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -101,21 +123,27 @@ export const Signup = () => {
           className="text-center mb-8"
         >
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold gradient-text mb-2">TaskFlow</h1>
+            <h1 className="text-3xl font-bold text-purple-50 gradient-text mb-2">
+              TaskFlow
+            </h1>
           </Link>
-          <p className="text-text-secondary">Create your account and start managing tasks like a pro.</p>
+          <p className="text-text-secondary">
+            Create your account and start managing tasks like a pro.
+          </p>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="card"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="fullname" className="block text-sm font-medium text-text-primary mb-2">
+                <label
+                  htmlFor="fullname"
+                  className="block text-sm font-medium text-text-primary mb-2"
+                >
                   Full Name
                 </label>
                 <div className="relative">
@@ -124,7 +152,7 @@ export const Signup = () => {
                     type="text"
                     name="fullname"
                     id="fullname"
-                    placeholder="John Doe"
+                    placeholder="Full Name"
                     onChange={handleChange}
                     value={formData.fullname}
                     required
@@ -134,7 +162,10 @@ export const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-text-primary mb-2">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-text-primary mb-2"
+                >
                   Username
                 </label>
                 <div className="relative">
@@ -143,7 +174,7 @@ export const Signup = () => {
                     type="text"
                     name="username"
                     id="username"
-                    placeholder="johndoe"
+                    placeholder="username"
                     onChange={handleChange}
                     value={formData.username}
                     required
@@ -154,7 +185,10 @@ export const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Email Address
               </label>
               <div className="relative">
@@ -163,7 +197,7 @@ export const Signup = () => {
                   type="email"
                   name="email"
                   id="email"
-                  placeholder="john@example.com"
+                  placeholder="name@example.com"
                   onChange={handleChange}
                   value={formData.email}
                   required
@@ -173,7 +207,10 @@ export const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Password
               </label>
               <div className="relative">
@@ -193,7 +230,11 @@ export const Signup = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
                 >
-                  {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <FiEyeOff className="w-5 h-5" />
+                  ) : (
+                    <FiEye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
               <PasswordStrengthIndicator password={formData.password} />
@@ -251,7 +292,7 @@ export const Signup = () => {
           className="text-center mt-6"
         >
           <p className="text-text-secondary">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link
               to="/login"
               className="text-primary hover:text-primary-light transition-colors font-medium"

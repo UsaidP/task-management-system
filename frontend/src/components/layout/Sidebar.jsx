@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiHome, FiFolder, FiPlusSquare, FiUser, FiLogOut, FiSettings, FiChevronDown } from "react-icons/fi";
-import { useAuth } from "../auth/AuthContext";
+import {
+  FiHome,
+  FiFolder,
+  FiPlusSquare,
+  FiUser,
+  FiLogOut,
+  FiSettings,
+  FiChevronDown,
+} from "react-icons/fi";
+import { useAuth } from "../context/customHook.js";
 import apiService from "../../../service/apiService.js";
 import CreateProjectModal from "../project/CreateProjectModal";
 
@@ -34,9 +42,9 @@ const Sidebar = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -87,12 +95,14 @@ const Sidebar = () => {
             className="pt-6"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-text-primary">Projects</h2>
+              <h2 className="text-lg font-semibold text-text-primary">
+                Projects
+              </h2>
               <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
                 {projects.length}
               </span>
             </div>
-            
+
             <div className="space-y-1 max-h-96 overflow-y-auto">
               <AnimatePresence>
                 {projects.map((project, index) => (
@@ -146,18 +156,22 @@ const Sidebar = () => {
           >
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold mr-3">
-                {user?.fullname?.charAt(0) || 'U'}
+                {user?.fullname?.charAt(0) || "U"}
               </div>
               <div className="text-left">
                 <div className="text-sm font-medium text-text-primary truncate max-w-32">
-                  {user?.fullname || 'User'}
+                  {user?.fullname || "User"}
                 </div>
                 <div className="text-xs text-text-muted truncate max-w-32">
                   {user?.email}
                 </div>
               </div>
             </div>
-            <FiChevronDown className={`w-4 h-4 text-text-muted transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+            <FiChevronDown
+              className={`w-4 h-4 text-text-muted transition-transform duration-200 ${
+                isUserMenuOpen ? "rotate-180" : ""
+              }`}
+            />
           </button>
 
           <AnimatePresence>

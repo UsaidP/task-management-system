@@ -149,7 +149,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({
     $or: [{ email: identifier }, { username: identifier }],
   });
-  
+
   if (!user) {
     throw new ApiError(404, "User not found");
   }
@@ -241,6 +241,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
 
 // --- Refresh Access Token ---
 export const refreshAccessToken = asyncHandler(async (req, res) => {
+  console.log("Refreshing token...");
   const incomingRefreshToken = req.cookies.refreshToken;
 
   if (!incomingRefreshToken) {
@@ -258,7 +259,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(401, "User not found for this token");
   }
-
+  console.log("User found: " + user);
   // 3. Issue new tokens
   const newAccessToken = await user.generateAccessToken();
   const newRefreshToken = await user.generateRefreshToken();

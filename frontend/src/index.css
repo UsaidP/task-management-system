@@ -6,13 +6,24 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-text-primary font-sans antialiased;
-    background-image: 
-      radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    background-image: radial-gradient(
+        circle at 20% 80%,
+        rgba(99, 102, 241, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(236, 72, 153, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(16, 185, 129, 0.05) 0%,
+        transparent 50%
+      );
   }
 
   html {
@@ -24,51 +35,51 @@
   .glass {
     @apply bg-surface/80 backdrop-blur-md border border-border/50;
   }
-  
+
   .glass-light {
     @apply bg-surface-light/80 backdrop-blur-md border border-border-light/50;
   }
-  
+
   .btn-primary {
     @apply bg-primary hover:bg-primary-dark text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-glow transform hover:scale-105 active:scale-95;
   }
-  
+
   .btn-secondary {
     @apply bg-secondary hover:bg-secondary/90 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95;
   }
-  
+
   .btn-ghost {
     @apply bg-transparent hover:bg-surface-light text-text-secondary hover:text-text-primary font-medium px-4 py-2 rounded-lg transition-all duration-200 border border-border hover:border-border-light;
   }
-  
+
   .input-field {
     @apply w-full px-4 py-3 bg-surface border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
   }
-  
+
   .card {
     @apply glass rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300;
   }
-  
+
   .card-interactive {
     @apply card cursor-pointer transform hover:scale-[1.02] hover:-translate-y-1;
   }
-  
+
   .gradient-text {
     @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
   }
-  
+
   .status-badge {
     @apply px-3 py-1 rounded-full text-xs font-medium;
   }
-  
+
   .status-todo {
     @apply status-badge bg-text-muted/20 text-text-muted;
   }
-  
+
   .status-progress {
     @apply status-badge bg-warning/20 text-warning;
   }
-  
+
   .status-done {
     @apply status-badge bg-success/20 text-success;
   }
@@ -132,16 +143,38 @@
 }
 
 @keyframes loading-dots1 {
-  0% { transform: scale(0); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes loading-dots3 {
-  0% { transform: scale(1); }
-  100% { transform: scale(0); }
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
 }
 
 @keyframes loading-dots2 {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(24px, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+/* In your main CSS file, like index.css */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import apiService from "../../../service/apiService.js";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +20,8 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
       if (response.success) {
         toast.success("Project created successfully!", { id: toastId });
         onProjectCreated(response.data.project);
+        setName("");
+        setDescription("");
         onClose();
       }
     } catch (err) {
@@ -30,6 +32,22 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>

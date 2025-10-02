@@ -16,13 +16,16 @@ const extractTokenFromRequest = (req) => {
   if (req.cookies?.accessToken) {
     return req.cookies.accessToken;
   }
+  if (req.cookies?.refreshToken) {
+    return req.cookies.refreshToken;
+  }
 
   return null;
 };
 
 export const protect = asyncHandler(async (req, res, next) => {
   const token = extractTokenFromRequest(req);
-
+  console.log("Token: " + token);
   if (!token) {
     // 401: Unauthorized - The client needs to authenticate.
     throw new ApiError(401, "Unauthorized request. No token provided.");
@@ -49,6 +52,7 @@ export const protect = asyncHandler(async (req, res, next) => {
 
     // 4. Attach the user object to the request for downstream handlers
     req.user = user;
+    console.log(user + " here");
     next();
   } catch (error) {
     // Catch specific JWT errors for better client feedback
@@ -96,39 +100,3 @@ export const validateProjectPermission = (allowedRoles = []) =>
     // ✅ All checks passed; proceed:
     next();
   });
-
-/**
- * Validate that the user making the request has permission to interact with the task specified in the route.
- * @param {string[]} allowedRoles - The roles that are allowed to interact with the task. If empty, all roles are allowed.
- * @returns {import('express').RequestHandler}
- */
-
-export const validateTaskPermission = (allowedRoles = []) => {
-  return asyncHandler(async (req, res, next) => {
-    const { projectId } = req.params;
-    const userId = req.user?._id;
-
-    if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
-      throw new ApiError(400, "Task Id is missing or invalid.");
-    }
-    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-      throw new ApiError(400, "User Id is missing or invalid.");
-    }
-
-    const user = await ProjectMember.findOne({
-      project: new mongoose.Types.ObjectId(projectId),
-      user: new mongoose.Types.ObjectId(userId),
-    });
-
-    if (!user) {
-      throw new ApiError(404, `You are not a part of this task.`);
-    }
-    const userRole = user.role;
-
-    req.user.role = userRole;
-    if (!allowedRoles.includes(userRole)) {
-      throw new ApiError(403, "You do not have permission to perform this action.");
-    }
-    next();
-  });
-};

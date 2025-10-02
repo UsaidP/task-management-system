@@ -1,13 +1,21 @@
-// vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path"; // Import 'path' module
+import path from "path";
+import { fileURLToPath } from "url";
+import tailwindcss from "tailwindcss";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
+  css: {
+    postcss: {
+      plugins: [tailwindcss],
+    },
+  },
   resolve: {
     alias: {
-      // Add this alias: whenever you import from 'src/', it points to the frontend/src directory
       "src/": `${path.resolve(__dirname, "src")}/`,
     },
   },

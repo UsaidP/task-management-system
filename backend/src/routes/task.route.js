@@ -21,7 +21,11 @@ router
   .route("/:projectId")
   .post(
     protect,
-    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.MEMBER,
+    ]),
     asyncHandler(createTask)
   )
   .get(
@@ -31,11 +35,23 @@ router
   );
 
 router
-  .route("/:projectId/n/:taskId")
-  .get(protect, asyncHandler(getTaskById))
+  .route("/:projectId/:taskId")
+  .get(
+    protect,
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.MEMBER,
+    ]),
+    asyncHandler(getTaskById)
+  )
   .put(
     protect,
-    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.MEMBER,
+    ]),
     asyncHandler(updateTask)
   )
   .delete(

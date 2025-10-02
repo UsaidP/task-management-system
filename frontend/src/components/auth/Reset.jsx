@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../context/customHook.js";
 import { useParams, Link } from "react-router-dom";
 
 export const Reset = () => {

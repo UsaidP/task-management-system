@@ -61,9 +61,16 @@ const createProject = asyncHandler(async (req, res, next) => {
 
 const getAllProjects = asyncHandler(async (req, res, next) => {
   const { page = 1, limit = 10, search = "" } = req.query;
+  const userId = req.user._id;
+
+  // Find all project memberships for the user
+  const projectMemberships = await ProjectMember.find({ user: userId });
+
+  // Get the project IDs from the memberships
+  const projectIds = projectMemberships.map(pm => pm.project);
 
   // Build query
-  const query = { createdBy: req.user._id };
+  const query = { _id: { $in: projectIds } };
   if (search) {
     query.$or = [
       { name: { $regex: search, $options: "i" } },
@@ -101,7 +108,7 @@ const getAllProjects = asyncHandler(async (req, res, next) => {
 
 // Read a project by ID
 const getProjectById = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { projectId: id } = req.params;
   const project = await Project.findById(id);
   if (!project) {
     throw new ApiError(404, "Project not found");
@@ -112,7 +119,7 @@ const getProjectById = asyncHandler(async (req, res, next) => {
 
 // Update a project
 const updateProject = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { projectId: id } = req.params;
   const { name, description } = req.body;
   if (!id) {
     throw new ApiError(400, "Create a project first, then update it");
@@ -131,7 +138,7 @@ const updateProject = asyncHandler(async (req, res, next) => {
 
 // Delete a project
 const deleteProject = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { projectId: id } = req.params;
   const project = await Project.findByIdAndDelete(id);
   if (!project) {
     throw new ApiError(404, "Project not found");
