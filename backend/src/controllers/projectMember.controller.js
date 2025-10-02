@@ -7,15 +7,25 @@ import { asyncHandler } from "../utils/async-handler.js";
 
 export const addMember = asyncHandler(async (req, res, next) => {
   const { projectId } = req.params;
-  const { userId, role } = req.body;
+  const { email, role } = req.body;
+  console.info(email);
   if (!projectId) {
     throw new ApiError(401, "Project Id not found from params");
   }
+  if (!email) {
+    throw new ApiError(403, "Email is required.");
+  }
+  if (!role) {
+    throw new ApiError(403, "Role is required.");
+  }
   const project = await Project.find({ _id: projectId });
+  // console.log(project);
   if (!project) {
     throw new ApiError(404, "Project not found in database.");
   }
-  const user = await User.findById(userId);
+  const user = await User.findOne({ email: email });
+  const userId = user?._id;
+  console.log(user);
   if (!user) {
     throw new ApiError(404, "User not found in database.");
   }
@@ -26,6 +36,7 @@ export const addMember = asyncHandler(async (req, res, next) => {
     project: projectId,
     user: userId,
   });
+
   if (existingMember) {
     throw new ApiError(
       400,

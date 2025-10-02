@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import blacklistedToken from "../models/blacklistedToken.js";
 import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import ApiError from "../utils/api-error.js";
@@ -72,7 +71,7 @@ export const validateProjectPermission = (allowedRoles = []) =>
     if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
       throw new ApiError(400, "Project Id is missing or invalid.");
     }
-    
+
     if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
       throw new ApiError(400, "User Id is missing or invalid.");
     }
@@ -87,9 +86,9 @@ export const validateProjectPermission = (allowedRoles = []) =>
     }
 
     const userRole = user.role;
-    
+
     req.user.role = userRole;
-    
+
     if (!allowedRoles.includes(userRole)) {
       throw new ApiError(403, "You do not have permission to perform this action.");
     }
@@ -106,12 +105,9 @@ export const validateProjectPermission = (allowedRoles = []) =>
 
 export const validateTaskPermission = (allowedRoles = []) => {
   return asyncHandler(async (req, res, next) => {
-    
     const { projectId } = req.params;
     const userId = req.user?._id;
 
-    
-    
     if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
       throw new ApiError(400, "Task Id is missing or invalid.");
     }
@@ -123,12 +119,12 @@ export const validateTaskPermission = (allowedRoles = []) => {
       project: new mongoose.Types.ObjectId(projectId),
       user: new mongoose.Types.ObjectId(userId),
     });
-    
+
     if (!user) {
       throw new ApiError(404, `You are not a part of this task.`);
     }
     const userRole = user.role;
-    
+
     req.user.role = userRole;
     if (!allowedRoles.includes(userRole)) {
       throw new ApiError(403, "You do not have permission to perform this action.");
