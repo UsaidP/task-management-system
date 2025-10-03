@@ -3,7 +3,11 @@ export const UserRoleEnum = {
   PROJECT_ADMIN: "project_admin",
   MEMBER: "member",
 };
-
+export const ROLE_HIERARCHY = {
+  [UserRoleEnum.ADMIN]: 3,
+  [UserRoleEnum.PROJECT_MEMBER]: 2,
+  [UserRoleEnum.MEMBER]: 1,
+};
 export const AvailableUserRole = Object.values(UserRoleEnum);
 
 export const TaskStatusEnum = {

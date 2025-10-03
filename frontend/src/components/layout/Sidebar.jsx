@@ -20,7 +20,9 @@ const Sidebar = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const userdata = JSON.stringify(user);
 
+  console.log("USER", user.username);
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -136,9 +138,9 @@ const Sidebar = () => {
         >
           <button
             onClick={() => setIsModalOpen(true)}
-            className="w-full btn-primary group"
+            className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2 text-white transition-colors hover:btn-primary-hover"
           >
-            <FiPlusSquare className="mr-2 group-hover:rotate-90 transition-transform duration-200" />
+            <FiPlusSquare className="mr-2 transition-transform duration-200 group-hover:rotate-90" />
             Create Project
           </button>
         </motion.div>
