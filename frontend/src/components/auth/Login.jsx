@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from "react-icons/fi";
-import { useAuth } from "../context/customHook.js"; 
+import { useAuth } from "../context/customHook.js";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -133,21 +133,19 @@ export const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary group"
+              className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2 text-white transition-colors hover:btn-primary-hover disabled:cursor-not-allowed disabled:btn-disabled"
             >
               {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="loading-dots">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
+                <div className="loading-dots">
+                  {/* Ensure you have CSS for this class to create a spinner */}
+                  <div></div>
+                  <div></div>
+                  <div></div>
                 </div>
               ) : (
                 <>
-                  Sign In
-                  <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  <span>Sign In</span>
+                  <FiArrowRight className="ml-2 transition-transform duration-200 group-hover:translate-x-1" />
                 </>
               )}
             </button>

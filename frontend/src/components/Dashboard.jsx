@@ -303,8 +303,8 @@ const Dashboard = () => {
             <p className="text-text-secondary mb-6">
               Create your first project to get started with task management.
             </p>
-            <button className="btn-primary">
-              <FiPlus className="mr-2" />
+            <button className="btn-primary flex m-auto p-auto">
+              <FiPlus className="mr-2 flex m-auto p-auto" />
               Create Project
             </button>
           </motion.div>
