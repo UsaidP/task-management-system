@@ -8,7 +8,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 export const addMember = asyncHandler(async (req, res, next) => {
   const { projectId } = req.params;
   const { email, role } = req.body;
-  console.info(email);
+  console.info(role);
   if (!projectId) {
     throw new ApiError(401, "Project Id not found from params");
   }
@@ -103,7 +103,7 @@ export const updateMember = asyncHandler(async (req, res, next) => {
 export const removeMember = asyncHandler(async (req, res, next) => {
   const { projectId } = req.params;
   const { userId } = req.body;
-
+  console.log(userId, +"    " + projectId);
   if (!projectId || !userId) {
     throw new ApiError(400, "Project ID and User ID are required.");
   }
@@ -145,14 +145,10 @@ export const getAllMembers = asyncHandler(async (req, res, next) => {
     .populate("project", "name ");
 
   if (!members) {
-    return res
-      .status(200)
-      .json(new ApiResponse(200, [], "No members found for this project."));
+    return res.status(200).json(new ApiResponse(200, [], "No members found for this project."));
   }
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, members, "Project members retrieved"));
+  res.status(200).json(new ApiResponse(200, members, "Project members retrieved"));
   next();
 });
 export const projectMemberController = {

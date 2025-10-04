@@ -3,6 +3,7 @@ import { useAuth } from "./context/customHook.js";
 
 const Header = () => {
   const { user, logout } = useAuth();
+  console.log(user);
 
   return (
     <header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 shadow-md">
@@ -13,7 +14,7 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <span className="mr-4 text-gray-800 dark:text-white">
-          Welcome, {user.data?.fullname || "User"}
+          Welcome, {String(user?.fullname).toLocaleUpperCase() || "User"}
         </span>
         <button
           onClick={logout}

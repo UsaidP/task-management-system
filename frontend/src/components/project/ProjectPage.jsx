@@ -31,6 +31,7 @@ const ProjectPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [testData, setTestData] = useState([]);
 
   useEffect(() => {
     const fetchProjectData = async () => {
@@ -40,7 +41,6 @@ const ProjectPage = () => {
             apiService.getProjectById(projectId),
             apiService.getTasksByProjectId(projectId),
             apiService.getAllMembers(projectId),
-            apiService.addMember(projectId),
           ]);
 
         if (projectResponse.success) {
@@ -76,6 +76,7 @@ const ProjectPage = () => {
         }
 
         if (membersResponse.success) {
+          setTestData(membersResponse.data);
           setMembers(membersResponse.data);
         } else {
           setError((prev) => prev + " Failed to fetch members");
@@ -204,7 +205,6 @@ const ProjectPage = () => {
           </button>
         </motion.div>
       </div>
-
       {/* Kanban Board */}
       {loading ? (
         <div className="flex-1 flex gap-8 pb-6">
@@ -229,7 +229,6 @@ const ProjectPage = () => {
           openDeleteModal={openDeleteModal}
         />
       )}
-
       {/* Modals */}
       <CreateTaskModal
         isOpen={isCreateModalOpen}
@@ -237,14 +236,20 @@ const ProjectPage = () => {
         onTaskCreated={handleTaskCreated}
         projectId={projectId}
       />
-
+      <ProjectMembers
+        isOpen={isMembersModalOpen}
+        onClose={() => setIsMembersModalOpen(false)}
+        projectId={projectId}
+        members={members}
+        setMembers={setMembers}
+      />
       <EditTaskModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onTaskUpdated={handleTaskUpdated}
         task={selectedTask}
       />
-
+      /
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

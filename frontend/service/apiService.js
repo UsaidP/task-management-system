@@ -144,6 +144,7 @@ class ApiService {
   }
 
   async addMember(projectId, email, role) {
+    console.log(projectId, email, role);
     return await this.customFetch(`/members/add/${projectId}`, {
       method: "POST",
       body: JSON.stringify({ email, role }),
