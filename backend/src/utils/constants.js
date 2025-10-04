@@ -5,7 +5,7 @@ export const UserRoleEnum = {
 };
 export const ROLE_HIERARCHY = {
   [UserRoleEnum.ADMIN]: 3,
-  [UserRoleEnum.PROJECT_MEMBER]: 2,
+  [UserRoleEnum.PROJECT_ADMIN]: 2,
   [UserRoleEnum.MEMBER]: 1,
 };
 export const AvailableUserRole = Object.values(UserRoleEnum);

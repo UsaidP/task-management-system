@@ -76,8 +76,9 @@ export const validateProjectPermission = (allowedRoles = []) => {
     const { projectId } = req.params;
     const userId = req.user._id;
 
+    console.log("Validating project permission for user:", userId, "on project:", projectId);
     // Validate projectId
-    if (!isValidObjectId(projectId)) {
+    if ((!projectId, !mongoose.Types.ObjectId.isValid(projectId))) {
       throw new ApiError(400, "Invalid project ID.");
     }
 

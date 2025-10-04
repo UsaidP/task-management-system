@@ -20,6 +20,7 @@ class ApiService {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("API service data", data);
 
         return data;
       } else {

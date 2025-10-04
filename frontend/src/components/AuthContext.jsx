@@ -5,88 +5,190 @@ export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Initial auth check loading state
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   useEffect(() => {
-    // Check if the user is already logged in when the app loads
-    // Inside your useEffect
+    let isMounted = true; // Prevent state updates if component unmounts
+
     const checkLoggedIn = async () => {
       try {
+        console.log("🔍 Checking authentication status...");
+
         const response = await apiService.getUserProfile();
-        if (response.success) {
+
+        if (isMounted && response?.success && response?.data) {
+          console.log("✅ User authenticated:", response.data);
           setUser(response.data);
+          setIsAuthenticated(true);
+        } else {
+          console.log("❌ No valid user data in response");
+          setUser(null);
+          setIsAuthenticated(false);
         }
       } catch (error) {
-        // Check if the error is because the token expired (e.g., a 401 status)
-        if (error.response && error.response.status === 401) {
+        console.error("❌ Authentication check error:", error);
+
+        // Handle 401 - Try to refresh token
+        if (error?.response?.status === 401) {
+          console.log("🔄 Token expired, attempting to refresh...");
+
           try {
-            // If it's a 401, try to refresh the session
             const refreshResponse = await apiService.refreshSession();
-            if (refreshResponse.success) {
-              // If refresh succeeds, the new token is now in a cookie,
-              // so we can fetch the user profile again.
+
+            if (isMounted && refreshResponse?.success) {
+              console.log("✅ Token refreshed successfully");
+
+              // Fetch user profile again with new token
               const newResponse = await apiService.getUserProfile();
-              setUser(newResponse.data);
+
+              if (isMounted && newResponse?.success && newResponse?.data) {
+                console.log(
+                  "✅ User profile fetched after refresh:",
+                  newResponse.data
+                );
+                setUser(newResponse.data);
+                setIsAuthenticated(true);
+              } else {
+                console.log("❌ Failed to fetch user profile after refresh");
+                setUser(null);
+                setIsAuthenticated(false);
+              }
             } else {
-              // If refresh fails, the user is logged out
-              setUser(null);
+              console.log("❌ Token refresh failed");
+              if (isMounted) {
+                setUser(null);
+                setIsAuthenticated(false);
+              }
             }
           } catch (refreshError) {
-            console.error("Session refresh failed:", refreshError);
-            setUser(null);
+            console.error("❌ Session refresh error:", refreshError);
+            if (isMounted) {
+              setUser(null);
+              setIsAuthenticated(false);
+            }
           }
         } else {
-          // For any other error, just log it
-          console.error("Not authenticated on load:", error);
-          setUser(null);
+          // Other errors (network, server, etc.)
+          console.log("❌ Authentication failed (non-401 error)");
+          if (isMounted) {
+            setUser(null);
+            setIsAuthenticated(false);
+          }
         }
       } finally {
-        setLoading(false);
+        // CRITICAL: Always set loading to false, regardless of outcome
+        if (isMounted) {
+          console.log("✅ Auth check complete, setting loading to false");
+          setLoading(false);
+        }
       }
     };
 
     checkLoggedIn();
-  }, []);
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Run once on mount
 
   const login = async (identifier, password) => {
-    const response = await apiService.login(identifier, password);
-    if (response.success) {
-      setUser(response.data);
+    try {
+      const response = await apiService.login(identifier, password);
+
+      if (response?.success && response?.data) {
+        console.log("✅ Login successful:", response.data);
+        setUser(response.data);
+        setIsAuthenticated(true);
+      } else {
+        console.log("❌ Login failed: Invalid response");
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+
+      return response;
+    } catch (error) {
+      console.error("❌ Login error:", error);
+      setUser(null);
+      setIsAuthenticated(false);
+      throw error;
     }
-    return response; // Return the full response for component-level error handling
   };
 
   const logout = async () => {
-    await apiService.logout();
-    setUser(null);
+    try {
+      await apiService.logout();
+      console.log("✅ Logout successful");
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+    } finally {
+      // Always clear user state on logout
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   const signup = async (username, fullname, password, email, role, avatar) => {
-    return await apiService.signup(
-      username,
-      fullname,
-      password,
-      email,
-      role,
-      avatar
-    );
+    try {
+      const response = await apiService.signup(
+        username,
+        fullname,
+        password,
+        email,
+        role,
+        avatar
+      );
+
+      console.log("✅ Signup response:", response);
+      return response;
+    } catch (error) {
+      console.error("❌ Signup error:", error);
+      throw error;
+    }
   };
 
   const forget_password = async (email) => {
-    return await apiService.forget_password(email);
+    try {
+      const response = await apiService.forget_password(email);
+      console.log("✅ Forget password response:", response);
+      return response;
+    } catch (error) {
+      console.error("❌ Forget password error:", error);
+      throw error;
+    }
   };
 
   const reset_password = async (password, token) => {
-    return await apiService.reset_password(password, token);
+    try {
+      const response = await apiService.reset_password(password, token);
+      console.log("✅ Reset password response:", response);
+      return response;
+    } catch (error) {
+      console.error("❌ Reset password error:", error);
+      throw error;
+    }
   };
+
   const refreshSession = async () => {
     try {
       const response = await apiService.refreshToken();
-      if (response.success) {
+
+      if (response?.success && response?.data) {
+        console.log("✅ Session refreshed:", response.data);
         setUser(response.data);
+        setIsAuthenticated(true);
+      } else {
+        console.log("❌ Session refresh failed: Invalid response");
+        setUser(null);
+        setIsAuthenticated(false);
       }
+
       return response;
     } catch (error) {
+      console.error("❌ Session refresh error:", error);
       setUser(null);
+      setIsAuthenticated(false);
       throw error;
     }
   };
@@ -94,6 +196,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     loading,
+    isAuthenticated,
     login,
     logout,
     signup,
@@ -102,18 +205,31 @@ export const AuthProvider = ({ children }) => {
     refreshSession,
   };
 
-  // We don't render the app until we've checked for an active session
+  // Debug: Log state changes
+  useEffect(() => {
+    console.log("📊 Auth State Changed:", {
+      user: user ? user.username || user.name || "User loaded" : null,
+      loading,
+      isAuthenticated,
+    });
+  }, [user, loading, isAuthenticated]);
+
   return (
-    // we have the access of Provider which come from "createContext" hook.
-    // which data should be available for other components to use "we have to wrap inside this Provider"
-    // which values we have to send from here "we have set the values which value can be accessible to other components"
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {/* OPTION 1: Only show children after loading completes */}
+      {/* {!loading && children} */}
+
+      {/* { OPTION 2: Show loading indicator (uncomment if you prefer this) */}
+      {loading ? (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading...</p>
+          </div>
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
-};
-
-// Custom hook to use the auth context
-export const useAuth = () => {
-  return useContext(AuthContext);
 };

@@ -89,7 +89,7 @@ const ProjectMembers = ({
             className="px-3 py-2 bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition"
           >
             <option value="member">Member</option>
-            <option value="project-admin">Project Admin</option>
+            <option value="project_admin">Project Admin</option>
           </select>
           <button
             type="submit"

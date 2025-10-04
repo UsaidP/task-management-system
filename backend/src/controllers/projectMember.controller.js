@@ -8,7 +8,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 export const addMember = asyncHandler(async (req, res, next) => {
   const { projectId } = req.params;
   const { email, role } = req.body;
-  console.info(role);
+  // console.info(role);
   if (!projectId) {
     throw new ApiError(401, "Project Id not found from params");
   }
@@ -25,7 +25,7 @@ export const addMember = asyncHandler(async (req, res, next) => {
   }
   const user = await User.findOne({ email: email });
   const userId = user?._id;
-  console.log(user);
+  console.log(role);
   if (!user) {
     throw new ApiError(404, "User not found in database.");
   }
