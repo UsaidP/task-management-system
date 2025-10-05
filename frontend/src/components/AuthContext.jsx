@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (identifier, password) => {
     try {
       const response = await apiService.login(identifier, password);
-
+      console.log("AuthContext Login response " + response);
       if (response?.success && response?.data) {
         console.log("✅ Login successful:", response.data);
         setUser(response.data);

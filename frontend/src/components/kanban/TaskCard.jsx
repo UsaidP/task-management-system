@@ -33,7 +33,8 @@ const TaskCard = ({ task, index, onEdit, onDelete, members, onDrop }) => {
         return;
       }
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
@@ -85,9 +86,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, members, onDrop }) => {
       onClick={() => onEdit(task)}
       className={`card-interactive border-l-4 ${getPriorityColor(
         task.priority
-      )} cursor-pointer group ${
-        isDragging ? "shadow-glow-lg rotate-2" : ""
-      }`}
+      )} cursor-pointer group ${isDragging ? "shadow-glow-lg rotate-2" : ""}`}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-2">

@@ -17,6 +17,7 @@ class ApiService {
         credentials: "include",
       };
       const response = await fetch(url, config);
+      console.log("Fetch Response" + response);
 
       if (response.ok) {
         const data = await response.json();
