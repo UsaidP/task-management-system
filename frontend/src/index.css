@@ -93,6 +93,33 @@
   background: rgba(156, 163, 175, 0.5);
 }
 
+/* Scrollbar utilities */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+.scrollbar-thumb-border::-webkit-scrollbar-thumb {
+  background: rgba(55, 65, 81, 0.5);
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 /* Loading animation */
 .loading-dots {
   display: inline-block;
