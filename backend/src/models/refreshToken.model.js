@@ -30,6 +30,12 @@ const refreshTokenSchema = new Schema({
     required: true,
     default: Date.now,
   },
+  // In refreshTokenSchema
+  status: {
+    type: String,
+    enum: ["active", "revoked"],
+    default: "active",
+  },
   expiresAt: {
     type: Date,
     required: true,

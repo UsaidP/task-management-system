@@ -249,7 +249,7 @@ const ProjectPage = () => {
         onTaskUpdated={handleTaskUpdated}
         task={selectedTask}
       />
-      /
+
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

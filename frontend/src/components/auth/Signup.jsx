@@ -272,14 +272,13 @@ export const Signup = () => {
                     <div></div>
                     <div></div>
                     <div></div>
-                    <div></div>
                   </div>
                 </div>
               ) : (
-                <>
+                <div className="flex items-center justify-center">
                   Create Account
-                  <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </>
+                  <FiArrowRight className=" flex  ml-2 group-hover:translate-x-1 transition-transform" />
+                </div>
               )}
             </button>
           </form>

@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import apiService from "../../service/apiService.js";
 
 export const AuthContext = createContext(null);

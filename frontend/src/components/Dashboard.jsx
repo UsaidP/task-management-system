@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "./context/customHook.js";
 import { motion } from "framer-motion";
@@ -116,10 +116,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        console.log(Object(userID) + "UserID");
         const response = await apiService.getAllProjects();
         const tastResponce = await apiService.getAllTasks(userID);
-        console.log(userID + "UserID");
-        console.log("Task Data" + tastResponce);
+        // console.log(userID + "UserID");
+        console.log("Task Data" + JSON.stringify(tastResponce));
         if (response.success) {
           const projectsData = response.data.projects;
           setProjects(projectsData.slice(0, 6)); // Show only first 6 projects

@@ -2,12 +2,22 @@ import mongoose from "mongoose";
 import { Task } from "../models/task.model.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { Project } from "../models/project.model.js";
-import { ProjectNote } from "../models/note.model.js";
+import { ProjectNote } from "../models/projectnote.model.js";
 import ApiError from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 
 const createTask = asyncHandler(async (req, res, next) => {
-  const { title, description, assignedTo, status, attachments } = req.body;
+  const {
+    title,
+    description,
+    assignedTo,
+    status,
+    attachments,
+    dueDate,
+    priority,
+    subtasks,
+    comments,
+  } = req.body;
   const { projectId, noteId } = req.params;
   const userID = req.user._id;
 
@@ -94,8 +104,19 @@ const getAllTasks = asyncHandler(async (req, res, next) => {
       message: "Login to view tasks",
     });
   }
-  const tasks = await Project.find({ members: userID });
-  console.log(tasks);
+
+  // 1. Find all projects the user is a member of, selecting only their IDs for efficiency.
+  const userProjects = await Project.find({ members: userID }).select("_id");
+
+  // 2. Create an array of just the project IDs.
+  const projectIds = userProjects.map((project) => project._id);
+
+  // 3. Find all tasks where the 'project' field is in our array of project IDs.
+  // This fetches all tasks from all projects the user is a member of.
+  const tasks = await Task.find({ project: { $in: projectIds } });
+
+  console.log(`Found ${tasks.length} tasks for user ${userID}`);
+
   return res.status(200).json(new ApiResponse(200, tasks, "Tasks fetched successfully"));
 });
 const getTaskById = asyncHandler(async (req, res, next) => {
