@@ -6,31 +6,25 @@ const router = Router();
 import {
   createTask,
   deleteTask,
+  getAllTasks,
   getTaskById,
   getTasks,
   updateTask,
 } from "../controllers/task.controller.js";
-import {
-  protect,
-  validateProjectPermission,
-} from "../middlewares/auth.middleware.js";
+import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js";
 import { UserRoleEnum } from "../utils/constants.js";
 import { asyncHandler } from "../utils/async-handler.js";
 
 router
   .route("/:projectId")
-  .post(
+  .post(protect, asyncHandler(createTask))
+  .get(
     protect,
     validateProjectPermission([
       UserRoleEnum.ADMIN,
       UserRoleEnum.PROJECT_ADMIN,
       UserRoleEnum.MEMBER,
     ]),
-    asyncHandler(createTask)
-  )
-  .get(
-    protect,
-    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN, UserRoleEnum.MEMBER]),
     asyncHandler(getTasks)
   );
 

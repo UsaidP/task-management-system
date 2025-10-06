@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userID, setUserID] = useState(null);
 
   useEffect(() => {
     let isMounted = true; // Prevent state updates if component unmounts
@@ -19,6 +20,7 @@ export const AuthProvider = ({ children }) => {
 
         if (isMounted && response?.success && response?.data) {
           console.log("✅ User authenticated:", response.data);
+          setUserID(response.data._id);
           setUser(response.data);
           setIsAuthenticated(true);
         } else {
@@ -195,6 +197,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    userID,
     loading,
     isAuthenticated,
     login,

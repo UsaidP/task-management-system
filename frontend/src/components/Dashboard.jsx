@@ -97,7 +97,7 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
 );
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, userID } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -117,7 +117,9 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         const response = await apiService.getAllProjects();
-        console.log(response);
+        const tastResponce = await apiService.getAllTasks(userID);
+        console.log(userID + "UserID");
+        console.log("Task Data" + tastResponce);
         if (response.success) {
           const projectsData = response.data.projects;
           setProjects(projectsData.slice(0, 6)); // Show only first 6 projects

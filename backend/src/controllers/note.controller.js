@@ -73,7 +73,10 @@ const getNoteById = asyncHandler(async (req, res, next) => {
   if (!noteId || !mongoose.isValidObjectId(noteId)) {
     throw new ApiError(401, "provide valid note id");
   }
-  const note = await ProjectNote.findById(noteId).populate("createdBy", "name");
+  const note = await ProjectNote.findById(noteId).populate(
+    "createdBy",
+    "name fullname email avatar"
+  );
   if (!note) {
     throw new ApiError(404, "Note not found");
   }

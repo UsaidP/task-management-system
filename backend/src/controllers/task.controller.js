@@ -85,6 +85,19 @@ const getTasks = asyncHandler(async (req, res, next) => {
   return res.status(200).json(new ApiResponse(200, tasks, "Tasks fetched successfully"));
 });
 
+const getAllTasks = asyncHandler(async (req, res, next) => {
+  const userID = req.user._id;
+
+  if (!userID) {
+    return res.status(401).json({
+      success: false,
+      message: "Login to view tasks",
+    });
+  }
+  const tasks = await Project.find({ members: userID });
+  console.log(tasks);
+  return res.status(200).json(new ApiResponse(200, tasks, "Tasks fetched successfully"));
+});
 const getTaskById = asyncHandler(async (req, res, next) => {
   const { taskId } = req.params;
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
@@ -104,11 +117,7 @@ const updateTask = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "Invalid task ID");
   }
 
-  const task = await Task.findByIdAndUpdate(
-    taskId,
-    { $set: updateData },
-    { new: true }
-  );
+  const task = await Task.findByIdAndUpdate(taskId, { $set: updateData }, { new: true });
   if (!task) {
     throw new ApiError(404, "Task not found");
   }
@@ -135,4 +144,4 @@ const deleteTask = asyncHandler(async (req, res, next) => {
   return res.status(200).json(new ApiResponse(200, null, "Task deleted successfully"));
 });
 
-export { createTask, getTasks, getTaskById, updateTask, deleteTask };
+export { createTask, getTasks, getTaskById, updateTask, deleteTask, getAllTasks };

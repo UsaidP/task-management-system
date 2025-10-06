@@ -3,7 +3,7 @@ import apiService from "../../../service/apiService.js";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { FiX, FiUserPlus } from "react-icons/fi";
-import { m } from "framer-motion";
+import { Listbox } from "@headlessui/react"; // 1. Import Listbox
 
 const ProjectMembers = ({
   isOpen,
@@ -14,12 +14,22 @@ const ProjectMembers = ({
 }) => {
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("member", "project_admin");
+  // This useState had a bug with two arguments, it's now fixed.
+  const [role, setRole] = useState("member");
+
+  // 2. Define roles for the Listbox
+  const availableRoles = [
+    { id: "member", name: "Member" },
+    { id: "project_admin", name: "Project Admin" },
+  ];
+
+  // Find the full object for the currently selected role string
+  const selectedRoleObject = availableRoles.find((r) => r.id === role);
 
   useEffect(() => {
     if (!isOpen) {
       setEmail("");
-      setRole("member", "project_admin");
+      setRole("member"); // Reset to default
       setError("");
     }
   }, [isOpen]);
@@ -34,6 +44,7 @@ const ProjectMembers = ({
     const toastId = toast.loading("Adding member...");
 
     try {
+      // No change here, 'role' is still a string ("member" or "project_admin")
       const response = await apiService.addMember(projectId, email, role);
       if (response.success) {
         toast.success("Member added successfully!", { id: toastId });
@@ -49,7 +60,6 @@ const ProjectMembers = ({
   };
 
   const handleRemoveMember = async (userId) => {
-    // console.log(userId);
     const toastId = toast.loading("Removing member...");
     try {
       await apiService.removeMember(projectId, userId);
@@ -61,8 +71,7 @@ const ProjectMembers = ({
       toast.error(errorMessage, { id: toastId });
     }
   };
-  {
-  }
+
   if (!isOpen) {
     return null;
   }
@@ -83,17 +92,47 @@ const ProjectMembers = ({
             className="flex-grow px-3 py-2 bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition"
             required
           />
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="px-3 py-2 bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition"
-          >
-            <option value="member">Member</option>
-            <option value="project_admin">Project Admin</option>
-          </select>
+
+          {/* 3. Replaced <select> with Headless UI <Listbox> */}
+          <Listbox value={role} onChange={setRole}>
+            <div className="relative">
+              <Listbox.Button className="w-full sm:w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left focus:outline-none focus:ring-2 focus:ring-secondary transition">
+                <span className="block truncate">
+                  {selectedRoleObject?.name}
+                </span>
+                {/* You can add a chevron icon here if you want */}
+              </Listbox.Button>
+              <Listbox.Options className="absolute z-10 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none">
+                {availableRoles.map((roleItem) => (
+                  <Listbox.Option
+                    key={roleItem.id}
+                    value={roleItem.id}
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-4 ${
+                        active
+                          ? "bg-primary-dark text-white"
+                          : "text-text-primary"
+                      }`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${
+                          selected ? "font-semibold" : "font-normal"
+                        }`}
+                      >
+                        {roleItem.name}
+                      </span>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
+
           <button
             type="submit"
-            className="flex items-center justify-center gap-2 px-4 py-2 font-semibold text-background bg-primary rounded-lg hover:bg-primary-hover transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2 font-semibold btn-primary rounded-lg hover:btn-primary-hover transition-colors"
           >
             <FiUserPlus />
             Add
@@ -106,43 +145,38 @@ const ProjectMembers = ({
 
         {/* Members List */}
         <ul className="space-y-2 max-h-80 overflow-y-auto pr-2">
-          {members.map(
-            (member) => (
-              console.log(member),
-              (
-                <li
-                  key={member.user._id}
-                  className="flex justify-between items-center p-3 bg-surface border border-border rounded-lg"
-                >
-                  <div className="flex items-center">
-                    <img
-                      src={
-                        member.user.avatar ||
-                        `https://i.pravatar.cc/150?u=${member.user._id}`
-                      }
-                      alt={member.user.username}
-                      className="w-9 h-9 rounded-full mr-3 object-cover"
-                    />
-                    <div>
-                      <p className="font-semibold text-text-primary">
-                        {member?.user?.email}
-                      </p>
-                      <p className="text-sm text-text-secondary capitalize">
-                        {member.role.replace("_", " ")}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleRemoveMember(member.user._id)}
-                    className="p-1 rounded-full text-muted hover:text-danger hover:bg-danger/10 transition-colors"
-                    aria-label={`Remove ${member.user.username}`}
-                  >
-                    <FiX size={20} />
-                  </button>
-                </li>
-              )
-            )
-          )}
+          {members.map((member) => (
+            <li
+              key={member.user._id}
+              className="flex justify-between items-center p-3 bg-surface border border-border rounded-lg"
+            >
+              <div className="flex items-center">
+                <img
+                  src={
+                    member.user.avatar ||
+                    `https://i.pravatar.cc/150?u=${member.user._id}`
+                  }
+                  alt={member.user.username}
+                  className="w-9 h-9 rounded-full mr-3 object-cover"
+                />
+                <div>
+                  <p className="font-semibold text-text-primary">
+                    {member?.user?.email}
+                  </p>
+                  <p className="text-sm text-text-secondary capitalize">
+                    {member.role.replace("_", " ")}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => handleRemoveMember(member.user._id)}
+                className="p-1 rounded-full text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+                aria-label={`Remove ${member.user.username}`}
+              >
+                <FiX size={20} />
+              </button>
+            </li>
+          ))}
         </ul>
       </div>
     </Modal>

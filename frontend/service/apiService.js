@@ -17,7 +17,7 @@ class ApiService {
         credentials: "include",
       };
       const response = await fetch(url, config);
-      console.log("Fetch Response" + response);
+      console.log("Custom Fetch Response" + response);
 
       if (response.ok) {
         const data = await response.json();
@@ -133,6 +133,18 @@ class ApiService {
     });
   }
 
+  async getTaskById(projectId, taskId) {
+    return await this.customFetch(`/tasks/${projectId}/${taskId}`, {
+      method: "GET",
+    });
+  }
+
+  async getAllTasks(userID) {
+    console.log("USERID" + userID);
+    return await this.customFetch(`/dashboard/${userID}`, {
+      method: "GET",
+    });
+  }
   async deleteTask(projectId, taskId) {
     return await this.customFetch(`/tasks/${projectId}/${taskId}`, {
       method: "DELETE",
