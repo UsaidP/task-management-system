@@ -31,8 +31,8 @@ const createNotes = asyncHandler(async (req, res, next) => {
     throw new ApiError(401, "provide notes");
   }
   const note = await ProjectNote.create({
-    project,
-    createdBy: req.user._id,
+    project: new mongoose.Types.ObjectId(project),
+    createdBy: new mongoose.Types.ObjectId(req.user._id),
     content,
   });
   if (!note) {

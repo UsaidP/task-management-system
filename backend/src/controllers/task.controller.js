@@ -10,9 +10,11 @@ const createTask = asyncHandler(async (req, res, next) => {
   const {
     title,
     description,
+    createdBy,
     assignedTo,
     status,
     attachments,
+    startDate,
     dueDate,
     priority,
     subtasks,
@@ -21,10 +23,10 @@ const createTask = asyncHandler(async (req, res, next) => {
   const { projectId, noteId } = req.params;
   const userID = req.user._id;
 
-  if (!title || !description) {
+  if (!title) {
     return res.status(400).json({
       success: false,
-      message: "Title and description are required",
+      message: "Title is required",
     });
   }
 
@@ -54,6 +56,7 @@ const createTask = asyncHandler(async (req, res, next) => {
     title,
     description,
     project: projectId,
+    createdBy: new mongoose.Types.ObjectId(userID),
     assignedBy: new mongoose.Types.ObjectId(userID),
     assignedTo,
     status,
@@ -65,7 +68,7 @@ const createTask = asyncHandler(async (req, res, next) => {
     if (!note) {
       throw new ApiError(404, "Note not found");
     }
-    taskData.note = noteId; // Assuming Task model has a 'note' field
+    taskData.note = noteId; // Assuming Task model has a "note field"
   }
 
   const task = await Task.create(taskData);

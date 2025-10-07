@@ -8,7 +8,7 @@ const Column = ({ children, status, onDrop }) => {
   }));
 
   return (
-    <div ref={drop} className="w-96 flex-shrink-0 glass rounded-xl p-6">
+    <div ref={drop} className=" w-fit flex-shrink-0 rounded-xl ">
       {children}
     </div>
   );

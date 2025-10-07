@@ -8,7 +8,8 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('todo');
-  const [priority, setPriority] = useState('medium');
+  const [priority, setPriority] = useState('Medium');
+  const [dueDate, setDueDate] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -19,12 +20,16 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId }) => {
     const toastId = toast.loading('Creating task...');
 
     try {
-      const response = await apiService.createTask(projectId, { 
+      const taskData = { 
         title, 
         description, 
         status,
-        priority 
-      });
+        priority,
+      };
+      if (dueDate) {
+        taskData.dueDate = dueDate;
+      }
+      const response = await apiService.createTask(projectId, taskData);
       if (response.success) {
         toast.success('Task created successfully!', { id: toastId });
         onTaskCreated(response.task);
@@ -32,7 +37,8 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId }) => {
         setTitle('');
         setDescription('');
         setStatus('todo');
-        setPriority('medium');
+        setPriority('Medium');
+        setDueDate('');
         onClose();
       }
     } catch (err) {
@@ -48,7 +54,8 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId }) => {
     setTitle('');
     setDescription('');
     setStatus('todo');
-    setPriority('medium');
+    setPriority('Medium');
+    setDueDate('');
     setError('');
     onClose();
   };
@@ -106,7 +113,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId }) => {
 
                 <div>
                   <label htmlFor="description" className="block text-sm font-medium text-text-primary mb-2">
-                    Description *
+                    Description
                   </label>
                   <textarea
                     id="description"
@@ -114,12 +121,11 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId }) => {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the task..."
                     rows="4"
-                    required
                     className="input-field resize-none"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="status" className="block text-sm font-medium text-text-primary mb-2">
                       Status
@@ -132,7 +138,8 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId }) => {
                     >
                       <option value="todo">To Do</option>
                       <option value="in-progress">In Progress</option>
-                      <option value="done">Done</option>
+                      <option value="under-review">Under Review</option>
+                      <option value="completed">Completed</option>
                     </select>
                   </div>
 
@@ -146,11 +153,25 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId }) => {
                       onChange={(e) => setPriority(e.target.value)}
                       className="input-field"
                     >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                      <option value="Urgent">Urgent</option>
                     </select>
                   </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="dueDate" className="block text-sm font-medium text-text-primary mb-2">
+                    Due Date
+                  </label>
+                  <input
+                    type="date"
+                    id="dueDate"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="input-field"
+                  />
                 </div>
 
                 {error && (
