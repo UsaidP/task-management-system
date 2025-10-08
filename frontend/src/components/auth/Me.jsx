@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import apiService from "../../../service/apiService.js";
+import toast from "react-hot-toast";
 
 const Me = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -25,6 +29,40 @@ const Me = () => {
 
     fetchUserProfile();
   }, []);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      toast.error("Please select a file first.");
+      return;
+    }
+
+    setIsUploading(true);
+    const toastId = toast.loading("Uploading avatar...");
+    const formData = new FormData();
+    formData.append("avatar", selectedFile);
+
+    try {
+      const response = await apiService.updateAvatar(formData);
+
+      if (response.success) {
+        setUserProfile(response.data);
+        toast.success("Avatar updated successfully!", { id: toastId });
+        setSelectedFile(null);
+      }
+    } catch (err) {
+      const errorMessage = err.data?.message || "Failed to upload avatar.";
+      toast.error(errorMessage, { id: toastId });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   if (loading) {
     return <div className="p-5 text-center text-lg">Loading profile...</div>;
@@ -74,6 +112,36 @@ const Me = () => {
             <p className="text-md text-gray-500 dark:text-gray-400">
               @{username}
             </p>
+          </div>
+
+          <div className="space-y-2 mb-6">
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current.click()}
+              className="w-full btn-secondary"
+            >
+              Change Avatar
+            </button>
+            {selectedFile && (
+              <div className="text-center text-sm text-gray-500 mt-2">
+                Selected: {selectedFile.name}
+              </div>
+            )}
+            {selectedFile && (
+              <button
+                onClick={handleUpload}
+                disabled={isUploading}
+                className="w-full btn-primary mt-2"
+              >
+                {isUploading ? "Uploading..." : "Upload New Image"}
+              </button>
+            )}
           </div>
 
           <div className="space-y-4">

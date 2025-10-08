@@ -48,7 +48,7 @@ const ProjectMembers = ({
       const response = await apiService.addMember(projectId, email, role);
       if (response.success) {
         toast.success("Member added successfully!", { id: toastId });
-        setMembers([...members, response.data]);
+        setMembers((prevMembers) => [...prevMembers, response.data]);
         setEmail("");
       }
     } catch (err) {

@@ -1,21 +1,8 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiX } from 'react-icons/fi';
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiX } from "react-icons/fi";
 
-const Modal = ({ isOpen, onClose, title, children, size = 'default' }) => {
-  const getSizeClasses = () => {
-    switch (size) {
-      case 'small':
-        return 'max-w-md';
-      case 'large':
-        return 'max-w-4xl';
-      case 'full':
-        return 'max-w-7xl';
-      default:
-        return 'max-w-2xl';
-    }
-  };
-
+const Modal = ({ isOpen, onClose, title, children }) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -23,36 +10,27 @@ const Modal = ({ isOpen, onClose, title, children, size = 'default' }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
           onClick={onClose}
         >
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          
-          {/* Modal */}
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ duration: 0.2 }}
+            initial={{ scale: 0.95, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="relative bg-surface rounded-xl shadow-lg w-full max-w-lg m-4 border border-border"
             onClick={(e) => e.stopPropagation()}
-            className={`relative w-full ${getSizeClasses()} glass rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden`}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border">
-              <h2 className="text-2xl font-bold text-text-primary">{title}</h2>
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 className="text-xl font-bold text-text-primary">{title}</h2>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-surface-light transition-colors duration-200 group"
+                className="p-1 rounded-full hover:bg-surface-light"
               >
-                <FiX className="w-5 h-5 text-text-muted group-hover:text-text-primary" />
+                <FiX className="w-5 h-5 text-text-muted" />
               </button>
             </div>
-            
-            {/* Content */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-              {children}
-            </div>
+            <div className="p-6">{children}</div>
           </motion.div>
         </motion.div>
       )}

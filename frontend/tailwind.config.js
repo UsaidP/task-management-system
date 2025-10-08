@@ -14,13 +14,18 @@ export default {
         border: "#30363D",
         "surface-light": "#21262D",
         "border-light": "#4A5568",
+        
         "primary-dark": "#0D1117",
         "text-muted": "#8B949E",
+        "text-review": "#007BFF",
         warning: "#F5A623",
         success: "#28A745",
+        // --- ADDED COLORS ---
+        error: "#F85149", // A suitable red for errors/high priority
+        urgent: "#E36209", // A strong orange for urgent priority
       },
       boxShadow: {
-        glow: "0 0 15px rgba(88, 166, 255, 0.5)", // accent color glow
+        glow: "0 0 15px rgba(88, 166, 255, 0.5)",
         card: "0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)",
         "card-hover":
           "0 20px 25px -5px rgba(88, 166, 255, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)",

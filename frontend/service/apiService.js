@@ -11,6 +11,11 @@ class ApiService {
       const url = `${this.baseURL}${endpoint}`;
       const headers = { ...this.defaultHeader, ...options.headers };
 
+      // If body is FormData, let the browser set the Content-Type header
+      if (options.body instanceof FormData) {
+        delete headers["Content-Type"];
+      }
+
       const config = {
         ...options,
         headers,
@@ -196,6 +201,13 @@ class ApiService {
   async deleteSubTask(subtaskId) {
     return await this.customFetch(`/subtasks/subtask/${subtaskId}`, {
       method: "DELETE",
+    });
+  }
+
+  async updateAvatar(formData) {
+    return await this.customFetch("/users/update-avatar", {
+      method: "PUT",
+      body: formData,
     });
   }
 }

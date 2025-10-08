@@ -16,41 +16,43 @@ import { ApiResponse } from "./api-response.js";
  * @returns {Promise<ApiResponse>} A Promise that resolves with an ApiResponse containing the status code and message of the response.
  */
 const sendMail = async (options) => {
-  // console.log(options);
-  const mailGenerator = new Mailgen({
-    theme: "default",
-    product: {
-      name: "Task Manager",
-      link: "https://mailgen.js",
-      copyright: `Copyright © ${new Date().getFullYear()} Mailgen. All rights reserved.`,
-    },
-  });
-  const emailPlainText = mailGenerator.generatePlaintext(options.mailgenContent);
-  const emailHTML = mailGenerator.generate(options.mailgenContent);
-  const transporter = nodemailer.createTransport({
-    host: process.env.MAILTRAP_HOST,
-    port: process.env.MAILTRAP_PORT,
-    secure: false, // true for port 465, false for other ports
-    auth: {
-      user: process.env.MAILTRAP_USERNAME,
-      pass: process.env.MAILTRAP_PASSWORD,
-    },
-  });
-  const mailOptions = {
-    from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>',
-    to: options.email,
-    subject: options.subject,
-    text: emailPlainText,
-    html: emailHTML,
-  };
-  try {
-    await transporter.sendMail(mailOptions);
-    throw new ApiResponse(200, "Email sent successfully");
-  } catch (err) {
-    throw new ApiError(400, "Email not sent");
-  } finally {
-    return;
-  }
+	// console.log(options);
+	const mailGenerator = new Mailgen({
+		theme: "default",
+		product: {
+			name: "Task Manager",
+			link: "https://mailgen.js",
+			copyright: `Copyright © ${new Date().getFullYear()} Mailgen. All rights reserved.`,
+		},
+	});
+	const emailPlainText = mailGenerator.generatePlaintext(
+		options.mailgenContent,
+	);
+	const emailHTML = mailGenerator.generate(options.mailgenContent);
+	const transporter = nodemailer.createTransport({
+		host: process.env.MAILTRAP_HOST,
+		port: process.env.MAILTRAP_PORT,
+		secure: false, // true for port 465, false for other ports
+		auth: {
+			user: process.env.MAILTRAP_USERNAME,
+			pass: process.env.MAILTRAP_PASSWORD,
+		},
+	});
+	const mailOptions = {
+		from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>',
+		to: options.email,
+		subject: options.subject,
+		text: emailPlainText,
+		html: emailHTML,
+	};
+	try {
+		await transporter.sendMail(mailOptions);
+		throw new ApiResponse(200, "Email sent successfully");
+	} catch (err) {
+		throw new ApiError(400, "Email not sent");
+	} finally {
+		return;
+	}
 };
 
 /**
@@ -61,61 +63,61 @@ const sendMail = async (options) => {
  * @returns {Object} - The email content object with body, name, and action/button details.
  */
 
-const emailVerificationMailGenContent = function (username, verificationUrl) {
-  return {
-    body: {
-      name: username,
-      action: {
-        instructions: "To get started with Task Manager, please click here:",
-        button: {
-          color: "#22BC66",
-          text: "Verify your email",
-          link: verificationUrl,
-        },
-        outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
-      },
-    },
-  };
-};
+const emailVerificationMailGenContent = (username, verificationUrl) => ({
+	body: {
+		name: username,
+		action: {
+			instructions: "To get started with Task Manager, please click here:",
+			button: {
+				color: "#22BC66",
+				text: "Verify your email",
+				link: verificationUrl,
+			},
+			outro:
+				"Need help, or have questions? Just reply to this email, we'd love to help.",
+		},
+	},
+});
 
-const reEmailVerificationMailGenContent = function (username, verificationUrl) {
-  return {
-    body: {
-      name: username,
-      action: {
-        instructions: "To get started with Task Manager, please click here:",
-        button: {
-          color: "#22BC66",
-          text: "Verify your email",
-          link: verificationUrl,
-        },
-        outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
-      },
-    },
-  };
-};
+const reEmailVerificationMailGenContent = (username, verificationUrl) => ({
+	body: {
+		name: username,
+		action: {
+			instructions: "To get started with Task Manager, please click here:",
+			button: {
+				color: "#22BC66",
+				text: "Verify your email",
+				link: verificationUrl,
+			},
+			outro:
+				"Need help, or have questions? Just reply to this email, we'd love to help.",
+		},
+	},
+});
 
 const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
-  return {
-    body: {
-      name: username,
-      intro: "We got a request to reset the password of your account",
-      action: {
-        instructions: "To reset your password click on the following button or link:",
-        button: {
-          color: "#22BC66", // Optional action button color
-          text: "Reset password",
-          link: passwordResetUrl,
-        },
-      },
-      outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
-    },
-  };
+	return {
+		body: {
+			name: username,
+			intro: "We got a request to reset the password of your account",
+			action: {
+				instructions:
+					"To reset your password click on the following button or link:",
+				button: {
+					color: "#22BC66", // Optional action button color
+					text: "Reset password",
+					link: passwordResetUrl,
+				},
+			},
+			outro:
+				"Need help, or have questions? Just reply to this email, we'd love to help.",
+		},
+	};
 };
 
 export {
-  sendMail,
-  emailVerificationMailGenContent,
-  forgotPasswordMailgenContent,
-  reEmailVerificationMailGenContent,
+	sendMail,
+	emailVerificationMailGenContent,
+	forgotPasswordMailgenContent,
+	reEmailVerificationMailGenContent,
 };
