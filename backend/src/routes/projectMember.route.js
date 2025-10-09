@@ -1,46 +1,49 @@
 import { Router } from "express";
 import {
-  addMember,
-  projectMemberController,
-  removeMember,
-  updateMember,
+	addMember,
+	projectMemberController,
+	removeMember,
+	updateMember,
 } from "../controllers/projectMember.controller.js";
-import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js";
-import { UserRoleEnum } from "../utils/constants.js";
+import {
+	protect,
+	validateProjectPermission,
+} from "../middlewares/auth.middleware.js";
 import { asyncHandler } from "../utils/async-handler.js";
+import { UserRoleEnum } from "../utils/constants.js";
 
 const router = Router();
 
 router
-  .route("/add/:projectId")
-  .post(
-    protect,
-    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-    asyncHandler(addMember)
-  );
+	.route("/add/:projectId")
+	.post(
+		protect,
+		validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+		asyncHandler(addMember),
+	);
 router
-  .route("/update/:projectId")
-  .post(
-    protect,
-    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-    asyncHandler(updateMember)
-  );
+	.route("/update/:projectId")
+	.post(
+		protect,
+		validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+		asyncHandler(updateMember),
+	);
 router
-  .route("/remove/:projectId")
-  .post(
-    protect,
-    validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-    asyncHandler(removeMember)
-  );
+	.route("/remove/:projectId")
+	.post(
+		protect,
+		validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
+		asyncHandler(removeMember),
+	);
 router
-  .route("/all-members/:projectId")
-  .get(
-    protect,
-    validateProjectPermission([
-      UserRoleEnum.ADMIN,
-      UserRoleEnum.PROJECT_ADMIN,
-      UserRoleEnum.MEMBER,
-    ]),
-    asyncHandler(projectMemberController.getAllMembers)
-  );
+	.route("/all-members/:projectId")
+	.get(
+		protect,
+		validateProjectPermission([
+			UserRoleEnum.ADMIN,
+			UserRoleEnum.PROJECT_ADMIN,
+			UserRoleEnum.MEMBER,
+		]),
+		asyncHandler(projectMemberController.getAllMembers),
+	);
 export default router;
