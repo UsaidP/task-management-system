@@ -1,50 +1,50 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose"
 
 const refreshTokenSchema = new Schema({
-	token: {
-		type: String,
-		required: true,
-		unique: true,
-	},
-	user: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "User",
-		required: true,
-	},
 	deviceInfo: {
-		type: String,
 		required: true,
+		type: String,
+	},
+	expiresAt: {
+		default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+		required: true,
+		type: Date,
 	},
 	ipAddress: {
-		type: String,
-		required: true,
 		default: "unknown",
+		required: true,
+		type: String,
 	},
 	issuedAt: {
-		type: Date,
-		required: true,
 		default: Date.now,
+		required: true,
+		type: Date,
 	},
 	lastUsedAt: {
-		type: Date,
-		required: true,
 		default: Date.now,
+		required: true,
+		type: Date,
 	},
 	// In refreshTokenSchema
 	status: {
-		type: String,
-		enum: ["active", "revoked"],
 		default: "active",
+		enum: ["active", "revoked"],
+		type: String,
 	},
-	expiresAt: {
-		type: Date,
+	token: {
 		required: true,
-		default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+		type: String,
+		unique: true,
 	},
-});
+	user: {
+		ref: "User",
+		required: true,
+		type: mongoose.Schema.Types.ObjectId,
+	},
+})
 
 // TTL Index managed via expiresAt
-refreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+refreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
 
-const RefreshToken = mongoose.model("RefreshToken", refreshTokenSchema);
-export default RefreshToken;
+const RefreshToken = mongoose.model("RefreshToken", refreshTokenSchema)
+export default RefreshToken

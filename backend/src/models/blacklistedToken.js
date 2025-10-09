@@ -2,7 +2,7 @@
 // This is a mongoose model for blacklisted tokens. Blacklisted tokens are tokens that have been
 // expired or have been used to access the API, but are no longer valid. This model is used to
 // store the tokens that have been blacklisted and to check if a token is blacklisted or not.
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 // The model has the following fields:
 // - token: the actual token that has been blacklisted. This is a string and it is required.
@@ -10,28 +10,28 @@ import mongoose from "mongoose";
 // - expiresAt: the date and time when the token will expire. This is a Date object and it is required.
 const blacklistedTokenSchema = new mongoose.Schema(
 	{
-		token: {
-			type: String,
+		expiresAt: {
 			required: true,
+			type: Date,
+		},
+		token: {
+			required: true,
+			type: String,
 			unique: true,
 		},
 		user: {
-			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 			required: true,
-		},
-		expiresAt: {
-			type: Date,
-			required: true,
+			type: mongoose.Schema.Types.ObjectId,
 		},
 	},
 	{ timestamps: true },
-);
+)
 
 // The model also has a timestamps field, which is a mongoose feature that adds two fields to the
 // model: createdAt and updatedAt. These fields are automatically set to the current date and time
 // when the document is created or updated.
-blacklistedTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+blacklistedTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
 
 // The model also has an index on the expiresAt field. This index is used to remove blacklisted
 // tokens that have expired from the database. The expireAfterSeconds option is set to 0, which
@@ -39,7 +39,7 @@ blacklistedTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 const BlacklistedToken = mongoose.model(
 	"BlacklistedToken",
 	blacklistedTokenSchema,
-);
+)
 
 // The model is exported as a default export so that it can be imported and used in other parts
 // of the application.
@@ -48,4 +48,4 @@ const BlacklistedToken = mongoose.model(
 // We need this because we want to make sure that once a user logs out, they cannot access the
 // API with the same token again. This is a security feature that prevents unauthorized access
 // to the API.
-export default BlacklistedToken;
+export default BlacklistedToken

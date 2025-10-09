@@ -1,29 +1,29 @@
-import { Router } from "express";
+import { Router } from "express"
 import {
 	createProject,
 	deleteProject,
 	getAllProjects,
 	getProjectById,
 	updateProject,
-} from "../controllers/project.controller.js";
+} from "../controllers/project.controller.js"
 import {
 	protect,
 	validateProjectPermission,
-} from "../middlewares/auth.middleware.js";
-import { asyncHandler } from "../utils/async-handler.js";
-import { UserRoleEnum } from "../utils/constants.js";
-import { createProjectValidator } from "../validators/auth.validator.js";
+} from "../middlewares/auth.middleware.js"
+import { asyncHandler } from "../utils/async-handler.js"
+import { UserRoleEnum } from "../utils/constants.js"
+import { createProjectValidator } from "../validators/auth.validator.js"
 
-const router = Router();
+const router = Router()
 
-router.post("/create", protect, asyncHandler(createProject));
+router.post("/create", protect, asyncHandler(createProject))
 
 router.post(
 	"/update/:projectId",
 	protect,
 	validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
 	asyncHandler(updateProject),
-);
+)
 router.get(
 	"/get-project-by-id/:projectId",
 	protect,
@@ -33,13 +33,13 @@ router.get(
 		UserRoleEnum.MEMBER,
 	]),
 	asyncHandler(getProjectById),
-);
+)
 router.post(
 	"/delete/:projectId",
 	protect,
 	validateProjectPermission([UserRoleEnum.ADMIN]),
 	asyncHandler(deleteProject),
-);
-router.get("/all-projects", protect, asyncHandler(getAllProjects));
+)
+router.get("/all-projects", protect, asyncHandler(getAllProjects))
 
-export default router;
+export default router

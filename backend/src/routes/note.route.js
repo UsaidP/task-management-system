@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from "express"
 
 import {
 	createNotes,
@@ -6,14 +6,14 @@ import {
 	getNoteById,
 	getNotes,
 	updateNote,
-} from "../controllers/note.controller.js";
+} from "../controllers/note.controller.js"
 import {
 	protect,
 	validateProjectPermission,
-} from "../middlewares/auth.middleware.js";
-import { UserRoleEnum } from "../utils/constants.js";
+} from "../middlewares/auth.middleware.js"
+import { UserRoleEnum } from "../utils/constants.js"
 
-const router = Router();
+const router = Router()
 router
 	.route("/:projectId/n/:noteId")
 	.get(
@@ -34,7 +34,7 @@ router
 		protect,
 		validateProjectPermission([UserRoleEnum.PROJECT_ADMIN, UserRoleEnum.ADMIN]),
 		deleteNote,
-	);
+	)
 
 router
 	.route("/:projectId")
@@ -47,6 +47,6 @@ router
 		protect,
 		validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
 		getNotes,
-	);
+	)
 
-export default router;
+export default router

@@ -1,5 +1,5 @@
-import { validationResult } from "express-validator";
-import ApiError from "../utils/api-error.js";
+import { validationResult } from "express-validator"
+import ApiError from "../utils/api-error.js"
 
 /**
  * Middleware to validate request using express-validator.
@@ -13,28 +13,28 @@ import ApiError from "../utils/api-error.js";
 const validator = (req, res, next) => {
 	// Get validation errors from the request
 
-	const errors = validationResult(req);
+	const errors = validationResult(req)
 
 	const errorMsg = errors
 		.array()
 		.map((err) => err.msg)
-		.join(", ");
+		.join(", ")
 
 	// If no validation errors, proceed to next middleware
 	if (errors.isEmpty()) {
-		return next();
+		return next()
 	}
 
 	// Extract and format validation errors
-	const extractedError = [];
+	const extractedError = []
 	errors.array().forEach((err) => {
 		extractedError.push({
 			[err.path]: err.msg,
-		});
-	});
+		})
+	})
 
 	// Throw an error with the extracted validation errors
-	throw new ApiError(422, "Received data is not valid", extractedError);
-};
+	throw new ApiError(422, "Received data is not valid", extractedError)
+}
 
-export default validator;
+export default validator
