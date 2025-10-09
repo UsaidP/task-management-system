@@ -1,5 +1,5 @@
-import { motion } from "framer-motion"
-import { use, useEffect, useState } from "react"
+import { motion } from "framer-motion";
+import { use, useEffect, useState } from "react";
 import {
 	FiArrowRight,
 	FiCalendar,
@@ -9,12 +9,12 @@ import {
 	FiPlus,
 	FiTrendingUp,
 	FiUsers,
-} from "react-icons/fi"
-import { Link } from "react-router-dom"
-import apiService from "../../service/apiService.js"
-import { useAuth } from "./context/customHook.js"
-import CreateProjectModal from "./project/CreateProjectModal"
-import ProjectCardSkeleton from "./project/ProjectCardSkeleton"
+} from "react-icons/fi";
+import { Link } from "react-router-dom";
+import apiService from "../../service/apiService.js";
+import { useAuth } from "./context/customHook.js";
+import CreateProjectModal from "./project/CreateProjectModal";
+import ProjectCardSkeleton from "./project/ProjectCardSkeleton";
 
 const StatCard = ({ icon, label, value, color, trend, delay = 0 }) => (
 	<motion.div
@@ -40,7 +40,7 @@ const StatCard = ({ icon, label, value, color, trend, delay = 0 }) => (
 			<p className="text-text-secondary">{label}</p>
 		</div>
 	</motion.div>
-)
+);
 
 const ProjectCard = ({ project, delay = 0 }) => (
 	<motion.div
@@ -56,7 +56,9 @@ const ProjectCard = ({ project, delay = 0 }) => (
 					</h3>
 					<FiArrowRight className="w-5 h-5 text-text-muted group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
 				</div>
-				<p className="text-text-secondary text-sm mb-4 line-clamp-2">{project.description}</p>
+				<p className="text-text-secondary text-sm mb-4 line-clamp-2">
+					{project.description}
+				</p>
 				<div className="flex items-center justify-between text-xs text-text-muted">
 					<span>
 						Updated{" "}
@@ -75,7 +77,7 @@ const ProjectCard = ({ project, delay = 0 }) => (
 			</div>
 		</Link>
 	</motion.div>
-)
+);
 
 const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
 	<motion.button
@@ -92,33 +94,33 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
 			<span className="font-medium">{label}</span>
 		</div>
 	</motion.button>
-)
+);
 
 const Dashboard = () => {
-	const { user } = useAuth()
-	const [projects, setProjects] = useState([])
-	const [loading, setLoading] = useState(true)
+	const { user } = useAuth();
+	const [projects, setProjects] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const [stats, setStats] = useState({
 		totalTasks: 0,
 		inProgress: 0,
 		completed: 0,
 		totalProjects: 0,
-	})
+	});
 
-	const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState(false)
+	const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState(false);
 
 	const handleProjectCreated = (newProject) => {
-		setProjects([newProject, ...projects])
-	}
+		setProjects([newProject, ...projects]);
+	};
 
 	useEffect(() => {
 		const fetchDashboardData = async () => {
 			try {
-				const response = await apiService.getAllProjects()
+				const response = await apiService.getAllProjects();
 
 				if (response.success) {
-					const projectsData = response.data.projects
-					setProjects(projectsData.slice(0, 6)) // Show only first 6 projects
+					const projectsData = response.data.projects;
+					setProjects(projectsData.slice(0, 6)); // Show only first 6 projects
 
 					// TODO: Calculate stats with actual task data
 					setStats({
@@ -126,24 +128,24 @@ const Dashboard = () => {
 						inProgress: 0,
 						completed: 0,
 						totalProjects: projectsData.length,
-					})
+					});
 				}
 			} catch (error) {
-				console.error("Failed to fetch dashboard data:", error)
+				console.error("Failed to fetch dashboard data:", error);
 			} finally {
-				setLoading(false)
+				setLoading(false);
 			}
-		}
+		};
 
-		fetchDashboardData()
-	}, [user, stats])
+		fetchDashboardData();
+	}, []);
 
 	const getGreeting = () => {
-		const hour = new Date().getHours()
-		if (hour < 12) return "Good morning"
-		if (hour < 18) return "Good afternoon"
-		return "Good evening"
-	}
+		const hour = new Date().getHours();
+		if (hour < 12) return "Good morning";
+		if (hour < 18) return "Good afternoon";
+		return "Good evening";
+	};
 
 	return (
 		<div className="space-y-8">
@@ -218,7 +220,9 @@ const Dashboard = () => {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6, delay: 0.5 }}
 			>
-				<h2 className="text-2xl font-bold mb-6 text-text-primary">Quick Actions</h2>
+				<h2 className="text-2xl font-bold mb-6 text-text-primary">
+					Quick Actions
+				</h2>
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 					<QuickAction
 						icon={<FiPlus className="w-5 h-5 text-white" />}
@@ -257,7 +261,9 @@ const Dashboard = () => {
 				transition={{ duration: 0.6, delay: 0.6 }}
 			>
 				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-2xl font-bold text-text-primary">Recent Projects</h2>
+					<h2 className="text-2xl font-bold text-text-primary">
+						Recent Projects
+					</h2>
 					<Link
 						to="/projects"
 						className="text-primary hover:text-primary-light transition-colors duration-200 flex items-center"
@@ -276,7 +282,11 @@ const Dashboard = () => {
 				) : projects.length > 0 ? (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 						{projects.map((project, index) => (
-							<ProjectCard key={project._id} project={project} delay={index * 0.1} />
+							<ProjectCard
+								key={project._id}
+								project={project}
+								delay={index * 0.1}
+							/>
 						))}
 					</div>
 				) : (
@@ -287,7 +297,9 @@ const Dashboard = () => {
 						className="card text-center py-12"
 					>
 						<FiClipboard className="w-16 h-16 text-text-muted mx-auto mb-4" />
-						<h3 className="text-xl font-semibold text-text-primary mb-2">No Projects Yet</h3>
+						<h3 className="text-xl font-semibold text-text-primary mb-2">
+							No Projects Yet
+						</h3>
 						<p className="text-text-secondary mb-6">
 							Create your first project to get started with task management.
 						</p>
@@ -299,7 +311,7 @@ const Dashboard = () => {
 				)}
 			</motion.div>
 		</div>
-	)
-}
+	);
+};
 
-export default Dashboard
+export default Dashboard;

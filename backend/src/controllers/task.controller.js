@@ -116,6 +116,7 @@ const getAllTasks = asyncHandler(async (req, res, next) => {
 	// 1. Find all projects the user is a member of, selecting only their IDs for efficiency.
 	const userProjects = await Project.find({ members: userID }).select("_id");
 
+	console.log(`user project ${JSON.stringify(userProjects)}`);
 	// 2. Create an array of just the project IDs.
 	const projectIds = userProjects.map((project) => project._id);
 
