@@ -23,44 +23,54 @@ const createTask = asyncHandler(async (req, res, next) => {
 	const { projectId, noteId } = req.params;
 	const userID = req.user._id;
 
-	if (!title) {
-		return res.status(400).json({
-			success: false,
-			message: "Title is required",
-		});
-	}
+  if (
+    (!title,
+    !description,
+    !assignedTo,
+    !status,
+    !attachments,
+    !dueDate,
+    !priority,
+    !subtasks,
+    !comments)
+  ) {
+    return res.status(400).json({
+      message: "All fields are required",
+      success: false,
+    });
+  }
 
 	if (!projectId) {
 		return res.status(400).json({
-			success: false,
 			message: "Project ID is required",
+			success: false,
 		});
 	}
 
 	if (!userID) {
 		return res.status(401).json({
-			success: false,
 			message: "Login to create task",
+			success: false,
 		});
 	}
 
 	const project = await Project.findById(projectId);
 	if (!project) {
 		return res.status(404).json({
-			success: false,
 			message: "Project not found",
+			success: false,
 		});
 	}
 
 	const taskData = {
-		title,
-		description,
-		project: projectId,
-		createdBy: new mongoose.Types.ObjectId(userID),
 		assignedBy: new mongoose.Types.ObjectId(userID),
 		assignedTo,
-		status,
 		attachments,
+		createdBy: new mongoose.Types.ObjectId(userID),
+		description,
+		project: projectId,
+		status,
+		title,
 	};
 
 	if (noteId) {
@@ -77,8 +87,8 @@ const createTask = asyncHandler(async (req, res, next) => {
 	}
 
 	return res.status(201).json({
-		success: true,
 		message: "Task created successfully",
+		success: true,
 		task,
 	});
 });
@@ -88,8 +98,8 @@ const getTasks = asyncHandler(async (req, res, next) => {
 
 	if (!projectId) {
 		return res.status(400).json({
-			success: false,
 			message: "Project ID is required",
+			success: false,
 		});
 	}
 
@@ -108,8 +118,8 @@ const getAllTasks = asyncHandler(async (req, res, next) => {
 
 	if (!userID) {
 		return res.status(401).json({
-			success: false,
 			message: "Login to view tasks",
+			success: false,
 		});
 	}
 
