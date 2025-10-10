@@ -60,5 +60,6 @@ router
 		]),
 		asyncHandler(deleteTask),
 	);
+router.route("/").get(protect, asyncHandler(getAllTasks));
 
 export default router;

@@ -12,7 +12,7 @@
 	},
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab",
+		"indentStyle": "space",
 		"lineWidth": 100,
 		"indentWidth": 2
 	},
@@ -348,7 +348,12 @@
 			}
 		},
 		{
-			"includes": ["*.config.js", "vite.config.js", "tailwind.config.js", "postcss.config.js"],
+			"includes": [
+				"*.config.js",
+				"vite.config.js",
+				"tailwind.config.js",
+				"postcss.config.js"
+			],
 			"javascript": {
 				"globals": ["module", "require", "__dirname", "__filename"]
 			},
@@ -361,7 +366,11 @@
 			}
 		},
 		{
-			"includes": ["**/*.test.{js,jsx}", "**/*.spec.{js,jsx}", "src/__tests__/**/*.{js,jsx}"],
+			"includes": [
+				"**/*.test.{js,jsx}",
+				"**/*.spec.{js,jsx}",
+				"src/__tests__/**/*.{js,jsx}"
+			],
 			"linter": {
 				"rules": {
 					"suspicious": {

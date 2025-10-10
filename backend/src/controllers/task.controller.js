@@ -113,18 +113,11 @@ const getAllTasks = asyncHandler(async (req, res, next) => {
 		});
 	}
 
-	// 1. Find all projects the user is a member of, selecting only their IDs for efficiency.
-	const userProjects = await Project.find({ members: userID }).select("_id");
-
-	console.log(`user project ${JSON.stringify(userProjects)}`);
-	// 2. Create an array of just the project IDs.
-	const projectIds = userProjects.map((project) => project._id);
-
-	// 3. Find all tasks where the 'project' field is in our array of project IDs.
-	// This fetches all tasks from all projects the user is a member of.
-	const tasks = await Task.find({ project: { $in: projectIds } });
-
-	console.log(`Found ${tasks.length} tasks for user ${userID}`);
+	const tasks = await Task.find({ assignedTo: userID }).populate(
+		"assignedTo",
+		"name email",
+	);
+	console.log(tasks.length);
 
 	return res
 		.status(200)

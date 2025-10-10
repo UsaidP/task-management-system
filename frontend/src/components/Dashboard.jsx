@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	FiArrowRight,
 	FiCalendar,
@@ -7,7 +7,6 @@ import {
 	FiClipboard,
 	FiClock,
 	FiPlus,
-	FiTrendingUp,
 	FiUsers,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
@@ -16,27 +15,35 @@ import { useAuth } from "./context/customHook.js";
 import CreateProjectModal from "./project/CreateProjectModal";
 import ProjectCardSkeleton from "./project/ProjectCardSkeleton";
 
-const StatCard = ({ icon, label, value, color, trend, delay = 0 }) => (
+// --- Skeleton Component for the Header ---
+// Mimics the header layout while the user object is loading.
+const HeaderSkeleton = () => (
+	<div className="flex animate-pulse items-center justify-between">
+		<div>
+			<div className="mb-3 h-10 w-64 rounded-lg bg-gray-200 dark:bg-gray-700" />
+			<div className="h-6 w-80 rounded-lg bg-gray-200 dark:bg-gray-700" />
+		</div>
+		<div className="hidden h-6 w-48 rounded-lg bg-gray-200 dark:bg-gray-700 md:block" />
+	</div>
+);
+
+// --- Reusable UI Card Components ---
+const StatCard = ({ icon, label, value, color, delay = 0 }) => (
 	<motion.div
 		initial={{ opacity: 0, y: 20 }}
 		animate={{ opacity: 1, y: 0 }}
 		transition={{ duration: 0.6, delay }}
 		className="card-interactive group"
 	>
-		<div className="flex items-center justify-between mb-4">
+		<div className="mb-4 flex items-center justify-between">
 			<div
-				className={`p-3 rounded-xl ${color} group-hover:scale-110 transition-transform duration-200`}
+				className={`p-3 rounded-xl ${color} transition-transform duration-200 group-hover:scale-110`}
 			>
 				{icon}
 			</div>
-			{trend && (
-				<div className="flex items-center text-success text-sm">
-					<FiTrendingUp className="w-4 h-4 mr-1" />+{trend}%
-				</div>
-			)}
 		</div>
 		<div>
-			<p className="text-3xl font-bold text-text-primary mb-1">{value}</p>
+			<p className="text-text-primary mb-1 text-3xl font-bold">{value}</p>
 			<p className="text-text-secondary">{label}</p>
 		</div>
 	</motion.div>
@@ -50,13 +57,13 @@ const ProjectCard = ({ project, delay = 0 }) => (
 	>
 		<Link to={`/project/${project._id}`} className="block">
 			<div className="card-interactive group">
-				<div className="flex items-center justify-between mb-4">
-					<h3 className="text-lg font-semibold text-text-primary group-hover:text-primary transition-colors">
+				<div className="mb-4 flex items-center justify-between">
+					<h3 className="text-lg font-semibold text-text-primary transition-colors group-hover:text-primary">
 						{project.name}
 					</h3>
-					<FiArrowRight className="w-5 h-5 text-text-muted group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
+					<FiArrowRight className="h-5 w-5 text-text-muted transition-all duration-200 group-hover:translate-x-1 group-hover:text-primary" />
 				</div>
-				<p className="text-text-secondary text-sm mb-4 line-clamp-2">
+				<p className="text-text-secondary line-clamp-2 mb-4 text-sm">
 					{project.description}
 				</p>
 				<div className="flex items-center justify-between text-xs text-text-muted">
@@ -69,8 +76,7 @@ const ProjectCard = ({ project, delay = 0 }) => (
 						})}
 					</span>
 					<div className="flex items-center">
-						<FiUsers className="w-3 h-3 mr-1" />
-						{/* {console.log(project)} */}
+						<FiUsers className="mr-1 h-3 w-3" />
 						{project.members ? `${project.members.length} Members` : "Team"}
 					</div>
 				</div>
@@ -85,10 +91,10 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
 		animate={{ opacity: 1, scale: 1 }}
 		transition={{ duration: 0.4, delay }}
 		onClick={onClick}
-		className={`card-interactive text-left group ${color}`}
+		className={`card-interactive group text-left ${color}`}
 	>
 		<div className="flex items-center">
-			<div className="p-2 rounded-lg bg-white/10 mr-3 group-hover:scale-110 transition-transform duration-200">
+			<div className="mr-3 rounded-lg bg-white/10 p-2 transition-transform duration-200 group-hover:scale-110">
 				{icon}
 			</div>
 			<span className="font-medium">{label}</span>
@@ -96,37 +102,51 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
 	</motion.button>
 );
 
+// --- Main Dashboard Component ---
 const Dashboard = () => {
+	// `user` is provided by the AuthContext. It's guaranteed to be either the user object or null.
+	// The AuthContext handles the initial loading state for the user.
 	const { user } = useAuth();
-	const [projects, setProjects] = useState([]);
+
+	// This `loading` state is for the dashboard's specific data (projects, stats).
 	const [loading, setLoading] = useState(true);
+	const [projects, setProjects] = useState([]);
 	const [stats, setStats] = useState({
 		totalTasks: 0,
+		todo: 0,
 		inProgress: 0,
 		completed: 0,
 		totalProjects: 0,
 	});
-
 	const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState(false);
 
 	const handleProjectCreated = (newProject) => {
 		setProjects([newProject, ...projects]);
 	};
 
+	// This effect fetches dashboard-specific data.
+	// It depends on `user`, so it will only run AFTER the user is authenticated and available.
 	useEffect(() => {
 		const fetchDashboardData = async () => {
+			setLoading(true);
 			try {
-				const response = await apiService.getAllProjects();
+				// Using Promise.all to fetch data in parallel for better performance.
+				const [projectsResponse, tasksResponse] = await Promise.all([
+					apiService.getAllProjects(),
+					apiService.getAllTaskOfUser(),
+				]);
 
-				if (response.success) {
-					const projectsData = response.data.projects;
-					setProjects(projectsData.slice(0, 6)); // Show only first 6 projects
+				if (projectsResponse.success && tasksResponse.success) {
+					const projectsData = projectsResponse.data.projects;
+					const tasksData = tasksResponse.data;
 
-					// TODO: Calculate stats with actual task data
+					setProjects(projectsData.slice(0, 6));
 					setStats({
-						totalTasks: 0,
-						inProgress: 0,
-						completed: 0,
+						totalTasks: tasksData.length,
+						todo: tasksData.filter((t) => t.status === "todo").length,
+						inProgress: tasksData.filter((t) => t.status === "in-progress")
+							.length,
+						completed: tasksData.filter((t) => t.status === "completed").length,
 						totalProjects: projectsData.length,
 					});
 				}
@@ -137,8 +157,11 @@ const Dashboard = () => {
 			}
 		};
 
-		fetchDashboardData();
-	}, []);
+		// The guard clause ensures we only fetch data when we have a logged-in user.
+		if (user) {
+			fetchDashboardData();
+		}
+	}, [user]); // The dependency array ensures this effect re-runs if the user changes (e.g., re-login).
 
 	const getGreeting = () => {
 		const hour = new Date().getHours();
@@ -149,67 +172,67 @@ const Dashboard = () => {
 
 	return (
 		<div className="space-y-8">
-			{/* Header */}
-			<motion.div
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.6 }}
-				className="flex items-center justify-between"
-			>
-				<div>
-					<h1 className="text-4xl font-bold mb-2 text-text-primary">
-						{getGreeting()}{" "}
-						{/* <span className="gradient-text">{user.fullname || "User"}</span>! */}
-					</h1>
-					<p className="text-lg text-text-secondary">
-						Here's what's happening with your projects today.
-					</p>
-				</div>
-				<div className="flex items-center space-x-2 text-text-muted">
-					<FiCalendar className="w-5 h-5" />
-					<span>
-						{new Date().toLocaleDateString("en-US", {
-							weekday: "long",
-							year: "numeric",
-							month: "long",
-							day: "numeric",
-						})}
-					</span>
-				</div>
-			</motion.div>
+			{/* Header section: Renders based on the user object. */}
+			{user ? (
+				<motion.div
+					initial={{ opacity: 0, y: -20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6 }}
+					className="flex items-center justify-between"
+				>
+					<div>
+						<h1 className="text-text-primary mb-2 text-4xl font-bold">
+							{getGreeting()}{" "}
+							<span className="gradient-text">{user.fullname || "User"}</span>!
+						</h1>
+						<p className="text-text-secondary text-lg">
+							Here's what's happening with your projects today.
+						</p>
+					</div>
+					<div className="flex items-center space-x-2 text-text-muted">
+						<FiCalendar className="h-5 w-5" />
+						<span>
+							{new Date().toLocaleDateString("en-US", {
+								weekday: "long",
+								year: "numeric",
+								month: "long",
+								day: "numeric",
+							})}
+						</span>
+					</div>
+				</motion.div>
+			) : (
+				<HeaderSkeleton />
+			)}
 
-			{/* Stats Grid */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+			{/* Stats Grid: Renders based on the dashboard's `loading` state. */}
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
 				<StatCard
-					icon={<FiClipboard className="w-6 h-6 text-white" />}
+					icon={<FiClipboard className="h-6 w-6 text-white" />}
 					label="Total Tasks"
 					value={loading ? "..." : stats.totalTasks}
 					color="bg-gradient-to-r from-primary to-primary-light"
-					trend={12}
 					delay={0.1}
 				/>
 				<StatCard
-					icon={<FiClock className="w-6 h-6 text-white" />}
+					icon={<FiClock className="h-6 w-6 text-white" />}
 					label="In Progress"
 					value={loading ? "..." : stats.inProgress}
 					color="bg-gradient-to-r from-warning to-yellow-400"
-					trend={8}
 					delay={0.2}
 				/>
 				<StatCard
-					icon={<FiCheckSquare className="w-6 h-6 text-white" />}
+					icon={<FiCheckSquare className="h-6 w-6 text-white" />}
 					label="Completed"
 					value={loading ? "..." : stats.completed}
 					color="bg-gradient-to-r from-success to-accent-light"
-					trend={15}
 					delay={0.3}
 				/>
 				<StatCard
-					icon={<FiUsers className="w-6 h-6 text-white" />}
+					icon={<FiUsers className="h-6 w-6 text-white" />}
 					label="Projects"
 					value={loading ? "..." : stats.totalProjects}
 					color="bg-gradient-to-r from-secondary to-secondary-light"
-					trend={5}
 					delay={0.4}
 				/>
 			</div>
@@ -220,30 +243,16 @@ const Dashboard = () => {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6, delay: 0.5 }}
 			>
-				<h2 className="text-2xl font-bold mb-6 text-text-primary">
+				<h2 className="text-text-primary mb-6 text-2xl font-bold">
 					Quick Actions
 				</h2>
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 					<QuickAction
-						icon={<FiPlus className="w-5 h-5 text-white" />}
+						icon={<FiPlus className="h-5 w-5 text-white" />}
 						label="Create New Project"
 						onClick={() => setCreateProjectModalOpen(true)}
 						color="bg-gradient-to-r from-primary to-primary-light text-white"
 						delay={0.1}
-					/>
-					<QuickAction
-						icon={<FiClipboard className="w-5 h-5 text-white" />}
-						label="Add Quick Task"
-						onClick={() => console.log("Add Quick Task clicked")}
-						color="bg-gradient-to-r from-success to-accent-light text-white"
-						delay={0.2}
-					/>
-					<QuickAction
-						icon={<FiUsers className="w-5 h-5 text-white" />}
-						label="Invite Team Member"
-						onClick={() => console.log("Invite Team Member clicked")}
-						color="bg-gradient-to-r from-secondary to-secondary-light text-white"
-						delay={0.3}
 					/>
 				</div>
 			</motion.div>
@@ -254,33 +263,33 @@ const Dashboard = () => {
 				onProjectCreated={handleProjectCreated}
 			/>
 
-			{/* Recent Projects */}
+			{/* Recent Projects: Renders based on the dashboard's `loading` state. */}
 			<motion.div
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6, delay: 0.6 }}
 			>
-				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-2xl font-bold text-text-primary">
+				<div className="mb-6 flex items-center justify-between">
+					<h2 className="text-text-primary text-2xl font-bold">
 						Recent Projects
 					</h2>
 					<Link
 						to="/projects"
-						className="text-primary hover:text-primary-light transition-colors duration-200 flex items-center"
+						className="flex items-center text-primary transition-colors duration-200 hover:text-primary-light"
 					>
 						View All
-						<FiArrowRight className="ml-1 w-4 h-4" />
+						<FiArrowRight className="ml-1 h-4 w-4" />
 					</Link>
 				</div>
 
 				{loading ? (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 						{[...Array(6)].map((_, i) => (
 							<ProjectCardSkeleton key={i} />
 						))}
 					</div>
 				) : projects.length > 0 ? (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 						{projects.map((project, index) => (
 							<ProjectCard
 								key={project._id}
@@ -294,17 +303,20 @@ const Dashboard = () => {
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.6, delay: 0.8 }}
-						className="card text-center py-12"
+						className="card py-12 text-center"
 					>
-						<FiClipboard className="w-16 h-16 text-text-muted mx-auto mb-4" />
-						<h3 className="text-xl font-semibold text-text-primary mb-2">
+						<FiClipboard className="text-text-muted mx-auto mb-4 h-16 w-16" />
+						<h3 className="text-text-primary mb-2 text-xl font-semibold">
 							No Projects Yet
 						</h3>
 						<p className="text-text-secondary mb-6">
-							Create your first project to get started with task management.
+							Create your first project to get started.
 						</p>
-						<button className="btn-primary flex m-auto p-auto">
-							<FiPlus className="mr-2 flex m-auto p-auto" />
+						<button
+							onClick={() => setCreateProjectModalOpen(true)}
+							className="btn-primary m-auto flex p-auto"
+						>
+							<FiPlus className="m-auto mr-2 flex p-auto" />
 							Create Project
 						</button>
 					</motion.div>

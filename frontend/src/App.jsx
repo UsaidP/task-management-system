@@ -16,32 +16,32 @@ import ProjectPage from "./components/project/ProjectPage.jsx"
 import "./index.css"
 
 const App = () => {
-	return (
-		<StrictMode>
-			<BrowserRouter>
-				<AuthProvider>
-					<Routes>
-						{/* Public Routes */}
-						<Route path="/" element={<Home />} />
-						<Route path="/register" element={<Signup />} />
-						<Route path="/login" element={<Login />} />
-						<Route path="/forget-password" element={<Forget />} />
-						<Route path="/reset-password/:token" element={<Reset />} />
-						<Route path="/confirm" element={<ConfirmEmail />} />
+  return (
+    <StrictMode>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forget-password" element={<Forget />} />
+            <Route path="/reset-password/:token" element={<Reset />} />
+            <Route path="/confirm" element={<ConfirmEmail />} />
 
-						{/* Protected Routes */}
-						<Route element={<ProtectedRoute />}>
-							<Route element={<AppLayout />}>
-								<Route path="dashboard" element={<Dashboard />} />
-								<Route path="profile" element={<Me />} />
-								<Route path="project/:projectId" element={<ProjectPage />} />
-							</Route>
-						</Route>
-					</Routes>
-				</AuthProvider>
-			</BrowserRouter>
-		</StrictMode>
-	)
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppLayout />}>
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="profile" element={<Me />} />
+                <Route path="project/:projectId" element={<ProjectPage />} />
+              </Route>
+            </Route>
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </StrictMode>
+  )
 }
 
 export default App

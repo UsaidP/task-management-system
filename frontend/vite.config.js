@@ -8,15 +8,15 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export default defineConfig({
-	plugins: [react()],
-	css: {
-		postcss: {
-			plugins: [tailwindcss],
-		},
-	},
-	resolve: {
-		alias: {
-			"src/": `${path.resolve(__dirname, "src")}/`,
-		},
-	},
+  plugins: [react()],
+  css: {
+    postcss: {
+      plugins: [tailwindcss],
+    },
+  },
+  resolve: {
+    alias: {
+      "src/": `${path.resolve(__dirname, "src")}/`,
+    },
+  },
 })

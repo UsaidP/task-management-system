@@ -144,9 +144,8 @@ class ApiService {
 		});
 	}
 
-	async totalTastOfUser(userID) {
-		console.log("USERID" + userID);
-		return await this.customFetch(`/dashboard/${userID}`, {
+	async getAllTaskOfUser() {
+		return await this.customFetch(`/tasks`, {
 			method: "GET",
 		});
 	}

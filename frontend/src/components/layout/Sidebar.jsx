@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion"
-import React, { useEffect, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import {
 	FiChevronDown,
 	FiFolder,
@@ -8,52 +8,50 @@ import {
 	FiPlusSquare,
 	FiSettings,
 	FiUser,
-} from "react-icons/fi"
-import { NavLink, useNavigate } from "react-router-dom"
-import apiService from "../../../service/apiService.js"
-import { useAuth } from "../context/customHook.js"
-import CreateProjectModal from "../project/CreateProjectModal"
+} from "react-icons/fi";
+import { NavLink, useNavigate } from "react-router-dom";
+import apiService from "../../../service/apiService.js";
+import { useAuth } from "../context/customHook.js";
+import CreateProjectModal from "../project/CreateProjectModal";
 
 const Sidebar = () => {
-	const [projects, setProjects] = useState([])
-	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-	const { user, logout } = useAuth()
-	const navigate = useNavigate()
-	const userdata = JSON.stringify(user)
+	const [projects, setProjects] = useState([]);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+	const { user, logout } = useAuth();
+	const navigate = useNavigate();
 
-	console.log("USER", user.username)
 	useEffect(() => {
 		const fetchProjects = async () => {
 			try {
-				const response = await apiService.getAllProjects()
+				const response = await apiService.getAllProjects();
 				if (response.success) {
-					setProjects(response.data.projects)
+					setProjects(response.data.projects);
 				}
-			} catch (err) {
-				console.error("Failed to fetch projects for sidebar")
+			} catch (error) {
+				console.error("Failed to fetch projects for sidebar", error);
 			}
-		}
-		fetchProjects()
-	}, [])
+		};
+		fetchProjects();
+	}, []);
 
 	const handleProjectCreated = (newProject) => {
-		setProjects((prevProjects) => [newProject, ...prevProjects])
-	}
+		setProjects((prevProjects) => [newProject, ...prevProjects]);
+	};
 
 	const handleLogout = async () => {
 		try {
-			await logout()
-			navigate("/")
+			await logout();
+			navigate("/");
 		} catch (error) {
-			console.error("Logout failed:", error)
+			console.error("Logout failed:", error);
 		}
-	}
+	};
 
 	const NavLinkClasses = ({ isActive }) =>
 		`flex items-center px-4 py-3 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-light transition-all duration-200 group ${
 			isActive ? "bg-primary text-white shadow-glow" : ""
-		}`
+		}`;
 
 	return (
 		<>
@@ -97,7 +95,9 @@ const Sidebar = () => {
 						className="pt-6"
 					>
 						<div className="flex items-center justify-between mb-4">
-							<h2 className="text-lg font-semibold text-text-primary">Projects</h2>
+							<h2 className="text-lg font-semibold text-text-primary">
+								Projects
+							</h2>
 							<span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
 								{projects.length}
 							</span>
@@ -113,7 +113,10 @@ const Sidebar = () => {
 										exit={{ opacity: 0, x: -20 }}
 										transition={{ delay: index * 0.05 }}
 									>
-										<NavLink to={`/project/${project._id}`} className={NavLinkClasses}>
+										<NavLink
+											to={`/project/${project._id}`}
+											className={NavLinkClasses}
+										>
 											<FiFolder className="mr-3 w-4 h-4 group-hover:scale-110 transition-transform" />
 											<span className="truncate">{project.name}</span>
 										</NavLink>
@@ -159,7 +162,9 @@ const Sidebar = () => {
 								<div className="text-sm font-medium text-text-primary truncate max-w-32">
 									{user?.fullname || "User"}
 								</div>
-								<div className="text-xs text-text-muted truncate max-w-32">{user?.email}</div>
+								<div className="text-xs text-text-muted truncate max-w-32">
+									{user?.email}
+								</div>
 							</div>
 						</div>
 						<FiChevronDown
@@ -187,8 +192,9 @@ const Sidebar = () => {
 									Profile
 								</NavLink>
 								<button
+									type="button"
 									onClick={() => {
-										setIsUserMenuOpen(false)
+										setIsUserMenuOpen(false);
 										// Add settings functionality later
 									}}
 									className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-surface-light transition-colors duration-200"
@@ -197,9 +203,10 @@ const Sidebar = () => {
 									Settings
 								</button>
 								<button
+									type="button"
 									onClick={() => {
-										setIsUserMenuOpen(false)
-										handleLogout()
+										setIsUserMenuOpen(false);
+										handleLogout();
 									}}
 									className="w-full flex items-center px-4 py-3 text-error hover:bg-error/10 transition-colors duration-200"
 								>
@@ -218,7 +225,7 @@ const Sidebar = () => {
 				onProjectCreated={handleProjectCreated}
 			/>
 		</>
-	)
-}
+	);
+};
 
-export default Sidebar
+export default Sidebar;
