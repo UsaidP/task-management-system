@@ -35,7 +35,9 @@ import projectMemberRoute from "./src/routes/projectMember.route.js"
 import subtaskRouter from "./src/routes/subtask.route.js"
 import taskRouter from "./src/routes/task.route.js"
 
-app.use("/api/v1/healthcheck", healthCheck)
+if (process.env.NODE_ENV !== 'test') {
+  app.use("/api/v1/healthcheck", healthCheck)
+}
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/projects", projectRouter)
 app.use("/api/v1/tasks", taskRouter)

@@ -214,7 +214,7 @@ const ProjectPage = () => {
     return (
       <div className="flex items-center justify-center h-full text-center p-4">
         <h2 className="text-2xl font-bold text-error mb-2">Error Loading Project</h2>
-        <p className="text-text-secondary">{error}</p>
+        <p className="text-bento-text-secondary">{error}</p>
       </div>
     )
   }
@@ -234,8 +234,8 @@ const ProjectPage = () => {
           </div>
         ) : (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl font-bold text-text-primary mb-2">{project?.name}</h1>
-            <p className="text-lg text-text-secondary">{project?.description}</p>
+            <h1 className="text-4xl font-bold text-bento-text-primary mb-2">{project?.name}</h1>
+            <p className="text-lg text-bento-text-secondary">{project?.description}</p>
           </motion.div>
         )}
 
@@ -246,7 +246,7 @@ const ProjectPage = () => {
         >
           <button
             onClick={() => setIsMembersModalOpen(true)}
-            className="btn-secondary flex items-center"
+            className="btn-new-secondary flex items-center"
           >
             <FiUsers className="mr-2" />
             Members
@@ -309,10 +309,10 @@ const ProjectPage = () => {
         <div>
           <p>Are you sure you want to delete the task titled "{selectedTask?.title}"?</p>
           <div className="flex justify-end space-x-4 mt-4">
-            <button onClick={() => setIsDeleteModalOpen(false)} className="btn-secondary">
+            <button onClick={() => setIsDeleteModalOpen(false)} className="btn-new-secondary">
               Cancel
             </button>
-            <button onClick={handleDelete} className="btn-danger">
+            <button onClick={handleDelete} className="btn-new-danger">
               Delete
             </button>
           </div>

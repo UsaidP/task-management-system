@@ -1,57 +1,80 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import {
+	createContext,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import apiService from "../../service/apiService.js";
 
+// Create the context that components will consume.
 export const AuthContext = createContext(null);
 
+/**
+ * A helper function to safely get the initial user data from localStorage.
+ * This runs synchronously on app load.
+ * @returns {object|null} The parsed user object or null if not found/invalid.
+ */
+const getInitialUser = () => {
+	try {
+		const storedUser = localStorage.getItem("user");
+		if (storedUser) {
+			return JSON.parse(storedUser);
+		}
+		return null;
+	} catch (error) {
+		console.error("Failed to parse user from localStorage", error);
+		return null; // Return null in case of a parsing error.
+	}
+};
+
+/**
+ * The AuthProvider component manages all authentication-related state and logic,
+ * making it available to the rest of the application via the AuthContext.
+ */
 export const AuthProvider = ({ children }) => {
-	const [user, setUser] = useState(null);
+	// Initialize user state directly from localStorage for an instant UI.
+	const [user, setUser] = useState(getInitialUser());
+
+	// This loading state represents the initial session verification process.
 	const [loading, setLoading] = useState(true);
 
-	// This helper function centralizes the logic of checking the user's session
-	// and attempting to refresh the token if it has expired.
-	const verifyUserSession = async () => {
-		try {
-			const response = await apiService.getUserProfile();
-			return response.data; // Return user data on success
-		} catch (error) {
-			// If the error is 401, the token is likely expired. Try to refresh it.
-			if (error?.response?.status === 401) {
-				console.log("🔄 Token expired, attempting to refresh...");
-				try {
-					const refreshResponse = await apiService.refreshSession();
-					if (refreshResponse?.success) {
-						console.log("✅ Token refreshed successfully");
-						// If refresh works, try fetching the user profile again.
-						const newResponse = await apiService.getUserProfile();
-						return newResponse.data;
-					}
-				} catch (refreshError) {
-					console.error("❌ Session refresh failed:", refreshError);
-					return null; // Return null if the refresh attempt fails
-				}
-			}
-			// For any other errors, just log it and return null.
-			console.error("❌ Authentication check error:", error);
-			return null;
-		}
-	};
-
-	// This effect runs once on initial app load to check for a logged-in user.
+	// This effect runs once on initial app load.
 	useEffect(() => {
-		const checkLoggedIn = async () => {
-			const userData = await verifyUserSession();
-			setUser(userData);
-			setLoading(false); // Auth check is complete
+		const verifyUserSession = async () => {
+			try {
+				// Fetch the latest user profile from the server to ensure data isn't stale.
+				const response = await apiService.getUserProfile();
+				const freshUserData = response.data;
+				setUser(freshUserData);
+				localStorage.setItem("user", JSON.stringify(freshUserData));
+			} catch (error) {
+				// If the session token is invalid, clear the user state.
+				setUser(null);
+				localStorage.removeItem("user");
+			} finally {
+				setLoading(false);
+			}
 		};
 
-		checkLoggedIn();
-	}, []); // Empty dependency array ensures this runs only once on mount.
+		// --- THE FIX ---
+		// Only verify the session if a user was found in localStorage on startup.
+		// If there's no user, we don't need to make an API call; just finish loading.
+		if (user) {
+			verifyUserSession();
+		} else {
+			setLoading(false);
+		}
+	}, []); // The `user` in the condition refers to the initial state, so an empty dependency array is correct.
 
-	const login = async (identifier, password) => {
+	// Memoized login function.
+	const login = useCallback(async (identifier, password) => {
 		try {
 			const response = await apiService.login(identifier, password);
 			if (response?.success && response?.data) {
-				setUser(response.data);
+				const userData = response.data.user;
+				setUser(userData);
+				localStorage.setItem("user", JSON.stringify(userData));
 			} else {
 				setUser(null);
 			}
@@ -60,46 +83,57 @@ export const AuthProvider = ({ children }) => {
 			setUser(null);
 			throw error;
 		}
-	};
+	}, []);
 
-	const logout = async () => {
+	// Memoized logout function.
+	const logout = useCallback(async () => {
 		try {
 			await apiService.logout();
 		} catch (error) {
 			console.error("❌ Logout API error:", error);
 		} finally {
-			// Always clear user state on logout, regardless of API success.
 			setUser(null);
+			localStorage.removeItem("user");
 		}
-	};
+	}, []);
 
-	const signup = async (username, fullname, password, email, role, avatar) => {
+	// Memoized signup function.
+	const signup = useCallback(
+		async (username, fullname, password, email, role, avatar) => {
+			try {
+				return await apiService.signup(
+					username,
+					fullname,
+					password,
+					email,
+					role,
+					avatar,
+				);
+			} catch (error) {
+				console.error("❌ Signup error:", error);
+				throw error;
+			}
+		},
+		[],
+	);
+
+	// Memoized email resend function.
+	const resendVerifyEmail = useCallback(async (email) => {
 		try {
-			return await apiService.signup(
-				username,
-				fullname,
-				password,
-				email,
-				role,
-				avatar,
-			);
+			return await apiService.resendVerifyEmail(email);
 		} catch (error) {
-			console.error("❌ Signup error:", error);
+			console.error("❌ Resend verify email error:", error);
 			throw error;
 		}
-	};
+	}, []);
 
-	// --- Derived State & Memoized Context Value ---
-
-	// isAuthenticated and userID are derived from the user state directly.
-	// This avoids managing separate, redundant state variables.
+	// Derived state, computed directly from the `user` object.
 	const isAuthenticated = !!user;
 	const userID = user?._id || null;
 
-	// The `useMemo` hook prevents the context value object from being recreated
-	// on every render, which optimizes performance for consuming components.
-	const value = useMemo(
-		() => ({
+	// Memoize the context value to prevent unnecessary re-renders.
+	const value = useMemo(() => {
+		return {
 			user,
 			userID,
 			loading,
@@ -107,23 +141,30 @@ export const AuthProvider = ({ children }) => {
 			login,
 			logout,
 			signup,
-		}),
-		[user, loading],
-	);
+			resendVerifyEmail,
+		};
+	}, [
+		user,
+		loading,
+		isAuthenticated,
+		userID,
+		login,
+		logout,
+		signup,
+		resendVerifyEmail,
+	]);
 
+	// Provide the context value to the rest of the app.
 	return (
 		<AuthContext.Provider value={value}>
 			{loading ? (
-				// Display a full-page loading spinner while checking auth status.
-				// This prevents the main app from rendering in an uncertain state.
 				<div className="flex min-h-screen items-center justify-center">
 					<div className="text-center">
 						<div className="mx-auto h-16 w-16 animate-spin rounded-full border-b-2 border-primary" />
-						<p className="mt-4 text-text-secondary">Authenticating...</p>
+						<p className="mt-4 text-text-secondary">Initializing...</p>
 					</div>
 				</div>
 			) : (
-				// Once loading is complete, render the rest of the application.
 				children
 			)}
 		</AuthContext.Provider>

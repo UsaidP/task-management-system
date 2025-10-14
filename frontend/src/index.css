@@ -1,7 +1,21 @@
+/*
+ * =================================================================================
+ * UNIFIED Stylesheet for TaskFlow Application
+ * ---------------------------------------------------------------------------------
+ * This file contains styles for both the existing application and the new
+ * landing page/dashboard to ensure backward compatibility.
+ * =================================================================================
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * =================================================================================
+ * BASE STYLES
+ * =================================================================================
+ */
 @layer base {
 	* {
 		@apply border-border;
@@ -9,20 +23,24 @@
 
 	body {
 		@apply bg-background text-text-primary font-sans antialiased;
+		/*
+		 * A subtle, multi-colored gradient background to add depth without being distracting.
+		 * This is the default background for your existing application.
+		 */
 		background-image:
 			radial-gradient(
 				circle at 20% 80%,
-				rgba(88, 166, 255, 0.1) 0% /* accent */,
+				rgba(88, 166, 255, 0.1) 0%,
 				transparent 50%
 			),
 			radial-gradient(
 				circle at 80% 20%,
-				rgba(248, 81, 73, 0.1) 0% /* error */,
+				rgba(248, 81, 73, 0.1) 0%,
 				transparent 50%
 			),
 			radial-gradient(
 				circle at 40% 40%,
-				rgba(40, 167, 69, 0.05) 0% /* success */,
+				rgba(40, 167, 69, 0.05) 0%,
 				transparent 50%
 			);
 	}
@@ -32,7 +50,33 @@
 	}
 }
 
+/*
+ * =================================================================================
+ * COMPONENT STYLES
+ * =================================================================================
+ */
 @layer components {
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * THEME CLASSES
+	 * ---------------------------------------------------------------------------------
+	 */
+
+	/* Apply this class to the root div of the new landing page/dashboard */
+	.bento-theme {
+		@apply bg-bento-background text-bento-text-primary;
+		background-image:
+			linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+			linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+		background-size: 2rem 2rem;
+	}
+
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * GLASSMORPHISM EFFECTS (Original App)
+	 * ---------------------------------------------------------------------------------
+	 */
+
 	.glass {
 		@apply bg-surface/80 backdrop-blur-md border border-border/50;
 	}
@@ -41,21 +85,77 @@
 		@apply bg-surface-light/80 backdrop-blur-md border border-border-light/50;
 	}
 
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * BUTTON SYSTEM - Original App
+	 * ---------------------------------------------------------------------------------
+	 */
+
 	.btn-primary {
-		@apply bg-primary hover:bg-primary-dark text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-glow transform hover:scale-105 active:scale-95;
+		@apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white
+		       bg-gradient-to-r from-primary to-secondary
+		       hover:from-secondary hover:to-primary
+		       transition-all duration-300 ease-in-out
+		       shadow-lg hover:shadow-glow transform hover:scale-105 active:scale-95
+		       focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
 	}
 
 	.btn-secondary {
-		@apply bg-secondary hover:bg-secondary/90 text-white font-medium px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95;
+		@apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-text-primary
+		       bg-surface hover:bg-surface-light
+		       transition-all duration-300 ease-in-out
+		       shadow-md hover:shadow-lg border border-border
+		       transform hover:scale-105 active:scale-95
+		       focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
 	}
 
 	.btn-ghost {
-		@apply bg-transparent hover:bg-surface-light text-text-secondary hover:text-text-primary font-medium px-4 py-2 rounded-lg transition-all duration-200 border border-border hover:border-border-light;
+		@apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-medium
+		       bg-transparent text-text-secondary hover:bg-surface hover:text-text-primary
+		       transition-colors duration-200;
 	}
 
-	.input-field {
-		@apply w-full px-4 py-3 bg-surface border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * BUTTON SYSTEM - New Landing Page/Dashboard
+	 * ---------------------------------------------------------------------------------
+	 */
+
+	.btn-new {
+		@apply inline-flex items-center justify-center h-12 px-6 rounded-lg font-medium 
+		       transition-all duration-200 
+		       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-bento-background;
 	}
+
+	.btn-new-primary {
+		@apply btn-new text-white bg-gradient-accent hover:opacity-90 focus:ring-accent-start;
+	}
+
+	.btn-new-secondary {
+		@apply btn-new bg-bento-surface text-bento-text-primary hover:bg-bento-border focus:ring-accent-start;
+	}
+
+	.btn-new-danger {
+		@apply btn-new bg-error text-white hover:opacity-90 focus:ring-error;
+	}
+
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * FORM ELEMENTS (Original App)
+	 * ---------------------------------------------------------------------------------
+	 */
+
+	.input-field {
+		@apply w-full px-4 py-3 bg-surface border border-border rounded-lg text-text-primary
+		       placeholder-text-muted transition-all duration-200
+		       focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+	}
+
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * CARD SYSTEM - Original App
+	 * ---------------------------------------------------------------------------------
+	 */
 
 	.card {
 		@apply glass rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300;
@@ -65,12 +165,44 @@
 		@apply card cursor-pointer transform hover:scale-[1.02] hover:-translate-y-1;
 	}
 
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * CARD SYSTEM - New Landing Page/Dashboard (Bento Box Style)
+	 * ---------------------------------------------------------------------------------
+	 */
+
+	.bento-card {
+		@apply bg-bento-surface rounded-2xl border border-bento-border shadow-bento-card;
+	}
+
+	.bento-card-interactive {
+		@apply bento-card transition-all duration-300 hover:shadow-bento-card-hover hover:border-accent-start;
+	}
+
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * TEXT STYLES
+	 * ---------------------------------------------------------------------------------
+	 */
+
+	/* Original gradient text */
 	.gradient-text {
 		@apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
 	}
 
+	/* New gradient text for landing page */
+	.gradient-text-new {
+		@apply bg-gradient-accent bg-clip-text text-transparent;
+	}
+
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * STATUS BADGES (Original App)
+	 * ---------------------------------------------------------------------------------
+	 */
+
 	.status-badge {
-		@apply px-3 py-1 rounded-full text-xs font-medium;
+		@apply inline-block px-3 py-1 rounded-full text-xs font-medium tracking-wide;
 	}
 
 	.status-todo {
@@ -84,9 +216,37 @@
 	.status-done {
 		@apply status-badge bg-success/20 text-success;
 	}
+
+	/*
+	 * ---------------------------------------------------------------------------------
+	 * SKELETON LOADER (Original App)
+	 * ---------------------------------------------------------------------------------
+	 */
+
+	.shimmer-bg {
+		background: linear-gradient(
+			90deg,
+			theme("colors.surface") 0%,
+			theme("colors.surface-light") 50%,
+			theme("colors.surface") 100%
+		);
+		background-size: 200% 100%;
+		animation: shimmer 1.5s infinite linear;
+	}
 }
 
-/* Custom scrollbar */
+/*
+ * =================================================================================
+ * UTILITIES & ANIMATIONS
+ * =================================================================================
+ */
+
+/*
+ * ---------------------------------------------------------------------------------
+ * CUSTOM SCROLLBAR STYLING
+ * ---------------------------------------------------------------------------------
+ */
+
 ::-webkit-scrollbar {
 	width: 6px;
 	height: 6px;
@@ -97,15 +257,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-	background: rgba(139, 148, 158, 0.3); /* text-muted */
-	border-radius: 3px;
+	@apply bg-border rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: rgba(139, 148, 158, 0.5); /* text-muted */
+	@apply bg-text-muted;
 }
 
-/* Loading animation */
+/*
+ * ---------------------------------------------------------------------------------
+ * LOADING DOTS ANIMATION (Original App)
+ * ---------------------------------------------------------------------------------
+ */
+
 .loading-dots {
 	display: inline-block;
 	position: relative;
@@ -119,7 +283,7 @@
 	width: 13px;
 	height: 13px;
 	border-radius: 50%;
-	background: #58a6ff; /* accent */
+	background: theme("colors.primary");
 	animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 
@@ -152,6 +316,15 @@
 	}
 }
 
+@keyframes loading-dots2 {
+	0% {
+		transform: translate(0, 0);
+	}
+	100% {
+		transform: translate(24px, 0);
+	}
+}
+
 @keyframes loading-dots3 {
 	0% {
 		transform: scale(1);
@@ -161,15 +334,11 @@
 	}
 }
 
-@keyframes loading-dots2 {
-	0% {
-		transform: translate(0, 0);
-	}
-	100% {
-		transform: translate(24px, 0);
-	}
-}
-/* In your main CSS file, like index.css */
+/*
+ * ---------------------------------------------------------------------------------
+ * SHIMMER ANIMATION FOR SKELETON LOADERS
+ * ---------------------------------------------------------------------------------
+ */
 
 @keyframes shimmer {
 	0% {

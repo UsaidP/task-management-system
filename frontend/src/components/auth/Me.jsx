@@ -1,148 +1,182 @@
-import { useEffect, useRef, useState } from "react"
-import toast from "react-hot-toast"
-import apiService from "../../../service/apiService.js"
+import { motion } from "framer-motion";
+import { useState } from "react";
+import {
+	FiAward,
+	FiCalendar,
+	FiChevronRight,
+	FiEdit,
+	FiLock,
+	FiMail,
+	FiUser,
+} from "react-icons/fi";
+import { useAuth } from "../context/customHook.js"; // Adjust path as needed
+import EditProfileModal from "./EditProfileModal.jsx";
 
 const Me = () => {
-  const [userProfile, setUserProfile] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [isUploading, setIsUploading] = useState(false)
-  const fileInputRef = useRef(null)
+	const { user } = useAuth();
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        setLoading(true)
-        const response = await apiService.getUserProfile()
-        setUserProfile(response.data || null)
-      } catch (err) {
-        console.error("Error fetching user profile:", err)
-        setError(err.data?.message || "Could not retrieve user profile. Please try again.")
-      } finally {
-        setLoading(false)
-      }
-    }
+	// Placeholder data if user is not fully loaded or for default display
+	const displayName = user?.fullname || "User";
+	const displayEmail = user?.email || "user@example.com";
+	const displayRole = user?.role
+		? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+		: "Member";
+	const joinDate = user?.createdAt
+		? new Date(user.createdAt).toLocaleDateString("en-US", {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+			})
+		: "N/A";
 
-    fetchUserProfile()
-  }, [])
+	// Simple variant for framer-motion animations
+	const containerVariants = {
+		hidden: { opacity: 0, y: 20 },
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				delayChildren: 0.2,
+				staggerChildren: 0.1,
+			},
+		},
+	};
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setSelectedFile(file)
-    }
-  }
+	const editProfileHandler = () => {
+		setIsEditModalOpen(true);
+	};
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      toast.error("Please select a file first.")
-      return
-    }
+	const handleProfileUpdate = (updatedData) => {
+		// Here you would typically make an API call to update the user profile
+		// For this example, we'll just log the updated data and close the modal
+		console.log("Updated Profile Data:", updatedData);
+		setIsEditModalOpen(false);
+		// Optionally, you might want to refresh the user data from the server here
+	};
+	const itemVariants = {
+		hidden: { opacity: 0, y: 20 },
+		visible: { opacity: 1, y: 0 },
+	};
 
-    setIsUploading(true)
-    const toastId = toast.loading("Uploading avatar...")
-    const formData = new FormData()
-    formData.append("avatar", selectedFile)
+	if (!user) {
+		// You might want a skeleton loader or a redirect here if the user object is null
+		// However, with ProtectedRoute, this state should ideally not be reached if properly logged in
+		return (
+			<div className="flex justify-center items-center h-full text-bento-text-secondary">
+				Loading user profile...
+			</div>
+		);
+	}
 
-    try {
-      const response = await apiService.updateAvatar(formData)
+	return (
+		<motion.div
+			className="p-6 space-y-8 max-w-4xl mx-auto"
+			variants={containerVariants}
+			initial="hidden"
+			animate="visible"
+		>
+			{/* Header Section */}
+			<motion.div
+				variants={itemVariants}
+				className="flex items-center justify-between pb-4 border-b border-gray-700"
+			>
+				<h1 className="text-3xl font-bold gradient-text-new">My Profile</h1>
+				<motion.button
+					whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.95 }}
+					onClick={editProfileHandler}
+					className="btn-new-primary flex items-center px-4 py-2 rounded-md shadow-lg"
+				>
+					<FiEdit className="mr-2" /> Edit Profile
+				</motion.button>
+			</motion.div>
 
-      if (response.success) {
-        setUserProfile(response.data)
-        toast.success("Avatar updated successfully!", { id: toastId })
-        setSelectedFile(null)
-      }
-    } catch (err) {
-      const errorMessage = err.data?.message || "Failed to upload avatar."
-      toast.error(errorMessage, { id: toastId })
-    } finally {
-      setIsUploading(false)
-    }
-  }
+			{/* User Info Card */}
+			<motion.div
+				variants={itemVariants}
+				className="bento-card p-8 flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8"
+			>
+				<div className="flex-shrink-0">
+					{/* Placeholder for Avatar - you can replace this with an actual image */}
+					<div className="w-28 h-28 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-4xl font-bold text-white shadow-lg">
+						{displayName.charAt(0).toUpperCase()}
+					</div>
+				</div>
+				<div className="text-center md:text-left flex-grow">
+					<h2 className="text-bento-text-primary text-4xl font-extrabold mb-2">
+						{displayName}
+					</h2>
+					<p className="text-bento-text-secondary text-lg flex items-center justify-center md:justify-start">
+						<FiMail className="mr-2 text-primary" /> {displayEmail}
+					</p>
+					<p className="text-bento-text-secondary text-lg mt-1 flex items-center justify-center md:justify-start">
+						<FiAward className="mr-2 text-accent" /> {displayRole}
+					</p>
+				</div>
+			</motion.div>
 
-  if (loading) {
-    return <div className="p-5 text-center text-lg">Loading profile...</div>
-  }
+			{/* Additional Details Grid */}
+			<motion.div
+				variants={itemVariants}
+				className="grid grid-cols-1 md:grid-cols-2 gap-6"
+			>
+				{/* Joined Date Card */}
+				<motion.div
+					variants={itemVariants}
+					className="bento-card-interactive group p-6 flex items-center space-x-4"
+				>
+					<FiCalendar className="w-8 h-8 text-primary group-hover:text-primary-light transition-colors" />
+					<div>
+						<p className="text-bento-text-secondary text-sm">Joined On</p>
+						<p className="text-bento-text-primary text-xl font-semibold">
+							{joinDate}
+						</p>
+					</div>
+					<FiChevronRight className="ml-auto w-6 h-6 text-text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+				</motion.div>
 
-  if (error) {
-    return (
-      <div className="p-5 text-center text-red-500 bg-red-100 border border-red-400 rounded-md">
-        {error}
-      </div>
-    )
-  }
+				{/* Other Settings/Info Card (Example) */}
+				<motion.div
+					variants={itemVariants}
+					className="bento-card-interactive group p-6 flex items-center space-x-4"
+				>
+					<FiUser className="w-8 h-8 text-accent group-hover:text-accent-light transition-colors" />
+					<div>
+						<p className="text-bento-text-secondary text-sm">
+							Account Settings
+						</p>
+						<p className="text-bento-text-primary text-xl font-semibold">
+							Manage your preferences
+						</p>
+					</div>
+					<FiChevronRight className="ml-auto w-6 h-6 text-text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+				</motion.div>
 
-  if (!userProfile) {
-    return <div className="p-5 text-center">No user profile found. Please log in again.</div>
-  }
+				{/* You can add more cards here for other user details or actions */}
+				{/* For instance: Security Settings Card */}
+				<motion.div
+					variants={itemVariants}
+					className="bento-card-interactive group p-6 flex items-center space-x-4"
+				>
+					<FiLock className="w-8 h-8  text-warning group-hover:text-yellow-400 transition-colors" />
+					<div>
+						<p className="text-bento-text-secondary text-sm">Security</p>
+						<p className="text-bento-text-primary text-xl font-semibold">
+							Change password & MFA
+						</p>
+					</div>
+					<FiChevronRight className="ml-auto w-6 h-6 text-text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+				</motion.div>
+			</motion.div>
+			<EditProfileModal
+				isOpen={isEditModalOpen}
+				onClose={() => setIsEditModalOpen(false)}
+				user={user}
+				onSave={handleProfileUpdate}
+			/>
+		</motion.div>
+	);
+};
 
-  const {
-    fullname = "N/A",
-    username = "N/A",
-    email = "N/A",
-    role = "User",
-    isEmailVerified,
-  } = userProfile
-  const isVerified = isEmailVerified ? "Yes" : "No"
-
-  return (
-    <div className="w-full max-w-2xl mx-auto mt-8">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-        <div className="p-8">
-          <div className="text-center mb-8">
-            <img
-              className="w-24 h-24 rounded-full mx-auto border-4 border-gray-200 dark:border-gray-700 shadow-lg"
-              src={userProfile.avatar?.url || `https://i.pravatar.cc/150?u=${username}`}
-              alt={`${fullname}'s avatar`}
-            />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-4">{fullname}</h1>
-            <p className="text-md text-gray-500 dark:text-gray-400">@{username}</p>
-          </div>
-
-          <div className="space-y-2 mb-6">
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <button onClick={() => fileInputRef.current.click()} className="w-full btn-secondary">
-              Change Avatar
-            </button>
-            {selectedFile && (
-              <div className="text-center text-sm text-gray-500 mt-2">
-                Selected: {selectedFile.name}
-              </div>
-            )}
-            {selectedFile && (
-              <button
-                onClick={handleUpload}
-                disabled={isUploading}
-                className="w-full btn-primary mt-2"
-              >
-                {isUploading ? "Uploading..." : "Upload New Image"}
-              </button>
-            )}
-          </div>
-
-          <div className="space-y-4">
-            <ProfileDetail label="Email" value={email} />
-            <ProfileDetail label="Role" value={role} />
-            <ProfileDetail label="Email Verified" value={isVerified} />
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const ProfileDetail = ({ label, value }) => (
-  <div className="flex justify-between items-center py-3 border-b border-gray-200 dark:border-gray-700">
-    <span className="text-md font-medium text-gray-600 dark:text-gray-400">{label}</span>
-    <span className="text-md text-gray-900 dark:text-white font-semibold">{value}</span>
-  </div>
-)
-
-export default Me
+export default Me;

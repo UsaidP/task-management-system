@@ -22,11 +22,10 @@ class ApiService {
 				credentials: "include",
 			};
 			const response = await fetch(url, config);
-			console.log("Custom Fetch Response" + response);
 
 			if (response.ok) {
 				const data = await response.json();
-				console.log("API service data", data);
+				// console.log("API service data", data);
 
 				return data;
 			} else {
@@ -91,6 +90,13 @@ class ApiService {
 		return await this.customFetch(`/users/reset-password/${token}`, {
 			method: "POST",
 			body: JSON.stringify({ password }),
+		});
+	}
+
+	async resendVerifyEmail(email) {
+		return await this.customFetch("/users/resend-verify-email", {
+			method: "POST",
+			body: JSON.stringify({ email }),
 		});
 	}
 	async refreshSession() {

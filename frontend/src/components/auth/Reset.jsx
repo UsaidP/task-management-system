@@ -32,15 +32,15 @@ export const Reset = () => {
 
   if (success) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-        <div className="w-full max-w-md p-8 space-y-6 text-center bg-white rounded-lg shadow-md dark:bg-gray-800">
+      <div className="flex items-center justify-center min-h-screen bento-theme">
+        <div className="w-full max-w-md p-8 space-y-6 text-center bento-card">
           <h1 className="text-2xl font-bold text-green-600">Success!</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-bento-text-secondary">
             Your password has been reset successfully.
           </p>
           <Link
             to="/login"
-            className="inline-block px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            className="inline-block px-4 py-2 font-medium text-white btn-new-primary"
           >
             Proceed to Login
           </Link>
@@ -50,16 +50,16 @@ export const Reset = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+    <div className="flex items-center justify-center min-h-screen bento-theme">
+      <div className="w-full max-w-md p-8 space-y-6 bento-card">
+        <h1 className="text-2xl font-bold text-center text-bento-text-primary">
           Reset Your Password
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-bento-text-primary"
             >
               New Password
             </label>
@@ -80,7 +80,7 @@ export const Reset = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="w-full px-4 py-2 font-medium text-white btn-new-primary disabled:opacity-50"
             >
               {loading ? "Resetting..." : "Reset Password"}
             </button>

@@ -23,22 +23,12 @@ const createTask = asyncHandler(async (req, res, next) => {
 	const { projectId, noteId } = req.params;
 	const userID = req.user._id;
 
-  if (
-    (!title,
-    !description,
-    !assignedTo,
-    !status,
-    !attachments,
-    !dueDate,
-    !priority,
-    !subtasks,
-    !comments)
-  ) {
-    return res.status(400).json({
-      message: "All fields are required",
-      success: false,
-    });
-  }
+	if (!title) {
+		return res.status(400).json({
+			message: "Title is required",
+			success: false,
+		});
+	}
 
 	if (!projectId) {
 		return res.status(400).json({

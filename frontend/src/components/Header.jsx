@@ -1,18 +1,18 @@
-import React, { useState } from "react";
 import { useAuth } from "./context/customHook.js";
 
 const Header = () => {
+	// We get the user and logout function directly from our auth context.
 	const { user, logout } = useAuth();
-	const [loading, setLoading] = useState(false);
 
-	// Safely get the name.
-	// 1. Use optional chaining `user?.fullname` to prevent errors if `user` is null/undefined.
-	// 2. Provide a fallback empty string `|| ""` in case `fullname` doesn't exist.
-	const displayName = user?.fullname || "";
+	// Safely get the user's name.
+	// 1. `user?.fullname` prevents errors if `user` is null.
+	// 2. `|| "User"` provides a fallback if the name isn't available.
+	const displayName = user?.fullname || "User";
 
-	return loading ? (
-		div
-	) : (
+	// We don't need a separate loading state here.
+	// We can just render the header content. If the user object isn't loaded yet,
+	// the AuthProvider's main loader will be showing, so this component won't even be visible.
+	return (
 		<header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 shadow-md">
 			<div>
 				<h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -21,8 +21,8 @@ const Header = () => {
 			</div>
 			<div className="flex items-center">
 				<span className="mr-4 text-gray-800 dark:text-white">
-					{/* If displayName has a value, show it. Otherwise, show "User". */}
-					Welcome, {displayName ? displayName.toLocaleUpperCase() : "User"}
+					{/* Display the name in uppercase */}
+					Welcome, {displayName.toLocaleUpperCase()}
 				</span>
 				<button
 					type="button"

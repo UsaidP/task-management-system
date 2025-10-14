@@ -6,6 +6,7 @@ import {
 	FiCheckSquare,
 	FiClipboard,
 	FiClock,
+	FiEye,
 	FiPlus,
 	FiUsers,
 } from "react-icons/fi";
@@ -33,9 +34,9 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
 		initial={{ opacity: 0, y: 20 }}
 		animate={{ opacity: 1, y: 0 }}
 		transition={{ duration: 0.6, delay }}
-		className="card-interactive group"
+		className="bento-card-interactive group p-6"
 	>
-		<div className="mb-4 flex items-center justify-between">
+		<div className="mb-4 flex items-center justify-between ">
 			<div
 				className={`p-3 rounded-xl ${color} transition-transform duration-200 group-hover:scale-110`}
 			>
@@ -43,8 +44,10 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
 			</div>
 		</div>
 		<div>
-			<p className="text-text-primary mb-1 text-3xl font-bold">{value}</p>
-			<p className="text-text-secondary">{label}</p>
+			<p className="text-bento-text-primary mb-1 text-3xl font-bold p-2">
+				{value}
+			</p>
+			<p className="text-bento-text-secondary">{label}</p>
 		</div>
 	</motion.div>
 );
@@ -56,14 +59,14 @@ const ProjectCard = ({ project, delay = 0 }) => (
 		transition={{ duration: 0.6, delay }}
 	>
 		<Link to={`/project/${project._id}`} className="block">
-			<div className="card-interactive group">
+			<div className="bento-card-interactive group">
 				<div className="mb-4 flex items-center justify-between">
-					<h3 className="text-lg font-semibold text-text-primary transition-colors group-hover:text-primary">
+					<h3 className="text-lg font-semibold text-bento-text-primary transition-colors group-hover:text-primary">
 						{project.name}
 					</h3>
 					<FiArrowRight className="h-5 w-5 text-text-muted transition-all duration-200 group-hover:translate-x-1 group-hover:text-primary" />
 				</div>
-				<p className="text-text-secondary line-clamp-2 mb-4 text-sm">
+				<p className="text-bento-text-secondary line-clamp-2 mb-4 text-sm">
 					{project.description}
 				</p>
 				<div className="flex items-center justify-between text-xs text-text-muted">
@@ -91,7 +94,7 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
 		animate={{ opacity: 1, scale: 1 }}
 		transition={{ duration: 0.4, delay }}
 		onClick={onClick}
-		className={`card-interactive group text-left ${color}`}
+		className={`bento-card-interactive group text-left ${color}`}
 	>
 		<div className="flex items-center">
 			<div className="mr-3 rounded-lg bg-white/10 p-2 transition-transform duration-200 group-hover:scale-110">
@@ -107,7 +110,7 @@ const Dashboard = () => {
 	// `user` is provided by the AuthContext. It's guaranteed to be either the user object or null.
 	// The AuthContext handles the initial loading state for the user.
 	const { user } = useAuth();
-
+	// console.log("2. [Dashboard] COMPONENT RENDERED - Received user:", user);
 	// This `loading` state is for the dashboard's specific data (projects, stats).
 	const [loading, setLoading] = useState(true);
 	const [projects, setProjects] = useState([]);
@@ -115,6 +118,7 @@ const Dashboard = () => {
 		totalTasks: 0,
 		todo: 0,
 		inProgress: 0,
+		underReview: 0,
 		completed: 0,
 		totalProjects: 0,
 	});
@@ -145,6 +149,8 @@ const Dashboard = () => {
 						totalTasks: tasksData.length,
 						todo: tasksData.filter((t) => t.status === "todo").length,
 						inProgress: tasksData.filter((t) => t.status === "in-progress")
+							.length,
+						underReview: tasksData.filter((t) => t.status === "under-review")
 							.length,
 						completed: tasksData.filter((t) => t.status === "completed").length,
 						totalProjects: projectsData.length,
@@ -181,11 +187,14 @@ const Dashboard = () => {
 					className="flex items-center justify-between"
 				>
 					<div>
-						<h1 className="text-text-primary mb-2 text-4xl font-bold">
+						<h1 className="text-bento-text-primary mb-2 text-4xl font-bold">
 							{getGreeting()}{" "}
-							<span className="gradient-text">{user.fullname || "User"}</span>!
+							<span className="gradient-text-new">
+								{user.fullname || "User"}
+							</span>
+							!
 						</h1>
-						<p className="text-text-secondary text-lg">
+						<p className="text-bento-text-secondary text-lg">
 							Here's what's happening with your projects today.
 						</p>
 					</div>
@@ -206,9 +215,9 @@ const Dashboard = () => {
 			)}
 
 			{/* Stats Grid: Renders based on the dashboard's `loading` state. */}
-			<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+			<div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-5 p-6">
 				<StatCard
-					icon={<FiClipboard className="h-6 w-6 text-white" />}
+					icon={<FiClipboard className="h-6 w-6  text-white" />}
 					label="Total Tasks"
 					value={loading ? "..." : stats.totalTasks}
 					color="bg-gradient-to-r from-primary to-primary-light"
@@ -222,18 +231,25 @@ const Dashboard = () => {
 					delay={0.2}
 				/>
 				<StatCard
+					icon={<FiEye className="h-6 w-6 text-blue-200" />}
+					label="Under Review"
+					value={loading ? "..." : stats.underReview} // Assuming you have this value
+					color="bg-gradient-to-r from-primary to-accent" // Blue gradient
+					delay={0.3}
+				/>
+				<StatCard
 					icon={<FiCheckSquare className="h-6 w-6 text-white" />}
 					label="Completed"
 					value={loading ? "..." : stats.completed}
 					color="bg-gradient-to-r from-success to-accent-light"
-					delay={0.3}
+					delay={0.4}
 				/>
 				<StatCard
 					icon={<FiUsers className="h-6 w-6 text-white" />}
 					label="Projects"
 					value={loading ? "..." : stats.totalProjects}
 					color="bg-gradient-to-r from-secondary to-secondary-light"
-					delay={0.4}
+					delay={0.5}
 				/>
 			</div>
 
@@ -243,7 +259,7 @@ const Dashboard = () => {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6, delay: 0.5 }}
 			>
-				<h2 className="text-text-primary mb-6 text-2xl font-bold">
+				<h2 className="text-bento-text-primary mb-6 text-2xl font-bold">
 					Quick Actions
 				</h2>
 				<div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -270,7 +286,7 @@ const Dashboard = () => {
 				transition={{ duration: 0.6, delay: 0.6 }}
 			>
 				<div className="mb-6 flex items-center justify-between">
-					<h2 className="text-text-primary text-2xl font-bold">
+					<h2 className="text-bento-text-primary text-2xl font-bold">
 						Recent Projects
 					</h2>
 					<Link
@@ -306,15 +322,15 @@ const Dashboard = () => {
 						className="card py-12 text-center"
 					>
 						<FiClipboard className="text-text-muted mx-auto mb-4 h-16 w-16" />
-						<h3 className="text-text-primary mb-2 text-xl font-semibold">
+						<h3 className="text-bento-text-primary mb-2 text-xl font-semibold">
 							No Projects Yet
 						</h3>
-						<p className="text-text-secondary mb-6">
+						<p className="text-bento-text-secondary mb-6">
 							Create your first project to get started.
 						</p>
 						<button
 							onClick={() => setCreateProjectModalOpen(true)}
-							className="btn-primary m-auto flex p-auto"
+							className="btn-new-primary m-auto flex p-auto"
 						>
 							<FiPlus className="m-auto mr-2 flex p-auto" />
 							Create Project

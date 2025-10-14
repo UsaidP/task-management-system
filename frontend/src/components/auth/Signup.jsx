@@ -95,8 +95,8 @@ export const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center p-24 justify-center ">
-      <div className="w-full max-w-xl  p-8 space-y-6 bg-surface card">
+    <div className="min-h-screen flex items-center p-24 justify-center bento-theme">
+      <div className="w-full max-w-xl  p-8 space-y-6 bg-surface bento-card">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -104,10 +104,9 @@ export const Signup = () => {
           className="text-center mb-8"
         >
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold text-purple-50 gradient-text mb-2">TaskFlow</h1>
+            <h1 className="text-3xl font-bold text-purple-50 gradient-text-new mb-2">TaskFlow</h1>
           </Link>
-          <p className="text-text-secondary">
-            Create your account and start managing tasks like a pro.
+          <p className="text-bento-text-secondary">
           </p>
         </motion.div>
 
@@ -121,7 +120,7 @@ export const Signup = () => {
               <div>
                 <label
                   htmlFor="fullname"
-                  className="block text-sm font-medium text-text-primary mb-2"
+                  className="block text-sm font-medium text-bento-text-primary mb-2"
                 >
                   Full Name
                 </label>
@@ -143,7 +142,7 @@ export const Signup = () => {
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium text-text-primary mb-2"
+                  className="block text-sm font-medium text-bento-text-primary mb-2"
                 >
                   Username
                 </label>
@@ -164,7 +163,7 @@ export const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-bento-text-primary mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -185,7 +184,7 @@ export const Signup = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-text-primary mb-2"
+                className="block text-sm font-medium text-bento-text-primary mb-2"
               >
                 Password
               </label>
@@ -233,7 +232,7 @@ export const Signup = () => {
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="w-full btn-primary group">
+            <button type="submit" disabled={loading} className="w-full btn-new-primary group">
               {loading ? (
                 <div className="flex items-center justify-center">
                   <div className="loading-dots">
@@ -258,7 +257,7 @@ export const Signup = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-6"
         >
-          <p className="text-text-secondary">
+          <p className="text-bento-text-secondary">
             Already have an account?{" "}
             <Link
               to="/login"
