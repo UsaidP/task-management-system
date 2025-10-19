@@ -35,9 +35,7 @@ export const Reset = () => {
       <div className="flex items-center justify-center min-h-screen bento-theme">
         <div className="w-full max-w-md p-8 space-y-6 text-center bento-card">
           <h1 className="text-2xl font-bold text-green-600">Success!</h1>
-          <p className="text-bento-text-secondary">
-            Your password has been reset successfully.
-          </p>
+          <p className="text-bento-text-secondary">Your password has been reset successfully.</p>
           <Link
             to="/login"
             className="inline-block px-4 py-2 font-medium text-white btn-new-primary"
@@ -57,10 +55,7 @@ export const Reset = () => {
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-bento-text-primary"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-bento-text-primary">
               New Password
             </label>
             <input

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import apiService from "../../../service/apiService"
 import Modal from "../Modal"
@@ -65,7 +65,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Task">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="input-label">Title</label>
+          <label htmlFor="title " className="input-label">
+            Title
+          </label>
           <input
             type="text"
             name="title"
@@ -76,7 +78,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           />
         </div>
         <div>
-          <label className="input-label">Description</label>
+          <label htmlFor="description " className="input-label">
+            Description
+          </label>
           <textarea
             name="description"
             value={formData.description}
@@ -86,7 +90,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           />
         </div>
         <div>
-          <label className="input-label">Status</label>
+          <label htmlFor="status " className="input-label">
+            Status
+          </label>
           <select
             name="status"
             value={formData.status}
@@ -100,7 +106,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           </select>
         </div>
         <div>
-          <label className="input-label">Priority</label>
+          <label htmlFor="priority" className="input-label">
+            Priority
+          </label>
           <select
             name="priority"
             value={formData.priority}
@@ -114,7 +122,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           </select>
         </div>
         <div>
-          <label className="input-label">Assign To</label>
+          <label htmlFor="Assign To" className="input-label">
+            Assign To
+          </label>
           <select
             multiple
             name="assignedTo"
@@ -133,7 +143,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           </p>
         </div>
         <div>
-          <label className="input-label">Due Date</label>
+          <label htmlFor="Due Date" className="input-label">
+            Due Date
+          </label>
           <input
             type="date"
             name="dueDate"

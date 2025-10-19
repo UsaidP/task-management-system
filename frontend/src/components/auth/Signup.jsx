@@ -106,8 +106,7 @@ export const Signup = () => {
           <Link to="/" className="inline-block">
             <h1 className="text-3xl font-bold text-purple-50 gradient-text-new mb-2">TaskFlow</h1>
           </Link>
-          <p className="text-bento-text-secondary">
-          </p>
+          <p className="text-bento-text-secondary"></p>
         </motion.div>
 
         <motion.div
@@ -163,7 +162,10 @@ export const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-bento-text-primary mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-bento-text-primary mb-2"
+              >
                 Email Address
               </label>
               <div className="relative">

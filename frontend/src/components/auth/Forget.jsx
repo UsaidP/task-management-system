@@ -44,10 +44,7 @@ export const Forget = () => {
         </p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-bento-text-primary"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-bento-text-primary">
               Email Address
             </label>
             <input
