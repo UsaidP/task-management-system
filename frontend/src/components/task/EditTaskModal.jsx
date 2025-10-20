@@ -73,6 +73,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             name="title"
             value={formData.title}
             onChange={handleChange}
+            placeholder="Enter task title"
             className="input-field"
             required
           />

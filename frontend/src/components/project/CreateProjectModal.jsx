@@ -1,14 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion"
-import React, { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import toast from "react-hot-toast"
 import apiService from "../../../service/apiService.js"
 
 const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
+  const [showError, setShowError] = useState(false)
+  const id = useId()
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-
+  console.log("ID" + id)
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -78,7 +80,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                 </label>
                 <input
                   type="text"
-                  id="name"
+                  id={id}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -93,7 +95,7 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                   Description
                 </label>
                 <textarea
-                  id="description"
+                  id={id}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows="4"

@@ -56,14 +56,17 @@ const KanbanBoard = ({
       if (member.user) {
         acc[member.user._id] = member.user
       }
-      console.log("Members" + JSON.stringify(acc))
+      // console.log(`Members map: ${JSON.stringify(acc)}`)
       return acc
     }, {})
   }, [members])
 
   const filteredColumns = useMemo(() => {
     return Object.entries(columns).reduce((acc, [status, column]) => {
+      // console.info(`Status: ${status}, Column: ${JSON.stringify(column)}`);
       const filteredTasks = column.tasks.filter((task) => {
+        console.log(`Filter Assignee ${filterAssignee}`)
+
         if (!task) return false
         const matchesSearch =
           searchTerm === "" ||
@@ -147,23 +150,24 @@ const KanbanBoard = ({
             </div>
 
             <button
+              type="button"
               onClick={() => setShowFilters(!showFilters)}
-              className={`btn-secondary flex gap-2 ${
-                showFilters || hasActiveFilters ? "bg-primary text-white" : ""
-              }`}
+              className={`btn-secondary flex gap-2 ${showFilters || hasActiveFilters ? "bg-primary text-white" : ""
+                }`}
             >
               <FiFilter className="w-4 h-4" />
               Filters
             </button>
 
             {onCreateTask && (
-              <button onClick={onCreateTask} className="btn-primary group flex gap-2">
+              <button type="button" onClick={onCreateTask} className="btn-primary group flex gap-2">
                 <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                 New Task
               </button>
             )}
           </div>
 
+          {/* Filter Section */}
           <AnimatePresence>
             {showFilters && (
               <motion.div
@@ -190,16 +194,14 @@ const KanbanBoard = ({
                               key={option.id}
                               value={option.id}
                               className={({ active }) =>
-                                `cursor-pointer select-none relative py-2 px-4 ${
-                                  active ? "bg-primary-dark text-white" : "text-text-primary"
+                                `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
                                 }`
                               }
                             >
                               {({ selected }) => (
                                 <span
-                                  className={`block truncate ${
-                                    selected ? "font-semibold" : "font-normal"
-                                  }`}
+                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
+                                    }`}
                                 >
                                   {option.name}
                                 </span>
@@ -213,8 +215,8 @@ const KanbanBoard = ({
 
                   {/* Assignee Filter */}
                   <div className="flex gap-2 items-center relative">
-                    <label className="input-label shrink-0">Assignee</label>
                     <Listbox value={filterAssignee} onChange={setFilterAssignee}>
+                      <label className="input-label shrink-0">Assignee</label>
                       <div className="relative">
                         <Listbox.Button className="w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between">
                           <span className="truncate">{selectedAssigneeObject?.name}</span>
@@ -226,16 +228,14 @@ const KanbanBoard = ({
                               key={option.id}
                               value={option.id}
                               className={({ active }) =>
-                                `cursor-pointer select-none relative py-2 px-4 ${
-                                  active ? "bg-primary-dark text-white" : "text-text-primary"
+                                `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
                                 }`
                               }
                             >
                               {({ selected }) => (
                                 <span
-                                  className={`block truncate ${
-                                    selected ? "font-semibold" : "font-normal"
-                                  }`}
+                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
+                                    }`}
                                 >
                                   {option.name}
                                 </span>
@@ -249,6 +249,7 @@ const KanbanBoard = ({
 
                   {hasActiveFilters && (
                     <button
+                      type="button"
                       onClick={clearFilters}
                       className="btn-ghost text-sm text-error hover:bg-error/10"
                     >

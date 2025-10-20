@@ -1,10 +1,10 @@
-import { useState, useMemo } from "react"
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
+import { useMemo, useState } from "react"
 import toast from "react-hot-toast"
+// Import FiCheck for the multi-select UI
+import { FiCheck, FiChevronDown } from "react-icons/fi"
 import apiService from "../../../service/apiService"
 import Modal from "../Modal"
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
-// Import FiCheck for the multi-select UI
-import { FiChevronDown, FiCheck } from "react-icons/fi"
 
 // Moved options outside the component as they are static
 const priorityOptions = [
@@ -18,7 +18,7 @@ const statusOptions = [
   { id: "todo", name: "To Do" },
   { id: "in-progress", name: "In Progress" },
   { id: "under-review", name: "Under Review" },
-  { id: "done", name: "Done" },
+  { id: "completed", name: "Completed" },
 ]
 
 const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members }) => {
@@ -72,7 +72,9 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
     setIsSubmitting(true)
     const toastId = toast.loading("Creating task...")
     try {
+
       const response = await apiService.createTask(projectId, formData)
+      // console.log(`Create Task Response: ${JSON.stringify(response)}`);
       if (response.success) {
         onTaskCreated(response.task)
         toast.success("Task created!", { id: toastId })
@@ -144,8 +146,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 ${
-                          active ? "bg-primary-dark text-white" : "text-text-primary"
+                        `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
                         }`
                       }
                     >
@@ -183,14 +184,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 ${
-                          active ? "bg-primary-dark text-white" : "text-text-primary"
+                        `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
                         }`
                       }
                     >
                       {({ selected }) => (
                         <span
-                          className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
+                          className={`block truncate ${selected ? "font-bold" : "font-normal"}`}
                         >
                           {option.name}
                         </span>
@@ -223,17 +223,15 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${
-                          active ? "bg-primary-dark text-white" : "text-text-primary"
+                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
                         }`
                       }
                     >
                       {({ selected }) => (
                         <>
                           <span
-                            className={`block truncate ${
-                              selected ? "font-semibold" : "font-normal"
-                            }`}
+                            className={`block truncate ${selected ? "font-semibold" : "font-normal"
+                              }`}
                           >
                             {option.name}
                           </span>
