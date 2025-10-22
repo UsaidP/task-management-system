@@ -1,9 +1,12 @@
+// tailwind.config.js
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
+        // Your existing colors
         'ocean-blue': '#0EA5E9',
         'deep-blue': '#0369A1',
         'light-blue': '#E0F2FE',
@@ -19,6 +22,13 @@ export default {
         'task-priority-high': '#EF4444',
         'task-priority-medium': '#F59E0B',
         'task-priority-low': '#0EA5E9',
+
+        // 👇 Add these lines to fix the error
+        // We are adding the 'primary', 'border', and 'text-primary' keys
+        // that your CSS file is looking for.
+        'primary': '#0EA5E9',       // I mapped this to your 'ocean-blue'
+        'border': '#E2E8F0',        // I mapped this to your 'slate-200'
+        'text-primary': '#0F172A',  // I mapped this to your 'slate-900'
       },
       boxShadow: {
         glow: "0 0 25px rgba(14, 165, 233, 0.4)",

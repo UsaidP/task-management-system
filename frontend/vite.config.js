@@ -9,6 +9,8 @@ const __dirname = path.dirname(__filename)
 
 export default defineConfig({
   plugins: [react()],
+  environment: 'jsdom',
+  setupFiles: './src/setupTests.js',
   css: {
     postcss: {
       plugins: [tailwindcss],

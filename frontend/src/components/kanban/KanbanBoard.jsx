@@ -62,6 +62,7 @@ const KanbanBoard = ({
 
   const filteredColumns = useMemo(() => {
     return Object.entries(columns).reduce((acc, [status, column]) => {
+      console.log(`Status ${status}`);
       const filteredTasks = column.tasks.filter((task) => {
         if (!task) return false;
         const matchesSearch =
@@ -73,8 +74,7 @@ const KanbanBoard = ({
           task.priority?.toLowerCase() === filterPriority.toLowerCase();
         const matchesAssignee =
           filterAssignee === "all" ||
-          (task.assignedTo &&
-            task.assignedTo.some((assignee) => assignee._id === filterAssignee));
+          task.assignedTo?.some((assignee) => assignee._id === filterAssignee);
         return matchesSearch && matchesPriority && matchesAssignee;
       });
       acc[status] = { ...column, tasks: filteredTasks };
@@ -84,8 +84,9 @@ const KanbanBoard = ({
 
   const handleTaskDrop = useCallback(
     async (item, newStatus, destinationIndex) => {
-      const { _id: taskId, status: originalStatus, index } = item;
+      const { id: taskId, status: originalStatus, index } = item;
       const optimisticColumns = JSON.parse(JSON.stringify(columns));
+      console.log(`optimisticColumns: ${JSON.stringify(taskId)}`);
 
       const sourceColumnTasks = [...optimisticColumns[originalStatus].tasks];
       const [movedTask] = sourceColumnTasks.splice(index, 1);
@@ -109,7 +110,9 @@ const KanbanBoard = ({
       setColumns(newColumns);
 
       try {
+        console.log(`ProjectID: ${projectId} , TaskID:${taskId} , status: ${status}`);
         await apiService.updateTask(projectId, taskId, { status: newStatus });
+
         toast.success("Task moved successfully!");
       } catch (error) {
         setColumns(optimisticColumns);
@@ -263,62 +266,64 @@ const KanbanBoard = ({
         <div className="flex-1 overflow-x-auto">
           <div className="flex items-stretch gap-6 px-1 md:px-4 pb-6 pt-2">
             {Object.entries(columns).map(([status, column]) => {
+              console.log(`ColumnIcon: ${JSON.stringify(column)}`);
+              console.log(`STATUS: ${JSON.stringify(status)}`);
               const tasksToRender = filteredColumns[status]?.tasks || [];
               const totalTasks = columns[status]?.tasks?.length || 0;
-            return (
-              <Column key={status} status={status} onDrop={handleTaskDrop}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: Object.keys(columns).indexOf(status) * 0.08,
-                  }}
-                  className="w-full md:w-[280px] xl:w-[320px] flex-shrink-0"
-                >
-                  <div className="flex p-4 h-full flex-col rounded-xl glass">
-                    <ColumnHeader
-                      title={column.title}
-                      count={tasksToRender.length}
-                      totalCount={totalTasks}
-                      color={column.color}
-                      icon={column.icon}
-                      showFilterCount={hasActiveFilters && tasksToRender.length !== totalTasks}
-                    />
-                    <div className="flex-grow space-y-3 overflow-y-auto p-1 -mr-2 pr-2">
-                      <AnimatePresence mode="popLayout">
-                        {tasksToRender.length > 0 ? (
-                          tasksToRender.map((task, index) => (
-                            <TaskCard
-                              key={task._id}
-                              task={task}
-                              index={index}
-                              onEdit={() => openEditModal(task)}
-                              onDelete={() => openDeleteModal(task)}
-                              membersMap={membersMap}
-                            />
-                          ))
-                        ) : (
-                          <motion.div
-                            layout
-                            className="flex items-center justify-center text-sm text-text-muted text-center h-full p-10 border-2 border-dashed border-border rounded-lg"
-                          >
-                            {hasActiveFilters
-                              ? "No tasks match your filters."
-                              : "Drag tasks here or create one."}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+              return (
+                <Column key={status} status={status} onDrop={handleTaskDrop}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: Object.keys(columns).indexOf(status) * 0.08,
+                    }}
+                    className="w-full md:w-[280px] xl:w-[320px] flex-shrink-0"
+                  >
+                    <div className="flex p-4 h-full flex-col rounded-xl glass">
+                      <ColumnHeader
+                        title={column.title}
+                        count={tasksToRender.length}
+                        totalCount={totalTasks}
+                        color={column.color}
+                        // icon={column.icon}
+                        showFilterCount={hasActiveFilters && tasksToRender.length !== totalTasks}
+                      />
+                      <div className="flex-grow space-y-3 overflow-y-auto p-1 -mr-2 pr-2">
+                        <AnimatePresence mode="popLayout">
+                          {tasksToRender.length > 0 ? (
+                            tasksToRender.map((task, index) => (
+                              <TaskCard
+                                key={task._id}
+                                task={task}
+                                index={index}
+                                onEdit={() => openEditModal(task)}
+                                onDelete={() => openDeleteModal(task)}
+                                membersMap={membersMap}
+                              />
+                            ))
+                          ) : (
+                            <motion.div
+                              layout
+                              className="flex items-center justify-center text-sm text-text-muted text-center h-full p-10 border-2 border-dashed border-border rounded-lg"
+                            >
+                              {hasActiveFilters
+                                ? "No tasks match your filters."
+                                : "Drag tasks here or create one."}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              </Column>
-            )
-          })}
+                  </motion.div>
+                </Column>
+              )
+            })}
+          </div>
         </div>
       </DndProvider>
-    </div>
-  )
+    </div>)
 }
 
 export default KanbanBoard
