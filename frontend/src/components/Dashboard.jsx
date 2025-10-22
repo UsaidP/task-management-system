@@ -205,7 +205,7 @@ const Dashboard = () => {
       )}
 
       {/* Stats Grid: Renders based on the dashboard's `loading` state. */}
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-5 p-6">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-5 p-6 xs:grid-cols-1 sm:grid-cols-2">
         <StatCard
           icon={<FiClipboard className="h-6 w-6  text-white" />}
           label="Total Tasks"
