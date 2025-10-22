@@ -55,6 +55,21 @@
     @apply bg-white rounded-xl p-6 shadow-card hover:shadow-card-hover;
   }
 }
+.input-label {
+  @apply block text-sm font-medium text-text-primary mb-1;
+}
+
+.filter-dropdown {
+  @apply w-full md:w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between;
+}
+
+.filter-dropdown-options {
+  @apply absolute z-50 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto;
+}
+
+.filter-dropdown-item {
+  @apply cursor-pointer select-none relative py-2 px-4 text-text-primary;
+}
 
 ::-webkit-scrollbar {
   width: 6px;
