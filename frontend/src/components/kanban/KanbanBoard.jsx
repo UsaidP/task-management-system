@@ -35,96 +35,89 @@ const KanbanBoard = ({
 
   // Assignee options
   const assigneeOptions = useMemo(() => {
-    const options = [{ id: "all", name: "All Members" }]
+    const options = [{ id: "all", name: "All Members" }];
     if (members) {
       members.forEach((member) => {
+        const user = member.user || member;
         options.push({
-          id: member._id,
-          name: member.user?.fullname || member.fullname || member.email || "Unknown",
-        })
-      })
+          id: user._id,
+          name: user.fullname || user.email || "Unknown",
+        });
+      });
     }
-    return options
-  }, [members])
+    return options;
+  }, [members]);
 
   const selectedPriorityObject = priorityOptions.find((p) => p.id === filterPriority)
   const selectedAssigneeObject = assigneeOptions.find((a) => a.id === filterAssignee)
 
   const membersMap = useMemo(() => {
-    if (!members) return {}
+    if (!members) return {};
     return members.reduce((acc, member) => {
-
-      if (member.user) {
-
-        acc[member.user._id] = member._id
-      }
-      console.log(`Member`, acc);
-      // console.log(`Members map: ${JSON.stringify(acc)}`)
-      return acc
-    }, {})
-  }, [])
+      const user = member.user || member;
+      acc[user._id] = user;
+      return acc;
+    }, {});
+  }, [members]);
 
   const filteredColumns = useMemo(() => {
     return Object.entries(columns).reduce((acc, [status, column]) => {
-      // console.info(`Status: ${status}, Column: ${JSON.stringify(column)}`);
       const filteredTasks = column.tasks.filter((task) => {
-        if (!task) return false
+        if (!task) return false;
         const matchesSearch =
           searchTerm === "" ||
           task.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          task.description?.toLowerCase().includes(searchTerm.toLowerCase())
+          task.description?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesPriority =
-          filterPriority === "all" || task.priority?.toLowerCase() === filterPriority.toLowerCase()
+          filterPriority === "all" ||
+          task.priority?.toLowerCase() === filterPriority.toLowerCase();
         const matchesAssignee =
-          filterAssignee === "all" || task.assignedTo?.includes(filterAssignee)
-        console.log(`Filter Assignee: ${filterAssignee}, Task Assignee: ${JSON.stringify(task.assignedTo)}`);
-        return matchesSearch && matchesPriority && matchesAssignee
-      })
-      acc[status] = { ...column, tasks: filteredTasks }
-      return acc
-    }, {})
-  }, [columns, searchTerm, filterPriority, filterAssignee])
+          filterAssignee === "all" ||
+          (task.assignedTo &&
+            task.assignedTo.some((assignee) => assignee._id === filterAssignee));
+        return matchesSearch && matchesPriority && matchesAssignee;
+      });
+      acc[status] = { ...column, tasks: filteredTasks };
+      return acc;
+    }, {});
+  }, [columns, searchTerm, filterPriority, filterAssignee]);
 
   const handleTaskDrop = useCallback(
     async (item, newStatus, destinationIndex) => {
-      const { id: taskId, status: originalStatus } = item
-      if (originalStatus === newStatus) {
-        const newColumns = { ...columns }
-        const column = newColumns[originalStatus]
-        const newTasks = Array.from(column.tasks)
-        const [removed] = newTasks.splice(item.index, 1)
-        newTasks.splice(destinationIndex, 0, removed)
-        newColumns[originalStatus] = { ...column, tasks: newTasks }
-        setColumns(newColumns)
-        return
-      }
+      const { _id: taskId, status: originalStatus, index } = item;
+      const optimisticColumns = JSON.parse(JSON.stringify(columns));
 
-      const previousColumns = JSON.parse(JSON.stringify(columns))
-      const newColumns = { ...columns }
-      const sourceColumn = { ...newColumns[originalStatus] }
-      const destColumn = { ...newColumns[newStatus] }
-      const sourceTasks = [...sourceColumn.tasks]
-      const destTasks = [...destColumn.tasks]
-      const taskIndex = sourceTasks.findIndex((t) => t._id === taskId)
-      if (taskIndex === -1) return
+      const sourceColumnTasks = [...optimisticColumns[originalStatus].tasks];
+      const [movedTask] = sourceColumnTasks.splice(index, 1);
+      movedTask.status = newStatus;
 
-      const [movedTask] = sourceTasks.splice(taskIndex, 1)
-      movedTask.status = newStatus
-      destTasks.splice(destinationIndex, 0, movedTask)
-      newColumns[originalStatus] = { ...sourceColumn, tasks: sourceTasks }
-      newColumns[newStatus] = { ...destColumn, tasks: destTasks }
-      setColumns(newColumns)
+      const destColumnTasks = [...optimisticColumns[newStatus].tasks];
+      destColumnTasks.splice(destinationIndex, 0, movedTask);
+
+      const newColumns = {
+        ...optimisticColumns,
+        [originalStatus]: {
+          ...optimisticColumns[originalStatus],
+          tasks: sourceColumnTasks,
+        },
+        [newStatus]: {
+          ...optimisticColumns[newStatus],
+          tasks: destColumnTasks,
+        },
+      };
+
+      setColumns(newColumns);
 
       try {
-        await apiService.updateTask(projectId, taskId, { status: newStatus })
-        toast.success("Task moved successfully!")
+        await apiService.updateTask(projectId, taskId, { status: newStatus });
+        toast.success("Task moved successfully!");
       } catch (error) {
-        setColumns(previousColumns)
-        toast.error("Failed to move task.")
+        setColumns(optimisticColumns);
+        toast.error("Failed to move task.");
       }
     },
-    [columns, setColumns, projectId]
-  )
+    [columns, setColumns, projectId],
+  );
 
   const clearFilters = () => {
     setSearchTerm("")
@@ -137,10 +130,10 @@ const KanbanBoard = ({
   return (
     <div className="flex h-full flex-col relative">
       {/* Fixed Filter Section */}
-      <div className="sticky top-0 z-50  pb-4 px-1">
+      <div className="sticky top-0 z-50 pb-4 px-1 md:px-4">
         <div className="glass rounded-xl p-4 shadow-md">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="flex-1 relative">
+          <div className="flex flex-col md:flex-row items-center gap-3 mb-3">
+            <div className="w-full md:flex-1 relative">
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
               <input
                 type="text"
@@ -151,22 +144,28 @@ const KanbanBoard = ({
               />
             </div>
 
-            <button
-              type="button"
-              onClick={() => setShowFilters(!showFilters)}
-              className={`btn-secondary flex gap-2 ${showFilters || hasActiveFilters ? "bg-primary text-white" : ""
-                }`}
-            >
-              <FiFilter className="w-4 h-4" />
-              Filters
-            </button>
-
-            {onCreateTask && (
-              <button type="button" onClick={onCreateTask} className="btn-primary group flex gap-2">
-                <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                New Task
+            <div className="w-full md:w-auto flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowFilters(!showFilters)}
+                className={`w-full md:w-auto btn-secondary flex gap-2 ${showFilters || hasActiveFilters ? "bg-primary text-white" : ""
+                  }`}
+              >
+                <FiFilter className="w-4 h-4" />
+                Filters
               </button>
-            )}
+
+              {onCreateTask && (
+                <button
+                  type="button"
+                  onClick={onCreateTask}
+                  className="w-full md:w-auto btn-primary group flex gap-2"
+                >
+                  <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                  New Task
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Filter Section */}
@@ -180,72 +179,66 @@ const KanbanBoard = ({
               >
                 <div className="flex items-center gap-3 flex-wrap">
                   {/* Priority Filter */}
-                  <div className="flex gap-2 items-center relative">
-                    <label htmlFor="priority" className="input-label shrink-0">Priority</label>
+                  <div className="relative">
+                    <label htmlFor="priority" className="sr-only">Priority</label>
                     <Listbox value={filterPriority} onChange={setFilterPriority}>
-                      <div className="relative">
-                        <Listbox.Button className="w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between">
-                          <span className="truncate capitalize">
-                            {selectedPriorityObject?.name}
-                          </span>
-                          <FiChevronDown className="w-4 h-4 text-text-muted" />
-                        </Listbox.Button>
-                        <Listbox.Options className="absolute z-50 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
-                          {priorityOptions.map((option) => (
-                            <Listbox.Option
-                              key={option.id}
-                              value={option.id}
-                              className={({ active }) =>
-                                `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
-                                }`
-                              }
-                            >
-                              {({ selected }) => (
+                      <Listbox.Button className="filter-dropdown">
+                        <span className="truncate capitalize">
+                          {selectedPriorityObject?.name || "Priority"}
+                        </span>
+                        <FiChevronDown className="w-4 h-4 text-text-muted" />
+                      </Listbox.Button>
+                      <Listbox.Options className="filter-dropdown-options">
+                        {priorityOptions.map((option) => (
+                          <Listbox.Option key={option.id} value={option.id} as={Fragment}>
+                            {({ active, selected }) => (
+                              <li
+                                className={`filter-dropdown-item ${active ? "bg-primary-dark" : ""
+                                  }`}
+                              >
                                 <span
                                   className={`block truncate ${selected ? "font-semibold" : "font-normal"
                                     }`}
                                 >
                                   {option.name}
                                 </span>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </div>
+                              </li>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
                     </Listbox>
                   </div>
 
                   {/* Assignee Filter */}
-                  <div className="flex gap-2 items-center relative">
+                  <div className="relative">
+                    <label htmlFor="assignee" className="sr-only">Assignee</label>
                     <Listbox value={filterAssignee} onChange={setFilterAssignee}>
-                      <label htmlFor="assignee" className="input-label shrink-0">Assignee</label>
-                      <div className="relative">
-                        <Listbox.Button className="w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between">
-                          <span className="truncate">{selectedAssigneeObject?.name}</span>
-                          <FiChevronDown className="w-4 h-4 text-text-muted" />
-                        </Listbox.Button>
-                        <Listbox.Options className="absolute z-50 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
-                          {assigneeOptions.map((option) => (
-                            <Listbox.Option
-                              key={option.id}
-                              value={option.id}
-                              className={({ active }) =>
-                                `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
-                                }`
-                              }
-                            >
-                              {({ selected }) => (
+                      <Listbox.Button className="filter-dropdown">
+                        <span className="truncate">
+                          {selectedAssigneeObject?.name || "Assignee"}
+                        </span>
+                        <FiChevronDown className="w-4 h-4 text-text-muted" />
+                      </Listbox.Button>
+                      <Listbox.Options className="filter-dropdown-options">
+                        {assigneeOptions.map((option) => (
+                          <Listbox.Option key={option.id} value={option.id} as={Fragment}>
+                            {({ active, selected }) => (
+                              <li
+                                className={`filter-dropdown-item ${active ? "bg-primary-dark" : ""
+                                  }`}
+                              >
                                 <span
                                   className={`block truncate ${selected ? "font-semibold" : "font-normal"
                                     }`}
                                 >
                                   {option.name}
                                 </span>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </div>
+                              </li>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
                     </Listbox>
                   </div>
 
@@ -267,10 +260,11 @@ const KanbanBoard = ({
 
       {/* Kanban Board */}
       <DndProvider backend={HTML5Backend}>
-        <div className="flex flex-1 items-stretch gap-6 overflow-x-auto px-1 pb-6 pt-2">
-          {Object.entries(columns).map(([status, column]) => {
-            const tasksToRender = filteredColumns[status]?.tasks || []
-            const totalTasks = columns[status]?.tasks?.length || 0
+        <div className="flex-1 overflow-x-auto">
+          <div className="flex items-stretch gap-6 px-1 md:px-4 pb-6 pt-2">
+            {Object.entries(columns).map(([status, column]) => {
+              const tasksToRender = filteredColumns[status]?.tasks || [];
+              const totalTasks = columns[status]?.tasks?.length || 0;
             return (
               <Column key={status} status={status} onDrop={handleTaskDrop}>
                 <motion.div
@@ -280,9 +274,9 @@ const KanbanBoard = ({
                     duration: 0.5,
                     delay: Object.keys(columns).indexOf(status) * 0.08,
                   }}
-                  className="xl:w-[300px] flex-shrink-0"
+                  className="w-full md:w-[280px] xl:w-[320px] flex-shrink-0"
                 >
-                  <div className="flex p-5 h-full flex-col rounded-xl glass">
+                  <div className="flex p-4 h-full flex-col rounded-xl glass">
                     <ColumnHeader
                       title={column.title}
                       count={tasksToRender.length}
@@ -299,8 +293,8 @@ const KanbanBoard = ({
                               key={task._id}
                               task={task}
                               index={index}
-                              onEdit={openEditModal}
-                              onDelete={openDeleteModal}
+                              onEdit={() => openEditModal(task)}
+                              onDelete={() => openDeleteModal(task)}
                               membersMap={membersMap}
                             />
                           ))
