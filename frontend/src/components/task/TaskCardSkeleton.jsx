@@ -1,7 +1,7 @@
 import Skeleton from "../Skeleton"
 
 const TaskCardSkeleton = () => (
-  <div className="bg-surface p-4 rounded-lg border border-border space-y-3">
+  <div className="bg-slate-100 p-4 rounded-lg border border-slate-200 space-y-3">
     <div className="flex justify-between items-center">
       <Skeleton className="h-4 w-3/5" />
       <Skeleton className="h-4 w-4 rounded-full" />

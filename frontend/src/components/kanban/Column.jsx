@@ -14,7 +14,7 @@ const Column = ({ children, status, onDrop }) => {
     <div
       ref={drop}
       className={`w-80 flex-shrink-0 rounded-xl transition-colors duration-300 ${
-        isOver ? "bg-primary/10" : ""
+        isOver ? "bg-accent-blue/10" : ""
       }`}
     >
       {children}

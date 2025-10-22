@@ -13,19 +13,19 @@ const Header = () => {
   // We can just render the header content. If the user object isn't loaded yet,
   // the AuthProvider's main loader will be showing, so this component won't even be visible.
   return (
-    <header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 shadow-md">
+    <header className="flex items-center justify-between p-4 bg-white shadow-md">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
       </div>
       <div className="flex items-center">
-        <span className="mr-4 text-gray-800 dark:text-white">
+        <span className="mr-4 text-slate-900">
           {/* Display the name in uppercase */}
           Welcome, {displayName.toLocaleUpperCase()}
         </span>
         <button
           type="button"
           onClick={logout}
-          className="px-4 py-2 font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+          className="btn-danger"
         >
           Logout
         </button>

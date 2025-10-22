@@ -53,20 +53,21 @@ const KanbanBoard = ({
   const membersMap = useMemo(() => {
     if (!members) return {}
     return members.reduce((acc, member) => {
+
       if (member.user) {
-        acc[member.user._id] = member.user
+
+        acc[member.user._id] = member._id
       }
+      console.log(`Member`, acc);
       // console.log(`Members map: ${JSON.stringify(acc)}`)
       return acc
     }, {})
-  }, [members])
+  }, [])
 
   const filteredColumns = useMemo(() => {
     return Object.entries(columns).reduce((acc, [status, column]) => {
       // console.info(`Status: ${status}, Column: ${JSON.stringify(column)}`);
       const filteredTasks = column.tasks.filter((task) => {
-        console.log(`Filter Assignee ${filterAssignee}`)
-
         if (!task) return false
         const matchesSearch =
           searchTerm === "" ||
@@ -76,6 +77,7 @@ const KanbanBoard = ({
           filterPriority === "all" || task.priority?.toLowerCase() === filterPriority.toLowerCase()
         const matchesAssignee =
           filterAssignee === "all" || task.assignedTo?.includes(filterAssignee)
+        console.log(`Filter Assignee: ${filterAssignee}, Task Assignee: ${JSON.stringify(task.assignedTo)}`);
         return matchesSearch && matchesPriority && matchesAssignee
       })
       acc[status] = { ...column, tasks: filteredTasks }
@@ -135,7 +137,7 @@ const KanbanBoard = ({
   return (
     <div className="flex h-full flex-col relative">
       {/* Fixed Filter Section */}
-      <div className="sticky top-0 z-50 bg-background pb-4 px-1">
+      <div className="sticky top-0 z-50  pb-4 px-1">
         <div className="glass rounded-xl p-4 shadow-md">
           <div className="flex items-center gap-3 mb-3">
             <div className="flex-1 relative">
@@ -179,7 +181,7 @@ const KanbanBoard = ({
                 <div className="flex items-center gap-3 flex-wrap">
                   {/* Priority Filter */}
                   <div className="flex gap-2 items-center relative">
-                    <label className="input-label shrink-0">Priority</label>
+                    <label htmlFor="priority" className="input-label shrink-0">Priority</label>
                     <Listbox value={filterPriority} onChange={setFilterPriority}>
                       <div className="relative">
                         <Listbox.Button className="w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between">
@@ -216,7 +218,7 @@ const KanbanBoard = ({
                   {/* Assignee Filter */}
                   <div className="flex gap-2 items-center relative">
                     <Listbox value={filterAssignee} onChange={setFilterAssignee}>
-                      <label className="input-label shrink-0">Assignee</label>
+                      <label htmlFor="assignee" className="input-label shrink-0">Assignee</label>
                       <div className="relative">
                         <Listbox.Button className="w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between">
                           <span className="truncate">{selectedAssigneeObject?.name}</span>

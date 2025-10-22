@@ -49,8 +49,8 @@ const Sidebar = () => {
   }
 
   const NavLinkClasses = ({ isActive }) =>
-    `flex items-center px-4 py-3 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-light transition-all duration-200 group ${
-      isActive ? "bg-primary text-white shadow-glow" : ""
+    `flex items-center px-4 py-3 rounded-lg text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-all duration-200 group ${
+      isActive ? "bg-light-blue text-ocean-blue" : ""
     }`
 
   return (
@@ -59,19 +59,19 @@ const Sidebar = () => {
         initial={{ x: -300 }}
         animate={{ x: 0 }}
         transition={{ duration: 0.3 }}
-        className="w-80 h-screen glass flex flex-col border-r border-border"
+        className="w-80 h-screen bg-slate-100 flex flex-col border-r border-slate-200"
       >
         {/* Header */}
-        <div className="p-6 border-b border-border">
+        <div className="p-6 border-b border-slate-200">
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-3xl font-bold gradient-text"
+            className="text-3xl font-bold text-slate-900"
           >
             TaskFlow
           </motion.h1>
-          <p className="text-text-muted text-sm mt-1">Manage with style</p>
+          <p className="text-slate-700 text-sm mt-1">Manage with style</p>
         </div>
 
         {/* Navigation */}
@@ -95,8 +95,8 @@ const Sidebar = () => {
             className="pt-6"
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-text-primary">Projects</h2>
-              <span className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
+              <h2 className="text-lg font-semibold text-slate-900">Projects</h2>
+              <span className="text-xs bg-light-blue text-ocean-blue px-2 py-1 rounded-full">
                 {projects.length}
               </span>
             </div>
@@ -127,11 +127,11 @@ const Sidebar = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="p-6 border-t border-border"
+          className="p-6 border-t border-slate-200"
         >
           <button
             onClick={() => setIsModalOpen(true)}
-            className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2 text-white transition-colors hover:btn-primary-hover"
+            className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2 text-white transition-colors"
           >
             <FiPlusSquare className="mr-2 transition-transform duration-200 group-hover:rotate-90" />
             Create Project
@@ -143,25 +143,25 @@ const Sidebar = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="p-6 border-t border-border relative"
+          className="p-6 border-t border-slate-200 relative"
         >
           <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-light transition-colors duration-200"
+            className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-200 transition-colors duration-200"
           >
             <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold mr-3">
+              <div className="w-10 h-10 rounded-full bg-ocean-blue flex items-center justify-center text-white font-bold mr-3">
                 {user?.fullname?.charAt(0) || "U"}
               </div>
               <div className="text-left">
-                <div className="text-sm font-medium text-text-primary truncate max-w-32">
+                <div className="text-sm font-medium text-slate-900 truncate max-w-32">
                   {user?.fullname || "User"}
                 </div>
-                <div className="text-xs text-text-muted truncate max-w-32">{user?.email}</div>
+                <div className="text-xs text-slate-700 truncate max-w-32">{user?.email}</div>
               </div>
             </div>
             <FiChevronDown
-              className={`w-4 h-4 text-text-muted transition-transform duration-200 ${
+              className={`w-4 h-4 text-slate-700 transition-transform duration-200 ${
                 isUserMenuOpen ? "rotate-180" : ""
               }`}
             />
@@ -174,11 +174,11 @@ const Sidebar = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute bottom-full left-6 right-6 mb-2 glass rounded-lg shadow-xl border border-border overflow-hidden"
+                className="absolute bottom-full left-6 right-6 mb-2 bg-white rounded-lg shadow-xl border border-slate-200 overflow-hidden"
               >
                 <NavLink
                   to="/profile"
-                  className="flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-surface-light transition-colors duration-200"
+                  className="flex items-center px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-colors duration-200"
                   onClick={() => setIsUserMenuOpen(false)}
                 >
                   <FiUser className="mr-3 w-4 h-4" />
@@ -190,7 +190,7 @@ const Sidebar = () => {
                     setIsUserMenuOpen(false)
                     // Add settings functionality later
                   }}
-                  className="w-full flex items-center px-4 py-3 text-text-secondary hover:text-text-primary hover:bg-surface-light transition-colors duration-200"
+                  className="w-full flex items-center px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-colors duration-200"
                 >
                   <FiSettings className="mr-3 w-4 h-4" />
                   Settings
@@ -201,7 +201,7 @@ const Sidebar = () => {
                     setIsUserMenuOpen(false)
                     handleLogout()
                   }}
-                  className="w-full flex items-center px-4 py-3 text-error hover:bg-error/10 transition-colors duration-200"
+                  className="w-full flex items-center px-4 py-3 text-rose-red hover:bg-rose-red/10 transition-colors duration-200"
                 >
                   <FiLogOut className="mr-3 w-4 h-4" />
                   Sign Out

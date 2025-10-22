@@ -53,15 +53,15 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
           onClick={onClose} // Close modal on backdrop click
         >
           <motion.div
-            className="bento-card w-full max-w-lg p-8 rounded-lg shadow-xl"
+            className="card w-full max-w-lg p-8 rounded-lg shadow-xl"
             variants={modalVariants}
             exit="exit"
             onClick={(e) => e.stopPropagation()} // Prevent clicks inside the modal from closing it
           >
             {/* Modal Header */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-bento-text-primary">Edit Your Profile</h2>
-              <button onClick={onClose} className="text-text-muted hover:text-bento-text-primary">
+              <h2 className="text-2xl font-bold text-highlight-text">Edit Your Profile</h2>
+              <button onClick={onClose} className="text-subtle-text hover:text-highlight-text">
                 <FiX size={24} />
               </button>
             </div>
@@ -72,12 +72,12 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                 <div>
                   <label
                     htmlFor="fullname"
-                    className="block text-sm font-medium text-bento-text-primary mb-2"
+                    className="block text-sm font-medium text-highlight-text mb-2"
                   >
                     Full Name
                   </label>
                   <div className="relative">
-                    <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                    <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
                     <input
                       type="text"
                       name="fullname"
@@ -97,7 +97,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                 <button type="button" onClick={onClose} className="btn-secondary px-4 py-2">
                   Cancel
                 </button>
-                <button type="submit" className="btn-new-primary px-4 py-2">
+                <button type="submit" className="btn-primary px-4 py-2">
                   Save Changes
                 </button>
               </div>

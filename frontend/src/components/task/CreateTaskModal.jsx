@@ -74,7 +74,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
     try {
 
       const response = await apiService.createTask(projectId, formData)
-      // console.log(`Create Task Response: ${JSON.stringify(response)}`);
+      console.log(`Create Task Response: ${JSON.stringify(formData)}`);
       if (response.success) {
         onTaskCreated(response.task)
         toast.success("Task created!", { id: toastId })
@@ -128,7 +128,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Status Listbox */}
           <div>
-            <label htmlFor="status" className="input-label">
+            <label htmlFor="status" className="text-slate-900">
               Status
             </label>
             <Listbox
@@ -136,17 +136,17 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               onChange={(value) => handleListboxChange("status", value)}
             >
               <div className="relative">
-                <ListboxButton className="w-full px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between">
+                <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate capitalize">{selectedStatusObject?.name}</span>
-                  <FiChevronDown className="w-4 h-4 text-text-muted" />
+                  <FiChevronDown className="w-4 h-4 text-slate-700" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {statusOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
+                        `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"
                         }`
                       }
                     >
@@ -166,7 +166,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
 
           {/* Priority Listbox */}
           <div>
-            <label htmlFor="priority" className="input-label">
+            <label htmlFor="priority" className="text-slate-900">
               Priority
             </label>
             <Listbox
@@ -174,17 +174,17 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               onChange={(value) => handleListboxChange("priority", value)}
             >
               <div className="relative">
-                <ListboxButton className="w-full px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between">
+                <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate capitalize">{selectedPriorityObject?.name}</span>
-                  <FiChevronDown className="w-4 h-4 text-text-muted" />
+                  <FiChevronDown className="w-4 h-4 text-slate-700" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {priorityOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
+                        `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"
                         }`
                       }
                     >
@@ -204,7 +204,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
 
           {/* Assignees (Multi-select Listbox) */}
           <div className="md:col-span-2">
-            <label htmlFor="assignedTo" className="input-label">
+            <label htmlFor="assignedTo" className="text-slate-900">
               Assign To
             </label>
             <Listbox
@@ -213,17 +213,17 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               multiple
             >
               <div className="relative">
-                <ListboxButton className="w-full px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between">
+                <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate">{getAssigneeButtonText()}</span>
-                  <FiChevronDown className="w-4 h-4 text-text-muted" />
+                  <FiChevronDown className="w-4 h-4 text-slate-700" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {assigneeOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? "bg-primary-dark text-white" : "text-text-primary"
+                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"
                         }`
                       }
                     >

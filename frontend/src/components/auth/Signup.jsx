@@ -33,7 +33,7 @@ const PasswordStrengthIndicator = ({ password }) => {
   return (
     <div className="mt-2">
       <div className="flex items-center space-x-2 mb-1">
-        <div className="flex-1 bg-surface-light rounded-full h-2">
+        <div className="flex-1 bg-borders-dividers rounded-full h-2">
           <div
             className={`h-2 rounded-full transition-all duration-300 ${getColor()}`}
             style={{ width: `${(strength / 5) * 100}%` }}
@@ -41,7 +41,7 @@ const PasswordStrengthIndicator = ({ password }) => {
         </div>
         <span
           className={`text-xs font-medium ${
-            strength <= 2 ? "text-error" : strength <= 3 ? "text-warning" : "text-success"
+            strength <= 2 ? "text-accent-red" : strength <= 3 ? "text-accent-amber" : "text-accent-green"
           }`}
         >
           {getLabel()}
@@ -95,8 +95,8 @@ export const Signup = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center p-24 justify-center bento-theme">
-      <div className="w-full max-w-xl  p-8 space-y-6 bg-surface bento-card">
+    <div className="min-h-screen flex items-center p-24 justify-center bg-primary-background">
+      <div className="w-full max-w-xl  p-8 space-y-6 bg-secondary-background card">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -104,9 +104,9 @@ export const Signup = () => {
           className="text-center mb-8"
         >
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold text-purple-50 gradient-text-new mb-2">TaskFlow</h1>
+            <h1 className="text-3xl font-bold text-purple-50 text-highlight-text mb-2">TaskFlow</h1>
           </Link>
-          <p className="text-bento-text-secondary"></p>
+          <p className="text-secondary-text"></p>
         </motion.div>
 
         <motion.div
@@ -119,12 +119,12 @@ export const Signup = () => {
               <div>
                 <label
                   htmlFor="fullname"
-                  className="block text-sm font-medium text-bento-text-primary mb-2"
+                  className="block text-sm font-medium text-highlight-text mb-2"
                 >
                   Full Name
                 </label>
                 <div className="relative">
-                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
                   <input
                     type="text"
                     name="fullname"
@@ -141,12 +141,12 @@ export const Signup = () => {
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium text-bento-text-primary mb-2"
+                  className="block text-sm font-medium text-highlight-text mb-2"
                 >
                   Username
                 </label>
                 <div className="relative">
-                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
                   <input
                     type="text"
                     name="username"
@@ -164,12 +164,12 @@ export const Signup = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-bento-text-primary mb-2"
+                className="block text-sm font-medium text-highlight-text mb-2"
               >
                 Email Address
               </label>
               <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
                 <input
                   type="email"
                   name="email"
@@ -186,12 +186,12 @@ export const Signup = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-bento-text-primary mb-2"
+                className="block text-sm font-medium text-highlight-text mb-2"
               >
                 Password
               </label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -205,7 +205,7 @@ export const Signup = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-subtle-text hover:text-highlight-text transition-colors"
                 >
                   {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
                 </button>
@@ -217,24 +217,24 @@ export const Signup = () => {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-3 bg-error/10 border border-error/20 rounded-lg text-error text-sm"
+                className="p-3 bg-accent-red/10 border border-accent-red/20 rounded-lg text-accent-red text-sm"
               >
                 {error}
               </motion.div>
             )}
 
-            <div className="text-xs text-text-muted space-y-2">
+            <div className="text-xs text-subtle-text space-y-2">
               <div className="flex items-center space-x-2">
-                <FiCheck className="w-4 h-4 text-success" />
+                <FiCheck className="w-4 h-4 text-accent-green" />
                 <span>Free forever, no credit card required</span>
               </div>
               <div className="flex items-center space-x-2">
-                <FiCheck className="w-4 h-4 text-success" />
+                <FiCheck className="w-4 h-4 text-accent-green" />
                 <span>Unlimited projects and tasks</span>
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="w-full btn-new-primary group">
+            <button type="submit" disabled={loading} className="w-full btn-primary group">
               {loading ? (
                 <div className="flex items-center justify-center">
                   <div className="loading-dots">
@@ -259,11 +259,11 @@ export const Signup = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-6"
         >
-          <p className="text-bento-text-secondary">
+          <p className="text-secondary-text">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-primary hover:text-primary-light transition-colors font-medium"
+              className="text-accent-blue hover:text-accent-blue transition-colors font-medium"
             >
               Sign in
             </Link>

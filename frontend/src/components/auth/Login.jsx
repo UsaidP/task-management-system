@@ -48,8 +48,8 @@ export const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bento-theme">
-      <div className="w-full max-w-lg h-full bento-card p-8">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-primary-background">
+      <div className="w-full max-w-lg h-full card p-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,9 +57,9 @@ export const Login = () => {
           className="text-center mb-8"
         >
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold gradient-text-new mb-2">TaskFlow</h1>
+            <h1 className="text-3xl font-bold text-highlight-text mb-2">TaskFlow</h1>
           </Link>
-          <p className="text-bento-text-secondary">Welcome back! Please sign in to continue.</p>
+          <p className="text-secondary-text">Welcome back! Please sign in to continue.</p>
         </motion.div>
 
         <motion.div
@@ -71,12 +71,12 @@ export const Login = () => {
             <div>
               <label
                 htmlFor="identifier"
-                className="block text-sm font-medium text-bento-text-primary mb-2"
+                className="block text-sm font-medium text-highlight-text mb-2"
               >
                 Email or Username
               </label>
               <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
                 <input
                   type="text"
                   name="identifier"
@@ -93,12 +93,12 @@ export const Login = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-bento-text-primary mb-2"
+                className="block text-sm font-medium text-highlight-text mb-2"
               >
                 Password
               </label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -112,7 +112,7 @@ export const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-subtle-text hover:text-highlight-text transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
@@ -123,7 +123,7 @@ export const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group flex w-full items-center justify-center rounded-md btn-new-primary px-4 py-2 text-white transition-colors hover:btn-primary-hover disabled:cursor-not-allowed disabled:btn-disabled"
+              className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2 text-white transition-colors hover:btn-primary-hover disabled:cursor-not-allowed disabled:btn-disabled"
             >
               {loading ? (
                 <div className="loading-dots" role="status" aria-live="polite">
@@ -142,7 +142,7 @@ export const Login = () => {
             <div className="text-center">
               <Link
                 to="/forget-password"
-                className="text-primary hover:text-primary-light transition-colors text-sm"
+                className="text-accent-blue hover:text-accent-blue transition-colors text-sm"
               >
                 Forgot your password?
               </Link>
@@ -156,11 +156,11 @@ export const Login = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-6"
         >
-          <p className="text-bento-text-secondary">
+          <p className="text-secondary-text">
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="text-primary hover:text-primary-light transition-colors font-medium"
+              className="text-accent-blue hover:text-accent-blue transition-colors font-medium"
             >
               Sign up for free
             </Link>

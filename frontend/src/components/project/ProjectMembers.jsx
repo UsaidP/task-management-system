@@ -78,25 +78,25 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Member's email"
-            className="flex-grow px-3 py-2 bg-secondary border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition"
+            className="input-field"
             required
           />
 
           {/* 3. Replaced <select> with Headless UI <Listbox> */}
           <Listbox value={role} onChange={setRole}>
             <div className="relative">
-              <Listbox.Button className="w-full sm:w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left focus:outline-none focus:ring-2 focus:ring-secondary transition">
+              <Listbox.Button className="input-field w-full sm:w-40 text-left">
                 <span className="block truncate">{selectedRoleObject?.name}</span>
                 {/* You can add a chevron icon here if you want */}
               </Listbox.Button>
-              <Listbox.Options className="absolute z-10 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none">
+              <Listbox.Options className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none">
                 {availableRoles.map((roleItem) => (
                   <Listbox.Option
                     key={roleItem.id}
                     value={roleItem.id}
                     className={({ active }) =>
                       `cursor-pointer select-none relative py-2 px-4 ${
-                        active ? "bg-primary-dark text-white" : "text-text-primary"
+                        active ? "bg-slate-200 text-slate-900" : "text-slate-700"
                       }`
                     }
                   >
@@ -115,21 +115,21 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
 
           <button
             type="submit"
-            className="flex items-center justify-center gap-2 px-4 py-2 font-semibold btn-primary rounded-lg hover:btn-primary-hover transition-colors"
+            className="btn-primary flex items-center justify-center gap-2 px-4 py-2 font-semibold rounded-lg transition-colors"
           >
             <FiUserPlus />
             Add
           </button>
         </form>
 
-        {error && <p className="text-danger text-sm text-center mb-4">{error}</p>}
+        {error && <p className="text-rose-red text-sm text-center mb-4">{error}</p>}
 
         {/* Members List */}
         <ul className="space-y-2 max-h-80 overflow-y-auto pr-2">
           {members.map((member) => (
             <li
               key={member.user._id}
-              className="flex justify-between items-center p-3 bg-surface border border-border rounded-lg"
+              className="flex justify-between items-center p-3 card"
             >
               <div className="flex items-center">
                 <img
@@ -138,15 +138,15 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                   className="w-9 h-9 rounded-full mr-3 object-cover"
                 />
                 <div>
-                  <p className="font-semibold text-text-primary">{member?.user?.email}</p>
-                  <p className="text-sm text-text-secondary capitalize">
+                  <p className="font-semibold text-slate-900">{member?.user?.email}</p>
+                  <p className="text-sm text-slate-700 capitalize">
                     {member.role.replace("_", " ")}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => handleRemoveMember(member.user._id)}
-                className="p-1 rounded-full text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+                className="p-1 rounded-full text-slate-700 hover:text-rose-red hover:bg-rose-red/10 transition-colors"
                 aria-label={`Remove ${member.user.username}`}
               >
                 <FiX size={20} />

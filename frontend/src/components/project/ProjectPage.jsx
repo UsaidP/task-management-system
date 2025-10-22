@@ -44,26 +44,26 @@ const initialColumns = {
   todo: {
     title: "To Do",
     tasks: [],
-    color: "bg-text-muted/20",
-    icon: <FiCircle className="w-5 h-5 text-text-muted" />,
+    color: "bg-slate-500/20",
+    icon: <FiCircle className="w-5 h-5 text-slate-500" />,
   },
   "in-progress": {
     title: "In Progress",
     tasks: [],
-    color: "bg-accent/20",
-    icon: <FiClock className="w-5 h-5 text-accent" />,
+    color: "bg-ocean-blue/20",
+    icon: <FiClock className="w-5 h-5 text-ocean-blue" />,
   },
   "under-review": {
     title: "Under Review",
     tasks: [],
-    color: "bg-warning/20",
-    icon: <FiAlertCircle className="w-5 h-5 text-warning" />,
+    color: "bg-amber-orange/20",
+    icon: <FiAlertCircle className="w-5 h-5 text-amber-orange" />,
   },
   completed: {
     title: "Completed",
     tasks: [],
-    color: "bg-success/20",
-    icon: <FiCheckCircle className="w-5 h-5 text-success" />,
+    color: "bg-emerald-green/20",
+    icon: <FiCheckCircle className="w-5 h-5 text-emerald-green" />,
   },
 }
 
@@ -213,8 +213,8 @@ const ProjectPage = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center h-full text-center p-4">
-        <h2 className="text-2xl font-bold text-error mb-2">Error Loading Project</h2>
-        <p className="text-bento-text-secondary">{error}</p>
+        <h2 className="text-2xl font-bold text-rose-red mb-2">Error Loading Project</h2>
+        <p className="text-slate-700">{error}</p>
       </div>
     )
   }
@@ -234,8 +234,8 @@ const ProjectPage = () => {
           </div>
         ) : (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl font-bold text-bento-text-primary mb-2">{project?.name}</h1>
-            <p className="text-lg text-bento-text-secondary">{project?.description}</p>
+            <h1 className="text-4xl font-bold text-slate-900 mb-2">{project?.name}</h1>
+            <p className="text-lg text-slate-700">{project?.description}</p>
           </motion.div>
         )}
 
@@ -247,7 +247,7 @@ const ProjectPage = () => {
           <button
             type="button"
             onClick={() => setIsMembersModalOpen(true)}
-            className="btn-new-secondary flex items-center"
+            className="btn-secondary flex items-center"
           >
             <FiUsers className="mr-2" />
             Members
@@ -259,7 +259,7 @@ const ProjectPage = () => {
         {loading ? (
           <div className="flex-1 flex gap-8 pb-6">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="w-80 flex-shrink-0 glass rounded-xl p-6">
+              <div key={i} className="w-80 flex-shrink-0 card rounded-xl p-6">
                 <Skeleton className="h-6 w-1/3 mb-6" />
                 <div className="space-y-4">
                   <TaskCardSkeleton />
@@ -310,10 +310,10 @@ const ProjectPage = () => {
         <div>
           <p>Are you sure you want to delete the task titled "{selectedTask?.title}"?</p>
           <div className="flex justify-end space-x-4 mt-4">
-            <button onClick={() => setIsDeleteModalOpen(false)} className="btn-new-secondary">
+            <button onClick={() => setIsDeleteModalOpen(false)} className="btn-secondary">
               Cancel
             </button>
-            <button onClick={handleDelete} className="btn-new-danger">
+            <button onClick={handleDelete} className="btn-danger">
               Delete
             </button>
           </div>

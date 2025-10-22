@@ -69,14 +69,14 @@ const Me = () => {
       {/* Header Section */}
       <motion.div
         variants={itemVariants}
-        className="flex items-center justify-between pb-4 border-b border-gray-700"
+        className="flex items-center justify-between pb-4 border-b border-borders-dividers"
       >
-        <h1 className="text-3xl font-bold gradient-text-new">My Profile</h1>
+        <h1 className="text-3xl font-bold text-highlight-text">My Profile</h1>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={editProfileHandler}
-          className="btn-new-primary flex items-center px-4 py-2 rounded-md shadow-lg"
+          className="btn-primary flex items-center px-4 py-2 rounded-md shadow-lg"
         >
           <FiEdit className="mr-2" /> Edit Profile
         </motion.button>
@@ -85,21 +85,21 @@ const Me = () => {
       {/* User Info Card */}
       <motion.div
         variants={itemVariants}
-        className="bento-card p-8 flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8"
+        className="card p-8 flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8"
       >
         <div className="flex-shrink-0">
           {/* Placeholder for Avatar - you can replace this with an actual image */}
-          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-4xl font-bold text-white shadow-lg">
+          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-accent-blue to-accent-green flex items-center justify-center text-4xl font-bold text-white shadow-lg">
             {displayName.charAt(0).toUpperCase()}
           </div>
         </div>
         <div className="text-center md:text-left flex-grow">
-          <h2 className="text-bento-text-primary text-4xl font-extrabold mb-2">{displayName}</h2>
-          <p className="text-bento-text-secondary text-lg flex items-center justify-center md:justify-start">
-            <FiMail className="mr-2 text-primary" /> {displayEmail}
+          <h2 className="text-highlight-text text-4xl font-extrabold mb-2">{displayName}</h2>
+          <p className="text-secondary-text text-lg flex items-center justify-center md:justify-start">
+            <FiMail className="mr-2 text-accent-blue" /> {displayEmail}
           </p>
-          <p className="text-bento-text-secondary text-lg mt-1 flex items-center justify-center md:justify-start">
-            <FiAward className="mr-2 text-accent" /> {displayRole}
+          <p className="text-secondary-text text-lg mt-1 flex items-center justify-center md:justify-start">
+            <FiAward className="mr-2 text-accent-green" /> {displayRole}
           </p>
         </div>
       </motion.div>
@@ -109,41 +109,41 @@ const Me = () => {
         {/* Joined Date Card */}
         <motion.div
           variants={itemVariants}
-          className="bento-card-interactive group p-6 flex items-center space-x-4"
+          className="card group p-6 flex items-center space-x-4"
         >
-          <FiCalendar className="w-8 h-8 text-primary group-hover:text-primary-light transition-colors" />
+          <FiCalendar className="w-8 h-8 text-accent-blue group-hover:text-accent-blue transition-colors" />
           <div>
-            <p className="text-bento-text-secondary text-sm">Joined On</p>
-            <p className="text-bento-text-primary text-xl font-semibold">{joinDate}</p>
+            <p className="text-secondary-text text-sm">Joined On</p>
+            <p className="text-highlight-text text-xl font-semibold">{joinDate}</p>
           </div>
-          <FiChevronRight className="ml-auto w-6 h-6 text-text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+          <FiChevronRight className="ml-auto w-6 h-6 text-subtle-text opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
         </motion.div>
 
         {/* Other Settings/Info Card (Example) */}
         <motion.div
           variants={itemVariants}
-          className="bento-card-interactive group p-6 flex items-center space-x-4"
+          className="card group p-6 flex items-center space-x-4"
         >
-          <FiUser className="w-8 h-8 text-accent group-hover:text-accent-light transition-colors" />
+          <FiUser className="w-8 h-8 text-accent-green group-hover:text-accent-green transition-colors" />
           <div>
-            <p className="text-bento-text-secondary text-sm">Account Settings</p>
-            <p className="text-bento-text-primary text-xl font-semibold">Manage your preferences</p>
+            <p className="text-secondary-text text-sm">Account Settings</p>
+            <p className="text-highlight-text text-xl font-semibold">Manage your preferences</p>
           </div>
-          <FiChevronRight className="ml-auto w-6 h-6 text-text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+          <FiChevronRight className="ml-auto w-6 h-6 text-subtle-text opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
         </motion.div>
 
         {/* You can add more cards here for other user details or actions */}
         {/* For instance: Security Settings Card */}
         <motion.div
           variants={itemVariants}
-          className="bento-card-interactive group p-6 flex items-center space-x-4"
+          className="card group p-6 flex items-center space-x-4"
         >
-          <FiLock className="w-8 h-8  text-warning group-hover:text-yellow-400 transition-colors" />
+          <FiLock className="w-8 h-8  text-accent-amber group-hover:text-accent-amber transition-colors" />
           <div>
-            <p className="text-bento-text-secondary text-sm">Security</p>
-            <p className="text-bento-text-primary text-xl font-semibold">Change password & MFA</p>
+            <p className="text-secondary-text text-sm">Security</p>
+            <p className="text-highlight-text text-xl font-semibold">Change password & MFA</p>
           </div>
-          <FiChevronRight className="ml-auto w-6 h-6 text-text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+          <FiChevronRight className="ml-auto w-6 h-6 text-subtle-text opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
         </motion.div>
       </motion.div>
       <EditProfileModal

@@ -21,10 +21,10 @@ import ProjectCardSkeleton from "./project/ProjectCardSkeleton"
 const HeaderSkeleton = () => (
   <div className="flex animate-pulse items-center justify-between">
     <div>
-      <div className="mb-3 h-10 w-64 rounded-lg bg-gray-200 dark:bg-gray-700" />
-      <div className="h-6 w-80 rounded-lg bg-gray-200 dark:bg-gray-700" />
+      <div className="mb-3 h-10 w-64 rounded-lg bg-slate-100" />
+      <div className="h-6 w-80 rounded-lg bg-slate-100" />
     </div>
-    <div className="hidden h-6 w-48 rounded-lg bg-gray-200 dark:bg-gray-700 md:block" />
+    <div className="hidden h-6 w-48 rounded-lg bg-slate-100 md:block" />
   </div>
 )
 
@@ -34,7 +34,7 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6, delay }}
-    className="bento-card-interactive group p-6"
+    className="card group p-6"
   >
     <div className="mb-4 flex items-center justify-between ">
       <div
@@ -44,8 +44,8 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
       </div>
     </div>
     <div>
-      <p className="text-bento-text-primary mb-1 text-3xl font-bold p-2">{value}</p>
-      <p className="text-bento-text-secondary">{label}</p>
+      <p className="text-slate-900 mb-1 text-3xl font-bold p-2">{value}</p>
+      <p className="text-slate-700">{label}</p>
     </div>
   </motion.div>
 )
@@ -57,15 +57,15 @@ const ProjectCard = ({ project, delay = 0 }) => (
     transition={{ duration: 0.6, delay }}
   >
     <Link to={`/project/${project._id}`} className="block">
-      <div className="bento-card-interactive group p-6">
+      <div className="card group p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-bento-text-primary transition-colors group-hover:text-primary">
+          <h3 className="text-lg font-semibold text-slate-900 transition-colors group-hover:text-ocean-blue">
             {project.name}
           </h3>
-          <FiArrowRight className="h-5 w-5 text-text-muted transition-all duration-200 group-hover:translate-x-1 group-hover:text-primary" />
+          <FiArrowRight className="h-5 w-5 text-slate-700 transition-all duration-200 group-hover:translate-x-1 group-hover:text-ocean-blue" />
         </div>
-        <p className="text-bento-text-secondary line-clamp-2 mb-4 text-sm">{project.description}</p>
-        <div className="flex items-center justify-between text-xs text-text-muted">
+        <p className="text-slate-700 line-clamp-2 mb-4 text-sm">{project.description}</p>
+        <div className="flex items-center justify-between text-xs text-slate-700">
           <span>
             Updated{" "}
             {new Date(project.updatedAt).toLocaleDateString("en-US", {
@@ -90,7 +90,7 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
     animate={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.4, delay }}
     onClick={onClick}
-    className={`bento-card-interactive group text-left ${color}`}
+    className={`card group text-left ${color}`}
   >
     <div className="flex items-center">
       <div className="mr-3 rounded-lg bg-white/10 p-2 transition-transform duration-200 group-hover:scale-110">
@@ -181,21 +181,22 @@ const Dashboard = () => {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-bento-text-primary mb-2 text-4xl font-bold">
-              {getGreeting()} <span className="gradient-text-new">{user.fullname || "User"}</span>!
+            <h1 className="text-slate-900 mb-2 text-4xl font-bold">
+              {getGreeting()}{' '}
+              <span className="text-slate-900">{user.fullname || 'User'}</span>!
             </h1>
-            <p className="text-bento-text-secondary text-lg">
+            <p className="text-slate-700 text-lg">
               Here's what's happening with your projects today.
             </p>
           </div>
-          <div className="flex items-center space-x-2 text-text-muted">
+          <div className="flex items-center space-x-2 text-slate-700">
             <FiCalendar className="h-5 w-5" />
             <span>
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
               })}
             </span>
           </div>
@@ -209,36 +210,36 @@ const Dashboard = () => {
         <StatCard
           icon={<FiClipboard className="h-6 w-6  text-white" />}
           label="Total Tasks"
-          value={loading ? "..." : stats.totalTasks}
-          color="bg-gradient-to-r from-primary to-primary-light"
+          value={loading ? '...' : stats.totalTasks}
+          color="bg-ocean-blue"
           delay={0.1}
         />
         <StatCard
           icon={<FiClock className="h-6 w-6 text-white" />}
           label="In Progress"
-          value={loading ? "..." : stats.inProgress}
-          color="bg-gradient-to-r from-warning to-yellow-400"
+          value={loading ? '...' : stats.inProgress}
+          color="bg-amber-orange"
           delay={0.2}
         />
         <StatCard
-          icon={<FiEye className="h-6 w-6 text-blue-200" />}
+          icon={<FiEye className="h-6 w-6 text-white" />}
           label="Under Review"
-          value={loading ? "..." : stats.underReview} // Assuming you have this value
-          color="bg-gradient-to-r from-primary to-accent" // Blue gradient
+          value={loading ? '...' : stats.underReview} // Assuming you have this value
+          color="bg-ocean-blue" // Blue gradient
           delay={0.3}
         />
         <StatCard
           icon={<FiCheckSquare className="h-6 w-6 text-white" />}
           label="Completed"
-          value={loading ? "..." : stats.completed}
-          color="bg-gradient-to-r from-success to-accent-light"
+          value={loading ? '...' : stats.completed}
+          color="bg-emerald-green"
           delay={0.4}
         />
         <StatCard
           icon={<FiUsers className="h-6 w-6 text-white" />}
           label="Projects"
-          value={loading ? "..." : stats.totalProjects}
-          color="bg-gradient-to-r from-secondary to-secondary-light"
+          value={loading ? '...' : stats.totalProjects}
+          color="bg-slate-200"
           delay={0.5}
         />
       </div>
@@ -249,13 +250,13 @@ const Dashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.5 }}
       >
-        <h2 className="text-bento-text-primary mb-6 text-2xl font-bold">Quick Actions</h2>
+        <h2 className="text-slate-900 mb-6 text-2xl font-bold">Quick Actions</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <QuickAction
             icon={<FiPlus className="h-5 w-5 text-white" />}
             label="Create New Project"
             onClick={() => setCreateProjectModalOpen(true)}
-            color="bg-gradient-to-r from-primary to-primary-light text-white"
+            color="bg-ocean-blue text-white"
             delay={0.1}
           />
         </div>
@@ -274,10 +275,10 @@ const Dashboard = () => {
         transition={{ duration: 0.6, delay: 0.6 }}
       >
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-bento-text-primary text-2xl font-bold">Recent Projects</h2>
+          <h2 className="text-slate-900 text-2xl font-bold">Recent Projects</h2>
           <Link
             to="/projects"
-            className="flex items-center text-bento-text-primary transition-colors duration-200 hover:text-primary-light "
+            className="flex items-center text-slate-900 transition-colors duration-200 hover:text-ocean-blue "
           >
             View All
             <FiArrowRight className="ml-1 h-4 w-4" />
@@ -303,15 +304,15 @@ const Dashboard = () => {
             transition={{ duration: 0.6, delay: 0.8 }}
             className="card py-12 text-center "
           >
-            <FiClipboard className="text-text-muted mx-auto mb-4 h-16 w-16" />
-            <h3 className="text-bento-text-primary mb-2 text-xl font-semibold">No Projects Yet</h3>
-            <p className="text-bento-text-secondary mb-6">
+            <FiClipboard className="text-slate-700 mx-auto mb-4 h-16 w-16" />
+            <h3 className="text-slate-900 mb-2 text-xl font-semibold">No Projects Yet</h3>
+            <p className="text-slate-700 mb-6">
               Create your first project to get started.
             </p>
             <button
               type="button"
               onClick={() => setCreateProjectModalOpen(true)}
-              className="btn-new-primary m-auto flex p-auto"
+              className="btn-primary m-auto flex p-auto"
             >
               <FiPlus className="m-auto mr-2 flex p-auto" />
               Create Project

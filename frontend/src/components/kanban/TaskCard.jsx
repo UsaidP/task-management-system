@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
-import  { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 import {
   FiAlertCircle,
@@ -42,30 +42,30 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
   const getStatusIcon = (status) => {
     switch (status) {
       case "todo":
-        return <FiCircle className="w-4 h-4 text-text-muted" />
+        return <FiCircle className="w-4 h-4 text-slate-700" />
       case "in-progress":
-        return <FiClock className="w-4 h-4 text-accent" />
+        return <FiClock className="w-4 h-4 text-ocean-blue" />
       case "under-review":
-        return <FiAlertCircle className="w-4 h-4 text-warning" />
+        return <FiAlertCircle className="w-4 h-4 text-amber-orange" />
       case "completed":
-        return <FiCheckCircle className="w-4 h-4 text-success" />
+        return <FiCheckCircle className="w-4 h-4 text-emerald-green" />
       default:
-        return <FiCircle className="w-4 h-4 text-text-muted" />
+        return <FiCircle className="w-4 h-4 text-slate-700" />
     }
   }
 
   const getPriorityConfig = (priority = "Medium") => {
     switch (priority.toLowerCase()) {
       case "urgent":
-        return { borderClassName: "border-l-urgent", label: "Urgent" }
+        return { borderClassName: "border-l-rose-red", label: "Urgent" }
       case "high":
-        return { borderClassName: "border-l-error", label: "High" }
+        return { borderClassName: "border-l-rose-red", label: "High" }
       case "medium":
-        return { borderClassName: "border-l-warning", label: "Medium" }
+        return { borderClassName: "border-l-amber-orange", label: "Medium" }
       case "low":
-        return { borderClassName: "border-l-success", label: "Low" }
+        return { borderClassName: "border-l-ocean-blue", label: "Low" }
       default:
-        return { borderClassName: "border-l-primary", label: "Medium" }
+        return { borderClassName: "border-l-ocean-blue", label: "Medium" }
     }
   }
 
@@ -81,14 +81,14 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -2 }}
-      className={`card-interactive border-l-4 ${priorityConfig.borderClassName} ${
-        isDragging ? "opacity-50 shadow-glow rotate-2" : "opacity-100"
+      className={`card border-l-4 ${priorityConfig.borderClassName} ${
+        isDragging ? "opacity-50 shadow-lg rotate-2" : "opacity-100"
       }`}
     >
       <div className="flex items-start justify-between mb-3">
         <div onClick={() => onEdit(task)} className="flex items-center space-x-2 flex-1 min-w-0">
           {getStatusIcon(task.status)}
-          <h3 className="font-semibold text-text-primary group-hover:text-accent transition-colors line-clamp-1">
+          <h3 className="font-semibold text-slate-900 group-hover:text-ocean-blue transition-colors line-clamp-1">
             {task.title}
           </h3>
         </div>
@@ -98,9 +98,9 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
               e.stopPropagation()
               setIsMenuOpen(!isMenuOpen)
             }}
-            className="p-1 rounded-md hover:bg-surface-light"
+            className="p-1 rounded-md hover:bg-slate-200"
           >
-            <FiMoreVertical className="w-4 h-4 text-text-muted" />
+            <FiMoreVertical className="w-4 h-4 text-slate-700" />
           </button>
           <AnimatePresence>
             {isMenuOpen && (
@@ -108,7 +108,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="absolute right-0 mt-2 w-48 bg-surface rounded-md shadow-lg z-10 border border-border"
+                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-slate-200"
               >
                 <button
                   onClick={(e) => {
@@ -116,7 +116,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
                     onEdit(task)
                     setIsMenuOpen(false)
                   }}
-                  className="w-full text-left flex items-center p-2 text-sm hover:bg-surface-light"
+                  className="w-full text-left flex items-center p-2 text-sm hover:bg-slate-200"
                 >
                   <FiEdit3 className="w-4 h-4 mr-2" /> Edit
                 </button>
@@ -126,7 +126,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
                     onDelete(task)
                     setIsMenuOpen(false)
                   }}
-                  className="w-full text-left flex items-center p-2 text-sm text-error hover:bg-surface-light"
+                  className="w-full text-left flex items-center p-2 text-sm text-rose-red hover:bg-slate-200"
                 >
                   <FiTrash2 className="w-4 h-4 mr-2" /> Delete
                 </button>
@@ -137,9 +137,9 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
       </div>
       <div onClick={() => onEdit(task)}>
         {task.description && (
-          <p className="text-sm text-text-secondary mb-4 line-clamp-2">{task.description}</p>
+          <p className="text-sm text-slate-700 mb-4 line-clamp-2">{task.description}</p>
         )}
-        <div className="flex items-center justify-between text-xs text-text-muted">
+        <div className="flex items-center justify-between text-xs text-slate-700">
           <div className="flex items-center space-x-2">
             {task.assignedTo?.length > 0 && (
               <div className="flex -space-x-1">
@@ -152,7 +152,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
                         src={user.avatar.url}
                         title={user.fullname || "Unknown"}
                         alt={user.fullname || "User"}
-                        className="w-6 h-6 rounded-full border-2 border-surface object-cover"
+                        className="w-6 h-6 rounded-full border-2 border-white object-cover"
                       />
                     )
                   } else {
@@ -160,7 +160,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
                       <div
                         key={userId}
                         title={user?.fullname || "Unknown"}
-                        className="w-6 h-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white text-xs font-medium border-2 border-surface"
+                        className="w-6 h-6 rounded-full bg-ocean-blue flex items-center justify-center text-white text-xs font-medium border-2 border-white"
                       >
                         {user?.fullname?.charAt(0).toUpperCase() || "U"}
                       </div>
@@ -168,7 +168,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
                   }
                 })}
                 {task.assignedTo.length > 3 && (
-                  <div className="w-6 h-6 rounded-full bg-text-muted flex items-center justify-center text-white text-xs font-medium border-2 border-surface">
+                  <div className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center text-white text-xs font-medium border-2 border-white">
                     +{task.assignedTo.length - 3}
                   </div>
                 )}
@@ -177,7 +177,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap }) => {
           </div>
           {task.dueDate && (
             <div
-              className={`flex items-center gap-1 ${isOverdue ? "text-error" : "text-text-muted"}`}
+              className={`flex items-center gap-1 ${isOverdue ? "text-rose-red" : "text-slate-700"}`}
             >
               <FiCalendar className="w-3 h-3" />
               <span>

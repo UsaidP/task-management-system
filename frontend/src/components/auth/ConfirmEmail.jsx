@@ -48,22 +48,22 @@ export const ConfirmEmail = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bento-theme">
-      <div className="w-full max-w-md p-8 space-y-6 text-center bento-card">
+    <div className="flex items-center justify-center min-h-screen bg-primary-background">
+      <div className="w-full max-w-md p-8 space-y-6 text-center card">
         <EmailIcon />
-        <h1 className="text-2xl font-bold text-bento-text-primary">Confirm Your Email</h1>
-        <p className="text-bento-text-secondary">We've sent a confirmation link to:</p>
-        <p className="font-medium text-blue-600 dark:text-blue-500">{email}</p>
-        <p className="text-bento-text-secondary">
+        <h1 className="text-2xl font-bold text-highlight-text">Confirm Your Email</h1>
+        <p className="text-secondary-text">We've sent a confirmation link to:</p>
+        <p className="font-medium text-accent-blue">{email}</p>
+        <p className="text-secondary-text">
           {" "}
           and click the link to complete your registration.
         </p>
-        <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-bento-text-secondary">Didn't receive the email?</p>
+        <div className="pt-6 border-t border-borders-dividers">
+          <p className="text-secondary-text">Didn't receive the email?</p>
           <button
             onClick={handleResendEmail}
             disabled={isSending}
-            className="w-full px-4 py-2 mt-4 font-medium text-white btn-new-primary disabled:opacity-50"
+            className="w-full px-4 py-2 mt-4 font-medium text-white btn-primary disabled:opacity-50"
           >
             {isSending ? "Sending..." : "Resend Confirmation Link"}
           </button>
@@ -72,7 +72,7 @@ export const ConfirmEmail = () => {
         {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
         <Link
           to="/login"
-          className="inline-block mt-6 text-sm text-bento-text-secondary hover:underline"
+          className="inline-block mt-6 text-sm text-secondary-text hover:underline"
         >
           Back to Login
         </Link>

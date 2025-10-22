@@ -22,6 +22,7 @@ const taskSchema = new Schema(
       {
         filename: { required: true, type: String },
         url: { required: true, type: String },
+
       },
     ],
     comments: {
@@ -44,7 +45,7 @@ const taskSchema = new Schema(
     // --- Scheduling & Prioritization ---
     priority: {
       default: "Medium",
-      enum: ["Low", "Medium", "High", "Urgent"],
+      enum: ["low", "medium", "high", "urgent"],
       type: String,
     },
     project: {

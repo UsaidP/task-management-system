@@ -32,13 +32,13 @@ export const Reset = () => {
 
   if (success) {
     return (
-      <div className="flex items-center justify-center min-h-screen bento-theme">
-        <div className="w-full max-w-md p-8 space-y-6 text-center bento-card">
+      <div className="flex items-center justify-center min-h-screen bg-primary-background">
+        <div className="w-full max-w-md p-8 space-y-6 text-center card">
           <h1 className="text-2xl font-bold text-green-600">Success!</h1>
-          <p className="text-bento-text-secondary">Your password has been reset successfully.</p>
+          <p className="text-secondary-text">Your password has been reset successfully.</p>
           <Link
             to="/login"
-            className="inline-block px-4 py-2 font-medium text-white btn-new-primary"
+            className="inline-block px-4 py-2 font-medium text-white btn-primary"
           >
             Proceed to Login
           </Link>
@@ -48,14 +48,14 @@ export const Reset = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bento-theme">
-      <div className="w-full max-w-md p-8 space-y-6 bento-card">
-        <h1 className="text-2xl font-bold text-center text-bento-text-primary">
+    <div className="flex items-center justify-center min-h-screen bg-primary-background">
+      <div className="w-full max-w-md p-8 space-y-6 card">
+        <h1 className="text-2xl font-bold text-center text-highlight-text">
           Reset Your Password
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-bento-text-primary">
+            <label htmlFor="password" className="block text-sm font-medium text-highlight-text">
               New Password
             </label>
             <input
@@ -65,7 +65,7 @@ export const Reset = () => {
               placeholder="••••••••"
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className="input-field w-full mt-1"
             />
           </div>
 
@@ -75,7 +75,7 @@ export const Reset = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 font-medium text-white btn-new-primary disabled:opacity-50"
+              className="w-full px-4 py-2 font-medium text-white btn-primary disabled:opacity-50"
             >
               {loading ? "Resetting..." : "Reset Password"}
             </button>

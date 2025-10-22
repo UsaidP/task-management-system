@@ -17,15 +17,15 @@ const FeatureCard = ({ icon, title, description, delay = 0 }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6, delay }}
-    className="bento-card-interactive group p-6"
+    className="card group p-6"
   >
-    <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-lg bg-gradient-to-r from-primary to-secondary group-hover:shadow-glow transition-all duration-300">
+    <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-lg bg-ocean-blue group-hover:shadow-lg transition-all duration-300">
       {icon}
     </div>
-    <h3 className="text-xl font-bold mb-3 text-text-primary group-hover:text-primary transition-colors duration-300">
+    <h3 className="text-xl font-bold mb-3 text-slate-900 group-hover:text-ocean-blue transition-colors duration-300">
       {title}
     </h3>
-    <p className="text-text-secondary leading-relaxed">{description}</p>
+    <p className="text-slate-700 leading-relaxed">{description}</p>
   </motion.div>
 )
 
@@ -36,32 +36,32 @@ const StatCard = ({ number, label, delay = 0 }) => (
     transition={{ duration: 0.6, delay }}
     className="text-center"
   >
-    <div className="text-4xl font-bold gradient-text-new mb-2">{number}</div>
-    <div className="text-text-secondary">{label}</div>
+    <div className="text-4xl font-bold text-slate-900 mb-2">{number}</div>
+    <div className="text-slate-700">{label}</div>
   </motion.div>
 )
 
 const PricingCard = ({ name, price, period, features, highlighted = false }) => (
-  <div className={`card ${highlighted ? "border-2 border-primary shadow-glow" : ""}`}>
+  <div className={`card ${highlighted ? "border-2 border-ocean-blue shadow-lg" : ""}`}>
     <div className="p-6">
-      <h3 className="text-2xl font-bold text-text-primary mb-2">{name}</h3>
-      <p className="text-4xl font-bold gradient-text-new mb-2">
+      <h3 className="text-2xl font-bold text-slate-900 mb-2">{name}</h3>
+      <p className="text-4xl font-bold text-slate-900 mb-2">
         {price}
-        {period && <span className="text-lg text-text-secondary ml-2">/{period}</span>}
+        {period && <span className="text-lg text-slate-700 ml-2">/{period}</span>}
       </p>
       <ul className="space-y-3 mt-6">
         {features.map((feature, i) => (
           <li key={i} className="flex items-center">
-            <FiCheckCircle className="w-5 h-5 text-green-500 mr-3" />
-            <span className="text-text-secondary">{feature}</span>
+            <FiCheckCircle className="w-5 h-5 text-emerald-green mr-3" />
+            <span className="text-slate-700">{feature}</span>
           </li>
         ))}
       </ul>
     </div>
-    <div className="p-6 bg-background-secondary rounded-b-lg">
+    <div className="p-6 bg-slate-100 rounded-b-lg">
       <button
         type="button"
-        className={`w-full btn-new ${highlighted ? "btn-new-primary" : "btn-new-secondary"}`}
+        className={`w-full ${highlighted ? "btn-primary" : "btn-secondary"}`}
       >
         Get Started
       </button>
@@ -70,16 +70,16 @@ const PricingCard = ({ name, price, period, features, highlighted = false }) => 
 )
 
 const TestimonialCard = ({ name, role, company, avatar, content }) => (
-  <div className="bento-card">
+  <div className="card">
     <div className="p-6">
-      <p className="text-text-secondary mb-6">"{content}"</p>
+      <p className="text-slate-700 mb-6">"{content}"</p>
       <div className="flex items-center">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center font-bold text-white mr-4">
+        <div className="w-12 h-12 rounded-full bg-ocean-blue flex items-center justify-center font-bold text-white mr-4">
           {avatar}
         </div>
         <div>
-          <p className="font-bold text-text-primary">{name}</p>
-          <p className="text-text-secondary">
+          <p className="font-bold text-slate-900">{name}</p>
+          <p className="text-slate-700">
             {role}, {company}
           </p>
         </div>
@@ -90,14 +90,14 @@ const TestimonialCard = ({ name, role, company, avatar, content }) => (
 
 export const Home = () => {
   return (
-    <div className="min-h-screen bento-theme">
+    <div className="min-h-screen bg-white bg-[url('bg2.png')] bg-no-repeat bg-cover bg-center">
       {/* Navigation */}
-      <nav className="glass fixed top-0 left-0 right-0 z-50 px-6 py-4">
+      <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200/50 fixed top-0 left-0 right-0 z-50 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-2xl font-bold gradient-text-new"
+            className="text-2xl font-bold text-slate-900"
           >
             TaskFlow
           </motion.div>
@@ -106,7 +106,7 @@ export const Home = () => {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center space-x-4"
           >
-            <Link to="/login" className="btn-new-secondary">
+            <Link to="/login" className="btn-secondary">
               Sign In Get Started
             </Link>
           </motion.div>
@@ -122,11 +122,11 @@ export const Home = () => {
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight text-slate-900">
               Manage Tasks with
-              <span className="gradient-text-new block">Stunning Simplicity</span>
+              <span className="block">Stunning Simplicity</span>
             </h1>
-            <p className="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
               Transform your productivity with our beautiful, intuitive task management platform.
               Collaborate seamlessly, track progress effortlessly, and achieve more together.
             </p>
@@ -138,11 +138,11 @@ export const Home = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
-            <Link to="/register" className="btn-new-primary text-lg px-8 py-4 group">
+            <Link to="/register" className="btn-primary text-lg px-8 py-4 group">
               Start Free Today
               <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link to="/login" className="btn-new-secondary text-lg px-8 py-4">
+            <Link to="/login" className="btn-secondary text-lg px-8 py-4">
               Sign In
             </Link>
           </motion.div>
@@ -170,10 +170,10 @@ export const Home = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-new">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
               Everything You Need
             </h2>
-            <p className="text-xl text-text-secondary max-w-3xl mx-auto">
+            <p className="text-xl text-slate-700 max-w-3xl mx-auto">
               Powerful features designed to streamline your workflow and boost team productivity
             </p>
           </motion.div>
@@ -201,10 +201,10 @@ export const Home = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-new">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
               Choose Your Plan
             </h2>
-            <p className="text-xl text-text-secondary max-w-3xl mx-auto">
+            <p className="text-xl text-slate-700 max-w-3xl mx-auto">
               Simple, transparent pricing for teams of all sizes.
             </p>
           </motion.div>
@@ -226,10 +226,10 @@ export const Home = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-new">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
               Loved by Teams Worldwide
             </h2>
-            <p className="text-xl text-text-secondary max-w-3xl mx-auto">
+            <p className="text-xl text-slate-700 max-w-3xl mx-auto">
               See what our users are saying about TaskFlow.
             </p>
           </motion.div>
@@ -248,30 +248,30 @@ export const Home = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-autobento-card"
+          className="max-w-4xl mx-auto card p-8"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text-new">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
             Ready to Transform Your Workflow?
           </h2>
-          <p className="text-xl text-text-secondary mb-8 leading-relaxed">
+          <p className="text-xl text-slate-700 mb-8 leading-relaxed">
             Join thousands of teams who have already revolutionized their productivity with
             TaskFlow. Start your journey today, completely free.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/register" className="btn-new-primary text-lg px-8 py-4 group">
+            <Link to="/register" className="btn-primary text-lg px-8 py-4 group">
               Get Started Free
               <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <p className="text-sm text-text-muted">No credit card required • Free forever</p>
+            <p className="text-sm text-slate-700">No credit card required • Free forever</p>
           </div>
         </motion.div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-border">
+      <footer className="py-12 px-6 border-t border-slate-200">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="text-2xl font-bold gradient-text-new mb-4">TaskFlow</div>
-          <p className="text-text-muted">
+          <div className="text-2xl font-bold text-slate-900 mb-4">TaskFlow</div>
+          <p className="text-slate-700">
             © {new Date().getFullYear()} TaskFlow. Crafted with ❤️ for productive teams.
           </p>
         </div>

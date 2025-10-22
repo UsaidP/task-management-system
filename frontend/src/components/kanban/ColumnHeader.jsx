@@ -20,8 +20,8 @@ const ColumnHeader = ({
           {icon}
         </motion.div>
         <div>
-          <h2 className="text-lg font-bold text-text-primary">{title}</h2>
-          <span className="text-sm text-text-muted">
+          <h2 className="text-lg font-bold text-highlight-text">{title}</h2>
+          <span className="text-sm text-default-text">
             {showFilterCount
               ? `${count} of ${totalCount} ${taskText(totalCount)}`
               : `${count} ${taskText(count)}`}

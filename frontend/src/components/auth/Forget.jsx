@@ -34,17 +34,17 @@ export const Forget = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bento-theme">
-      <div className="w-full max-w-md p-8 space-y-6 bento-card">
-        <h1 className="text-2xl font-bold text-center text-bento-text-primary">
+    <div className="flex items-center justify-center min-h-screen bg-primary-background">
+      <div className="w-full max-w-md p-8 space-y-6 card">
+        <h1 className="text-2xl font-bold text-center text-highlight-text">
           Forgot Your Password?
         </h1>
-        <p className="text-center text-bento-text-secondary">
+        <p className="text-center text-secondary-text">
           Enter your email address and we will send you a link to reset your password.
         </p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-bento-text-primary">
+            <label htmlFor="email" className="block text-sm font-medium text-highlight-text">
               Email Address
             </label>
             <input
@@ -54,7 +54,7 @@ export const Forget = () => {
               placeholder="you@example.com"
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className="input-field w-full mt-1"
             />
           </div>
 
@@ -65,7 +65,7 @@ export const Forget = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 font-medium text-white btn-new-primary disabled:opacity-50"
+              className="w-full px-4 py-2 font-medium text-white btn-primary disabled:opacity-50"
             >
               {loading ? "Sending..." : "Send Reset Link"}
             </button>
@@ -73,7 +73,7 @@ export const Forget = () => {
           <div className="text-sm text-center">
             <Link
               to="/login"
-              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+              className="font-medium text-accent-blue hover:underline"
             >
               Back to Login
             </Link>
