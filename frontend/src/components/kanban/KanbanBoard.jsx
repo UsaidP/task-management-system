@@ -1,14 +1,14 @@
-import { Listbox } from "@headlessui/react"
-import { AnimatePresence, motion } from "framer-motion"
-import { Fragment, useCallback, useMemo, useState } from "react"
-import { DndProvider } from "react-dnd"
-import { HTML5Backend } from "react-dnd-html5-backend"
-import toast from "react-hot-toast"
-import { FiChevronDown, FiFilter, FiPlus, FiSearch } from "react-icons/fi"
-import apiService from "../../../service/apiService"
-import Column from "./Column"
-import ColumnHeader from "./ColumnHeader"
-import TaskCard from "./TaskCard"
+import { Listbox } from "@headlessui/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Fragment, useCallback, useMemo, useState } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import toast from "react-hot-toast";
+import { FiChevronDown, FiFilter, FiPlus, FiSearch } from "react-icons/fi";
+import apiService from "../../../service/apiService";
+import Column from "./Column";
+import ColumnHeader from "./ColumnHeader";
+import TaskCard from "./TaskCard";
 
 const KanbanBoard = ({
   columns,
@@ -19,10 +19,10 @@ const KanbanBoard = ({
   openDeleteModal,
   onCreateTask,
 }) => {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterPriority, setFilterPriority] = useState("all")
-  const [filterAssignee, setFilterAssignee] = useState("all")
-  const [showFilters, setShowFilters] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterPriority, setFilterPriority] = useState("all");
+  const [filterAssignee, setFilterAssignee] = useState("all");
+  const [showFilters, setShowFilters] = useState(false);
 
   // Priority options
   const priorityOptions = [
@@ -31,7 +31,7 @@ const KanbanBoard = ({
     { id: "medium", name: "Medium" },
     { id: "high", name: "High" },
     { id: "urgent", name: "Urgent" },
-  ]
+  ];
 
   // Assignee options
   const assigneeOptions = useMemo(() => {
@@ -48,8 +48,12 @@ const KanbanBoard = ({
     return options;
   }, [members]);
 
-  const selectedPriorityObject = priorityOptions.find((p) => p.id === filterPriority)
-  const selectedAssigneeObject = assigneeOptions.find((a) => a.id === filterAssignee)
+  const selectedPriorityObject = priorityOptions.find(
+    (p) => p.id === filterPriority
+  );
+  const selectedAssigneeObject = assigneeOptions.find(
+    (a) => a.id === filterAssignee
+  );
 
   const membersMap = useMemo(() => {
     if (!members) return {};
@@ -62,9 +66,6 @@ const KanbanBoard = ({
 
   const filteredColumns = useMemo(() => {
     return Object.entries(columns).reduce((acc, [status, column]) => {
-      const { tasks } = column;
-      tasks.map((task) => { console.log(`task ${JSON.stringify(task._id)}`) })
-      // console.log(`Status ${JSON.stringify(tasks)}`);
       const filteredTasks = column.tasks.filter((task) => {
         if (!task) return false;
         const matchesSearch =
@@ -84,57 +85,106 @@ const KanbanBoard = ({
     }, {});
   }, [columns, searchTerm, filterPriority, filterAssignee]);
 
+  // --- FIXED handleTaskDrop ---
+  // --- ROBUST handleTaskDrop ---
   const handleTaskDrop = useCallback(
     async (item, newStatus, destinationIndex) => {
-      console.log(item);
-      console.log(destinationIndex);
-      console.log(newStatus);
-      const { id: taskId, status: originalStatus, index } = item;
-      const optimisticColumns = JSON.parse(JSON.stringify(columns));
+      const { id: taskId, status: originalStatus } = item;
 
-      // columns.map((col) => { console.log(`col ${col}`) })
+      // We need to store the *original* state for rollback
+      let originalColumnsForRollback;
 
-      const sourceColumnTasks = [...optimisticColumns[originalStatus].tasks];
-      const [movedTask] = sourceColumnTasks.splice(index, 1);
-      movedTask.status = newStatus;
+      setColumns((currentColumns) => {
+        // Save the original state *before* mutation
+        originalColumnsForRollback = currentColumns;
 
-      const destColumnTasks = [...optimisticColumns[newStatus].tasks];
-      destColumnTasks.splice(destinationIndex, 0, movedTask);
+        // 1. Create a shallow copy of the columns object for the new state
+        // We use the fresh 'currentColumns' state, not the stale 'columns' from the closure
+        const newColumns = { ...currentColumns };
 
-      const newColumns = {
-        ...optimisticColumns,
-        [originalStatus]: {
-          ...optimisticColumns[originalStatus],
-          tasks: sourceColumnTasks,
-        },
-        [newStatus]: {
-          ...optimisticColumns[newStatus],
-          tasks: destColumnTasks,
-        },
-      };
+        // 2. Find the true index of the task in the *original* tasks array
+        const sourceTasks = currentColumns[originalStatus]?.tasks;
 
-      setColumns(newColumns);
+        // 3. Safety check
+        if (!sourceTasks) {
+          console.error(`Source column "${originalStatus}" not found!`);
+          return currentColumns; // Return state unmodified
+        }
 
+        const taskIndex = sourceTasks.findIndex((t) => t._id === taskId);
+
+        // 4. Safety check
+        if (taskIndex === -1) {
+          console.error(`Dragged task not found in "${originalStatus}"!`);
+          // This is the error you're seeing. It means item.status was stale.
+          // The useDrag fix (above) MUST be applied.
+          return currentColumns;
+        }
+
+        // 5. Get the task object to be moved
+        const movedTask = sourceTasks[taskIndex];
+
+        if (originalStatus === newStatus) {
+          // --- CASE 1: REORDERING IN THE SAME COLUMN ---
+          const newSourceTasks = [...sourceTasks];
+          newSourceTasks.splice(taskIndex, 1);
+          newSourceTasks.splice(destinationIndex, 0, {
+            ...movedTask,
+            status: newStatus,
+          });
+
+          newColumns[originalStatus] = {
+            ...currentColumns[originalStatus],
+            tasks: newSourceTasks,
+          };
+        } else {
+          // --- CASE 2: MOVING TO A DIFFERENT COLUMN ---
+          const newSourceTasks = sourceTasks.filter(
+            (t, idx) => idx !== taskIndex
+          );
+          const destTasks = currentColumns[newStatus]?.tasks || []; // Handle case where dest column might be new
+          const newDestTasks = [...destTasks];
+          newDestTasks.splice(destinationIndex, 0, {
+            ...movedTask,
+            status: newStatus,
+          });
+
+          newColumns[originalStatus] = {
+            ...currentColumns[originalStatus],
+            tasks: newSourceTasks,
+          };
+          newColumns[newStatus] = {
+            ...currentColumns[newStatus],
+            tasks: newDestTasks,
+          };
+        }
+
+        // Return the new state for React to set
+        return newColumns;
+      });
+
+      // --- API Call & Rollback ---
       try {
-        console.log(`ProjectID: ${projectId} , TaskID:${taskId} , status: ${status}`);
         await apiService.updateTask(projectId, taskId, { status: newStatus });
-
         toast.success("Task moved successfully!");
       } catch (error) {
-        setColumns(optimisticColumns);
-        toast.error("Failed to move task.");
+        toast.error("Failed to move task. Reverting.");
+        // On failure, revert to the original state
+        if (originalColumnsForRollback) {
+          setColumns(originalColumnsForRollback);
+        }
       }
     },
-    [columns, setColumns, projectId],
+    [setColumns, projectId] // <-- REMOVE 'columns' from dependencies
   );
-
   const clearFilters = () => {
-    setSearchTerm("")
-    setFilterPriority("all")
-    setFilterAssignee("all")
-  }
+    setSearchTerm("");
+    setFilterPriority("all");
+    setFilterAssignee("all");
+  };
 
-  const hasActiveFilters = searchTerm !== "" || filterPriority !== "all" || filterAssignee !== "all"
+  const hasActiveFilters =
+    searchTerm !== "" || filterPriority !== "all" || filterAssignee !== "all";
 
   return (
     <div className="flex h-full flex-col relative">
@@ -157,8 +207,9 @@ const KanbanBoard = ({
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className={`w-full md:w-auto btn-secondary flex gap-2 ${showFilters || hasActiveFilters ? "bg-primary text-white" : ""
-                  }`}
+                className={`w-full md:w-auto btn-secondary flex gap-2 ${
+                  showFilters || hasActiveFilters ? "bg-primary text-white" : ""
+                }`}
               >
                 <FiFilter className="w-4 h-4" />
                 Filters
@@ -189,8 +240,13 @@ const KanbanBoard = ({
                 <div className="flex items-center gap-3 flex-wrap">
                   {/* Priority Filter */}
                   <div className="relative">
-                    <label htmlFor="priority" className="sr-only">Priority</label>
-                    <Listbox value={filterPriority} onChange={setFilterPriority}>
+                    <label htmlFor="priority" className="sr-only">
+                      Priority
+                    </label>
+                    <Listbox
+                      value={filterPriority}
+                      onChange={setFilterPriority}
+                    >
                       <Listbox.Button className="filter-dropdown">
                         <span className="truncate capitalize">
                           {selectedPriorityObject?.name || "Priority"}
@@ -199,15 +255,21 @@ const KanbanBoard = ({
                       </Listbox.Button>
                       <Listbox.Options className="filter-dropdown-options">
                         {priorityOptions.map((option) => (
-                          <Listbox.Option key={option.id} value={option.id} as={Fragment}>
+                          <Listbox.Option
+                            key={option.id}
+                            value={option.id}
+                            as={Fragment}
+                          >
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item ${active ? "bg-primary-dark" : ""
-                                  }`}
+                                className={`filter-dropdown-item ${
+                                  active ? "bg-primary-dark" : ""
+                                }`}
                               >
                                 <span
-                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
-                                    }`}
+                                  className={`block truncate ${
+                                    selected ? "font-semibold" : "font-normal"
+                                  }`}
                                 >
                                   {option.name}
                                 </span>
@@ -221,8 +283,13 @@ const KanbanBoard = ({
 
                   {/* Assignee Filter */}
                   <div className="relative">
-                    <label htmlFor="assignee" className="sr-only">Assignee</label>
-                    <Listbox value={filterAssignee} onChange={setFilterAssignee}>
+                    <label htmlFor="assignee" className="sr-only">
+                      Assignee
+                    </label>
+                    <Listbox
+                      value={filterAssignee}
+                      onChange={setFilterAssignee}
+                    >
                       <Listbox.Button className="filter-dropdown">
                         <span className="truncate">
                           {selectedAssigneeObject?.name || "Assignee"}
@@ -231,15 +298,21 @@ const KanbanBoard = ({
                       </Listbox.Button>
                       <Listbox.Options className="filter-dropdown-options">
                         {assigneeOptions.map((option) => (
-                          <Listbox.Option key={option.id} value={option.id} as={Fragment}>
+                          <Listbox.Option
+                            key={option.id}
+                            value={option.id}
+                            as={Fragment}
+                          >
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item ${active ? "bg-primary-dark" : ""
-                                  }`}
+                                className={`filter-dropdown-item ${
+                                  active ? "bg-primary-dark" : ""
+                                }`}
                               >
                                 <span
-                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
-                                    }`}
+                                  className={`block truncate ${
+                                    selected ? "font-semibold" : "font-normal"
+                                  }`}
                                 >
                                   {option.name}
                                 </span>
@@ -272,14 +345,16 @@ const KanbanBoard = ({
         <div className="flex-1 overflow-x-auto">
           <div className="flex items-stretch gap-6 px-1 md:px-4 pb-6 pt-2">
             {Object.entries(columns).map(([status, column]) => {
-              // console.log(`Column: ${JSON.stringify(column)}`);
-              // console.log(`STATUS: ${JSON.stringify(status)}`);
               const tasksToRender = filteredColumns[status]?.tasks || [];
               const totalTasks = columns[status]?.tasks?.length || 0;
-              // console.log(`Column Status: ${JSON.stringify(columns)}`);
               return (
-                <Column key={status} status={status} onDrop={handleTaskDrop}>
-
+                <Column
+                  key={status}
+                  status={status}
+                  onDrop={handleTaskDrop}
+                  // FIX: Pass the current task count for dropping at the end
+                  taskCount={tasksToRender.length}
+                >
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -295,8 +370,11 @@ const KanbanBoard = ({
                         count={tasksToRender.length}
                         totalCount={totalTasks}
                         color={column.color}
-                        // icon={column.icon}
-                        showFilterCount={hasActiveFilters && tasksToRender.length !== totalTasks}
+                        icon={column.icon}
+                        showFilterCount={
+                          hasActiveFilters &&
+                          tasksToRender.length !== totalTasks
+                        }
                       />
                       <div className="flex-grow space-y-3 overflow-y-auto p-1 -mr-2 pr-2">
                         <AnimatePresence mode="popLayout">
@@ -309,6 +387,8 @@ const KanbanBoard = ({
                                 onEdit={() => openEditModal(task)}
                                 onDelete={() => openDeleteModal(task)}
                                 membersMap={membersMap}
+                                // FIX: Pass the onDrop handler for reordering
+                                onDrop={handleTaskDrop}
                               />
                             ))
                           ) : (
@@ -326,12 +406,13 @@ const KanbanBoard = ({
                     </div>
                   </motion.div>
                 </Column>
-              )
+              );
             })}
           </div>
         </div>
       </DndProvider>
-    </div>)
-}
+    </div>
+  );
+};
 
-export default KanbanBoard
+export default KanbanBoard;
