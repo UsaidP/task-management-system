@@ -62,7 +62,9 @@ const KanbanBoard = ({
 
   const filteredColumns = useMemo(() => {
     return Object.entries(columns).reduce((acc, [status, column]) => {
-      console.log(`Status ${status}`);
+      const { tasks } = column;
+      tasks.map((task) => { console.log(`task ${JSON.stringify(task._id)}`) })
+      // console.log(`Status ${JSON.stringify(tasks)}`);
       const filteredTasks = column.tasks.filter((task) => {
         if (!task) return false;
         const matchesSearch =
@@ -84,9 +86,13 @@ const KanbanBoard = ({
 
   const handleTaskDrop = useCallback(
     async (item, newStatus, destinationIndex) => {
+      console.log(item);
+      console.log(destinationIndex);
+      console.log(newStatus);
       const { id: taskId, status: originalStatus, index } = item;
       const optimisticColumns = JSON.parse(JSON.stringify(columns));
-      console.log(`optimisticColumns: ${JSON.stringify(taskId)}`);
+
+      // columns.map((col) => { console.log(`col ${col}`) })
 
       const sourceColumnTasks = [...optimisticColumns[originalStatus].tasks];
       const [movedTask] = sourceColumnTasks.splice(index, 1);
@@ -266,12 +272,14 @@ const KanbanBoard = ({
         <div className="flex-1 overflow-x-auto">
           <div className="flex items-stretch gap-6 px-1 md:px-4 pb-6 pt-2">
             {Object.entries(columns).map(([status, column]) => {
-              console.log(`ColumnIcon: ${JSON.stringify(column)}`);
-              console.log(`STATUS: ${JSON.stringify(status)}`);
+              // console.log(`Column: ${JSON.stringify(column)}`);
+              // console.log(`STATUS: ${JSON.stringify(status)}`);
               const tasksToRender = filteredColumns[status]?.tasks || [];
               const totalTasks = columns[status]?.tasks?.length || 0;
+              // console.log(`Column Status: ${JSON.stringify(columns)}`);
               return (
                 <Column key={status} status={status} onDrop={handleTaskDrop}>
+
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

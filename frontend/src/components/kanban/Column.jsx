@@ -3,8 +3,9 @@ import { useDrop } from "react-dnd"
 
 const Column = ({ children, status, onDrop }) => {
   const [{ isOver }, drop] = useDrop(() => ({
-    accept: "task",
-    drop: (item) => onDrop(item, status),
+    accept: " ",
+    drop: (item) => onDrop(item, status, index),
+
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
