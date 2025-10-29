@@ -189,7 +189,7 @@ const KanbanBoard = ({
   return (
     <div className="flex h-full flex-col relative">
       {/* Fixed Filter Section */}
-      <div className="sticky top-0 z-50 pb-4 px-1 md:px-4">
+      <div className="pb-4 px-1 md:px-4">
         <div className="glass rounded-xl p-4 shadow-md">
           <div className="flex flex-col md:flex-row items-center gap-3 mb-3">
             <div className="w-full md:flex-1 relative">
@@ -207,9 +207,8 @@ const KanbanBoard = ({
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className={`w-full md:w-auto btn-secondary flex gap-2 ${
-                  showFilters || hasActiveFilters ? "bg-primary text-white" : ""
-                }`}
+                className={`w-full md:w-auto btn-secondary flex gap-2 ${showFilters || hasActiveFilters ? "bg-primary text-black" : ""
+                  }`}
               >
                 <FiFilter className="w-4 h-4" />
                 Filters
@@ -247,13 +246,13 @@ const KanbanBoard = ({
                       value={filterPriority}
                       onChange={setFilterPriority}
                     >
-                      <Listbox.Button className="filter-dropdown">
+                      <Listbox.Button className="filter-dropdown ">
                         <span className="truncate capitalize">
                           {selectedPriorityObject?.name || "Priority"}
                         </span>
                         <FiChevronDown className="w-4 h-4 text-text-muted" />
                       </Listbox.Button>
-                      <Listbox.Options className="filter-dropdown-options">
+                      <Listbox.Options className="filter-dropdown-options bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
                         {priorityOptions.map((option) => (
                           <Listbox.Option
                             key={option.id}
@@ -262,14 +261,12 @@ const KanbanBoard = ({
                           >
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item ${
-                                  active ? "bg-primary-dark" : ""
-                                }`}
+                                className={`filter-dropdown-item ${active ? "bg-primary" : ""
+                                  }`}
                               >
                                 <span
-                                  className={`block truncate ${
-                                    selected ? "font-semibold" : "font-normal"
-                                  }`}
+                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
+                                    }`}
                                 >
                                   {option.name}
                                 </span>
@@ -305,14 +302,12 @@ const KanbanBoard = ({
                           >
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item ${
-                                  active ? "bg-primary-dark" : ""
-                                }`}
+                                className={`filter-dropdown-item ${active ? "bg-primary" : ""
+                                  }`}
                               >
                                 <span
-                                  className={`block truncate ${
-                                    selected ? "font-semibold" : "font-normal"
-                                  }`}
+                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
+                                    }`}
                                 >
                                   {option.name}
                                 </span>

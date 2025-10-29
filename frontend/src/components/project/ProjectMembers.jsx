@@ -95,8 +95,7 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                     key={roleItem.id}
                     value={roleItem.id}
                     className={({ active }) =>
-                      `cursor-pointer select-none relative py-2 px-4 ${
-                        active ? "bg-slate-200 text-slate-900" : "text-slate-700"
+                      `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"
                       }`
                     }
                   >
