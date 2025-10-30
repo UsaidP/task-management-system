@@ -316,8 +316,8 @@
 }
 
 .avatar {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid white;
   background-size: cover;
@@ -489,4 +489,29 @@
 
 .dark .priority-high {
   content: "```css\n.dark .priority-high {\n  background-color: rgba(239, 68, 68, 0.2);\n  color: #fecaca; /* Lighter red */\n}\n\n.dark .priority-medium {\n  background-color: rgba(217, 119, 6, 0.2);\n  color: #fcd34d; /* Lighter yellow */\n}\n\n.dark .priority-low {\n  background-color: rgba(5, 150, 105, 0.2);\n  color: #a7f3d0; /* Lighter green */\n}\n```\n\nWould you like me to refactor these custom `.task-card` classes to use Tailwind's `@apply` syntax instead? This would make them consistent with the rest of your component file.";
+}
+
+.delete-task-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.delete-task-btn:hover {
+  background-color: #fee2e2;
+}
+
+.delete-icon {
+  color: #9ca3af;
+  transition: color 0.2s ease-in-out;
+}
+
+.delete-task-btn:hover .delete-icon {
+  color: #ef4444;
 }

@@ -13,6 +13,7 @@ import AppLayout from "./components/layout/AppLayout.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
 import ProjectPage from "./components/project/ProjectPage.jsx"
 import "./index.css"
+import "./App.css"
 import GuestRoute from "./components/GuestRoute.jsx"
 import CalendarView from "./components/date/CalenderView.jsx"
 // This import is for Emotion. If you are ONLY using your custom theme, you might not need it.

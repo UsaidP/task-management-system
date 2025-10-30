@@ -29,6 +29,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
     priority: "medium", // Default priority (matches option ID)
     assignedTo: [],
     dueDate: "",
+    labels: "",
   }
 
   const [formData, setFormData] = useState(initialFormState)
@@ -261,6 +262,19 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               onChange={handleChange}
               className="input-field"
             />
+          </div>
+          <div className="md:col-span-2">
+            <label htmlFor="labels" className="input-label">
+              Labels
+            </label>
+            <input
+              type="text"
+              name="labels"
+              value={formData.labels}
+              onChange={handleChange}
+              className="input-field"
+            />
+            <p>Eg: Frontend Backend API</p>
           </div>
         </div>
 

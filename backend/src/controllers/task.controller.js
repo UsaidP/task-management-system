@@ -78,6 +78,7 @@ const createTask = asyncHandler(async (req, res, next) => {
   }
 
   const task = await Task.create(taskData);
+  console.log(task);
   if (!task) {
     throw new ApiError(400, "Task creation failed");
   }
