@@ -1,76 +1,492 @@
+/* ========================================
+   🎨 TAILWIND DIRECTIVES & BASE STYLES
+   ======================================== */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-slate-200;
-  }
 
+  /* Base styles for the entire app */
   body {
-    @apply bg-white text-slate-700 font-sans antialiased;
+    @apply bg-light-bg-primary text-light-text-secondary dark:bg-dark-bg-primary dark:text-dark-text-secondary font-sans antialiased transition-colors duration-fast;
   }
 
+  /* Headings */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-light-text-primary dark:text-dark-text-primary font-semibold;
+  }
+
+  /* Links */
+  a {
+    @apply text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors duration-fast;
+  }
+
+  /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
   }
 }
 
+/* ========================================
+   🧩 REUSABLE COMPONENTS
+   ======================================== */
+
 @layer components {
+
+  /* Primary Button */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white bg-ocean-blue hover:bg-deep-blue transition-all duration-300 ease-in-out shadow-lg hover:shadow-glow transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-ocean-blue focus:ring-offset-2 focus:ring-offset-white;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white bg-accent-primary hover:bg-accent-primary-dark dark:bg-accent-primary-light dark:text-dark-text-inverse dark:hover:bg-accent-primary shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast focus-visible-ring;
   }
 
+  /* Secondary Button */
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-slate-900 bg-slate-100 hover:bg-slate-200 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg border border-slate-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-ocean-blue focus:ring-offset-2 focus:ring-offset-white;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary hover:bg-light-bg-hover dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-hover border border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast focus-visible-ring;
   }
 
+  /* Danger Button */
   .btn-danger {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white bg-rose-red hover:bg-opacity-90 transition-all duration-300 ease-in-out shadow-lg transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-rose-red focus:ring-offset-2 focus:ring-offset-white;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger-light dark:text-dark-text-inverse dark:hover:bg-accent-danger shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast focus-visible-ring;
   }
 
+  /* Ghost Button */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast focus-visible-ring;
+  }
+
+
+  /* ======================================== 
+     📝 FORMS
+     ======================================== */
+
+  /* Input Field */
   .input-field {
-    @apply w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-lg text-slate-900 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ocean-blue focus:border-transparent;
+    @apply w-full px-4 py-3 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-primary dark:text-dark-text-primary border border-light-border dark:border-dark-border placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary/50 dark:focus:ring-accent-primary-light/50 dark:focus:border-accent-primary-light/50;
   }
 
-  .input-field::placeholder {
-    @apply text-slate-500;
+  /* Select Dropdown */
+  .select-field {
+    @apply appearance-none bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEgMUw2IDZMMTEgMSIgc3Ryb2tlPSIjNjQ3NDhCIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==')] bg-no-repeat bg-[center_right_1rem];
   }
 
+  /* Checkbox */
+  .checkbox {
+    @apply w-5 h-5 rounded bg-light-bg-secondary dark:bg-dark-bg-secondary border-2 border-light-border dark:border-dark-border text-accent-primary focus:ring-2 focus:ring-accent-primary/30 focus:ring-offset-0 cursor-pointer transition-all duration-200 checked:bg-accent-primary checked:border-accent-primary hover:border-accent-primary dark:hover:border-accent-primary-light;
+  }
+
+  /* Input Label */
+  .input-label {
+    @apply block text-sm font-medium mb-2 text-light-text-primary dark:text-dark-text-primary;
+  }
+
+  /* Input Error */
+  .input-error {
+    @apply text-sm text-accent-danger mt-1;
+  }
+
+
+  /* ======================================== 
+     🎴 CARDS & CONTAINERS
+     ======================================== */
+
+  /* Card */
   .card {
-    @apply bg-white rounded-xl p-6 shadow-card hover:shadow-card-hover;
+    @apply bg-light-bg-tertiary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl p-6 shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transition-all duration-200;
+  }
+
+  /* Card with hover effect */
+  .card-interactive {
+    @apply card cursor-pointer hover:scale-[1.01] hover:border-accent-primary/50 active:scale-[0.99];
+  }
+
+  /* Modal/Dialog */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm flex items-center justify-center animate-fade-in;
+  }
+
+  .modal-content {
+    @apply bg-light-bg-primary dark:bg-dark-bg-primary rounded-2xl p-6 max-w-lg w-full mx-4 shadow-xl dark:shadow-dark-lg animate-scale-in;
+  }
+
+
+  /* ======================================== 
+     📋 TASK-SPECIFIC COMPONENTS
+     ======================================== */
+
+  /* Priority Badge */
+  .badge-priority-urgent {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-urgent/10 text-task-priority-urgent dark:bg-task-priority-urgent/20;
+  }
+
+  .badge-priority-high {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-high/10 text-task-priority-high dark:bg-task-priority-high/20;
+  }
+
+  .badge-priority-medium {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-medium/10 text-task-priority-medium dark:bg-task-priority-medium/20;
+  }
+
+  .badge-priority-low {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-low/10 text-task-priority-low dark:bg-task-priority-low/20;
+  }
+
+  /* Status Badge */
+  .badge-status-done {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-done/10 text-task-status-done dark:bg-task-status-done/20;
+  }
+
+  .badge-status-progress {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-progress/10 text-task-status-progress dark:bg-task-status-progress/20;
+  }
+
+  .badge-status-todo {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-todo/10 text-task-status-todo dark:bg-task-status-todo/20;
+  }
+
+
+  /* ======================================== 
+     🎨 UTILITY COMPONENTS
+     ======================================== */
+
+  /* Divider */
+  .divider {
+    @apply border-t border-light-border dark:border-dark-border;
+  }
+
+  /* Skeleton Loader */
+  .skeleton {
+    @apply animate-pulse bg-light-bg-hover dark:bg-dark-bg-hover rounded;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    @apply absolute z-50 px-3 py-2 text-xs font-medium rounded-lg bg-light-text-primary dark:bg-dark-bg-tertiary text-light-text-inverse dark:text-dark-text-primary shadow-lg dark:shadow-dark-md animate-fade-in;
+  }
+
+  /* Focus visible utility */
+  .focus-visible-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-light-bg-primary dark:focus-visible:ring-offset-dark-bg-primary;
   }
 }
 
-.input-label {
-  @apply block text-sm font-medium text-text-primary mb-1;
-}
-
-.filter-dropdown {
-  @apply w-full md:w-40 px-3 py-2 bg-primary border border-border rounded-lg text-text-primary text-left flex items-center justify-between;
-}
-
-.filter-dropdown-options {
-  @apply absolute z-50 mt-1 w-full bg-primary border border-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto;
-}
-
-.filter-dropdown-item {
-  @apply cursor-pointer select-none relative py-2 px-4 text-text-primary;
-}
+/* ========================================
+   🎯 SCROLLBAR STYLING
+   ======================================== */
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full;
+  @apply bg-light-border dark:bg-dark-border rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-500;
+  @apply bg-light-border-strong dark:bg-dark-border-strong;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.light.border.DEFAULT') transparent;
+}
+
+.dark * {
+  scrollbar-color: theme('colors.dark.border.DEFAULT') transparent;
+}
+
+/* ========================================
+   Task Card Styles
+   ======================================== */
+
+.task-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef2f5;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.task-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.task-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-card-body .task-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0 0 0.5rem 0;
+}
+
+.task-card-body .task-description {
+  font-size: 0.9rem;
+  color: #718096;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.task-card-metadata {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.due-date {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #4a5568;
+}
+
+.due-date .fa-calendar {
+  margin-right: 0.5rem;
+  color: #a0aec0;
+}
+
+.task-card-progress .progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #718096;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-track {
+  background-color: #e2e8f0;
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background-color: #4299e1;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.task-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #eef2f5;
+}
+
+.task-meta-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.icon-group {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+.icon-group i {
+  margin-right: 0.5rem;
+}
+
+.avatar-group {
+  display: flex;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-size: cover;
+  background-position: center;
+  margin-left: -10px;
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.tag-category {
+  background-color: #e9d8fd;
+  color: #8655c5;
+}
+
+.status-in-progress {
+  background-color: #bee3f8;
+  color: #2b6cb0;
+}
+
+.status-under-review {
+  background-color: #fbd38d;
+  color: #975a16;
+}
+
+.status-completed {
+  background-color: #c6f6d5;
+  color: #2f855a;
+}
+
+.status-todo {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.priority-urgent {
+  background-color: #fed7d7;
+  color: #c53030;
+}
+
+.priority-high {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.priority-medium {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.priority-low {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+
+.dark .task-card {
+  /* Using common Tailwind color names as comments for reference */
+  background-color: #2d3748;
+  /* dark:bg-gray-800 */
+  border-color: #4a5568;
+  /* dark:border-gray-600 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dark .task-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.dark .task-card-body .task-title {
+  color: #f7fafc;
+  /* dark:text-gray-100 */
+}
+
+.dark .task-card-body .task-description {
+  color: #a0aec0;
+  /* dark:text-gray-400 */
+}
+
+.dark .due-date {
+  color: #cbd5e0;
+  /* dark:text-gray-300 */
+}
+
+.dark .due-date .fa-calendar {
+  color: #718096;
+  /* dark:text-gray-500 */
+}
+
+.dark .task-card-progress .progress-label {
+  color: #a0aec0;
+  /* dark:text-gray-400 */
+}
+
+.dark .progress-bar-track {
+  background-color: #4a5568;
+  /* dark:bg-gray-700 */
+}
+
+.dark .progress-bar-fill {
+  background-color: #63b3ed;
+  /* dark:bg-blue-400 */
+}
+
+.dark .task-card-footer {
+  border-top-color: #4a5568;
+  /* dark:border-gray-600 */
+}
+
+.dark .icon-group {
+  color: #a0aec0;
+  /* dark:text-gray-400 */
+}
+
+.dark .avatar {
+  border-color: #2d3748;
+  /* Match the dark card background */
+}
+
+/* --- Dark Mode Tags --- */
+/*  * The dark mode pattern for tags is typically a semi-transparent
+ * version of the color for the background and the light version
+ * of the color for the text.
+ */
+
+.dark .tag-category {
+  background-color: rgba(134, 85, 197, 0.2);
+  color: #d6bcfa;
+  /* Lighter purple */
+}
+
+.dark .status-in-progress {
+  background-color: rgba(43, 108, 176, 0.2);
+  color: #90cdf4;
+  /* Lighter blue */
+}
+
+.dark .status-under-review {
+  background-color: rgba(151, 90, 22, 0.2);
+  color: #fbd38d;
+}
+
+.dark .status-completed {
+  background-color: rgba(47, 133, 90, 0.2);
+  color: #9ae6b4;
+  /* Lighter green */
+}
+
+.dark .status-todo {
+  background-color: rgba(74, 85, 104, 0.2);
+  color: #e2e8f0;
+}
+
+.dark .priority-urgent {
+  background-color: rgba(197, 48, 48, 0.2);
+  color: #feb2b2;
+  /* Lighter red */
+}
+
+.dark .priority-high {
+  content: "```css\n.dark .priority-high {\n  background-color: rgba(239, 68, 68, 0.2);\n  color: #fecaca; /* Lighter red */\n}\n\n.dark .priority-medium {\n  background-color: rgba(217, 119, 6, 0.2);\n  color: #fcd34d; /* Lighter yellow */\n}\n\n.dark .priority-low {\n  background-color: rgba(5, 150, 105, 0.2);\n  color: #a7f3d0; /* Lighter green */\n}\n```\n\nWould you like me to refactor these custom `.task-card` classes to use Tailwind's `@apply` syntax instead? This would make them consistent with the rest of your component file.";
 }

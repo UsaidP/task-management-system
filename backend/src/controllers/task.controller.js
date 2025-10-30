@@ -19,6 +19,8 @@ const createTask = asyncHandler(async (req, res, next) => {
     priority,
     subtasks,
     comments,
+    labels,
+    note,
   } = req.body;
   const { projectId, noteId } = req.params;
   const userID = req.user._id;
@@ -61,7 +63,11 @@ const createTask = asyncHandler(async (req, res, next) => {
     project: projectId,
     status,
     title,
-    priority
+    priority, labels,
+    startDate,
+    dueDate,
+    subtasks,
+    comments,
   };
   if (noteId) {
     const note = await ProjectNote.findById(noteId);

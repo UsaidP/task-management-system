@@ -1,3 +1,32 @@
+class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+class NotFoundError extends ApiError {
+  constructor(message = 'Resource not found') {
+    super(message, 404);
+    this.name = 'NotFoundError';
+  }
+}
+
+class ServerError extends ApiError {
+  constructor(message = 'Internal server error') {
+    super(message, 500);
+    this.name = 'ServerError';
+  }
+}
+
+class NetworkError extends Error {
+  constructor(message = 'Network error, please check your connection') {
+    super(message);
+    this.name = 'NetworkError';
+  }
+}
+
 class ApiService {
   constructor() {
     this.baseURL = "http://localhost:3000/api/v1";
@@ -6,47 +35,51 @@ class ApiService {
       Accept: "application/json",
     };
   }
+
   async customFetch(endpoint, options = {}) {
+    const url = `${this.baseURL}${endpoint}`;
+    const headers = { ...this.defaultHeader, ...options.headers };
+
+    if (options.body instanceof FormData) {
+      delete headers["Content-Type"];
+    }
+
+    const config = {
+      ...options,
+      headers,
+      credentials: "include",
+    };
+
     try {
-      const url = `${this.baseURL}${endpoint}`;
-      const headers = { ...this.defaultHeader, ...options.headers };
-
-      // If body is FormData, let the browser set the Content-Type header
-      if (options.body instanceof FormData) {
-        delete headers["Content-Type"];
-      }
-
-      const config = {
-        ...options,
-        headers,
-        credentials: "include",
-      };
       const response = await fetch(url, config);
-      console.log(`Api response ${JSON.stringify(response)}`);
 
-      if (response.ok) {
-        const data = await response.json();
-        // console.log("API service data", data);
-
-        return data;
-      } else {
-        // If the response is not OK, try to parse the error body
+      if (!response.ok) {
         let errorData;
         try {
           errorData = await response.json();
         } catch (e) {
-          // If the error body is not JSON, use the status text
           errorData = { message: response.statusText };
         }
-        const error = new Error(errorData.message || "An API error occurred");
-        error.response = response;
-        error.data = errorData;
+
+        if (response.status === 404) {
+          throw new NotFoundError(errorData.message);
+        }
+        if (response.status >= 500) {
+          throw new ServerError(errorData.message);
+        }
+        throw new ApiError(errorData.message || 'An API error occurred', response.status);
+      }
+
+      return await response.json();
+
+    } catch (error) {
+      if (error instanceof ApiError) {
+        // Re-throw custom API errors
         throw error;
       }
-    } catch (error) {
+      // Wrap other errors (e.g., network errors) in a NetworkError
       console.error("API Error", error);
-      // Re-throw the original or newly created error
-      throw error;
+      throw new NetworkError(error.message);
     }
   }
   async signup(username, fullname, password, email, role, avatar) {

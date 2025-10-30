@@ -3,28 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 // --- DEPENDENCIES START ---
 
-// 1. Import real React Icons
 import { FiSun, FiMoon } from 'react-icons/fi';
-
-// 2. Mock useTheme hook
-// This mock will make the toggle functional in the preview
-const useTheme = () => {
-  const [theme, setTheme] = useState('light'); // Default to light
-
-  // Apply the theme to the <html> tag for Tailwind's `dark:` classes to work
-  React.useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-    console.log('Toggling theme');
-  };
-
-  return { theme, toggleTheme };
-};
+import { useTheme } from './ThemeContext'; // Use the real hook
 
 // --- DEPENDENCIES END ---
 

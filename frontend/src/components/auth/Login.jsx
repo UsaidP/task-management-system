@@ -1,54 +1,50 @@
-import { motion } from "framer-motion"
-import { useState } from "react"
-import toast from "react-hot-toast"
-import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi"
-import { Link } from "react-router-dom"
-import { useAuth } from "../context/customHook.js"
+import { motion } from "framer-motion";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/customHook.js";
 
 export const Login = () => {
-  // We get the login function from our custom hook.
-  const { login } = useAuth()
+  const { login } = useAuth();
 
-  // State for managing form inputs.
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
-  })
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // State for loading and password visibility.
-  const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-
-  // Handles changes to the input fields.
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error on change
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: null }));
+    }
+  };
 
-  // Handles the form submission.
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
+    setErrors({});
 
     try {
-      // Call the login function from the context.
-      // If this is successful, the user state will update, and the
-      // <GuestRoute> component will automatically redirect to the dashboard.
-      const data = await login(formData.identifier, formData.password)
-      // console.log("User response" + JSON.stringify(data));
-      // No more `Maps()` call needed here! The routing handles it.
+      await login(formData.identifier, formData.password);
+      // On success, AuthProvider will handle redirect
     } catch (err) {
-      // Display a user-friendly error message using a toast notification.
-      const errorMessage = err.data?.message || "Invalid credentials. Please try again."
-      toast.error(errorMessage)
+      const errorMessage = err.data?.message || "Invalid credentials. Please try again.";
+      toast.error(errorMessage);
+      // You could set specific field errors here if the API provided them
+      // For now, we'll just show a general error
     } finally {
-      // Ensure the loading state is turned off, whether login succeeded or failed.
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-primary-background">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-light-bg-primary dark:bg-dark-bg-primary">
       <div className="w-full max-w-lg h-full card p-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -57,9 +53,9 @@ export const Login = () => {
           className="text-center mb-8"
         >
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold text-highlight-text mb-2">TaskFlow</h1>
+            <h1 className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">TaskFlow</h1>
           </Link>
-          <p className="text-secondary-text">Welcome back! Please sign in to continue.</p>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary">Welcome back! Please sign in to continue.</p>
         </motion.div>
 
         <motion.div
@@ -71,12 +67,12 @@ export const Login = () => {
             <div>
               <label
                 htmlFor="identifier"
-                className="block text-sm font-medium text-highlight-text mb-2"
+                className="input-label"
               >
                 Email or Username
               </label>
               <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
+                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                 <input
                   type="text"
                   name="identifier"
@@ -85,20 +81,21 @@ export const Login = () => {
                   onChange={handleChange}
                   value={formData.identifier}
                   required
-                  className="input-field pl-12"
+                  className={`input-field pl-12 ${errors.identifier ? 'border-accent-danger' : ''}`}
                 />
               </div>
+              {errors.identifier && <p className="input-error">{errors.identifier}</p>}
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-highlight-text mb-2"
+                className="input-label"
               >
                 Password
               </label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
+                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -107,30 +104,27 @@ export const Login = () => {
                   onChange={handleChange}
                   value={formData.password}
                   required
-                  className="input-field pl-12 pr-12"
+                  className={`input-field pl-12 pr-12 ${errors.password ? 'border-accent-danger' : ''}`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-subtle-text hover:text-highlight-text transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
                 </button>
               </div>
+              {errors.password && <p className="input-error">{errors.password}</p>}
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2 text-white transition-colors hover:btn-primary-hover disabled:cursor-not-allowed disabled:btn-disabled"
+              className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? (
-                <div className="loading-dots" role="status" aria-live="polite">
-                  <div />
-                  <div />
-                  <div />
-                </div>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
               ) : (
                 <>
                   <span>Sign In</span>
@@ -142,7 +136,7 @@ export const Login = () => {
             <div className="text-center">
               <Link
                 to="/forget-password"
-                className="text-accent-blue hover:text-accent-blue transition-colors text-sm"
+                className="text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors text-sm"
               >
                 Forgot your password?
               </Link>
@@ -156,11 +150,11 @@ export const Login = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-6"
         >
-          <p className="text-secondary-text">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary">
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="text-accent-blue hover:text-accent-blue transition-colors font-medium"
+              className="text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors font-medium"
             >
               Sign up for free
             </Link>
@@ -168,5 +162,5 @@ export const Login = () => {
         </motion.div>
       </div>
     </div>
-  )
-}
+  );
+};

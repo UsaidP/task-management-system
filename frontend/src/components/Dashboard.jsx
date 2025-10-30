@@ -1,5 +1,5 @@
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
   FiArrowRight,
   FiCalendar,
@@ -9,26 +9,24 @@ import {
   FiEye,
   FiPlus,
   FiUsers,
-} from "react-icons/fi"
-import { Link } from "react-router-dom"
-import apiService from "../../service/apiService.js"
-import { useAuth } from "./context/customHook.js"
-import CreateProjectModal from "./project/CreateProjectModal"
-import ProjectCardSkeleton from "./project/ProjectCardSkeleton"
+} from "react-icons/fi";
+import { Link } from "react-router-dom";
+import apiService from "../../service/apiService.js";
+import { useAuth } from "./context/customHook.js";
+import CreateProjectModal from "./project/CreateProjectModal";
+import ProjectCardSkeleton from "./project/ProjectCardSkeleton";
+import { ServerError, NetworkError, EmptyState } from "./ErrorStates.jsx";
 
-// --- Skeleton Component for the Header ---
-// Mimics the header layout while the user object is loading.
 const HeaderSkeleton = () => (
   <div className="flex animate-pulse items-center justify-between">
     <div>
-      <div className="mb-3 h-10 w-64 rounded-lg bg-slate-100" />
-      <div className="h-6 w-80 rounded-lg bg-slate-100" />
+      <div className="mb-3 h-10 w-64 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
+      <div className="h-6 w-80 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
     </div>
-    <div className="hidden h-6 w-48 rounded-lg bg-slate-100 md:block" />
+    <div className="hidden h-6 w-48 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover md:block" />
   </div>
-)
+);
 
-// --- Reusable UI Card Components ---
 const StatCard = ({ icon, label, value, color, delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -36,7 +34,7 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
     transition={{ duration: 0.6, delay }}
     className="card group p-6"
   >
-    <div className="mb-4 flex items-center justify-between ">
+    <div className="mb-4 flex items-center justify-between">
       <div
         className={`p-3 rounded-xl ${color} transition-transform duration-200 group-hover:scale-110`}
       >
@@ -44,11 +42,11 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
       </div>
     </div>
     <div>
-      <p className="text-slate-900 mb-1 text-3xl font-bold p-2">{value}</p>
-      <p className="text-slate-700">{label}</p>
+      <p className="text-light-text-primary dark:text-dark-text-primary mb-1 text-3xl font-bold p-2">{value}</p>
+      <p className="text-light-text-secondary dark:text-dark-text-secondary">{label}</p>
     </div>
   </motion.div>
-)
+);
 
 const ProjectCard = ({ project, delay = 0 }) => (
   <motion.div
@@ -57,15 +55,15 @@ const ProjectCard = ({ project, delay = 0 }) => (
     transition={{ duration: 0.6, delay }}
   >
     <Link to={`/project/${project._id}`} className="block">
-      <div className="card group p-6">
+      <div className="card-interactive group p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-900 transition-colors group-hover:text-ocean-blue">
+          <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary transition-colors group-hover:text-accent-primary">
             {project.name}
           </h3>
-          <FiArrowRight className="h-5 w-5 text-slate-700 transition-all duration-200 group-hover:translate-x-1 group-hover:text-ocean-blue" />
+          <FiArrowRight className="h-5 w-5 text-light-text-tertiary dark:text-dark-text-tertiary transition-all duration-200 group-hover:translate-x-1 group-hover:text-accent-primary" />
         </div>
-        <p className="text-slate-700 line-clamp-2 mb-4 text-sm">{project.description}</p>
-        <div className="flex items-center justify-between text-xs text-slate-700">
+        <p className="text-light-text-secondary dark:text-dark-text-secondary line-clamp-2 mb-4 text-sm">{project.description}</p>
+        <div className="flex items-center justify-between text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
           <span>
             Updated{" "}
             {new Date(project.updatedAt).toLocaleDateString("en-US", {
@@ -82,7 +80,7 @@ const ProjectCard = ({ project, delay = 0 }) => (
       </div>
     </Link>
   </motion.div>
-)
+);
 
 const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
   <motion.button
@@ -90,7 +88,7 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
     animate={{ opacity: 1, scale: 1 }}
     transition={{ duration: 0.4, delay }}
     onClick={onClick}
-    className={`card group text-left ${color}`}
+    className={`card-interactive group text-left ${color}`}
   >
     <div className="flex items-center">
       <div className="mr-3 rounded-lg bg-white/10 p-2 transition-transform duration-200 group-hover:scale-110">
@@ -99,17 +97,12 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
       <span className="font-medium">{label}</span>
     </div>
   </motion.button>
-)
+);
 
-// --- Main Dashboard Component ---
 const Dashboard = () => {
-  // `user` is provided by the AuthContext. It's guaranteed to be either the user object or null.
-  // The AuthContext handles the initial loading state for the user.
-  const { user } = useAuth()
-  // console.log("2. [Dashboard] COMPONENT RENDERED - Received user:", user);
-  // This `loading` state is for the dashboard's specific data (projects, stats).
-  const [loading, setLoading] = useState(true)
-  const [projects, setProjects] = useState([])
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState([]);
   const [stats, setStats] = useState({
     totalTasks: 0,
     todo: 0,
@@ -117,62 +110,67 @@ const Dashboard = () => {
     underReview: 0,
     completed: 0,
     totalProjects: 0,
-  })
-  const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState(false)
+  });
+  const [error, setError] = useState(null);
+  const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState(false);
 
   const handleProjectCreated = (newProject) => {
-    setProjects([newProject, ...projects])
-  }
+    setProjects([newProject, ...projects]);
+  };
 
-  // This effect fetches dashboard-specific data.
-  // It depends on `user`, so it will only run AFTER the user is authenticated and available.
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      setLoading(true)
-      try {
-        // Using Promise.all to fetch data in parallel for better performance.
-        const [projectsResponse, tasksResponse] = await Promise.all([
-          apiService.getAllProjects(),
-          apiService.getAllTaskOfUser(),
-        ])
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [projectsResponse, tasksResponse] = await Promise.all([
+        apiService.getAllProjects(),
+        apiService.getAllTaskOfUser(),
+      ]);
 
-        if (projectsResponse.success && tasksResponse.success) {
-          const projectsData = projectsResponse.data.projects
-          const tasksData = tasksResponse.data
+      if (projectsResponse.success && tasksResponse.success) {
+        const projectsData = projectsResponse.data.projects;
+        const tasksData = tasksResponse.data;
 
-          setProjects(projectsData.slice(0, 6))
-          setStats({
-            totalTasks: tasksData.length,
-            todo: tasksData.filter((t) => t.status === "todo").length,
-            inProgress: tasksData.filter((t) => t.status === "in-progress").length,
-            underReview: tasksData.filter((t) => t.status === "under-review").length,
-            completed: tasksData.filter((t) => t.status === "completed").length,
-            totalProjects: projectsData.length,
-          })
-        }
-      } catch (error) {
-        console.error("Failed to fetch dashboard data:", error)
-      } finally {
-        setLoading(false)
+        setProjects(projectsData.slice(0, 6));
+        setStats({
+          totalTasks: tasksData.length,
+          todo: tasksData.filter((t) => t.status === "todo").length,
+          inProgress: tasksData.filter((t) => t.status === "in-progress").length,
+          underReview: tasksData.filter((t) => t.status === "under-review").length,
+          completed: tasksData.filter((t) => t.status === "completed").length,
+          totalProjects: projectsData.length,
+        });
       }
+    } catch (err) {
+      console.error("Failed to fetch dashboard data:", err);
+      setError(err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // The guard clause ensures we only fetch data when we have a logged-in user.
+  useEffect(() => {
     if (user) {
-      fetchDashboardData()
+      fetchDashboardData();
     }
-  }, [user]) // The dependency array ensures this effect re-runs if the user changes (e.g., re-login).
+  }, [user]);
 
   const getGreeting = () => {
-    const hour = new Date().getHours()
-    if (hour < 12) return "Good morning"
-    if (hour < 18) return "Good afternoon"
-    return "Good evening"
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  if (error) {
+    if (error.name === 'NetworkError') {
+      return <NetworkError onRetry={fetchDashboardData} />;
+    }
+    return <ServerError onRetry={fetchDashboardData} />;
   }
 
   return (
     <div className="space-y-8">
-      {/* Header section: Renders based on the user object. */}
       {user ? (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -181,15 +179,15 @@ const Dashboard = () => {
           className="flex items-center justify-between"
         >
           <div>
-            <h1 className="text-slate-900 mb-2 text-4xl font-bold">
+            <h1 className="text-light-text-primary dark:text-dark-text-primary mb-2 text-4xl font-bold">
               {getGreeting()}{' '}
-              <span className="text-slate-900">{user.fullname || 'User'}</span>!
+              <span className="text-light-text-primary dark:text-dark-text-primary">{user.fullname || 'User'}</span>!
             </h1>
-            <p className="text-slate-700 text-lg">
+            <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
               Here's what's happening with your projects today.
             </p>
           </div>
-          <div className="flex items-center space-x-2 text-slate-700">
+          <div className="flex items-center space-x-2 text-light-text-secondary dark:text-dark-text-secondary">
             <FiCalendar className="h-5 w-5" />
             <span>
               {new Date().toLocaleDateString('en-US', {
@@ -205,58 +203,56 @@ const Dashboard = () => {
         <HeaderSkeleton />
       )}
 
-      {/* Stats Grid: Renders based on the dashboard's `loading` state. */}
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-5 p-6">
         <StatCard
-          icon={<FiClipboard className="h-6 w-6  text-white" />}
+          icon={<FiClipboard className="h-6 w-6 text-white" />}
           label="Total Tasks"
           value={loading ? '...' : stats.totalTasks}
-          color="bg-ocean-blue"
+          color="bg-accent-primary"
           delay={0.1}
         />
         <StatCard
           icon={<FiClock className="h-6 w-6 text-white" />}
           label="In Progress"
           value={loading ? '...' : stats.inProgress}
-          color="bg-amber-orange"
+          color="bg-accent-warning"
           delay={0.2}
         />
         <StatCard
           icon={<FiEye className="h-6 w-6 text-white" />}
           label="Under Review"
-          value={loading ? '...' : stats.underReview} // Assuming you have this value
-          color="bg-ocean-blue" // Blue gradient
+          value={loading ? '...' : stats.underReview}
+          color="bg-accent-info"
           delay={0.3}
         />
         <StatCard
           icon={<FiCheckSquare className="h-6 w-6 text-white" />}
           label="Completed"
           value={loading ? '...' : stats.completed}
-          color="bg-emerald-green"
+          color="bg-accent-success"
           delay={0.4}
         />
         <StatCard
           icon={<FiUsers className="h-6 w-6 text-white" />}
           label="Projects"
           value={loading ? '...' : stats.totalProjects}
-          color="bg-slate-200"
+          color="bg-light-bg-secondary dark:bg-dark-bg-secondary"
           delay={0.5}
         />
       </div>
 
-      {/* Quick Actions */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.5 }}
       >
-        <h2 className="text-slate-900 mb-6 text-2xl font-bold">Quick Actions</h2>
+        <h2 className="text-light-text-primary dark:text-dark-text-primary mb-6 text-2xl font-bold">Quick Actions</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <QuickAction
             icon={<FiPlus className="h-5 w-5 text-white" />}
             label="Create New Project"
             onClick={() => setCreateProjectModalOpen(true)}
-            color="bg-ocean-blue text-white"
+            color="bg-accent-primary text-white"
             delay={0.1}
           />
         </div>
@@ -268,17 +264,16 @@ const Dashboard = () => {
         onProjectCreated={handleProjectCreated}
       />
 
-      {/* Recent Projects: Renders based on the dashboard's `loading` state. */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6 }}
       >
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-slate-900 text-2xl font-bold">Recent Projects</h2>
+          <h2 className="text-light-text-primary dark:text-dark-text-primary text-2xl font-bold">Recent Projects</h2>
           <Link
             to="/projects"
-            className="flex items-center text-slate-900 transition-colors duration-200 hover:text-ocean-blue "
+            className="flex items-center text-light-text-primary dark:text-dark-text-primary transition-colors duration-200 hover:text-accent-primary "
           >
             View All
             <FiArrowRight className="ml-1 h-4 w-4" />
@@ -298,30 +293,11 @@ const Dashboard = () => {
             ))}
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="card py-12 text-center "
-          >
-            <FiClipboard className="text-slate-700 mx-auto mb-4 h-16 w-16" />
-            <h3 className="text-slate-900 mb-2 text-xl font-semibold">No Projects Yet</h3>
-            <p className="text-slate-700 mb-6">
-              Create your first project to get started.
-            </p>
-            <button
-              type="button"
-              onClick={() => setCreateProjectModalOpen(true)}
-              className="btn-primary m-auto flex p-auto"
-            >
-              <FiPlus className="m-auto mr-2 flex p-auto" />
-              Create Project
-            </button>
-          </motion.div>
+          <EmptyState message="Create your first project to get started." />
         )}
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

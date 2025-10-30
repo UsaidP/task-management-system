@@ -1,83 +1,76 @@
-import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import { FiUser, FiX } from "react-icons/fi"
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { FiUser, FiX } from "react-icons/fi";
 
 const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
-  // State to manage the form data, initialized with the current user's info.
   const [formData, setFormData] = useState({
     fullname: "",
-  })
+  });
 
-  // When the user prop changes (e.g., on modal open), update the form data.
   useEffect(() => {
     if (user) {
       setFormData({
         fullname: user.fullname || "",
-      })
+      });
     }
-  }, [user])
+  }, [user]);
 
-  // Handles changes to the input field.
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  // Handles the form submission.
   const handleSubmit = (e) => {
-    e.preventDefault()
-    onSave(formData) // Pass the updated data back to the parent component.
-  }
+    e.preventDefault();
+    onSave(formData);
+  };
 
-  // Animation variants for the modal backdrop and card.
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
-  }
+  };
 
   const modalVariants = {
     hidden: { opacity: 0, y: -50, scale: 0.9 },
     visible: { opacity: 1, y: 0, scale: 1 },
     exit: { opacity: 0, y: 50, scale: 0.9 },
-  }
+  };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
           variants={backdropVariants}
           initial="hidden"
           animate="visible"
           exit="hidden"
-          onClick={onClose} // Close modal on backdrop click
+          onClick={onClose}
         >
           <motion.div
             className="card w-full max-w-lg p-8 rounded-lg shadow-xl"
             variants={modalVariants}
             exit="exit"
-            onClick={(e) => e.stopPropagation()} // Prevent clicks inside the modal from closing it
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-highlight-text">Edit Your Profile</h2>
-              <button onClick={onClose} className="text-subtle-text hover:text-highlight-text">
+              <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">Edit Your Profile</h2>
+              <button onClick={onClose} className="text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary">
                 <FiX size={24} />
               </button>
             </div>
 
-            {/* Edit Form */}
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
                   <label
                     htmlFor="fullname"
-                    className="block text-sm font-medium text-highlight-text mb-2"
+                    className="input-label"
                   >
                     Full Name
                   </label>
                   <div className="relative">
-                    <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-subtle-text w-5 h-5" />
+                    <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                     <input
                       type="text"
                       name="fullname"
@@ -89,10 +82,8 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                     />
                   </div>
                 </div>
-                {/* You can add more fields here (e.g., username, bio) */}
               </div>
 
-              {/* Modal Actions */}
               <div className="mt-8 flex justify-end space-x-4">
                 <button type="button" onClick={onClose} className="btn-secondary px-4 py-2">
                   Cancel
@@ -106,7 +97,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
         </motion.div>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};
 
-export default EditProfileModal
+export default EditProfileModal;

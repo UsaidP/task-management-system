@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import React, { useCallback, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
-import { FiAlertCircle, FiCheckCircle, FiCircle, FiClock, FiPlus, FiUsers } from "react-icons/fi"
+import { FiAlertCircle, FiCheckCircle, FiCircle, FiClock, FiUsers } from "react-icons/fi"
 import { useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js" // Adjust path if needed
 import KanbanBoard from "../kanban/KanbanBoard"

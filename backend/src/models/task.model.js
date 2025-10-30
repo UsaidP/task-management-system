@@ -61,14 +61,19 @@ const taskSchema = new Schema(
       enum: ["todo", "in-progress", "under-review", "completed"],
       type: String,
     },
-
-    // --- Nested Data & Collaboration ---
-    subtasks: [
+    labels: [
       {
-        ref: "SubTask",
-        type: Schema.Types.ObjectId,
+        type: String,
       },
     ],
+
+    // --- Nested Data & Collaboration ---
+    subtasks: {
+
+      ref: "SubTask",
+      type: Schema.Types.ObjectId,
+
+    },
     // --- Core Fields & Relationships ---
     title: {
       required: [true, "Task title is required."],

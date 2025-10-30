@@ -1,82 +1,67 @@
-import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
   FiChevronDown,
   FiFolder,
   FiHome,
   FiPlusSquare,
-  FiLogOut,
   FiSettings,
-  FiUser,
   FiCalendar,
-} from "react-icons/fi"
-import { NavLink, useNavigate } from "react-router-dom"
-import apiService from "../../../service/apiService.js"
-import { useAuth } from "../context/customHook.js"
-import CreateProjectModal from "../project/CreateProjectModal"
+} from "react-icons/fi";
+import { NavLink } from "react-router-dom";
+import apiService from "../../../service/apiService.js";
+import { useAuth } from "../context/customHook.js";
+import CreateProjectModal from "../project/CreateProjectModal";
+import { NetworkError, EmptyState } from "../ErrorStates.jsx";
 
-// A reusable NavLink class function
 const getNavLinkClasses = ({ isActive }) =>
-  `flex items-center px-4 py-3 rounded-lg text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-all duration-200 group ${isActive ? "bg-light-blue text-ocean-blue" : ""
-  }`
+  `flex items-center px-4 py-3 rounded-lg text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all duration-200 group ${isActive ? "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary" : ""}`;
 
-/**
- * Main Sidebar Component
- */
 const Sidebar = () => {
-  const [projects, setProjects] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(true) // Default to open
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const { user } = useAuth() // Get the authenticated user
+  const [projects, setProjects] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
+
+  const fetchProjects = async () => {
+    if (!user) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await apiService.getAllProjects();
+      if (response.success) {
+        setProjects(response.data?.projects || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch projects for sidebar", err);
+      setError(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Only fetch projects if the user is authenticated
-    if (user) {
-      const fetchProjects = async () => {
-        setIsLoading(true)
-        setError(null)
-        try {
-          const response = await apiService.getAllProjects()
-          if (response.success) {
-            // FIX: Added a fallback to an empty array to prevent crashes
-            setProjects(response.data?.projects || [])
-          } else {
-            throw new Error(response.message || "Failed to fetch projects")
-          }
-        } catch (err) {
-          console.error("Failed to fetch projects for sidebar", err)
-          setError(err.message)
-        } finally {
-          setIsLoading(false)
-        }
-      }
-      fetchProjects()
-    } else {
-      // If no user, clear projects
-      setProjects([])
-    }
-  }, [user]) // Re-run effect when user changes
+    fetchProjects();
+  }, [user]);
 
   const handleProjectCreated = (newProject) => {
-    setProjects((prevProjects) => [newProject, ...prevProjects])
-    // Optionally, open the project menu if it's closed
+    setProjects((prevProjects) => [newProject, ...prevProjects]);
     if (!isProjectMenuOpen) {
-      setIsProjectMenuOpen(true)
+      setIsProjectMenuOpen(true);
     }
-  }
+  };
 
-  // Helper component for rendering the project list
   const renderProjectList = () => {
     if (isLoading) {
-      return <div className="px-4 py-2 text-slate-500">Loading projects...</div>
+      return <div className="px-4 py-2 text-light-text-tertiary dark:text-dark-text-tertiary">Loading projects...</div>;
     }
     if (error) {
-      return <div className="px-4 py-2 text-red-500">Error: {error}</div>
+      return <NetworkError onRetry={fetchProjects} />;
     }
     if (projects.length === 0) {
-      return <div className="px-4 py-2 text-slate-500">No projects yet.</div>
+      return <EmptyState message="No projects yet." />;
     }
     return (
       <AnimatePresence>
@@ -98,8 +83,8 @@ const Sidebar = () => {
           </motion.div>
         ))}
       </AnimatePresence>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -107,24 +92,21 @@ const Sidebar = () => {
         initial={{ x: -300 }}
         animate={{ x: 0 }}
         transition={{ duration: 0.3 }}
-        className="w-80 h-screen bg-slate-100 flex flex-col border-r border-slate-200"
+        className="w-80 h-screen bg-light-bg-secondary dark:bg-dark-bg-secondary flex flex-col border-r border-light-border dark:border-dark-border"
       >
-        {/* Header */}
-        <div className="p-6 border-b border-slate-200">
+        <div className="p-6 border-b border-light-border dark:border-dark-border">
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-3xl font-bold text-slate-900"
+            className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary"
           >
             TaskFlow
           </motion.h1>
-          <p className="text-slate-700 text-sm mt-1">Manage with style</p>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mt-1">Manage with style</p>
         </div>
 
-        {/* Navigation (Main + Projects) */}
         <nav className="flex-1 p-6 space-y-2 overflow-y-auto">
-          {/* Dashboard Link */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -136,15 +118,13 @@ const Sidebar = () => {
             </NavLink>
           </motion.div>
 
-
-          {/* Projects Section Toggle */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 }}
           >
             <button
-              className="flex w-full items-center justify-between px-4 py-3 rounded-lg text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-all duration-200 group"
+              className="flex w-full items-center justify-between px-4 py-3 rounded-lg text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all duration-200 group"
               onClick={() => setIsProjectMenuOpen(!isProjectMenuOpen)}
             >
               <div className="flex items-center">
@@ -153,19 +133,17 @@ const Sidebar = () => {
               </div>
               <div className="flex items-center">
                 {!isLoading && !error && (
-                  <span className="text-xs bg-light-blue text-ocean-blue px-2 py-0.5 rounded-full mr-2">
+                  <span className="text-xs bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary px-2 py-0.5 rounded-full mr-2">
                     {projects.length}
                   </span>
                 )}
                 <FiChevronDown
-                  className={`w-4 h-4 text-slate-700 transition-transform duration-200 ${isProjectMenuOpen ? "rotate-180" : ""
-                    }`}
+                  className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ${isProjectMenuOpen ? "rotate-180" : ""}`}
                 />
               </div>
             </button>
           </motion.div>
 
-          {/* Collapsable Project List */}
           <AnimatePresence>
             {isProjectMenuOpen && (
               <motion.div
@@ -203,12 +181,11 @@ const Sidebar = () => {
           </motion.div>
         </nav>
 
-        {/* Create Project Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-6 pt-2 border-t border-slate-200"
+          className="p-6 pt-2 border-t border-light-border dark:border-dark-border"
         >
           <button
             onClick={() => setIsModalOpen(true)}
@@ -218,45 +195,15 @@ const Sidebar = () => {
             Create Project
           </button>
         </motion.div>
-
-        {/* --- FIX: ADDED MISSING USER MENU --- */}
-        <SidebarUserMenu />
-
       </motion.div>
 
-      {/* Modal */}
       <CreateProjectModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onProjectCreated={handleProjectCreated}
       />
     </>
-  )
-}
+  );
+};
 
-/**
- * User Menu Component for the Sidebar
- */
-const SidebarUserMenu = () => {
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
-
-  const handleLogout = async () => {
-    try {
-      await logout()
-      navigate("/")
-    } catch (error) {
-      console.error("Logout failed:", error)
-    }
-  }
-
-  if (!user) {
-    // Render a placeholder to prevent layout shift
-    return <div className="p-6 border-t border-slate-200 h-[88px]"></div>
-  }
-
-
-}
-
-export default Sidebar
+export default Sidebar;

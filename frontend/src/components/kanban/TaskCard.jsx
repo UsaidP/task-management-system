@@ -2,98 +2,60 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import {
-  FiAlertCircle,
   FiCalendar,
-  FiCheckCircle,
-  FiCircle,
-  FiClock,
-  FiEdit3,
-  FiMoreVertical,
-  FiTrash2,
+  FiMessageSquare,
+  FiPaperclip,
 } from "react-icons/fi";
-
-// Custom hook for detecting outside clicks (no changes)
-const useOutsideClick = (ref, callback) => {
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
-        callback();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [ref, callback]);
-};
 
 const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
   const ref = useRef(null);
-  const menuRef = useRef(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: "task",
+    item: { id: task._id, status: task.status },
+    collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
+  }), [task]);
 
-  useOutsideClick(menuRef, () => setIsMenuOpen(false));
+  const [, drop] = useDrop(() => ({
+    accept: "task",
+    drop: (item) => {
+      if (item.id !== task._id) {
+        onDrop(item, task.status, index);
+      }
+    },
+  }), [task, index, onDrop]);
 
-  const [{ isDragging }, drag] = useDrag(
-    () => ({
-      type: "task",
-      item: { id: task._id, status: task.status },
-      collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
-    }),
-    [task]
-  );
-
-  // FEATURE: Add useDrop to the card itself to handle reordering
-  const [, drop] = useDrop(
-    () => ({
-      accept: "task",
-      drop: (item) => {
-        // Don't drop on itself
-        if (item.id !== task._id) {
-          // Call onDrop with the hovered card's status and index
-          onDrop(item, task.status, index);
-        }
-      },
-    }),
-    [task, index, onDrop]
-  ); // Add dependencies
-
-  // FIX: Chain the drag and drop refs
   drag(drop(ref));
 
-  const getStatusIcon = (status) => {
+  const getStatusClass = (status) => {
+    const base = "tag";
     switch (status) {
-      case "todo":
-        return <FiCircle className="w-4 h-4 text-slate-700" />;
-      case "in-progress":
-        return <FiClock className="w-4 h-4 text-ocean-blue" />;
-      case "under-review":
-        return <FiAlertCircle className="w-4 h-4 text-amber-orange" />;
-      case "completed":
-        return <FiCheckCircle className="w-4 h-4 text-emerald-green" />;
-      default:
-        return <FiCircle className="w-4 h-4 text-slate-700" />;
+      case "in-progress": return `${base} status-in-progress`;
+      case "under-review": return `${base} status-under-review`;
+      case "completed": return `${base} status-completed`;
+      default: return `${base} status-todo`;
     }
   };
 
-  const getPriorityConfig = (priority = "Medium") => {
+  const getPriorityClass = (priority) => {
+    const base = "tag";
     switch (priority?.toLowerCase()) {
-      case "urgent":
-        return { borderClassName: "border-l-rose-red", label: "Urgent" };
-      case "high":
-        return { borderClassName: "border-l-rose-red", label: "High" };
-      case "medium":
-        return { borderClassName: "border-l-amber-orange", label: "Medium" };
-      case "low":
-        return { borderClassName: "border-l-ocean-blue", label: "Low" };
-      default:
-        return { borderClassName: "border-l-ocean-blue", label: "Medium" };
+      case "urgent": return `${base} priority-urgent`;
+      case "high": return `${base} priority-high`;
+      case "medium": return `${base} priority-medium`;
+      case "low": return `${base} priority-low`;
+      default: return `${base} priority-medium`;
     }
   };
+  console.log(`Task :${JSON.stringify(task)}`);
+  // Mock data for new fields
+  const category = task.labels || "Dev";
+  const comments = task.comments || 0;
+  const attachments = task.attachments || 0;
+  const completedSubtasks = task.completedSubtasks || 0;
+  const totalSubtasks = task.totalSubtasks || 1;
+  const assignees = task.assignees || [];
 
-  const priorityConfig = getPriorityConfig(task.priority);
-  const isOverdue =
-    task.dueDate &&
-    new Date(task.dueDate) < new Date() &&
-    task.status !== "completed";
+  const progress = totalSubtasks > 0 ? (completedSubtasks / totalSubtasks) * 100 : 0;
 
   return (
     <motion.div
@@ -103,141 +65,61 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -2 }}
-      className={`card border-l-4 ${priorityConfig.borderClassName} ${
-        isDragging ? "opacity-50 shadow-lg rotate-2" : "opacity-100"
-      }`}
+      className={`task-card ${isDragging ? "opacity-50 shadow-lg rotate-2" : "opacity-100"}`}
+      onClick={() => onEdit(task)}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div
-          onClick={() => onEdit(task)}
-          className="flex items-center space-x-2 flex-1 min-w-0 cursor-pointer"
-        >
-          {getStatusIcon(task.status)}
-          <h3 className="font-semibold text-slate-900 group-hover:text-ocean-blue transition-colors line-clamp-1">
-            {task.title}
-          </h3>
-        </div>
-        <div className="relative" ref={menuRef}>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsMenuOpen(!isMenuOpen);
-            }}
-            className="p-1 rounded-md hover:bg-slate-200"
-          >
-            <FiMoreVertical className="w-4 h-4 text-slate-700" />
-          </button>
-          <AnimatePresence>
-            {isMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-slate-200"
-              >
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit(task);
-                    setIsMenuOpen(false);
-                  }}
-                  className="w-full text-left flex items-center p-2 text-sm hover:bg-slate-200"
-                >
-                  <FiEdit3 className="w-4 h-4 mr-2" /> Edit
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(task);
-                    setIsMenuOpen(false);
-                  }}
-                  className="w-full text-left flex items-center p-2 text-sm text-rose-red hover:bg-slate-200"
-                >
-                  <FiTrash2 className="w-4 h-4 mr-2" /> Delete
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-      <div onClick={() => onEdit(task)} className="cursor-pointer">
-        {task.description && (
-          <p className="text-sm text-slate-700 mb-4 line-clamp-2">
-            {task.description}
-          </p>
-        )}
-        <div className="flex items-center justify-between text-xs text-slate-700">
-          <div className="flex items-center space-x-2">
-            {task.assignedTo?.length > 0 && (
-              <div className="flex -space-x-1">
-                {task.assignedTo.slice(0, 3).map((assignee) => {
-                  // ^ Changed from 'userId' to 'assignee'
-
-                  const user = membersMap[assignee._id];
-                  // ^ Access 'assignee._id'
-
-                  if (!user) {
-                    return (
-                      <div
-                        key={assignee._id} // <-- Use 'assignee._id'
-                        title="Unknown User"
-                        className="w-6 h-6 rounded-full bg-slate-400 flex items-center justify-center text-white text-xs font-medium border-2 border-white"
-                      >
-                        ?
-                      </div>
-                    );
-                  }
-
-                  if (user.avatar?.url) {
-                    return (
-                      <img
-                        key={assignee._id} // <-- Use 'assignee._id'
-                        src={user.avatar.url}
-                        title={user.fullname || "Unknown"}
-                        alt={user.fullname || "User"}
-                        className="w-6 h-6 rounded-full border-2 border-white object-cover"
-                      />
-                    );
-                  } else {
-                    return (
-                      <div
-                        key={assignee._id} // <-- Use 'assignee._id'
-                        title={user.fullname || "Unknown"}
-                        className="w-6 h-6 rounded-full bg-ocean-blue flex items-center justify-center text-white text-xs font-medium border-2 border-white"
-                      >
-                        {user.fullname?.charAt(0).toUpperCase() || "U"}
-                      </div>
-                    );
-                  }
-                })}
-                {task.assignedTo.length > 3 && (
-                  <div
-                    key="assignee-overflow"
-                    className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center text-white text-xs font-medium border-2 border-white"
-                  >
-                    +{task.assignedTo.length - 3}
-                  </div>
-                )}
-              </div>
-            )}
+      <header className="task-card-header">
+        <span className="tag tag-category">{category}</span>
+        <span className={getStatusClass(task.status)}>{task.status}</span>
+      </header>
+      <main className="task-card-body">
+        <h3 className="task-title">{task.title}</h3>
+        <p className="task-description">{task.description}</p>
+      </main>
+      <div className="task-card-metadata">
+        <span className={getPriorityClass(task.priority)}>{task.priority}</span>
+        {task.dueDate && (
+          <div className="due-date">
+            <FiCalendar className="fa fa-calendar" />
+            <span>{new Date(task.dueDate).toLocaleDateString("en-US", { month: 'short', day: 'numeric' })}</span>
           </div>
-          {task.dueDate && (
-            <div
-              className={`flex items-center gap-1 ${
-                isOverdue ? "text-rose-red" : "text-slate-700"
-              }`}
-            >
-              <FiCalendar className="w-3 h-3" />
-              <span>
-                {new Date(task.dueDate).toLocaleDateString(undefined, {
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
-            </div>
-          )}
+        )}
+      </div>
+      <div className="task-card-progress">
+        <div className="progress-label">
+          <span>Subtasks</span>
+          <span>{completedSubtasks}/{totalSubtasks}</span>
+        </div>
+        <div className="progress-bar-track">
+          <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
         </div>
       </div>
+      <footer className="task-card-footer">
+        <div className="task-meta-icons">
+          <div className="icon-group">
+            <FiMessageSquare />
+            <span>{comments}</span>
+          </div>
+          <div className="icon-group">
+            <FiPaperclip />
+            <span>{attachments}</span>
+          </div>
+        </div>
+        <div className="avatar-group">
+          {assignees.slice(0, 3).map((assignee) => {
+            const user = membersMap[assignee._id];
+            if (!user) return null;
+            return (
+              <div
+                key={user._id}
+                className="avatar"
+                style={{ backgroundImage: `url(${user.avatar?.url || `https://i.pravatar.cc/150?u=${user._id}`})` }}
+                title={user.fullname}
+              ></div>
+            );
+          })}
+        </div>
+      </footer>
     </motion.div>
   );
 };
