@@ -65,73 +65,71 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -2 }}
-      className={`task-card ${isDragging ? "opacity-50 shadow-lg rotate-2" : "opacity-100"}`}
-      onClick={() => onEdit(task)}
+      className={`w-full p-4 rounded-lg shadow-md bg-white dark:bg-gray-800 ${isDragging ? "opacity-50 shadow-lg rotate-2" : "opacity-100"}`}
     >
-      <header className="task-card-header">
+      <header className="flex justify-between items-center mb-2">
         <span className="tag tag-category">{category}</span>
         <span className={getStatusClass(task.status)}>{task.status}</span>
       </header>
-      <main className="task-card-body">
-        <h3 className="task-title">{task.title}</h3>
-        <p className="task-description">{task.description}</p>
+      <main className="mb-4">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-1">{task.title}</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{task.description}</p>
       </main>
-      <div className="task-card-metadata">
+      <div className="flex justify-between items-center mb-4">
         <span className={getPriorityClass(task.priority)}>{task.priority}</span>
         {task.dueDate && (
-          <div className="due-date">
-            <FiCalendar className="fa fa-calendar" />
+          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+            <FiCalendar />
             <span>{new Date(task.dueDate).toLocaleDateString("en-US", { month: 'short', day: 'numeric' })}</span>
           </div>
         )}
       </div>
-      <div className="task-card-progress">
-        <div className="progress-label">
-          <span>Subtasks</span>
-          <span>{completedSubtasks}/{totalSubtasks}</span>
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Subtasks</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{completedSubtasks}/{totalSubtasks}</span>
         </div>
-        <div className="progress-bar-track">
-          <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
+        <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+          <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${progress}%` }}></div>
         </div>
       </div>
-      <footer className="task-card-footer">
-        <div className="flex items-center gap-4">
-          <div className="task-meta-icons">
-            <div className="icon-group">
-              <FiMessageSquare />
-              <span>{comments}</span>
-            </div>
-            <div className="icon-group">
-              <FiPaperclip />
-              <span>{attachments.filename}</span>
-              <span>{attachments.url}</span>
-            </div>
-
+      <footer className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+            <FiMessageSquare />
+            <span>{comments}</span>
           </div>
-          <div className="avatar-group">
+          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+            <FiPaperclip />
+            <span>{attachments.filename}</span>
+            <span>{attachments.url}</span>
+          </div>
+        </div>
+        <div className="flex items-center">
+          <div className="avatar-group flex -space-x-2">
             {assignees.length > 0 && assignees.slice(0, 3).map((assignee) => {
               const user = membersMap[assignee._id];
               if (!user) return null;
               return (
                 <div
                   key={user._id}
-                  className="w-10 h-10 rounded-full border-2 border-white bg-cover bg-center -ml-2.5"
+                  className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-800 bg-cover bg-center"
                   style={{ backgroundImage: `url(${user.avatar?.url || `https://i.pravatar.cc/150?u=${user._id}`})` }}
                   title={user.fullname}
                 ></div>
               );
             })}
           </div>
+          <button
+            className="ml-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(task);
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-trash-2 text-gray-500 dark:text-gray-400"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          </button>
         </div>
-        <button
-          className="delete-task-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(task);
-          }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-trash-2 delete-icon"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-        </button>
       </footer>
     </motion.div>
   );

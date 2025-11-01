@@ -1,13 +1,22 @@
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "./context/customHook.js";
-import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { FiChevronDown, FiLogOut, FiSettings, FiUser } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiLogOut,
+  FiSettings,
+  FiUser,
+  FiMenu,
+} from "react-icons/fi";
+
+import { useAuth } from "./context/customHook.js"; // Or your AuthContext path
+import { useSidebar } from "./context/SidebarContext.jsx";
 import ThemeToggle from "../theme/ThemeToggle.jsx";
 
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, logout } = useAuth();
+  const { toggleSidebar } = useSidebar();
   const navigate = useNavigate();
   const menuRef = useRef(null);
 
@@ -20,6 +29,7 @@ const Header = () => {
     }
   };
 
+  // Effect to close menu on click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -28,10 +38,13 @@ const Header = () => {
     };
     if (isUserMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [isUserMenuOpen]);
 
+  // Effect to close menu on 'Escape' key press
   useEffect(() => {
     const handleEscape = (event) => {
       if (event.key === "Escape") {
@@ -40,22 +53,34 @@ const Header = () => {
     };
     if (isUserMenuOpen) {
       document.addEventListener("keydown", handleEscape);
-      return () => document.removeEventListener("keydown", handleEscape);
     }
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
   }, [isUserMenuOpen]);
 
+  // Derived user details for display
   const userInitial = user?.fullname?.charAt(0)?.toUpperCase() || "U";
   const userName = user?.fullname || "User";
   const userRole = user?.role?.toUpperCase() || "USER";
 
   return (
     <header className="flex items-center justify-between px-4 py-4 bg-light-bg-primary dark:bg-dark-bg-primary shadow-md sticky top-0 z-40">
+      {/* Left side: Sidebar Toggle for mobile */}
       <div className="flex items-center">
-
+        <button
+          onClick={toggleSidebar}
+          className="lg:hidden mr-4 p-2 rounded-md text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+          aria-label="Toggle sidebar"
+        >
+          <FiMenu className="w-6 h-6" />
+        </button>
       </div>
 
+      {/* Right side: Theme Toggle and User Menu */}
       <div className="flex items-center gap-4">
         <ThemeToggle />
+
         {user && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -64,6 +89,7 @@ const Header = () => {
             className="relative"
             ref={menuRef}
           >
+            {/* User Menu Button */}
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className="flex items-center justify-between p-2 md:p-3 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2"
@@ -72,7 +98,8 @@ const Header = () => {
               aria-label="User menu"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-accent-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+                {/* Avatar / Initial */}
+                <div className="w-10 h-10 rounded-full bg-accent-primary flex items-center justify-center text-white font-bold flex-shrink-0 overflow-hidden">
                   {user?.avatar?.url ? (
                     <img
                       alt="User Avatar"
@@ -80,9 +107,11 @@ const Header = () => {
                       src={user.avatar.url}
                     />
                   ) : (
-                    <span>U</span>
+                    <span>{userInitial}</span>
                   )}
                 </div>
+
+                {/* User Name/Role (Desktop) */}
                 <div className="text-left hidden md:block">
                   <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate max-w-32">
                     {userName}
@@ -92,11 +121,15 @@ const Header = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Chevron Icon */}
               <FiChevronDown
-                className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ml-2 ${isUserMenuOpen ? "rotate-180" : ""}`}
+                className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ml-2 ${isUserMenuOpen ? "rotate-180" : ""
+                  }`}
               />
             </button>
 
+            {/* Dropdown Menu */}
             <AnimatePresence>
               {isUserMenuOpen && (
                 <motion.div
@@ -106,6 +139,7 @@ const Header = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute top-full right-0 mt-2 w-56 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg shadow-xl border border-light-border dark:border-dark-border overflow-hidden z-50"
                 >
+                  {/* User Name/Role (Mobile) */}
                   <div className="md:hidden px-4 py-3 border-b border-light-border dark:border-dark-border">
                     <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
                       {userName}
@@ -115,6 +149,7 @@ const Header = () => {
                     </div>
                   </div>
 
+                  {/* Menu Items */}
                   <div className="py-1">
                     <NavLink
                       to="/profile"

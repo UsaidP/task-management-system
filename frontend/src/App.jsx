@@ -21,36 +21,40 @@ import { ThemeProvider } from "@emotion/react"
 // This is your custom theme provider for dark/light mode
 import { AppThemeProvider } from "./theme/ThemeContext.jsx"
 
+import { SidebarProvider } from "./components/context/SidebarContext.jsx";
+
 const App = () => {
   return (
     <StrictMode>
       <BrowserRouter>
         <AppThemeProvider>
-          <AuthProvider>
-            <Routes>
-              {/* Public Routes accessible to everyone */}
-              <Route path="/" element={<Home />} />
-              <Route path="/forget-password" element={<Forget />} />
-              <Route path="/reset-password/:token" element={<Reset />} />
-              <Route path="/confirm" element={<ConfirmEmail />} />
+          <SidebarProvider>
+            <AuthProvider>
+              <Routes>
+                {/* Public Routes accessible to everyone */}
+                <Route path="/" element={<Home />} />
+                <Route path="/forget-password" element={<Forget />} />
+                <Route path="/reset-password/:token" element={<Reset />} />
+                <Route path="/confirm" element={<ConfirmEmail />} />
 
-              {/* --- Routes for Guests Only --- */}
-              <Route element={<GuestRoute />}>
-                <Route path="/register" element={<Signup />} />
-                <Route path="/login" element={<Login />} />
-              </Route>
-
-              {/* --- Protected Routes for Logged-in Users --- */}
-              <Route element={<ProtectedRoute />}>
-                <Route element={<AppLayout />}>
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="calendar" element={<CalendarView />} />
-                  <Route path="profile" element={<Me />} />
-                  <Route path="project/:projectId" element={<ProjectPage />} />
+                {/* --- Routes for Guests Only --- */}
+                <Route element={<GuestRoute />}>
+                  <Route path="/register" element={<Signup />} />
+                  <Route path="/login" element={<Login />} />
                 </Route>
-              </Route>
-            </Routes>
-          </AuthProvider>
+
+                {/* --- Protected Routes for Logged-in Users --- */}
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<AppLayout />}>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="calendar" element={<CalendarView />} />
+                    <Route path="profile" element={<Me />} />
+                    <Route path="project/:projectId" element={<ProjectPage />} />
+                  </Route>
+                </Route>
+              </Routes>
+            </AuthProvider>
+          </SidebarProvider>
         </AppThemeProvider>
       </BrowserRouter>
     </StrictMode>
