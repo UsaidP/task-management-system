@@ -51,9 +51,7 @@ const Header = () => {
   return (
     <header className="flex items-center justify-between px-4 py-4 bg-light-bg-primary dark:bg-dark-bg-primary shadow-md sticky top-0 z-40">
       <div className="flex items-center">
-        <h1 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
-          {/* Add your app title or logo here */}
-        </h1>
+
       </div>
 
       <div className="flex items-center gap-4">
@@ -75,7 +73,15 @@ const Header = () => {
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-accent-primary flex items-center justify-center text-white font-bold flex-shrink-0">
-                  {userInitial}
+                  {user?.avatar?.url ? (
+                    <img
+                      alt="User Avatar"
+                      className="w-full h-full object-cover rounded-full"
+                      src={user.avatar.url}
+                    />
+                  ) : (
+                    <span>U</span>
+                  )}
                 </div>
                 <div className="text-left hidden md:block">
                   <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate max-w-32">

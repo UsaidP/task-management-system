@@ -68,12 +68,12 @@ const taskSchema = new Schema(
     ],
 
     // --- Nested Data & Collaboration ---
-    subtasks: {
-
-      ref: "SubTask",
-      type: Schema.Types.ObjectId,
-
-    },
+    subtasks: [
+      {
+        ref: "SubTask",
+        type: Schema.Types.ObjectId,
+      },
+    ],
     // --- Core Fields & Relationships ---
     title: {
       required: [true, "Task title is required."],

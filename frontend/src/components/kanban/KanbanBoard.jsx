@@ -1,4 +1,5 @@
-import { Listbox ,} from "@headlessui/react";
+// --- FIX 1: Removed stray comma in import ---
+import { Listbox } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import { DndProvider } from "react-dnd";
@@ -75,9 +76,13 @@ const KanbanBoard = ({
         const matchesPriority =
           filterPriority === "all" ||
           task.priority?.toLowerCase() === filterPriority.toLowerCase();
+
+        // --- FIX 2: Corrected assignee filter logic ---
+        // This now assumes task.assignedTo is an array of ID strings, not objects.
         const matchesAssignee =
           filterAssignee === "all" ||
-          task.assignedTo?.some((assignee) => assignee._id === filterAssignee);
+          task.assignedTo?.some((assigneeId) => assigneeId === filterAssignee);
+
         return matchesSearch && matchesPriority && matchesAssignee;
       });
       acc[status] = { ...column, tasks: filteredTasks };
@@ -85,7 +90,6 @@ const KanbanBoard = ({
     }, {});
   }, [columns, searchTerm, filterPriority, filterAssignee]);
 
-  // --- FIXED handleTaskDrop ---
   // --- ROBUST handleTaskDrop ---
   const handleTaskDrop = useCallback(
     async (item, newStatus, destinationIndex) => {
@@ -293,7 +297,8 @@ const KanbanBoard = ({
                         </span>
                         <FiChevronDown className="w-4 h-4 text-text-muted" />
                       </Listbox.Button>
-                      <Listbox.Options className="filter-dropdown-options">
+                      {/* --- FIX 3: Copied styling from Priority dropdown for consistency --- */}
+                      <Listbox.Options className="filter-dropdown-options bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
                         {assigneeOptions.map((option) => (
                           <Listbox.Option
                             key={option.id}
@@ -394,7 +399,7 @@ const KanbanBoard = ({
                               {hasActiveFilters
                                 ? "No tasks match your filters."
                                 : "Drag tasks here or create one."}
-                            </motion.div>
+                            </ motion.div>
                           )}
                         </AnimatePresence>
                       </div>

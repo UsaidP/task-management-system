@@ -3,9 +3,11 @@ import { useState } from "react";
 import { FiAward, FiCalendar, FiChevronRight, FiEdit, FiLock, FiMail, FiUser } from "react-icons/fi";
 import { useAuth } from "../context/customHook.js";
 import EditProfileModal from "./EditProfileModal.jsx";
+import apiService from "../../../service/apiService.js";
+import toast from "react-hot-toast";
 
 const Me = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const displayName = user?.fullname || "User";
@@ -13,10 +15,10 @@ const Me = () => {
   const displayRole = user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Member";
   const joinDate = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
     : "N/A";
 
   const containerVariants = {
@@ -34,9 +36,26 @@ const Me = () => {
   const editProfileHandler = () => {
     setIsEditModalOpen(true);
   };
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
 
-  const handleProfileUpdate = (updatedData) => {
-    console.log("Updated Profile Data:", updatedData);
+    if (file) {
+      const formData = new FormData();
+      formData.append('avatars', file);
+
+      const updateAvatar = await apiService.updateAvatar(formData);
+      console.log(`updatedUser: ${JSON.stringify(updateAvatar)}`);
+      updateUser({ avatar: updateAvatar.data.avatar });
+      toast.success("Avatar updated successfully!");
+    } else {
+      toast.error("No file selected!");
+
+    }
+  };
+
+
+  const handleProfileUpdate = () => {
+
     setIsEditModalOpen(false);
   };
 
@@ -80,8 +99,52 @@ const Me = () => {
         className="card p-8 flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8"
       >
         <div className="flex-shrink-0">
-          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-accent-primary to-accent-success flex items-center justify-center text-4xl font-bold text-white shadow-lg">
-            {displayName.charAt(0).toUpperCase()}
+          <div className="relative w-28 h-28 rounded-full shadow-lg">
+
+            {/* 1. The <label> is the clickable element.
+          - It's styled to be the full circle.
+          - 'htmlFor="profile"' links it to the input.
+      */}
+            <label
+              htmlFor="profile"
+              className="block w-full h-full rounded-full cursor-pointer"
+            >
+              {/* --- This is the visual part --- */}
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-accent-primary to-accent-success flex items-center justify-center text-4xl font-bold text-white overflow-hidden">
+
+                {user?.avatar?.url ? (
+                  <img
+                    alt="Profile Avatar"
+                    className="w-full h-full object-cover " // Fills the circle
+                    src={user.avatar.url}
+                  />
+                ) : (
+                  // Fallback to initials
+                  <span className="select-none">
+                    {displayName.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+
+              {/* --- Optional: "Edit" overlay on hover --- */}
+              <div className="absolute inset-0 w-full h-full bg-black bg-opacity-0 hover:bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-full">
+                <span className="text-white text-sm">Change</span>
+              </div>
+            </label>
+
+            {/* 2. The actual file input
+          - It's 'hidden' so it doesn't appear.
+          - 'id="profile"' is what the label links to.
+          - 'onChange' is the most important part!
+      */}
+            <input
+              type="file"
+              name="profile"
+              id="profile"
+              className="hidden"
+              accept="image/png, image/jpeg" // Restrict to image files
+              onChange={handleFileChange}
+            />
           </div>
         </div>
         <div className="text-center md:text-left flex-grow">

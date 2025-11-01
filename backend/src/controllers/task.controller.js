@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Project } from "../models/project.model.js";
 import { ProjectNote } from "../models/projectnote.model.js";
 import { Task } from "../models/task.model.js";
+import { SubTask } from "../models/subtask.model.js";
 import ApiError from "../utils/api-error.js";
 import { ApiResponse } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/async-handler.js";
@@ -66,7 +67,6 @@ const createTask = asyncHandler(async (req, res, next) => {
     priority, labels,
     startDate,
     dueDate,
-    subtasks,
     comments,
   };
   if (noteId) {
@@ -77,16 +77,39 @@ const createTask = asyncHandler(async (req, res, next) => {
     taskData.note = noteId; // Assuming Task model has a "note field"
   }
 
+  let createdSubtasks = [];
+  if (subtasks && subtasks.length > 0) {
+    const subtaskDocs = subtasks.map(sub => ({
+      title: sub.title,
+      task: null, // Will be set after task is created
+      project: projectId,
+      createdBy: userID,
+    }));
+    createdSubtasks = await SubTask.insertMany(subtaskDocs);
+    taskData.subtasks = createdSubtasks.map(sub => sub._id);
+  }
+
   const task = await Task.create(taskData);
-  console.log(task);
+
   if (!task) {
     throw new ApiError(400, "Task creation failed");
   }
 
+  // Update the task field for each created subtask
+  if (createdSubtasks.length > 0) {
+    await Promise.all(createdSubtasks.map(sub => {
+      sub.task = task._id;
+      return sub.save();
+    }));
+  }
+
+  // Populate subtasks before sending the response
+  const populatedTask = await Task.findById(task._id).populate("subtasks");
+
   return res.status(201).json({
     message: "Task created successfully",
     success: true,
-    task,
+    task: populatedTask,
   });
 });
 

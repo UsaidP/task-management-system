@@ -103,12 +103,13 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
             </div>
             <div className="icon-group">
               <FiPaperclip />
-              <span>{attachments}</span>
+              <span>{attachments.filename}</span>
+              <span>{attachments.url}</span>
             </div>
 
           </div>
           <div className="avatar-group">
-            {assignees.slice(0, 3).map((assignee) => {
+            {assignees.length > 0 && assignees.slice(0, 3).map((assignee) => {
               const user = membersMap[assignee._id];
               if (!user) return null;
               return (

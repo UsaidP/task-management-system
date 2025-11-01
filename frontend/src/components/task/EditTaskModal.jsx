@@ -1,9 +1,10 @@
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, ListboxLabel } from "@headlessui/react" // ListboxLabel is used as Listbox.Label
 import { useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import { FiCheck, FiChevronDown } from "react-icons/fi"
 import apiService from "../../../service/apiService"
 import Modal from "../Modal"
+import SubtaskView from "./SubtaskView"
 
 // Moved options outside the component as they are static
 const priorityOptions = [
@@ -120,6 +121,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           </label>
           <input
             type="text"
+            id="title" // Added id for label association
             name="title"
             value={formData.title}
             onChange={handleChange}
@@ -134,6 +136,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             Description
           </label>
           <textarea
+            id="description" // Added id for label association
             name="description"
             value={formData.description}
             onChange={handleChange}
@@ -145,13 +148,12 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Status */}
           <div>
-            <label htmlFor="status" className="text-slate-900">
-              Status
-            </label>
             <Listbox
               value={formData.status}
               onChange={(value) => handleListboxChange("status", value)}
             >
+              {/* --- FIX: Used Listbox.Label for accessibility and consistent class --- */}
+              <Listbox.Label className="input-label">Status</Listbox.Label>
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate capitalize">{selectedStatusObject?.name}</span>
@@ -182,13 +184,12 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
 
           {/* Priority */}
           <div>
-            <label htmlFor="priority" className="text-slate-900">
-              Priority
-            </label>
             <Listbox
               value={formData.priority}
               onChange={(value) => handleListboxChange("priority", value)}
             >
+              {/* --- FIX: Used Listbox.Label for accessibility and consistent class --- */}
+              <Listbox.Label className="input-label">Priority</Listbox.Label>
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate capitalize">{selectedPriorityObject?.name}</span>
@@ -219,14 +220,13 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
 
           {/* Assignees */}
           <div className="md:col-span-2">
-            <label htmlFor="assignedTo" className="text-slate-900">
-              Assign To
-            </label>
             <Listbox
               value={formData.assignedTo}
               onChange={(value) => handleListboxChange("assignedTo", value)}
               multiple
             >
+              {/* --- FIX: Used Listbox.Label for accessibility and consistent class --- */}
+              <Listbox.Label className="input-label">Assign To</Listbox.Label>
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate">{getAssigneeButtonText()}</span>
@@ -238,7 +238,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"}`
+                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-7C00"}`
                       }
                     >
                       {({ selected }) => (
@@ -267,6 +267,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             </label>
             <input
               type="date"
+              id="dueDate" // Added id for label association
               name="dueDate"
               value={formData.dueDate}
               onChange={handleChange}
@@ -281,12 +282,19 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             </label>
             <input
               type="text"
+              id="labels" // Added id for label association
               name="labels"
               value={formData.labels}
               onChange={handleChange}
               className="input-field"
+              placeholder="e.g. frontend, bug, docs" // Added placeholder for clarity
             />
           </div>
+        </div>
+
+        {/* Subtasks */}
+        <div className="md:col-span-2">
+          <SubtaskView taskId={task._id} />
         </div>
 
         {/* Buttons */}
