@@ -4,22 +4,23 @@ import express, { urlencoded } from "express"
 
 const app = express()
 
-const allowedOrigin = 'https://task-management-system-frontend1.onrender.com';
-
-// 2. Create your CORS options object
-const corsOptions = {
-  origin: allowedOrigin,
-  methods: "GET,POST,PUT,DELETE,OPTIONS",
-  credentials: true, // This is necessary for cookies/auth tokens
-  allowedHeaders: "Content-Type,Authorization,X-Requested-With,Accept"
-};
-
-// 3. Handle preflight requests
-// This fixes the "Response to preflight request" error
-app.options('*', cors(corsOptions));
-
-// 4. Use the CORS middleware for all other requests
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+      "Access-Control-Request-Method",
+      "Access-Control-Request-Headers",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: ["https://task-management-system-frontend1.onrender.com"], // kahase request aane dena chahtahu mai.
+  }),
+)
+app.options("*", cors())
 
 app.use(express.json())
 app.use(urlencoded({ extended: true }))
