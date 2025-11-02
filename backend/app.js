@@ -3,9 +3,23 @@ import cors from "cors"
 import express, { urlencoded } from "express"
 
 const app = express()
+const allowedOrigins = [
+  "https://task-management-system-frontend1.onrender.com",
+]
 
 app.use(
   cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true)
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true)
+      } else {
+        return callback(new Error("Not allowed by CORS"))
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -15,11 +29,10 @@ app.use(
       "Access-Control-Request-Method",
       "Access-Control-Request-Headers",
     ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    origin: ["https://task-management-system-frontend1.onrender.com"], // kahase request aane dena chahtahu mai.
-  }),
+  })
 )
+
+// Handle preflight requests globally
 app.options("*", cors())
 
 app.use(express.json())
