@@ -29,7 +29,7 @@ class NetworkError extends Error {
 
 class ApiService {
   constructor() {
-    this.baseURL = "http://localhost:3001/api/v1";
+    this.baseURL = "https://task-management-system-vffe.onrender.com";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
