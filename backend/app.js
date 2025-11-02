@@ -5,20 +5,20 @@ import express, { urlencoded } from "express"
 const app = express()
 
 app.use(
-	cors({
-		allowedHeaders: [
-			"Content-Type",
-			"Authorization",
-			"X-Requested-With",
-			"Accept",
-			"Origin",
-			"Access-Control-Request-Method",
-			"Access-Control-Request-Headers",
-		],
-		credentials: true,
-		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-		origin: [process.env.BASE_URL, "http://localhost:5173"], // kahase request aane dena chahtahu mai.
-	}),
+  cors({
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+      "Access-Control-Request-Method",
+      "Access-Control-Request-Headers",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: ["https://task-management-system-frontend1.onrender.com"], // kahase request aane dena chahtahu mai.
+  }),
 )
 
 app.use(express.json())
