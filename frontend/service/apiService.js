@@ -29,7 +29,7 @@ class NetworkError extends Error {
 
 class ApiService {
   constructor() {
-    this.baseURL = "https://task-management-system-vffe.onrender.com";
+    this.baseURL = "https://task-management-system-vffe.onrender.com/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -98,7 +98,7 @@ class ApiService {
 
   async login(identifier, password) {
     // Changed 'username' to 'identifier' for clarity
-    return await this.customFetch("/api/v1/users/login", {
+    return await this.customFetch("/users/login", {
       method: "POST",
       body: JSON.stringify({ identifier, password }), // ✅ Corrected key
     });
