@@ -62,5 +62,13 @@ router.put(
   upload.single("avatars"),
   asyncHandler(updateUserAvatar),
 )
+// In your auth routes
+router.get('/debug-cookies', (req, res) => {
+  res.json({
+    cookies: req.cookies,
+    headers: req.headers,
+    origin: req.headers.origin
+  });
+});
 
 export default router

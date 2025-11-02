@@ -5,21 +5,26 @@ import express, { urlencoded } from "express"
 const app = express()
 const allowedOrigins = [
   "https://task-management-system-frontend1.onrender.com",
+  "http://localhost:5173", // Add for local testing
+  "http://localhost:3000"
 ]
 
+// CORS configuration - MUST be before routes
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
+      // Allow requests with no origin (mobile apps, Postman, etc.)
       if (!origin) return callback(null, true)
+
       if (allowedOrigins.includes(origin)) {
         return callback(null, true)
       } else {
+        console.log('Blocked origin:', origin) // Debug log
         return callback(new Error("Not allowed by CORS"))
       }
     },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true, // Critical for cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -29,10 +34,12 @@ app.use(
       "Access-Control-Request-Method",
       "Access-Control-Request-Headers",
     ],
+    exposedHeaders: ["Set-Cookie"],
+    optionsSuccessStatus: 200
   })
 )
 
-// Handle preflight requests globally
+// Handle preflight for all routes
 app.options("*", cors())
 
 app.use(express.json())

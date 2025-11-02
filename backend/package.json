@@ -10,7 +10,7 @@
   "scripts": {
     "format": "biome check --write",
     "format:check": "",
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "dependencies": {
