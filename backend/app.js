@@ -17,7 +17,7 @@ app.use(
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    origin: ["https://task-management-system-frontend1.onrender.com"], // kahase request aane dena chahtahu mai.
+    origin: ["https://task-management-system-frontend1.onrender.com/"], // kahase request aane dena chahtahu mai.
   }),
 )
 
