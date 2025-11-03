@@ -43,6 +43,7 @@ class ApiService {
     if (options.body instanceof FormData) {
       delete headers["Content-Type"];
     }
+    console.log(`BaseURL ${this.baseURL} Endpoint: ${endpoint}`);
 
     const config = {
       ...options,
