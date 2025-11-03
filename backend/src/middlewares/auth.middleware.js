@@ -6,64 +6,58 @@ import { User } from "../models/user.model.js"
 import ApiError from "../utils/api-error.js"
 import { asyncHandler } from "../utils/async-handler.js"
 
-const extractTokenFromRequest = (req) => {
-  // Prefer Authorization header first as it's the standard
-  if (req.headers.authorization?.startsWith("Bearer ")) {
-    return req.headers.authorization.split(" ")[1]
-  }
+// const extractTokenFromRequest = (req) => {
+//   // Prefer Authorization header first as it's the standard
+//   if (req.headers.authorization?.startsWith("Bearer ")) {
+//     return req.headers.authorization.split(" ")[1]
+//   }
 
-  // Fallback to cookies
-  if (req.cookies?.accessToken) {
-    return req.cookies.accessToken
-  }
+//   // Fallback to cookies
+//   if (req.cookies?.accessToken) {
+//     return req.cookies.accessToken
+//   }
+//   if (req.cookies?.refreshToken) {
+//     return req.cookies.refreshToken
+//   }
 
-
-  return null
-}
+//   return null
+// }
 
 export const protect = asyncHandler(async (req, res, next) => {
-  const token = extractTokenFromRequest(req)
-  console.log("Token: " + token)
-  if (!token) {
-    // 401: Unauthorized - The client needs to authenticate.
-    throw new ApiError(401, "Unauthorized request. No token provided.")
-  }
-
   try {
-    // 1. Verify the token's signature and expiration
+    // Get token from cookies (primary method)
+    let token = req.cookies?.accessToken
+
+    // Fallback to Authorization header
+    if (!token && req.headers.authorization?.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1]
+    }
+
+    if (!token) {
+      throw new ApiError(401, 'Please login to access this resource')
+    }
+
+    // Verify token
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
 
-    // 2. Check if the token has been blacklisted (i.e., user logged out)
-    const isBlacklisted = await BlacklistedToken.findOne({ token })
-    if (isBlacklisted) {
-      throw new ApiError(401, "Session has expired. Please log in again.")
-    }
-
-    // 3. Find the user from the token's payload
-    // Use lean() for a performance boost as we only need to read user data
-    const user = await User.findById(decoded?._id).lean()
+    // Get user from token
+    const user = await User.findById(decoded._id).select('-password')
 
     if (!user) {
-      // 401: Unauthorized - The user associated with this valid token no longer exists.
-      throw new ApiError(
-        401,
-        "The user belonging to this token does no longer exist.",
-      )
+      throw new ApiError(401, 'User not found')
     }
 
-    // 4. Attach the user object to the request for downstream handlers
+    // Attach user to request
     req.user = user
-
     next()
+
   } catch (error) {
-    // Catch specific JWT errors for better client feedback
-    if (error instanceof jwt.TokenExpiredError) {
-      throw new ApiError(401, "Session has expired. Please log in again.")
+    if (error.name === 'JsonWebTokenError') {
+      throw new ApiError(401, 'Invalid token')
     }
-    if (error instanceof jwt.JsonWebTokenError) {
-      throw new ApiError(401, "Invalid token. Please log in again.")
+    if (error.name === 'TokenExpiredError') {
+      throw new ApiError(401, 'Token expired. Please refresh your session.')
     }
-    // Forward any other caught errors
     throw error
   }
 })

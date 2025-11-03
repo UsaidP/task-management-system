@@ -1,5 +1,4 @@
-import ms from "ms";
-import crypto from "crypto";
+import crypto from "crypto"
 import BlacklistedToken from "../models/blacklistedToken.js"
 import RefreshToken from "../models/refreshToken.model.js"
 import { User } from "../models/user.model.js"
@@ -201,14 +200,17 @@ export const loginUser = asyncHandler(async (req, res) => {
   // Store the refresh token in the database
   await RefreshToken.create({
     deviceInfo: req.headers["user-agent"] || "unknown",
-        expiresAt: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_EXPIRY)),    token: refreshToken,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    ipAddress: req.ip || req.connection?.remoteAddress || "unknown",
+    token: refreshToken,
     user: user._id,
   })
 
   const loggedInUser = await User.findById(user._id).select("-password")
 
-  const accessTokenOptions = getCookieOptions(ms(process.env.ACCESS_TOKEN_EXPIRY));
-  const refreshTokenOptions = getCookieOptions(ms(process.env.REFRESH_TOKEN_EXPIRY));
+  // FIXED: Correct maxAge values
+  const accessTokenOptions = getCookieOptions(7 * 24 * 60 * 60 * 1000) // 7 days
+  const refreshTokenOptions = getCookieOptions(30 * 24 * 60 * 60 * 1000) // 30 days
 
   return res
     .status(200)
@@ -236,7 +238,7 @@ export const logoutUser = asyncHandler(async (req, res) => {
       // Invalidate the refresh token in the database
       await RefreshToken.deleteOne({ token: refreshToken })
       await BlacklistedToken.create({
-        expiresAt: new Date(Date.now() + ms(process.env.BLACKLISTED_TOKEN_EXPIRY)),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
         token: refreshToken,
         user: req.user._id,
       })
@@ -422,7 +424,7 @@ export const updateUserAvatar = asyncHandler(async (req, res) => {
     const result = await imagekit.upload({
       file: req.file.buffer,
       fileName: req.file.originalname,
-      folder: process.env.IMAGEKIT_AVATAR_FOLDER,
+      folder: "avatars",
     })
 
     const user = await User.findById(req.user._id)
