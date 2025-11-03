@@ -1,4 +1,5 @@
-import bcrypt from "bcryptjs"
+import ms from "ms";
+import bcrypt from "bcryptjs";
 import crypto from "crypto"
 import jwt from "jsonwebtoken"
 import mongoose, { Schema } from "mongoose"
@@ -114,7 +115,7 @@ userSchema.methods.generateTemporaryToken = async () => {
 		.createHash("sha256")
 		.update(unHashedToken + pepper)
 		.digest("hex")
-	const tokenExpiry = Date.now() + 20 * 60 * 1000
+  const tokenExpiry = Date.now() + ms(process.env.TEMPORARY_TOKEN_EXPIRY);
 
 	return { hashToken, tokenExpiry, unHashedToken }
 }

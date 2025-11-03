@@ -29,7 +29,7 @@ class NetworkError extends Error {
 
 class ApiService {
   constructor() {
-    this.baseURL = "http://localhost:3001/api/v1";
+    this.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -43,7 +43,7 @@ class ApiService {
     if (options.body instanceof FormData) {
       delete headers["Content-Type"];
     }
-    console.log(`BaseURL ${this.baseURL} Endpoint: ${endpoint}`);
+
 
     const config = {
       ...options,
@@ -115,13 +115,13 @@ class ApiService {
       method: "POST",
     });
   }
-  async forget_password(email) {
+  async forgetPassword(email) {
     return await this.customFetch("/users/forget-password", {
       method: "POST",
       body: JSON.stringify({ email }),
     });
   }
-  async reset_password(password, token) {
+  async resetPassword(password, token) {
     return await this.customFetch(`/users/reset-password/${token}`, {
       method: "POST",
       body: JSON.stringify({ password }),

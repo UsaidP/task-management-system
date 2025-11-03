@@ -16,9 +16,7 @@ const extractTokenFromRequest = (req) => {
   if (req.cookies?.accessToken) {
     return req.cookies.accessToken
   }
-  if (req.cookies?.refreshToken) {
-    return req.cookies.refreshToken
-  }
+
 
   return null
 }

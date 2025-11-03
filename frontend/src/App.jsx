@@ -28,8 +28,8 @@ const App = () => {
     <StrictMode>
       <BrowserRouter>
         <AppThemeProvider>
-          <SidebarProvider>
-            <AuthProvider>
+          <AuthProvider>
+            <SidebarProvider>
               <Routes>
                 {/* Public Routes accessible to everyone */}
                 <Route path="/" element={<Home />} />
@@ -53,8 +53,8 @@ const App = () => {
                   </Route>
                 </Route>
               </Routes>
-            </AuthProvider>
-          </SidebarProvider>
+            </SidebarProvider>
+          </AuthProvider>
         </AppThemeProvider>
       </BrowserRouter>
     </StrictMode>
