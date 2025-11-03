@@ -29,7 +29,7 @@ class NetworkError extends Error {
 
 class ApiService {
   constructor() {
-    this.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+    this.baseURL ='https://task-management-system-vffe.onrender.com/api/v1';
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
