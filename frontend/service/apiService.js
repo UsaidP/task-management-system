@@ -29,7 +29,7 @@ class NetworkError extends Error {
 
 class ApiService {
   constructor() {
-    this.baseURL = 'https://task-management-system-vffe.onrender.com/api/v1';
+    this.baseURL = "http://localhost:3001/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -37,6 +37,7 @@ class ApiService {
   }
 
   async customFetch(endpoint, options = {}) {
+    console.log(this.baseURL);
     const url = `${this.baseURL}${endpoint}`;
     const headers = { ...this.defaultHeader, ...options.headers };
 
