@@ -5,6 +5,7 @@ import express, { urlencoded } from "express";
 const app = express();
 const allowedOrigins = [
   "https://task-management-system-frontend1.onrender.com",
+  "https://task-management-system-frontend-ha2z.onrender.com",
   "http://localhost:5173", // For local testing
   "http://localhost:3000",
 ];
@@ -19,7 +20,7 @@ const corsOptions = {
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     } else {
-      console.log('Blocked origin:', origin); // Debug log
+      console.log("Blocked origin:", origin); // Debug log
       return callback(new Error("Not allowed by CORS"));
     }
   },
@@ -59,7 +60,7 @@ import subtaskRouter from "./src/routes/subtask.route.js";
 import taskRouter from "./src/routes/task.route.js";
 
 // Route definitions
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== "test") {
   app.use("/api/v1/healthcheck", healthCheck);
 }
 app.use("/api/v1/users", userRouter);
