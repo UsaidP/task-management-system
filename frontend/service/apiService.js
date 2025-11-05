@@ -1,35 +1,36 @@
 class ApiError extends Error {
   constructor(message, status) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.status = status;
   }
 }
 
 class NotFoundError extends ApiError {
-  constructor(message = 'Resource not found') {
+  constructor(message = "Resource not found") {
     super(message, 404);
-    this.name = 'NotFoundError';
+    this.name = "NotFoundError";
   }
 }
 
 class ServerError extends ApiError {
-  constructor(message = 'Internal server error') {
+  constructor(message = "Internal server error") {
     super(message, 500);
-    this.name = 'ServerError';
+    this.name = "ServerError";
   }
 }
 
 class NetworkError extends Error {
-  constructor(message = 'Network error, please check your connection') {
+  constructor(message = "Network error, please check your connection") {
     super(message);
-    this.name = 'NetworkError';
+    this.name = "NetworkError";
   }
 }
 
 class ApiService {
   constructor() {
-    this.baseURL = "http://localhost:3001/api/v1";
+    this.baseURL =
+      "https://task-management-system-backend-bjqp.onrender.com/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -44,7 +45,6 @@ class ApiService {
     if (options.body instanceof FormData) {
       delete headers["Content-Type"];
     }
-
 
     const config = {
       ...options,
@@ -69,11 +69,13 @@ class ApiService {
         if (response.status >= 500) {
           throw new ServerError(errorData.message);
         }
-        throw new ApiError(errorData.message || 'An API error occurred', response.status);
+        throw new ApiError(
+          errorData.message || "An API error occurred",
+          response.status
+        );
       }
 
       return await response.json();
-
     } catch (error) {
       if (error instanceof ApiError) {
         // Re-throw custom API errors
