@@ -105,6 +105,7 @@ class ApiService {
     return await this.customFetch("/users/login", {
       method: "POST",
       body: JSON.stringify({ identifier, password }), // ✅ Corrected key
+      credentials: "include",
     });
   }
   async getUserProfile() {
