@@ -6,7 +6,7 @@ const app = express();
 const allowedOrigins = [
   "https://task-management-system-frontend1.onrender.com",
   "https://task-management-system-frontend-ha2z.onrender.com",
-  "https://task-management-system-backend-bjqp.onrender.com/api/v1,
+  "https://task-management-system-backend-bjqp.onrender.com/api/v1",
   "http://localhost:5173", // For local testing
   "http://localhost:3000",
 ];
