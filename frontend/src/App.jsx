@@ -14,8 +14,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ProjectPage from "./components/project/ProjectPage.jsx";
 import "./index.css";
 import "./App.css";
-// This import is for Emotion. If you are ONLY using your custom theme, you might not need it.
-import { ThemeProvider } from "@emotion/react";
+
 import { SidebarProvider } from "./components/context/SidebarContext.jsx";
 import CalendarView from "./components/date/CalenderView.jsx";
 import GuestRoute from "./components/GuestRoute.jsx";

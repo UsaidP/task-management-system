@@ -1,13 +1,8 @@
-/* ========================================
-   🎨 TAILWIND DIRECTIVES & BASE STYLES
-   ======================================== */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-
   /* Base styles for the entire app */
   body {
     @apply bg-light-bg-primary text-light-text-secondary dark:bg-dark-bg-primary dark:text-dark-text-secondary font-sans antialiased transition-colors duration-fast;
@@ -39,7 +34,6 @@
    ======================================== */
 
 @layer components {
-
   /* Primary Button */
   .btn-primary {
     @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white bg-accent-primary hover:bg-accent-primary-dark dark:bg-accent-primary-light dark:text-dark-text-inverse dark:hover:bg-accent-primary shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast focus-visible-ring;
@@ -59,7 +53,6 @@
   .btn-ghost {
     @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast focus-visible-ring;
   }
-
 
   /* ======================================== 
      📝 FORMS
@@ -90,7 +83,6 @@
     @apply text-sm text-accent-danger mt-1;
   }
 
-
   /* ======================================== 
      🎴 CARDS & CONTAINERS
      ======================================== */
@@ -113,7 +105,6 @@
   .modal-content {
     @apply bg-light-bg-primary dark:bg-dark-bg-primary rounded-2xl p-6 max-w-lg w-full mx-4 shadow-xl dark:shadow-dark-lg animate-scale-in;
   }
-
 
   /* ======================================== 
      📋 TASK-SPECIFIC COMPONENTS
@@ -148,7 +139,6 @@
   .badge-status-todo {
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-todo/10 text-task-status-todo dark:bg-task-status-todo/20;
   }
-
 
   /* ======================================== 
      🎨 UTILITY COMPONENTS
@@ -199,11 +189,11 @@
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: theme('colors.light.border.DEFAULT') transparent;
+  scrollbar-color: theme("colors.light.border.DEFAULT") transparent;
 }
 
 .dark * {
-  scrollbar-color: theme('colors.dark.border.DEFAULT') transparent;
+  scrollbar-color: theme("colors.dark.border.DEFAULT") transparent;
 }
 
 /* ========================================
@@ -382,7 +372,6 @@
   background-color: #d1fae5;
   color: #059669;
 }
-
 
 .dark .task-card {
   /* Using common Tailwind color names as comments for reference */
