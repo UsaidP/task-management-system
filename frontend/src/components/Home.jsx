@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import React from "react";
-import {
-  FiArrowRight,
-  FiCheckCircle,
-} from "react-icons/fi";
+import { FiArrowRight, FiCheckCircle } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { featureData, pricingData, testimonialData } from "./landing-page/landingPageComponent";
+import {
+  featureData,
+  pricingData,
+  testimonialData,
+} from "./landing-page/landingPageComponent";
 
 const FeatureCard = ({ icon, title, description, delay = 0 }) => (
   <motion.div
@@ -20,7 +21,9 @@ const FeatureCard = ({ icon, title, description, delay = 0 }) => (
     <h3 className="text-xl font-bold mb-3 text-light-text-primary dark:text-dark-text-primary group-hover:text-accent-primary transition-colors duration-300">
       {title}
     </h3>
-    <p className="text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">{description}</p>
+    <p className="text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
+      {description}
+    </p>
   </motion.div>
 );
 
@@ -31,24 +34,46 @@ const StatCard = ({ number, label, delay = 0 }) => (
     transition={{ duration: 0.6, delay }}
     className="text-center"
   >
-    <div className="text-4xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">{number}</div>
-    <div className="text-light-text-secondary dark:text-dark-text-secondary">{label}</div>
+    <div className="text-4xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+      {number}
+    </div>
+    <div className="text-light-text-secondary dark:text-dark-text-secondary">
+      {label}
+    </div>
   </motion.div>
 );
 
-const PricingCard = ({ name, price, period, features, highlighted = false }) => (
-  <div className={`card ${highlighted ? "border-2 border-accent-primary shadow-lg" : ""}`}>
+const PricingCard = ({
+  name,
+  price,
+  period,
+  features,
+  highlighted = false,
+}) => (
+  <div
+    className={`card ${
+      highlighted ? "border-2 border-accent-primary shadow-lg" : ""
+    }`}
+  >
     <div className="p-6">
-      <h3 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">{name}</h3>
+      <h3 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+        {name}
+      </h3>
       <p className="text-4xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
         {price}
-        {period && <span className="text-lg text-light-text-secondary dark:text-dark-text-secondary ml-2">/{period}</span>}
+        {period && (
+          <span className="text-lg text-light-text-secondary dark:text-dark-text-secondary ml-2">
+            /{period}
+          </span>
+        )}
       </p>
       <ul className="space-y-3 mt-6">
         {features.map((feature, i) => (
           <li key={i} className="flex items-center">
             <FiCheckCircle className="w-5 h-5 text-accent-success mr-3" />
-            <span className="text-light-text-secondary dark:text-dark-text-secondary">{feature}</span>
+            <span className="text-light-text-secondary dark:text-dark-text-secondary">
+              {feature}
+            </span>
           </li>
         ))}
       </ul>
@@ -67,13 +92,17 @@ const PricingCard = ({ name, price, period, features, highlighted = false }) => 
 const TestimonialCard = ({ name, role, company, avatar, content }) => (
   <div className="card">
     <div className="p-6">
-      <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">"{content}"</p>
+      <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
+        "{content}"
+      </p>
       <div className="flex items-center">
         <div className="w-12 h-12 rounded-full bg-accent-primary flex items-center justify-center font-bold text-white mr-4">
           {avatar}
         </div>
         <div>
-          <p className="font-bold text-light-text-primary dark:text-dark-text-primary">{name}</p>
+          <p className="font-bold text-light-text-primary dark:text-dark-text-primary">
+            {name}
+          </p>
           <p className="text-light-text-secondary dark:text-dark-text-secondary">
             {role}, {company}
           </p>
@@ -85,7 +114,7 @@ const TestimonialCard = ({ name, role, company, avatar, content }) => (
 
 export const Home = () => {
   return (
-    <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary bg-[url('bg2.png')] bg-no-repeat bg-cover bg-center">
+    <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary bg-[url('public/bg2.png')] bg-no-repeat bg-cover bg-center">
       {/* Navigation */}
       <nav className="bg-light-bg-primary/80 dark:bg-dark-bg-primary/80 backdrop-blur-md border-b border-light-border/50 dark:border-dark-border/50 fixed top-0 left-0 right-0 z-50 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -125,8 +154,9 @@ export const Home = () => {
               <span className="block">Stunning Simplicity</span>
             </h1>
             <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto leading-relaxed">
-              Transform your productivity with our beautiful, intuitive task management platform.
-              Collaborate seamlessly, track progress effortlessly, and achieve more together.
+              Transform your productivity with our beautiful, intuitive task
+              management platform. Collaborate seamlessly, track progress
+              effortlessly, and achieve more together.
             </p>
           </motion.div>
 
@@ -136,7 +166,10 @@ export const Home = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
-            <Link to="/register" className="btn-primary text-lg px-8 py-4 group">
+            <Link
+              to="/register"
+              className="btn-primary text-lg px-8 py-4 group"
+            >
               Start Free Today
               <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -172,7 +205,8 @@ export const Home = () => {
               Everything You Need
             </h2>
             <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto">
-              Powerful features designed to streamline your workflow and boost team productivity
+              Powerful features designed to streamline your workflow and boost
+              team productivity
             </p>
           </motion.div>
 
@@ -252,15 +286,21 @@ export const Home = () => {
             Ready to Transform Your Workflow?
           </h2>
           <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary mb-8 leading-relaxed">
-            Join thousands of teams who have already revolutionized their productivity with
-            TaskFlow. Start your journey today, completely free.
+            Join thousands of teams who have already revolutionized their
+            productivity with TaskFlow. Start your journey today, completely
+            free.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/register" className="btn-primary text-lg px-8 py-4 group">
+            <Link
+              to="/register"
+              className="btn-primary text-lg px-8 py-4 group"
+            >
               Get Started Free
               <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">No credit card required • Free forever</p>
+            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+              No credit card required • Free forever
+            </p>
           </div>
         </motion.div>
       </section>
@@ -268,9 +308,12 @@ export const Home = () => {
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-light-border dark:border-dark-border">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-4">TaskFlow</div>
+          <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
+            TaskFlow
+          </div>
           <p className="text-light-text-secondary dark:text-dark-text-secondary">
-            © {new Date().getFullYear()} TaskFlow. Crafted with ❤️ for productive teams.
+            © {new Date().getFullYear()} TaskFlow. Crafted with ❤️ for
+            productive teams.
           </p>
         </div>
       </footer>
