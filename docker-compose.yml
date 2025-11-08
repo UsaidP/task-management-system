@@ -1,0 +1,47 @@
+# The 'version' tag is obsolete and has been removed.
+
+services:
+  server: 
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+      # This 'args' block is new.
+      # It reads the variable from your .env file
+      # and passes it to your Dockerfile during the build.
+      args:
+        - MONGODB_URI=${MONGODB_URI}
+      
+    container_name: tms-server1
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+    networks:
+      - tms-network
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tms-client1
+    ports:
+      - "5174:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    networks:
+      - tms-network
+    #
+    # THIS IS THE FIX:
+    # 'depends_on' must use the service name "server",
+    # not the container_name "tms-server1".
+    #
+    depends_on:
+      - server
+    restart: unless-stopped
+
+networks:
+    tms-network:
+      driver: bridge

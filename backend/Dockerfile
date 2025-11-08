@@ -2,10 +2,10 @@
 FROM node:22-alpine
 
 # Define build argument (for build-time use)
-ARG MONGODB_CONNECT_STRING
+ARG MONGODB_URI
 
 # Set environment variable (for runtime use)
-ENV MONGODB_URI=$MONGODB_CONNECT_STRING
+ENV MONGODB_URI=${MONGODB_URI}
 
 # Set working directory
 WORKDIR /app
