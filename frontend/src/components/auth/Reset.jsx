@@ -36,10 +36,7 @@ export const Reset = () => {
         <div className="w-full max-w-md p-8 space-y-6 text-center card">
           <h1 className="text-2xl font-bold text-green-600">Success!</h1>
           <p className="text-secondary-text">Your password has been reset successfully.</p>
-          <Link
-            to="/login"
-            className="inline-block px-4 py-2 font-medium text-white btn-primary"
-          >
+          <Link to="/login" className="inline-block px-4 py-2 font-medium text-white btn-primary">
             Proceed to Login
           </Link>
         </div>
@@ -50,9 +47,7 @@ export const Reset = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-primary-background">
       <div className="w-full max-w-md p-8 space-y-6 card">
-        <h1 className="text-2xl font-bold text-center text-highlight-text">
-          Reset Your Password
-        </h1>
+        <h1 className="text-2xl font-bold text-center text-highlight-text">Reset Your Password</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-highlight-text">

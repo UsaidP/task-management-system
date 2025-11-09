@@ -1,9 +1,9 @@
-import Header from "./Header";
-import Sidebar from "./layout/Sidebar";
-import { useSidebar } from "./context/SidebarContext.jsx";
+import Header from "./Header"
+import Sidebar from "./layout/Sidebar"
+import { useSidebar } from "./context/SidebarContext.jsx"
 
 const Layout = ({ children }) => {
-  const { isSidebarOpen } = useSidebar(); // This context is great for the Header
+  const { isSidebarOpen } = useSidebar() // This context is great for the Header
 
   return (
     <div className="flex h-screen bg-light-bg-primary dark:bg-dark-bg-primary overflow-hidden">
@@ -15,7 +15,7 @@ const Layout = ({ children }) => {
         </main>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Layout; // ✅ FIX: Removed the duplicate export
+export default Layout // ✅ FIX: Removed the duplicate export

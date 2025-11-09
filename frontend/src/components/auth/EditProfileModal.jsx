@@ -1,40 +1,40 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { FiUser, FiX } from "react-icons/fi";
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useState } from "react"
+import { FiUser, FiX } from "react-icons/fi"
 
 const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
   const [formData, setFormData] = useState({
     fullname: "",
-  });
+  })
 
   useEffect(() => {
     if (user) {
       setFormData({
         fullname: user.fullname || "",
-      });
+      })
     }
-  }, [user]);
+  }, [user])
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
-  };
+    e.preventDefault()
+    onSave(formData)
+  }
 
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
-  };
+  }
 
   const modalVariants = {
     hidden: { opacity: 0, y: -50, scale: 0.9 },
     visible: { opacity: 1, y: 0, scale: 1 },
     exit: { opacity: 0, y: 50, scale: 0.9 },
-  };
+  }
 
   return (
     <AnimatePresence>
@@ -54,8 +54,13 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">Edit Your Profile</h2>
-              <button onClick={onClose} className="text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary">
+              <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary">
+                Edit Your Profile
+              </h2>
+              <button
+                onClick={onClose}
+                className="text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+              >
                 <FiX size={24} />
               </button>
             </div>
@@ -63,10 +68,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
-                  <label
-                    htmlFor="fullname"
-                    className="input-label"
-                  >
+                  <label htmlFor="fullname" className="input-label">
                     Full Name
                   </label>
                   <div className="relative">
@@ -97,7 +99,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
         </motion.div>
       )}
     </AnimatePresence>
-  );
-};
+  )
+}
 
-export default EditProfileModal;
+export default EditProfileModal

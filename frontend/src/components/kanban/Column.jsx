@@ -1,4 +1,4 @@
-import { useDrop } from "react-dnd";
+import { useDrop } from "react-dnd"
 
 const Column = ({ children, status, onDrop, taskCount }) => {
   const [{ isOver }, drop] = useDrop(() => ({
@@ -12,7 +12,7 @@ const Column = ({ children, status, onDrop, taskCount }) => {
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
-  }));
+  }))
 
   return (
     <div
@@ -23,7 +23,7 @@ const Column = ({ children, status, onDrop, taskCount }) => {
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default Column;
+export default Column

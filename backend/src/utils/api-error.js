@@ -285,14 +285,10 @@ class ApiError extends Error {
 	 */
 	_mapStatusCodeToErrorCode(statusCode) {
 		// Find matching error code from our defined ERROR_CODES
-		const matchingErrorCode = Object.values(ERROR_CODES).find(
-			(err) => err.status === statusCode,
-		)
+		const matchingErrorCode = Object.values(ERROR_CODES).find((err) => err.status === statusCode)
 
 		// If found, return the code, otherwise use UNKNOWN_ERROR
-		return matchingErrorCode
-			? matchingErrorCode.code
-			: ERROR_CODES.UNKNOWN_ERROR.code
+		return matchingErrorCode ? matchingErrorCode.code : ERROR_CODES.UNKNOWN_ERROR.code
 	}
 
 	/**
@@ -318,10 +314,7 @@ class ApiError extends Error {
 		}
 
 		// Include metadata in development or if it has content
-		if (
-			process.env.NODE_ENV === "development" ||
-			Object.keys(this.metadata).length > 0
-		) {
+		if (process.env.NODE_ENV === "development" || Object.keys(this.metadata).length > 0) {
 			serialized.metadata = this.metadata
 		}
 
@@ -342,12 +335,7 @@ class ApiError extends Error {
 	 * Create a not found error
 	 * throw ApiError.fromCode('RESOURCE_NOT_FOUND', 'User with id 123 not found');
 	 */
-	static fromCode(
-		errorCodeKey,
-		customMessage = null,
-		errors = [],
-		metadata = {},
-	) {
+	static fromCode(errorCodeKey, customMessage = null, errors = [], metadata = {}) {
 		const errorDef = ERROR_CODES[errorCodeKey] || ERROR_CODES.UNKNOWN_ERROR
 		return new ApiError(
 			errorDef.status,
@@ -474,11 +462,7 @@ class ApiError extends Error {
 	 * @param {Object} [metadata={}] - Additional context
 	 * @returns {ApiError} New ApiError instance
 	 */
-	static internal(
-		message = "Internal server error",
-		errors = [],
-		metadata = {},
-	) {
+	static internal(message = "Internal server error", errors = [], metadata = {}) {
 		return new ApiError(
 			HTTP_STATUS.INTERNAL_SERVER_ERROR,
 			message,
@@ -510,16 +494,7 @@ class ApiError extends Error {
 		category = ERROR_CATEGORIES.OPERATIONAL,
 		metadata = {},
 	) {
-		return new ApiError(
-			statusCode,
-			message,
-			errors,
-			null,
-			false,
-			errorCode,
-			category,
-			metadata,
-		)
+		return new ApiError(statusCode, message, errors, null, false, errorCode, category, metadata)
 	}
 
 	/**
@@ -530,11 +505,7 @@ class ApiError extends Error {
 	 * @param {string} [defaultMessage='An unexpected error occurred'] - Default message if not provided
 	 * @returns {ApiError} ApiError instance
 	 */
-	static from(
-		error,
-		defaultStatusCode = 500,
-		defaultMessage = "An unexpected error occurred",
-	) {
+	static from(error, defaultStatusCode = 500, defaultMessage = "An unexpected error occurred") {
 		// If already an ApiError, return as is
 		if (error instanceof ApiError) {
 			return error
@@ -542,9 +513,7 @@ class ApiError extends Error {
 
 		// Determine if this is likely a programming error based on error type
 		const isProgrammingError =
-			error instanceof TypeError ||
-			error instanceof ReferenceError ||
-			error instanceof SyntaxError
+			error instanceof TypeError || error instanceof ReferenceError || error instanceof SyntaxError
 
 		const category = isProgrammingError
 			? ERROR_CATEGORIES.PROGRAMMING

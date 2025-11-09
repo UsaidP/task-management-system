@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useState } from "react"
 import {
   FiChevronDown,
   FiFolder,
@@ -8,72 +8,73 @@ import {
   FiSettings,
   FiCalendar,
   FiX,
-} from "react-icons/fi";
-import { NavLink } from "react-router-dom";
-import apiService from "../../../service/apiService";
-import { useAuth } from "../context/customHook";
-import CreateProjectModal from "../project/CreateProjectModal";
-import { NetworkError, EmptyState } from "../ErrorStates";
-import { useSidebar } from "../context/SidebarContext";
-import { useMediaQuery } from "../../../hooks/useMediaQuery";
-
+} from "react-icons/fi"
+import { NavLink } from "react-router-dom"
+import apiService from "../../../service/apiService"
+import { useAuth } from "../context/customHook"
+import CreateProjectModal from "../project/CreateProjectModal"
+import { NetworkError, EmptyState } from "../ErrorStates"
+import { useSidebar } from "../context/SidebarContext"
+import { useMediaQuery } from "../../../hooks/useMediaQuery"
 
 const getNavLinkClasses = ({ isActive }) =>
   `flex items-center px-4 py-3 rounded-lg text-light-text-secondary dark:text-dark-text-secondary 
    hover:text-light-text-primary dark:hover:text-dark-text-primary 
    hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all duration-200 group 
-   ${isActive
-    ? "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary"
-    : ""
-  }`;
+   ${
+     isActive
+       ? "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary"
+       : ""
+   }`
 
 const Sidebar = () => {
-  const [projects, setProjects] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { user } = useAuth();
-  const { isSidebarOpen, toggleSidebar } = useSidebar();
+  const [projects, setProjects] = useState([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isProjectMenuOpen, setIsProjectMenuOpen] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const { user } = useAuth()
+  const { isSidebarOpen, toggleSidebar } = useSidebar()
 
   // ✅ 2. Use the hook to detect screen size
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const isDesktop = useMediaQuery("(min-width: 1024px)")
 
   const fetchProjects = async () => {
-    if (!user) return;
+    if (!user) return
     try {
-      setIsLoading(true);
-      setError(null);
-      const response = await apiService.getAllProjects();
+      setIsLoading(true)
+      setError(null)
+      const response = await apiService.getAllProjects()
       if (response?.success) {
-        setProjects(response.data?.projects || []);
+        setProjects(response.data?.projects || [])
       } else {
-        setError(new Error("Failed to load projects"));
+        setError(new Error("Failed to load projects"))
       }
     } catch (err) {
-      console.error("Sidebar: Failed to fetch projects", err);
-      setError(err);
+      console.error("Sidebar: Failed to fetch projects", err)
+      setError(err)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchProjects();
+    fetchProjects()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user])
 
   const handleProjectCreated = (newProject) => {
-    setProjects((prev) => [newProject, ...prev]);
-    setIsProjectMenuOpen(true);
-  };
+    setProjects((prev) => [newProject, ...prev])
+    setIsProjectMenuOpen(true)
+  }
 
   // Helper to close sidebar on mobile nav
   const handleMobileNavClick = () => {
-    if (!isDesktop) { // Only run on mobile
-      toggleSidebar();
+    if (!isDesktop) {
+      // Only run on mobile
+      toggleSidebar()
     }
-  };
+  }
 
   const renderProjectList = () => {
     if (isLoading)
@@ -81,9 +82,9 @@ const Sidebar = () => {
         <div className="px-4 py-2 text-light-text-tertiary dark:text-dark-text-tertiary">
           Loading projects...
         </div>
-      );
-    if (error) return <NetworkError onRetry={fetchProjects} />;
-    if (projects.length === 0) return <EmptyState message="No projects yet." />;
+      )
+    if (error) return <NetworkError onRetry={fetchProjects} />
+    if (projects.length === 0) return <EmptyState message="No projects yet." />
 
     return projects.map((project, index) => (
       <motion.div
@@ -102,29 +103,30 @@ const Sidebar = () => {
           <span className="truncate">{project.name}</span>
         </NavLink>
       </motion.div>
-    ));
-  };
+    ))
+  }
 
   // ✅ 3. Define animation variants
   const sidebarVariants = {
     open: { x: 0 },
     closed: { x: "-100%" },
-  };
+  }
 
   return (
     <>
       {/* Overlay for mobile */}
       <AnimatePresence>
-        {isSidebarOpen && !isDesktop && ( // Only show overlay on mobile
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-            onClick={toggleSidebar}
-          />
-        )}
+        {isSidebarOpen &&
+          !isDesktop && ( // Only show overlay on mobile
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={toggleSidebar}
+            />
+          )}
       </AnimatePresence>
 
       {/* Sidebar */}
@@ -139,8 +141,8 @@ const Sidebar = () => {
         className="fixed top-0 left-0 w-72 h-screen bg-light-bg-secondary dark:bg-dark-bg-secondary 
                    flex flex-col border-r border-light-border dark:border-dark-border 
                    z-50 lg:sticky lg:z-auto"
-      // Your classes here (fixed, lg:sticky) are PERFECT.
-      // I removed lg:translate-x-0 as it's no longer needed.
+        // Your classes here (fixed, lg:sticky) are PERFECT.
+        // I removed lg:translate-x-0 as it's no longer needed.
       >
         {/* Header */}
         <div className="p-6 border-b border-light-border dark:border-dark-border flex items-center justify-between">
@@ -214,8 +216,9 @@ const Sidebar = () => {
                 )}
                 <FiChevronDown
                   className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
-                             transition-transform duration-200 ${isProjectMenuOpen ? "rotate-180" : ""
-                    }`}
+                             transition-transform duration-200 ${
+                               isProjectMenuOpen ? "rotate-180" : ""
+                             }`}
                 />
               </div>
             </button>
@@ -232,9 +235,7 @@ const Sidebar = () => {
                 className="overflow-hidden"
               >
                 <div className="pl-4 pt-2 space-y-1 max-h-96 overflow-y-auto">
-                  <AnimatePresence mode="popLayout">
-                    {renderProjectList()}
-                  </AnimatePresence>
+                  <AnimatePresence mode="popLayout">{renderProjectList()}</AnimatePresence>
                 </div>
               </motion.div>
             )}
@@ -298,7 +299,7 @@ const Sidebar = () => {
         onProjectCreated={handleProjectCreated}
       />
     </>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

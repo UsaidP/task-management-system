@@ -30,10 +30,7 @@ export const addMember = asyncHandler(async (req, res, next) => {
 		throw new ApiError(404, "User not found in database.")
 	}
 	if (!role || (role && !["admin", "project_admin", "member"].includes(role))) {
-		throw new ApiError(
-			400,
-			"Role must be either 'admin' 'project_admin' or 'member'.",
-		)
+		throw new ApiError(400, "Role must be either 'admin' 'project_admin' or 'member'.")
 	}
 	const existingMember = await ProjectMember.findOne({
 		project: projectId,
@@ -60,10 +57,7 @@ export const addMember = asyncHandler(async (req, res, next) => {
 		await Project.updateOne({ _id: projectId }, { $set: { admin: userId } })
 	}
 	if (!projectMember) {
-		throw new ApiError(
-			500,
-			"Something went wrong while adding member to project.",
-		)
+		throw new ApiError(500, "Something went wrong while adding member to project.")
 	}
 	res.status(201).json(new ApiResponse(201, projectMember, "Member added"))
 	next()
@@ -89,10 +83,7 @@ export const updateMember = asyncHandler(async (req, res, next) => {
 		throw new ApiError(404, "User not found in database.")
 	}
 	if (!role || (role && !["admin", "project_admin", "member"].includes(role))) {
-		throw new ApiError(
-			400,
-			"Role must be either 'admin' 'project_admin' or 'member'.",
-		)
+		throw new ApiError(400, "Role must be either 'admin' 'project_admin' or 'member'.")
 	}
 
 	const updatedMember = await ProjectMember.findOneAndUpdate(
@@ -102,10 +93,7 @@ export const updateMember = asyncHandler(async (req, res, next) => {
 	)
 
 	if (!updatedMember) {
-		throw new ApiError(
-			500,
-			"Something went wrong while updating member in project.",
-		)
+		throw new ApiError(500, "Something went wrong while updating member in project.")
 	}
 
 	res.status(200).json(new ApiResponse(200, updatedMember, "Member updated"))
@@ -141,9 +129,7 @@ export const removeMember = asyncHandler(async (req, res, next) => {
 		throw new ApiError(404, "Project member not found.")
 	}
 
-	res
-		.status(200)
-		.json(new ApiResponse(200, null, "Member removed successfully"))
+	res.status(200).json(new ApiResponse(200, null, "Member removed successfully"))
 	next()
 })
 
@@ -159,14 +145,10 @@ export const getAllMembers = asyncHandler(async (req, res, next) => {
 		.populate("project", "name ")
 
 	if (!members) {
-		return res
-			.status(200)
-			.json(new ApiResponse(200, [], "No members found for this project."))
+		return res.status(200).json(new ApiResponse(200, [], "No members found for this project."))
 	}
 
-	res
-		.status(200)
-		.json(new ApiResponse(200, members, "Project members retrieved"))
+	res.status(200).json(new ApiResponse(200, members, "Project members retrieved"))
 	next()
 })
 export const projectMemberController = {

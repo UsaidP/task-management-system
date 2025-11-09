@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState } from "react"
 
 const AddSubtask = ({ onAddSubtask }) => {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("")
 
   // Renamed from handleSubmit to be clearer
   const handleAddNewSubtask = () => {
-    const trimmedTitle = title.trim();
+    const trimmedTitle = title.trim()
     if (trimmedTitle) {
-      onAddSubtask(trimmedTitle); // Call the prop function
-      setTitle(''); // Reset input
+      onAddSubtask(trimmedTitle) // Call the prop function
+      setTitle("") // Reset input
     }
-  };
+  }
 
   // Added onKeyPress handler to capture "Enter"
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault(); // Stop the parent <form> (in EditTaskModal) from submitting
-      handleAddNewSubtask();
+    if (e.key === "Enter") {
+      e.preventDefault() // Stop the parent <form> (in EditTaskModal) from submitting
+      handleAddNewSubtask()
     }
-  };
+  }
 
   return (
     // FIX 1: Changed <form> to <div>
@@ -39,7 +39,7 @@ const AddSubtask = ({ onAddSubtask }) => {
         Add
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default AddSubtask;
+export default AddSubtask

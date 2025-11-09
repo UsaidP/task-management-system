@@ -333,15 +333,11 @@ import ApiError from "./api-error.js"
 
 // Performance and monitoring configuration
 const CONFIG = {
-	CIRCUIT_BREAKER_THRESHOLD:
-		parseInt(process.env.CIRCUIT_BREAKER_THRESHOLD) || 5,
-	CIRCUIT_BREAKER_TIMEOUT:
-		parseInt(process.env.CIRCUIT_BREAKER_TIMEOUT) || 60000, // ms
+	CIRCUIT_BREAKER_THRESHOLD: parseInt(process.env.CIRCUIT_BREAKER_THRESHOLD) || 5,
+	CIRCUIT_BREAKER_TIMEOUT: parseInt(process.env.CIRCUIT_BREAKER_TIMEOUT) || 60000, // ms
 	ENABLE_DETAILED_LOGGING:
-		process.env.NODE_ENV === "development" ||
-		process.env.ENABLE_DETAILED_LOGGING === "true",
-	ENABLE_PERFORMANCE_MONITORING:
-		process.env.ENABLE_PERFORMANCE_MONITORING === "true",
+		process.env.NODE_ENV === "development" || process.env.ENABLE_DETAILED_LOGGING === "true",
+	ENABLE_PERFORMANCE_MONITORING: process.env.ENABLE_PERFORMANCE_MONITORING === "true",
 	MAX_RETRY_ATTEMPTS: parseInt(process.env.MAX_RETRY_ATTEMPTS) || 3,
 	REQUEST_TIMEOUT: parseInt(process.env.REQUEST_TIMEOUT) || 30000, // ms
 	SLOW_QUERY_THRESHOLD: parseInt(process.env.SLOW_QUERY_THRESHOLD) || 1000, // ms
@@ -419,11 +415,7 @@ const asyncHandler = (fn, options = {}) => {
 				}
 
 				// Response validation
-				if (
-					!res.headersSent &&
-					!res.finished &&
-					process.env.NODE_ENV === "development"
-				) {
+				if (!res.headersSent && !res.finished && process.env.NODE_ENV === "development") {
 					console.warn(
 						`[${requestId || "NO_ID"}] WARNING: Handler ${handlerName} for ${req.method} ${req.path} did not send a response or call next()`,
 					)
@@ -579,22 +571,14 @@ asyncHandler.fn = asyncHandler.service
 /**
  * Execute function with retry mechanism
  */
-const executeWithRetry = async (
-	fn,
-	args,
-	maxRetries = 0,
-	timeout = CONFIG.REQUEST_TIMEOUT,
-) => {
+const executeWithRetry = async (fn, args, maxRetries = 0, timeout = CONFIG.REQUEST_TIMEOUT) => {
 	let lastError
 
 	for (let attempt = 0; attempt <= maxRetries; attempt++) {
 		try {
 			// Add timeout to function execution
 			const timeoutPromise = new Promise((_, reject) => {
-				setTimeout(
-					() => reject(new Error("Function execution timeout")),
-					timeout,
-				)
+				setTimeout(() => reject(new Error("Function execution timeout")), timeout)
 			})
 
 			const result = await Promise.race([fn(...args), timeoutPromise])
@@ -782,16 +766,10 @@ const standardizeError = (err) => {
 	// Common JavaScript errors
 	else if (err instanceof SyntaxError) {
 		statusCode = err.status === 400 ? 400 : 500
-		message =
-			err.status === 400
-				? "Invalid request format"
-				: "Server configuration error"
+		message = err.status === 400 ? "Invalid request format" : "Server configuration error"
 		errors = [
 			{
-				message:
-					err.status === 400
-						? "Invalid JSON in request body"
-						: "Internal syntax error",
+				message: err.status === 400 ? "Invalid JSON in request body" : "Internal syntax error",
 			},
 		]
 	} else if (err instanceof TypeError) {
@@ -799,10 +777,7 @@ const standardizeError = (err) => {
 		message = "Server encountered an error"
 		errors = [
 			{
-				message:
-					process.env.NODE_ENV === "development"
-						? err.message
-						: "Type error occurred",
+				message: process.env.NODE_ENV === "development" ? err.message : "Type error occurred",
 			},
 		]
 	} else if (err instanceof RangeError) {
@@ -837,8 +812,7 @@ const handleError = (err, { req, res, next }) => {
 				params: sanitizeParams(req.params),
 				path: req.path,
 				query: sanitizeQuery(req.query),
-				userAgent:
-					req.get?.("user-agent") || req.headers?.["user-agent"] || "unknown",
+				userAgent: req.get?.("user-agent") || req.headers?.["user-agent"] || "unknown",
 				userId: req.user?._id || req.user?.id || "unauthenticated",
 			}
 		: { context: "Non-request context" }
@@ -953,17 +927,11 @@ const monitorPerformance = (handlerName, duration, req, error = null) => {
 	}
 
 	if (duration > CONFIG.SLOW_QUERY_THRESHOLD) {
-		console.warn(
-			`[SLOW_OPERATION] ${handlerName} took ${Math.round(duration)}ms`,
-			performanceData,
-		)
+		console.warn(`[SLOW_OPERATION] ${handlerName} took ${Math.round(duration)}ms`, performanceData)
 	}
 
 	if (CONFIG.ENABLE_DETAILED_LOGGING) {
-		console.log(
-			`[PERFORMANCE] ${handlerName}: ${Math.round(duration)}ms`,
-			performanceData,
-		)
+		console.log(`[PERFORMANCE] ${handlerName}: ${Math.round(duration)}ms`, performanceData)
 	}
 
 	// In production, send to monitoring service
@@ -1020,9 +988,7 @@ const recordCircuitBreakerFailure = (handlerName) => {
 
 	if (state.failures >= CONFIG.CIRCUIT_BREAKER_THRESHOLD) {
 		state.state = "open"
-		console.warn(
-			`[CIRCUIT_BREAKER] Opened for ${handlerName} after ${state.failures} failures`,
-		)
+		console.warn(`[CIRCUIT_BREAKER] Opened for ${handlerName} after ${state.failures} failures`)
 	}
 
 	circuitBreakerState.set(handlerName, state)
@@ -1119,8 +1085,4 @@ const gracefulShutdown = () => {
 process.on("SIGTERM", gracefulShutdown)
 process.on("SIGINT", gracefulShutdown)
 
-export {
-	asyncHandler,
-	CONFIG as asyncHandlerConfig,
-	gracefulShutdown as cleanupAsyncHandler,
-}
+export { asyncHandler, CONFIG as asyncHandlerConfig, gracefulShutdown as cleanupAsyncHandler }

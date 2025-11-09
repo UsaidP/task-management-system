@@ -71,10 +71,7 @@ export const Forget = () => {
             </button>
           </div>
           <div className="text-sm text-center">
-            <Link
-              to="/login"
-              className="font-medium text-accent-blue hover:underline"
-            >
+            <Link to="/login" className="font-medium text-accent-blue hover:underline">
               Back to Login
             </Link>
           </div>

@@ -1,6 +1,6 @@
-import { Router } from "express";
+import { Router } from "express"
 
-const router = Router();
+const router = Router()
 
 // Importing controllers
 import {
@@ -10,13 +10,10 @@ import {
 	getTaskById,
 	getTasks,
 	updateTask,
-} from "../controllers/task.controller.js";
-import {
-	protect,
-	validateProjectPermission,
-} from "../middlewares/auth.middleware.js";
-import { asyncHandler } from "../utils/async-handler.js";
-import { UserRoleEnum } from "../utils/constants.js";
+} from "../controllers/task.controller.js"
+import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
+import { asyncHandler } from "../utils/async-handler.js"
+import { UserRoleEnum } from "../utils/constants.js"
 
 router
 	.route("/:projectId")
@@ -29,7 +26,7 @@ router
 			UserRoleEnum.MEMBER,
 		]),
 		asyncHandler(getTasks),
-	);
+	)
 
 router
 	.route("/:projectId/:taskId")
@@ -59,7 +56,7 @@ router
 			UserRoleEnum.MEMBER,
 		]),
 		asyncHandler(deleteTask),
-	);
-router.route("/").get(protect, asyncHandler(getAllTasks));
+	)
+router.route("/").get(protect, asyncHandler(getAllTasks))
 
-export default router;
+export default router

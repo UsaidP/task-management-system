@@ -41,7 +41,11 @@ const PasswordStrengthIndicator = ({ password }) => {
         </div>
         <span
           className={`text-xs font-medium ${
-            strength <= 2 ? "text-accent-red" : strength <= 3 ? "text-accent-amber" : "text-accent-green"
+            strength <= 2
+              ? "text-accent-red"
+              : strength <= 3
+                ? "text-accent-amber"
+                : "text-accent-green"
           }`}
         >
           {getLabel()}
@@ -162,10 +166,7 @@ export const Signup = () => {
             </div>
 
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-highlight-text mb-2"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-highlight-text mb-2">
                 Email Address
               </label>
               <div className="relative">

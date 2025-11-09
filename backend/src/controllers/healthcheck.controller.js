@@ -18,8 +18,7 @@ const healthCheck = asyncHandler(async (req, res) => {
 	}
 
 	const healthStatus = {
-		message:
-			dbStatus === "connected" ? "Server is healthy" : "Service degraded",
+		message: dbStatus === "connected" ? "Server is healthy" : "Service degraded",
 		statusCode: dbStatus === "connected" ? 200 : 503,
 		success: dbStatus === "connected",
 	}

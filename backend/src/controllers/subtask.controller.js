@@ -28,9 +28,7 @@ const createSubTask = asyncHandler(async (req, res) => {
 		title,
 	})
 
-	return res
-		.status(201)
-		.json(new ApiResponse(201, subtask, "Subtask created successfully"))
+	return res.status(201).json(new ApiResponse(201, subtask, "Subtask created successfully"))
 })
 
 const getSubTasksForTask = asyncHandler(async (req, res) => {
@@ -42,9 +40,7 @@ const getSubTasksForTask = asyncHandler(async (req, res) => {
 
 	const subtasks = await SubTask.find({ task: taskId })
 
-	return res
-		.status(200)
-		.json(new ApiResponse(200, subtasks, "Subtasks fetched successfully"))
+	return res.status(200).json(new ApiResponse(200, subtasks, "Subtasks fetched successfully"))
 })
 
 const getSubTaskById = asyncHandler(async (req, res) => {
@@ -59,9 +55,7 @@ const getSubTaskById = asyncHandler(async (req, res) => {
 		throw new ApiError(404, "Subtask not found")
 	}
 
-	return res
-		.status(200)
-		.json(new ApiResponse(200, subtask, "Subtask fetched successfully"))
+	return res.status(200).json(new ApiResponse(200, subtask, "Subtask fetched successfully"))
 })
 
 const updateSubTask = asyncHandler(async (req, res) => {
@@ -84,9 +78,7 @@ const updateSubTask = asyncHandler(async (req, res) => {
 
 	await subtask.save({ validateBeforeSave: false })
 
-	return res
-		.status(200)
-		.json(new ApiResponse(200, subtask, "Subtask updated successfully"))
+	return res.status(200).json(new ApiResponse(200, subtask, "Subtask updated successfully"))
 })
 
 const deleteSubTask = asyncHandler(async (req, res) => {
@@ -101,15 +93,7 @@ const deleteSubTask = asyncHandler(async (req, res) => {
 		throw new ApiError(404, "Subtask not found")
 	}
 
-	return res
-		.status(200)
-		.json(new ApiResponse(200, {}, "Subtask deleted successfully"))
+	return res.status(200).json(new ApiResponse(200, {}, "Subtask deleted successfully"))
 })
 
-export {
-	createSubTask,
-	getSubTasksForTask,
-	getSubTaskById,
-	updateSubTask,
-	deleteSubTask,
-}
+export { createSubTask, getSubTasksForTask, getSubTaskById, updateSubTask, deleteSubTask }

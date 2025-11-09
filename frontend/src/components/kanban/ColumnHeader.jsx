@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"
 
 const ColumnHeader = ({
   title,
@@ -10,17 +10,14 @@ const ColumnHeader = ({
   children,
   className = "",
 }) => {
-  const taskText = (num) => (num === 1 ? "task" : "tasks");
+  const taskText = (num) => (num === 1 ? "task" : "tasks")
 
   return (
     <div className={`flex items-center justify-between mb-4 ${className}`}>
       <div className="flex items-center space-x-3">
         {/* Added check for icon */}
         {icon && (
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            className={`p-2 rounded-lg ${color}`}
-          >
+          <motion.div whileHover={{ scale: 1.1 }} className={`p-2 rounded-lg ${color}`}>
             {icon}
           </motion.div>
         )}
@@ -35,7 +32,7 @@ const ColumnHeader = ({
       </div>
       <div>{children}</div>
     </div>
-  );
-};
+  )
+}
 
-export default ColumnHeader;
+export default ColumnHeader

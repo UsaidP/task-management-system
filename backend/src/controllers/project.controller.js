@@ -13,10 +13,7 @@ const validateProjectData = (name, description) => {
 		throw new ApiError(400, "Project Description is required")
 	}
 	if (description && description.trim().length > 500) {
-		throw new ApiError(
-			400,
-			"Project Description is too long, max 500 characters allowed",
-		)
+		throw new ApiError(400, "Project Description is too long, max 500 characters allowed")
 	}
 }
 // Create a project
@@ -58,13 +55,7 @@ const createProject = asyncHandler(async (req, res, next) => {
 
 	res
 		.status(201)
-		.json(
-			new ApiResponse(
-				201,
-				{ project, projectMember },
-				"Project created successfully",
-			),
-		)
+		.json(new ApiResponse(201, { project, projectMember }, "Project created successfully"))
 	next()
 })
 
@@ -122,9 +113,7 @@ const getProjectById = asyncHandler(async (req, res, next) => {
 	if (!project) {
 		throw new ApiError(404, "Project not found")
 	}
-	res
-		.status(200)
-		.json(new ApiResponse(200, project, "Project fetched successfully"))
+	res.status(200).json(new ApiResponse(200, project, "Project fetched successfully"))
 	next()
 })
 
@@ -139,17 +128,11 @@ const updateProject = asyncHandler(async (req, res, next) => {
 		throw new ApiError(400, "Project name and description are required")
 	}
 
-	const project = await Project.findByIdAndUpdate(
-		id,
-		{ description, name },
-		{ new: true },
-	)
+	const project = await Project.findByIdAndUpdate(id, { description, name }, { new: true })
 	if (!project) {
 		throw new ApiError(404, "Project not found")
 	}
-	res
-		.status(200)
-		.json(new ApiResponse(200, project, "Project updated successfully"))
+	res.status(200).json(new ApiResponse(200, project, "Project updated successfully"))
 	next()
 })
 
@@ -160,16 +143,8 @@ const deleteProject = asyncHandler(async (req, res, next) => {
 	if (!project) {
 		throw new ApiError(404, "Project not found")
 	}
-	res
-		.status(200)
-		.json(new ApiResponse(200, project, "Project deleted successfully"))
+	res.status(200).json(new ApiResponse(200, project, "Project deleted successfully"))
 	next()
 })
 
-export {
-	createProject,
-	getProjectById,
-	updateProject,
-	deleteProject,
-	getAllProjects,
-}
+export { createProject, getProjectById, updateProject, deleteProject, getAllProjects }

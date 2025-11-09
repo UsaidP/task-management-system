@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
 import {
   FiArrowRight,
   FiCalendar,
@@ -9,13 +9,13 @@ import {
   FiEye,
   FiPlus,
   FiUsers,
-} from "react-icons/fi";
-import { Link } from "react-router-dom";
-import apiService from "../../service/apiService.js";
-import { useAuth } from "./context/customHook.js";
-import CreateProjectModal from "./project/CreateProjectModal";
-import ProjectCardSkeleton from "./project/ProjectCardSkeleton";
-import { ServerError, NetworkError, EmptyState } from "./ErrorStates.jsx";
+} from "react-icons/fi"
+import { Link } from "react-router-dom"
+import apiService from "../../service/apiService.js"
+import { useAuth } from "./context/customHook.js"
+import CreateProjectModal from "./project/CreateProjectModal"
+import ProjectCardSkeleton from "./project/ProjectCardSkeleton"
+import { ServerError, NetworkError, EmptyState } from "./ErrorStates.jsx"
 
 const HeaderSkeleton = () => (
   <div className="flex animate-pulse items-center justify-between">
@@ -25,7 +25,7 @@ const HeaderSkeleton = () => (
     </div>
     <div className="hidden h-6 w-48 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover md:block" />
   </div>
-);
+)
 
 const StatCard = ({ icon, label, value, color, delay = 0 }) => (
   <motion.div
@@ -42,11 +42,13 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
       </div>
     </div>
     <div>
-      <p className="text-light-text-primary dark:text-dark-text-primary mb-1 text-3xl font-bold p-2">{value}</p>
+      <p className="text-light-text-primary dark:text-dark-text-primary mb-1 text-3xl font-bold p-2">
+        {value}
+      </p>
       <p className="text-light-text-secondary dark:text-dark-text-secondary">{label}</p>
     </div>
   </motion.div>
-);
+)
 
 const ProjectCard = ({ project, delay = 0 }) => (
   <motion.div
@@ -62,7 +64,9 @@ const ProjectCard = ({ project, delay = 0 }) => (
           </h3>
           <FiArrowRight className="h-5 w-5 text-light-text-tertiary dark:text-dark-text-tertiary transition-all duration-200 group-hover:translate-x-1 group-hover:text-accent-primary" />
         </div>
-        <p className="text-light-text-secondary dark:text-dark-text-secondary line-clamp-2 mb-4 text-sm">{project.description}</p>
+        <p className="text-light-text-secondary dark:text-dark-text-secondary line-clamp-2 mb-4 text-sm">
+          {project.description}
+        </p>
         <div className="flex items-center justify-between text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
           <span>
             Updated{" "}
@@ -80,7 +84,7 @@ const ProjectCard = ({ project, delay = 0 }) => (
       </div>
     </Link>
   </motion.div>
-);
+)
 
 const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
   <motion.button
@@ -97,12 +101,12 @@ const QuickAction = ({ icon, label, onClick, color, delay = 0 }) => (
       <span className="font-medium">{label}</span>
     </div>
   </motion.button>
-);
+)
 
 const Dashboard = () => {
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [projects, setProjects] = useState([]);
+  const { user } = useAuth()
+  const [loading, setLoading] = useState(true)
+  const [projects, setProjects] = useState([])
   const [stats, setStats] = useState({
     totalTasks: 0,
     todo: 0,
@@ -110,28 +114,28 @@ const Dashboard = () => {
     underReview: 0,
     completed: 0,
     totalProjects: 0,
-  });
-  const [error, setError] = useState(null);
-  const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState(false);
+  })
+  const [error, setError] = useState(null)
+  const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState(false)
 
   const handleProjectCreated = (newProject) => {
-    setProjects([newProject, ...projects]);
-  };
+    setProjects([newProject, ...projects])
+  }
 
   const fetchDashboardData = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
       const [projectsResponse, tasksResponse] = await Promise.all([
         apiService.getAllProjects(),
         apiService.getAllTaskOfUser(),
-      ]);
+      ])
 
       if (projectsResponse.success && tasksResponse.success) {
-        const projectsData = projectsResponse.data.projects;
-        const tasksData = tasksResponse.data;
+        const projectsData = projectsResponse.data.projects
+        const tasksData = tasksResponse.data
 
-        setProjects(projectsData.slice(0, 6));
+        setProjects(projectsData.slice(0, 6))
         setStats({
           totalTasks: tasksData.length,
           todo: tasksData.filter((t) => t.status === "todo").length,
@@ -139,34 +143,34 @@ const Dashboard = () => {
           underReview: tasksData.filter((t) => t.status === "under-review").length,
           completed: tasksData.filter((t) => t.status === "completed").length,
           totalProjects: projectsData.length,
-        });
+        })
       }
     } catch (err) {
-      console.error("Failed to fetch dashboard data:", err);
-      setError(err);
+      console.error("Failed to fetch dashboard data:", err)
+      setError(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
     if (user) {
-      fetchDashboardData();
+      fetchDashboardData()
     }
-  }, [user]);
+  }, [user])
 
   const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
+    const hour = new Date().getHours()
+    if (hour < 12) return "Good morning"
+    if (hour < 18) return "Good afternoon"
+    return "Good evening"
+  }
 
   if (error) {
-    if (error.name === 'NetworkError') {
-      return <NetworkError onRetry={fetchDashboardData} />;
+    if (error.name === "NetworkError") {
+      return <NetworkError onRetry={fetchDashboardData} />
     }
-    return <ServerError onRetry={fetchDashboardData} />;
+    return <ServerError onRetry={fetchDashboardData} />
   }
 
   return (
@@ -180,8 +184,11 @@ const Dashboard = () => {
         >
           <div>
             <h1 className="text-light-text-primary dark:text-dark-text-primary mb-2 text-4xl font-bold">
-              {getGreeting()}{' '}
-              <span className="text-light-text-primary dark:text-dark-text-primary">{user.fullname || 'User'}</span>!
+              {getGreeting()}{" "}
+              <span className="text-light-text-primary dark:text-dark-text-primary">
+                {user.fullname || "User"}
+              </span>
+              !
             </h1>
             <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
               Here's what's happening with your projects today.
@@ -190,11 +197,11 @@ const Dashboard = () => {
           <div className="flex items-center space-x-2 text-light-text-secondary dark:text-dark-text-secondary">
             <FiCalendar className="h-5 w-5" />
             <span>
-              {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
               })}
             </span>
           </div>
@@ -207,35 +214,35 @@ const Dashboard = () => {
         <StatCard
           icon={<FiClipboard className="h-6 w-6 text-white" />}
           label="Total Tasks"
-          value={loading ? '...' : stats.totalTasks}
+          value={loading ? "..." : stats.totalTasks}
           color="bg-accent-primary"
           delay={0.1}
         />
         <StatCard
           icon={<FiClock className="h-6 w-6 text-white" />}
           label="In Progress"
-          value={loading ? '...' : stats.inProgress}
+          value={loading ? "..." : stats.inProgress}
           color="bg-accent-warning"
           delay={0.2}
         />
         <StatCard
           icon={<FiEye className="h-6 w-6 text-white" />}
           label="Under Review"
-          value={loading ? '...' : stats.underReview}
+          value={loading ? "..." : stats.underReview}
           color="bg-accent-info"
           delay={0.3}
         />
         <StatCard
           icon={<FiCheckSquare className="h-6 w-6 text-white" />}
           label="Completed"
-          value={loading ? '...' : stats.completed}
+          value={loading ? "..." : stats.completed}
           color="bg-accent-success"
           delay={0.4}
         />
         <StatCard
           icon={<FiUsers className="h-6 w-6 text-white" />}
           label="Projects"
-          value={loading ? '...' : stats.totalProjects}
+          value={loading ? "..." : stats.totalProjects}
           color="bg-light-bg-secondary dark:bg-dark-bg-secondary"
           delay={0.5}
         />
@@ -246,7 +253,9 @@ const Dashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.5 }}
       >
-        <h2 className="text-light-text-primary dark:text-dark-text-primary mb-6 text-2xl font-bold">Quick Actions</h2>
+        <h2 className="text-light-text-primary dark:text-dark-text-primary mb-6 text-2xl font-bold">
+          Quick Actions
+        </h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <QuickAction
             icon={<FiPlus className="h-5 w-5 text-white" />}
@@ -270,7 +279,9 @@ const Dashboard = () => {
         transition={{ duration: 0.6, delay: 0.6 }}
       >
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-light-text-primary dark:text-dark-text-primary text-2xl font-bold">Recent Projects</h2>
+          <h2 className="text-light-text-primary dark:text-dark-text-primary text-2xl font-bold">
+            Recent Projects
+          </h2>
           <Link
             to="/projects"
             className="flex items-center text-light-text-primary dark:text-dark-text-primary transition-colors duration-200 hover:text-accent-primary "
@@ -297,7 +308,7 @@ const Dashboard = () => {
         )}
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

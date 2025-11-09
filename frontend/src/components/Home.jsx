@@ -1,12 +1,8 @@
-import { motion } from "framer-motion";
-import React from "react";
-import { FiArrowRight, FiCheckCircle } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import {
-  featureData,
-  pricingData,
-  testimonialData,
-} from "./landing-page/landingPageComponent";
+import { motion } from "framer-motion"
+import React from "react"
+import { FiArrowRight, FiCheckCircle } from "react-icons/fi"
+import { Link } from "react-router-dom"
+import { featureData, pricingData, testimonialData } from "./landing-page/landingPageComponent"
 
 const FeatureCard = ({ icon, title, description, delay = 0 }) => (
   <motion.div
@@ -25,7 +21,7 @@ const FeatureCard = ({ icon, title, description, delay = 0 }) => (
       {description}
     </p>
   </motion.div>
-);
+)
 
 const StatCard = ({ number, label, delay = 0 }) => (
   <motion.div
@@ -37,24 +33,12 @@ const StatCard = ({ number, label, delay = 0 }) => (
     <div className="text-4xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
       {number}
     </div>
-    <div className="text-light-text-secondary dark:text-dark-text-secondary">
-      {label}
-    </div>
+    <div className="text-light-text-secondary dark:text-dark-text-secondary">{label}</div>
   </motion.div>
-);
+)
 
-const PricingCard = ({
-  name,
-  price,
-  period,
-  features,
-  highlighted = false,
-}) => (
-  <div
-    className={`card ${
-      highlighted ? "border-2 border-accent-primary shadow-lg" : ""
-    }`}
-  >
+const PricingCard = ({ name, price, period, features, highlighted = false }) => (
+  <div className={`card ${highlighted ? "border-2 border-accent-primary shadow-lg" : ""}`}>
     <div className="p-6">
       <h3 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
         {name}
@@ -79,30 +63,23 @@ const PricingCard = ({
       </ul>
     </div>
     <div className="p-6 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-b-lg">
-      <button
-        type="button"
-        className={`w-full ${highlighted ? "btn-primary" : "btn-secondary"}`}
-      >
+      <button type="button" className={`w-full ${highlighted ? "btn-primary" : "btn-secondary"}`}>
         Get Started
       </button>
     </div>
   </div>
-);
+)
 
 const TestimonialCard = ({ name, role, company, avatar, content }) => (
   <div className="card">
     <div className="p-6">
-      <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">
-        "{content}"
-      </p>
+      <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">"{content}"</p>
       <div className="flex items-center">
         <div className="w-12 h-12 rounded-full bg-accent-primary flex items-center justify-center font-bold text-white mr-4">
           {avatar}
         </div>
         <div>
-          <p className="font-bold text-light-text-primary dark:text-dark-text-primary">
-            {name}
-          </p>
+          <p className="font-bold text-light-text-primary dark:text-dark-text-primary">{name}</p>
           <p className="text-light-text-secondary dark:text-dark-text-secondary">
             {role}, {company}
           </p>
@@ -110,7 +87,7 @@ const TestimonialCard = ({ name, role, company, avatar, content }) => (
       </div>
     </div>
   </div>
-);
+)
 
 export const Home = () => {
   return (
@@ -154,9 +131,8 @@ export const Home = () => {
               <span className="block">Stunning Simplicity</span>
             </h1>
             <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto leading-relaxed">
-              Transform your productivity with our beautiful, intuitive task
-              management platform. Collaborate seamlessly, track progress
-              effortlessly, and achieve more together.
+              Transform your productivity with our beautiful, intuitive task management platform.
+              Collaborate seamlessly, track progress effortlessly, and achieve more together.
             </p>
           </motion.div>
 
@@ -166,10 +142,7 @@ export const Home = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
-            <Link
-              to="/register"
-              className="btn-primary text-lg px-8 py-4 group"
-            >
+            <Link to="/register" className="btn-primary text-lg px-8 py-4 group">
               Start Free Today
               <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -205,8 +178,7 @@ export const Home = () => {
               Everything You Need
             </h2>
             <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto">
-              Powerful features designed to streamline your workflow and boost
-              team productivity
+              Powerful features designed to streamline your workflow and boost team productivity
             </p>
           </motion.div>
 
@@ -286,15 +258,11 @@ export const Home = () => {
             Ready to Transform Your Workflow?
           </h2>
           <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary mb-8 leading-relaxed">
-            Join thousands of teams who have already revolutionized their
-            productivity with TaskFlow. Start your journey today, completely
-            free.
+            Join thousands of teams who have already revolutionized their productivity with
+            TaskFlow. Start your journey today, completely free.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/register"
-              className="btn-primary text-lg px-8 py-4 group"
-            >
+            <Link to="/register" className="btn-primary text-lg px-8 py-4 group">
               Get Started Free
               <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -312,11 +280,10 @@ export const Home = () => {
             TaskFlow
           </div>
           <p className="text-light-text-secondary dark:text-dark-text-secondary">
-            © {new Date().getFullYear()} TaskFlow. Crafted with ❤️ for
-            productive teams.
+            © {new Date().getFullYear()} TaskFlow. Crafted with ❤️ for productive teams.
           </p>
         </div>
       </footer>
     </div>
-  );
-};
+  )
+}

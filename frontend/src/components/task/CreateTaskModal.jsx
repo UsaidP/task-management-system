@@ -1,4 +1,10 @@
-import { Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions } from "@headlessui/react"
+import {
+  Listbox,
+  ListboxButton,
+  ListboxLabel,
+  ListboxOption,
+  ListboxOptions,
+} from "@headlessui/react"
 // --- FIX: Corrected typo 'useState }m' to 'useState }' ---
 import { useMemo, useState } from "react"
 import toast from "react-hot-toast"
@@ -362,12 +368,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
 
         {/* Form Actions */}
         <div className="flex justify-end gap-3 pt-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="btn-secondary"
-            disabled={isSubmitting}
-          >
+          <button type="button" onClick={onClose} className="btn-secondary" disabled={isSubmitting}>
             Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={isSubmitting}>

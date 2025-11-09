@@ -1,25 +1,25 @@
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useEffect } from "react";
-import { FiX } from "react-icons/fi";
+import { AnimatePresence, motion } from "framer-motion"
+import React, { useEffect } from "react"
+import { FiX } from "react-icons/fi"
 
 const Modal = ({ isOpen, onClose, title, children }) => {
   useEffect(() => {
     const handleEscape = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
+      if (event.key === "Escape") {
+        onClose()
       }
-    };
+    }
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
+      document.addEventListener("keydown", handleEscape)
     } else {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("keydown", handleEscape)
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isOpen, onClose]);
+      document.removeEventListener("keydown", handleEscape)
+    }
+  }, [isOpen, onClose])
 
   return (
     <AnimatePresence>
@@ -40,8 +40,13 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border">
-              <h2 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">{title}</h2>
-              <button onClick={onClose} className="p-1 rounded-full hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover">
+              <h2 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
+                {title}
+              </h2>
+              <button
+                onClick={onClose}
+                className="p-1 rounded-full hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+              >
                 <FiX className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
               </button>
             </div>
@@ -50,7 +55,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         </motion.div>
       )}
     </AnimatePresence>
-  );
-};
+  )
+}
 
-export default Modal;
+export default Modal

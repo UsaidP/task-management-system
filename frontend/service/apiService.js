@@ -31,8 +31,7 @@ class NetworkError extends Error {
 // --- API Service Implementation ---
 class ApiService {
   constructor() {
-    this.baseURL =
-      "https://task-management-system-backend-bjqp.onrender.com/api/v1";
+    this.baseURL = "/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -75,7 +74,7 @@ class ApiService {
     };
 
     try {
-      const response = await fetch(url, config);
+      const response = await puter.net.fetch(url, config);
 
       if (!response.ok) {
         let errorData;
@@ -93,7 +92,7 @@ class ApiService {
             return new Promise((resolve, reject) => {
               this.failedQueue.push({
                 resolve: () => {
-                  fetch(url, config)
+puter.net.fetch(url, config)
                     .then(res => res.json())
                     .then(data => resolve(data))
                     .catch(err => reject(err));
@@ -114,7 +113,7 @@ class ApiService {
             this.processQueue(null);
 
             // 3. Retry the original request
-            const retryResponse = await fetch(url, config);
+            const retryResponse = await puter.net.fetch(url, config);
             if (!retryResponse.ok) {
               throw new ApiError(errorData.message || "Retry failed", retryResponse.status);
             }

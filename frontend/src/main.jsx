@@ -1,9 +1,9 @@
-import { createRoot } from "react-dom/client";
-import { Toaster } from "react-hot-toast";
-import App from "./App.jsx";
-import ErrorBoundary from "./components/ErrorBoundary.jsx";
-import "./index.css";
-import { AppThemeProvider } from "./theme/ThemeContext.jsx";
+import { createRoot } from "react-dom/client"
+import { Toaster } from "react-hot-toast"
+import App from "./App.jsx"
+import ErrorBoundary from "./components/ErrorBoundary.jsx"
+import "./index.css"
+import { AppThemeProvider } from "./theme/ThemeContext.jsx"
 
 createRoot(document.getElementById("root")).render(
   <AppThemeProvider>
@@ -12,4 +12,4 @@ createRoot(document.getElementById("root")).render(
       <Toaster position="bottom-right" />
     </ErrorBoundary>
   </AppThemeProvider>
-);
+)

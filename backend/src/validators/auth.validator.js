@@ -56,10 +56,7 @@ const userResetPasswordValidator = () => {
 // Provide the validators to be used in routes
 
 const createProjectValidator = () => {
-	return [
-		body("name").notEmpty().withMessage("Name is required"),
-		body("description").optional(),
-	]
+	return [body("name").notEmpty().withMessage("Name is required"), body("description").optional()]
 }
 
 const addMemberToProjectValidator = () => {

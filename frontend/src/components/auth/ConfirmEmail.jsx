@@ -54,10 +54,7 @@ export const ConfirmEmail = () => {
         <h1 className="text-2xl font-bold text-highlight-text">Confirm Your Email</h1>
         <p className="text-secondary-text">We've sent a confirmation link to:</p>
         <p className="font-medium text-accent-blue">{email}</p>
-        <p className="text-secondary-text">
-          {" "}
-          and click the link to complete your registration.
-        </p>
+        <p className="text-secondary-text"> and click the link to complete your registration.</p>
         <div className="pt-6 border-t border-borders-dividers">
           <p className="text-secondary-text">Didn't receive the email?</p>
           <button
@@ -70,10 +67,7 @@ export const ConfirmEmail = () => {
         </div>
         {feedbackMessage && <p className="mt-4 text-sm text-green-600">{feedbackMessage}</p>}
         {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-        <Link
-          to="/login"
-          className="inline-block mt-6 text-sm text-secondary-text hover:underline"
-        >
+        <Link to="/login" className="inline-block mt-6 text-sm text-secondary-text hover:underline">
           Back to Login
         </Link>
       </div>

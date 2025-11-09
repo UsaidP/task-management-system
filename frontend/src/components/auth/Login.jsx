@@ -1,47 +1,47 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import { useAuth } from "../context/customHook.js";
+import { motion } from "framer-motion"
+import { useState } from "react"
+import toast from "react-hot-toast"
+import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi"
+import { Link } from "react-router-dom"
+import { useAuth } from "../context/customHook.js"
 
 export const Login = () => {
-  const { login } = useAuth();
+  const { login } = useAuth()
 
   const [formData, setFormData] = useState({
     identifier: "",
     password: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  })
+  const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
     // Clear error on change
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: null }));
+      setErrors((prev) => ({ ...prev, [name]: null }))
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrors({});
+    e.preventDefault()
+    setLoading(true)
+    setErrors({})
 
     try {
-      await login(formData.identifier, formData.password);
+      await login(formData.identifier, formData.password)
       // On success, AuthProvider will handle redirect
     } catch (err) {
-      const errorMessage = err.data?.message || "Invalid credentials. Please try again.";
-      toast.error(errorMessage);
+      const errorMessage = err.data?.message || "Invalid credentials. Please try again."
+      toast.error(errorMessage)
       // You could set specific field errors here if the API provided them
       // For now, we'll just show a general error
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-light-bg-primary dark:bg-dark-bg-primary">
@@ -53,9 +53,13 @@ export const Login = () => {
           className="text-center mb-8"
         >
           <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">TaskFlow</h1>
+            <h1 className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+              TaskFlow
+            </h1>
           </Link>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">Welcome back! Please sign in to continue.</p>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary">
+            Welcome back! Please sign in to continue.
+          </p>
         </motion.div>
 
         <motion.div
@@ -65,10 +69,7 @@ export const Login = () => {
         >
           <form onSubmit={handleSubmit} className="space-y-6 gap-3">
             <div>
-              <label
-                htmlFor="identifier"
-                className="input-label"
-              >
+              <label htmlFor="identifier" className="input-label">
                 Email or Username
               </label>
               <div className="relative">
@@ -81,17 +82,14 @@ export const Login = () => {
                   onChange={handleChange}
                   value={formData.identifier}
                   required
-                  className={`input-field pl-12 ${errors.identifier ? 'border-accent-danger' : ''}`}
+                  className={`input-field pl-12 ${errors.identifier ? "border-accent-danger" : ""}`}
                 />
               </div>
               {errors.identifier && <p className="input-error">{errors.identifier}</p>}
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="input-label"
-              >
+              <label htmlFor="password" className="input-label">
                 Password
               </label>
               <div className="relative">
@@ -104,7 +102,7 @@ export const Login = () => {
                   onChange={handleChange}
                   value={formData.password}
                   required
-                  className={`input-field pl-12 pr-12 ${errors.password ? 'border-accent-danger' : ''}`}
+                  className={`input-field pl-12 pr-12 ${errors.password ? "border-accent-danger" : ""}`}
                 />
                 <button
                   type="button"
@@ -162,5 +160,5 @@ export const Login = () => {
         </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -95,7 +95,8 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                     key={roleItem.id}
                     value={roleItem.id}
                     className={({ active }) =>
-                      `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"
+                      `cursor-pointer select-none relative py-2 px-4 ${
+                        active ? "bg-slate-200 text-slate-900" : "text-slate-700"
                       }`
                     }
                   >
@@ -126,10 +127,7 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
         {/* Members List */}
         <ul className="space-y-2 max-h-80 overflow-y-auto pr-2">
           {members.map((member) => (
-            <li
-              key={member.user._id}
-              className="flex justify-between items-center p-3 card"
-            >
+            <li key={member.user._id} className="flex justify-between items-center p-3 card">
               <div className="flex items-center">
                 <img
                   src={member.user.avatar || `https://i.pravatar.cc/150?u=${member.user._id}`}

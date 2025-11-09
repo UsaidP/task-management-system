@@ -113,11 +113,11 @@ export const AuthProvider = ({ children }) => {
   const updateUser = useCallback((newUserData) => {
     // This can be a full user object or a partial object to merge
     setUser((currentUser) => {
-      const updatedUser = { ...currentUser, ...newUserData };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      return updatedUser;
-    });
-  }, []);
+      const updatedUser = { ...currentUser, ...newUserData }
+      localStorage.setItem("user", JSON.stringify(updatedUser))
+      return updatedUser
+    })
+  }, [])
 
   // Derived state, computed directly from the `user` object.
   const isAuthenticated = !!user
@@ -134,7 +134,7 @@ export const AuthProvider = ({ children }) => {
       logout,
       signup,
       resendVerifyEmail,
-      updateUser
+      updateUser,
     }
   }, [user, loading, isAuthenticated, userID, login, logout, signup, resendVerifyEmail, updateUser])
 

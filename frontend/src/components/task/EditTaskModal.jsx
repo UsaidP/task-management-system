@@ -1,4 +1,10 @@
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions, ListboxLabel } from "@headlessui/react" // ListboxLabel is used as Listbox.Label
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  ListboxLabel,
+} from "@headlessui/react" // ListboxLabel is used as Listbox.Label
 import { useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import { FiCheck, FiChevronDown } from "react-icons/fi"
@@ -52,9 +58,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
         description: task.description || "",
         status: task.status || "todo",
         priority: task.priority || "medium",
-        dueDate: task.dueDate
-          ? new Date(task.dueDate).toISOString().split("T")[0]
-          : "",
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "",
         assignedTo: task.assignedTo || [],
         labels: task.labels || "",
       })
@@ -243,7 +247,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                     >
                       {({ selected }) => (
                         <>
-                          <span className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}>
+                          <span
+                            className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
+                          >
                             {option.name}
                           </span>
                           {selected ? (
@@ -299,12 +305,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 pt-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="btn-secondary"
-            disabled={isSubmitting}
-          >
+          <button type="button" onClick={onClose} className="btn-secondary" disabled={isSubmitting}>
             Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={isSubmitting}>

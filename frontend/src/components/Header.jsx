@@ -1,68 +1,62 @@
-import React, { useEffect, useRef, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  FiChevronDown,
-  FiLogOut,
-  FiSettings,
-  FiUser,
-  FiMenu,
-} from "react-icons/fi";
+import React, { useEffect, useRef, useState } from "react"
+import { NavLink, useNavigate } from "react-router-dom"
+import { AnimatePresence, motion } from "framer-motion"
+import { FiChevronDown, FiLogOut, FiSettings, FiUser, FiMenu } from "react-icons/fi"
 
-import { useAuth } from "./context/customHook.js"; // Or your AuthContext path
-import { useSidebar } from "./context/SidebarContext.jsx";
-import ThemeToggle from "../theme/ThemeToggle.jsx";
+import { useAuth } from "./context/customHook.js" // Or your AuthContext path
+import { useSidebar } from "./context/SidebarContext.jsx"
+import ThemeToggle from "../theme/ThemeToggle.jsx"
 
 const Header = () => {
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
-  const { toggleSidebar } = useSidebar();
-  const navigate = useNavigate();
-  const menuRef = useRef(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const { user, logout } = useAuth()
+  const { toggleSidebar } = useSidebar()
+  const navigate = useNavigate()
+  const menuRef = useRef(null)
 
   const handleLogout = async () => {
     try {
-      await logout();
-      navigate("/");
+      await logout()
+      navigate("/")
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Logout failed:", error)
     }
-  };
+  }
 
   // Effect to close menu on click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsUserMenuOpen(false);
+        setIsUserMenuOpen(false)
       }
-    };
+    }
     if (isUserMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside)
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isUserMenuOpen]);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isUserMenuOpen])
 
   // Effect to close menu on 'Escape' key press
   useEffect(() => {
     const handleEscape = (event) => {
       if (event.key === "Escape") {
-        setIsUserMenuOpen(false);
+        setIsUserMenuOpen(false)
       }
-    };
+    }
     if (isUserMenuOpen) {
-      document.addEventListener("keydown", handleEscape);
+      document.addEventListener("keydown", handleEscape)
     }
     return () => {
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [isUserMenuOpen]);
+      document.removeEventListener("keydown", handleEscape)
+    }
+  }, [isUserMenuOpen])
 
   // Derived user details for display
-  const userInitial = user?.fullname?.charAt(0)?.toUpperCase() || "U";
-  const userName = user?.fullname || "User";
-  const userRole = user?.role?.toUpperCase() || "USER";
+  const userInitial = user?.fullname?.charAt(0)?.toUpperCase() || "U"
+  const userName = user?.fullname || "User"
+  const userRole = user?.role?.toUpperCase() || "USER"
 
   return (
     <header className="flex items-center justify-between px-4 py-4 bg-light-bg-primary dark:bg-dark-bg-primary shadow-md sticky top-0 z-40">
@@ -124,8 +118,9 @@ const Header = () => {
 
               {/* Chevron Icon */}
               <FiChevronDown
-                className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ml-2 ${isUserMenuOpen ? "rotate-180" : ""
-                  }`}
+                className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ml-2 ${
+                  isUserMenuOpen ? "rotate-180" : ""
+                }`}
               />
             </button>
 
@@ -163,8 +158,8 @@ const Header = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        setIsUserMenuOpen(false);
-                        navigate("/settings");
+                        setIsUserMenuOpen(false)
+                        navigate("/settings")
                       }}
                       className="w-full flex items-center px-4 py-3 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200"
                     >
@@ -177,8 +172,8 @@ const Header = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        setIsUserMenuOpen(false);
-                        handleLogout();
+                        setIsUserMenuOpen(false)
+                        handleLogout()
                       }}
                       className="w-full flex items-center px-4 py-3 text-accent-danger hover:bg-accent-danger/10 transition-colors duration-200"
                     >
@@ -193,7 +188,7 @@ const Header = () => {
         )}
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

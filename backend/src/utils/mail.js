@@ -1,7 +1,7 @@
-import Mailgen from "mailgen";
-import nodemailer from "nodemailer";
-import ApiError from "./api-error.js";
-import { ApiResponse } from "./api-response.js";
+import Mailgen from "mailgen"
+import nodemailer from "nodemailer"
+import ApiError from "./api-error.js"
+import { ApiResponse } from "./api-response.js"
 
 /**
  * Sends an email using nodemailer.
@@ -24,11 +24,9 @@ const sendMail = async (options) => {
 			name: "Task Manager",
 		},
 		theme: "default",
-	});
-	const emailPlainText = mailGenerator.generatePlaintext(
-		options.mailgenContent,
-	);
-	const emailHTML = mailGenerator.generate(options.mailgenContent);
+	})
+	const emailPlainText = mailGenerator.generatePlaintext(options.mailgenContent)
+	const emailHTML = mailGenerator.generate(options.mailgenContent)
 	const transporter = nodemailer.createTransport({
 		auth: {
 			pass: process.env.MAILTRAP_PASSWORD,
@@ -37,23 +35,23 @@ const sendMail = async (options) => {
 		host: process.env.MAILTRAP_HOST,
 		port: process.env.MAILTRAP_PORT,
 		secure: false, // true for port 465, false for other ports
-	});
+	})
 	const mailOptions = {
 		from: '"Maddison Foo Koch 👻" <maddison53@ethereal.email>',
 		html: emailHTML,
 		subject: options.subject,
 		text: emailPlainText,
 		to: options.email,
-	};
-	try {
-		await transporter.sendMail(mailOptions);
-		throw new ApiResponse(200, "Email sent successfully");
-	} catch (err) {
-		throw new ApiError(400, "Email not sent");
-	} finally {
-		return;
 	}
-};
+	try {
+		await transporter.sendMail(mailOptions)
+		throw new ApiResponse(200, "Email sent successfully")
+	} catch (err) {
+		throw new ApiError(400, "Email not sent")
+	} finally {
+		return
+	}
+}
 
 /**
  * Generates email content for email verification using Mailgen.
@@ -72,12 +70,11 @@ const emailVerificationMailGenContent = (username, verificationUrl) => ({
 				text: "Verify your email",
 			},
 			instructions: "To get started with Task Manager, please click here:",
-			outro:
-				"Need help, or have questions? Just reply to this email, we'd love to help.",
+			outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
 		},
 		name: username,
 	},
-});
+})
 
 const reEmailVerificationMailGenContent = (username, verificationUrl) => ({
 	body: {
@@ -88,12 +85,11 @@ const reEmailVerificationMailGenContent = (username, verificationUrl) => ({
 				text: "Verify your email",
 			},
 			instructions: "To get started with Task Manager, please click here:",
-			outro:
-				"Need help, or have questions? Just reply to this email, we'd love to help.",
+			outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
 		},
 		name: username,
 	},
-});
+})
 
 const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
 	return {
@@ -104,20 +100,18 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
 					link: passwordResetUrl,
 					text: "Reset password",
 				},
-				instructions:
-					"To reset your password click on the following button or link:",
+				instructions: "To reset your password click on the following button or link:",
 			},
 			intro: "We got a request to reset the password of your account",
 			name: username,
-			outro:
-				"Need help, or have questions? Just reply to this email, we'd love to help.",
+			outro: "Need help, or have questions? Just reply to this email, we'd love to help.",
 		},
-	};
-};
+	}
+}
 
 export {
 	sendMail,
 	emailVerificationMailGenContent,
 	forgotPasswordMailgenContent,
 	reEmailVerificationMailGenContent,
-};
+}

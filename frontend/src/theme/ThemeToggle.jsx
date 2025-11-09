@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import React, { useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 
 // --- DEPENDENCIES START ---
 
-import { FiSun, FiMoon } from 'react-icons/fi';
-import { useTheme } from './ThemeContext'; // Use the real hook
+import { FiSun, FiMoon } from "react-icons/fi"
+import { useTheme } from "./ThemeContext" // Use the real hook
 
 // --- DEPENDENCIES END ---
 
-
 const ThemeToggle = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <button
@@ -19,7 +18,7 @@ const ThemeToggle = () => {
       aria-label="Toggle theme"
     >
       <AnimatePresence mode="wait" initial={false}>
-        {theme === 'dark' ? (
+        {theme === "dark" ? (
           <motion.div
             key="sun"
             initial={{ opacity: 0, y: -20, scale: 0.5 }}
@@ -42,7 +41,7 @@ const ThemeToggle = () => {
         )}
       </AnimatePresence>
     </button>
-  );
-};
+  )
+}
 
-export default ThemeToggle;
+export default ThemeToggle

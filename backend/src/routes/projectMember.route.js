@@ -5,10 +5,7 @@ import {
 	removeMember,
 	updateMember,
 } from "../controllers/projectMember.controller.js"
-import {
-	protect,
-	validateProjectPermission,
-} from "../middlewares/auth.middleware.js"
+import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
 import { asyncHandler } from "../utils/async-handler.js"
 import { UserRoleEnum } from "../utils/constants.js"
 

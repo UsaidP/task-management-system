@@ -6,10 +6,7 @@ import {
 	getProjectById,
 	updateProject,
 } from "../controllers/project.controller.js"
-import {
-	protect,
-	validateProjectPermission,
-} from "../middlewares/auth.middleware.js"
+import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
 import { asyncHandler } from "../utils/async-handler.js"
 import { UserRoleEnum } from "../utils/constants.js"
 import { createProjectValidator } from "../validators/auth.validator.js"
@@ -27,11 +24,7 @@ router.post(
 router.get(
 	"/get-project-by-id/:projectId",
 	protect,
-	validateProjectPermission([
-		UserRoleEnum.ADMIN,
-		UserRoleEnum.PROJECT_ADMIN,
-		UserRoleEnum.MEMBER,
-	]),
+	validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN, UserRoleEnum.MEMBER]),
 	asyncHandler(getProjectById),
 )
 router.post(
