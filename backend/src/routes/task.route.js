@@ -27,6 +27,17 @@ router
 		]),
 		asyncHandler(getTasks),
 	)
+router
+	.route("/tasks")
+	.get(
+		protect,
+		validateProjectPermission([
+			UserRoleEnum.ADMIN,
+			UserRoleEnum.PROJECT_ADMIN,
+			UserRoleEnum.MEMBER,
+		]),
+		asyncHandler(getAllTasks),
+	)
 
 router
 	.route("/:projectId/:taskId")

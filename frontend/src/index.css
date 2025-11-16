@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+
   /* Base styles for the entire app */
   body {
     @apply bg-light-bg-primary text-light-text-secondary dark:bg-dark-bg-primary dark:text-dark-text-secondary font-sans antialiased transition-colors duration-fast;
@@ -34,6 +35,7 @@
    ======================================== */
 
 @layer components {
+
   /* Primary Button */
   .btn-primary {
     @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white bg-accent-primary hover:bg-accent-primary-dark dark:bg-accent-primary-light dark:text-dark-text-inverse dark:hover:bg-accent-primary shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast focus-visible-ring;
@@ -87,6 +89,7 @@
      🎴 CARDS & CONTAINERS
      ======================================== */
 
+     
   /* Card */
   .card {
     @apply bg-light-bg-tertiary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl p-6 shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transition-all duration-200;

@@ -13,9 +13,9 @@ import {
 import { Link } from "react-router-dom"
 import apiService from "../../service/apiService.js"
 import { useAuth } from "./context/customHook.js"
+import { EmptyState, NetworkError, ServerError } from "./ErrorStates.jsx"
 import CreateProjectModal from "./project/CreateProjectModal"
 import ProjectCardSkeleton from "./project/ProjectCardSkeleton"
-import { ServerError, NetworkError, EmptyState } from "./ErrorStates.jsx"
 
 const HeaderSkeleton = () => (
   <div className="flex animate-pulse items-center justify-between">
@@ -130,10 +130,12 @@ const Dashboard = () => {
         apiService.getAllProjects(),
         apiService.getAllTaskOfUser(),
       ])
-
       if (projectsResponse.success && tasksResponse.success) {
         const projectsData = projectsResponse.data.projects
         const tasksData = tasksResponse.data
+        // console.log(`Projects Response: ${JSON.stringify(projectsData)}`);
+        console.log(`Tasks Data: ${JSON.stringify(tasksResponse)}`)
+        console.log(`Tasks Length: ${tasksData.length}`)
 
         setProjects(projectsData.slice(0, 6))
         setStats({
