@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react"
-import { NavLink, useNavigate } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
-import { FiChevronDown, FiLogOut, FiSettings, FiUser, FiMenu } from "react-icons/fi"
-
+import React, { useEffect, useRef, useState } from "react"
+import { FiChevronDown, FiLogOut, FiMenu, FiSettings, FiUser } from "react-icons/fi"
+import { NavLink, useNavigate } from "react-router-dom"
+import ThemeToggle from "../theme/ThemeToggle.jsx"
 import { useAuth } from "./context/customHook.js" // Or your AuthContext path
 import { useSidebar } from "./context/SidebarContext.jsx"
-import ThemeToggle from "../theme/ThemeToggle.jsx"
 
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
@@ -63,6 +62,7 @@ const Header = () => {
       {/* Left side: Sidebar Toggle for mobile */}
       <div className="flex items-center">
         <button
+          type="b"
           onClick={toggleSidebar}
           className="lg:hidden mr-4 p-2 rounded-md text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
           aria-label="Toggle sidebar"
@@ -85,6 +85,7 @@ const Header = () => {
           >
             {/* User Menu Button */}
             <button
+              type="button"
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className="flex items-center justify-between p-2 md:p-3 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2"
               aria-expanded={isUserMenuOpen}

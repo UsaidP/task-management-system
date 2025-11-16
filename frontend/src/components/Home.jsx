@@ -2,8 +2,12 @@ import { motion } from "framer-motion"
 import React from "react"
 import { FiArrowRight, FiCheckCircle } from "react-icons/fi"
 import { Link } from "react-router-dom"
-import { featureData, pricingData, testimonialData } from "./landing-page/landingPageComponent"
+// 1. IMPORT YOUR DYNAMIC ICON COMPONENT
+// (Adjust path if needed)
+import { Icon } from "./landing-page/Icons.jsx"
+import { featureData, pricingData, testimonialData } from "./landing-page/landingPageComponent.js"
 
+// 2. FIX THE FEATURECARD COMPONENT
 const FeatureCard = ({ icon, title, description, delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -12,7 +16,12 @@ const FeatureCard = ({ icon, title, description, delay = 0 }) => (
     className="card group p-6"
   >
     <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-lg bg-accent-primary group-hover:shadow-lg transition-all duration-300">
-      {icon}
+      {/* HERE IS THE FIX:
+        - Use the <Icon> component.
+        - Pass the 'icon' string (e.g., "FiTrello") to its 'name' prop.
+        - Add classes for color and size.
+      */}
+      <Icon name={icon} className="w-6 h-6 text-white" />
     </div>
     <h3 className="text-xl font-bold mb-3 text-light-text-primary dark:text-dark-text-primary group-hover:text-accent-primary transition-colors duration-300">
       {title}
@@ -91,9 +100,12 @@ const TestimonialCard = ({ name, role, company, avatar, content }) => (
 
 export const Home = () => {
   return (
-    <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary bg-[url('public/bg2.png')] bg-no-repeat bg-cover bg-center">
+    <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary bg-[url('public/bg_light_image.png')] bg-no-repeat bg-cover bg-center">
       {/* Navigation */}
-      <nav className="bg-light-bg-primary/80 dark:bg-dark-bg-primary/80 backdrop-blur-md border-b border-light-border/50 dark:border-dark-border/50 fixed top-0 left-0 right-0 z-50 px-6 py-4">
+      <nav
+        nav
+        className="bg-light-bg-primary/80 dark:bg-dark-bg-primary/80 backdrop-blur-md border-b border-light-border/50 dark:border-dark-border/50 fixed top-0 left-0 right-0 z-50 px-6 py-4"
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -118,7 +130,7 @@ export const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6">
+      <section section className="pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -166,7 +178,7 @@ export const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-6">
+      <section section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -183,6 +195,10 @@ export const Home = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* 3. NO CHANGE NEEDED HERE
+              This mapping is now correct because the FeatureCard 
+              component internally handles the 'feature.icon' string.
+            */}
             {featureData.map((feature, i) => (
               <FeatureCard
                 key={i}
@@ -197,7 +213,7 @@ export const Home = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 px-6">
+      <section section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -222,7 +238,7 @@ export const Home = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-6">
+      <section section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -247,7 +263,7 @@ export const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 flex flex-col items-center justify-center">
+      <section section className="py-20 px-6 flex flex-col items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -274,7 +290,7 @@ export const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-light-border dark:border-dark-border">
+      <footer footer className="py-12 px-6 border-t border-light-border dark:border-dark-border">
         <div className="max-w-7xl mx-auto text-center">
           <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
             TaskFlow

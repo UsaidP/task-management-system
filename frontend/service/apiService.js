@@ -74,7 +74,7 @@ class ApiService {
     };
 
     try {
-      const response = await puter.net.fetch(url, config);
+      const response = await fetch(url, config);
 
       if (!response.ok) {
         let errorData;
@@ -92,7 +92,7 @@ class ApiService {
             return new Promise((resolve, reject) => {
               this.failedQueue.push({
                 resolve: () => {
-puter.net.fetch(url, config)
+fetch(url, config)
                     .then(res => res.json())
                     .then(data => resolve(data))
                     .catch(err => reject(err));
@@ -113,7 +113,7 @@ puter.net.fetch(url, config)
             this.processQueue(null);
 
             // 3. Retry the original request
-            const retryResponse = await puter.net.fetch(url, config);
+            const retryResponse = await fetch(url, config);
             if (!retryResponse.ok) {
               throw new ApiError(errorData.message || "Retry failed", retryResponse.status);
             }
