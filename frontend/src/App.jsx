@@ -12,7 +12,6 @@ import { Home } from "./components/Home.jsx"
 import AppLayout from "./components/layout/AppLayout.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
 import ProjectPage from "./components/project/ProjectPage.jsx"
-import Settings from "./components/Settings.jsx"
 import "./index.css"
 import "./App.css"
 
@@ -21,6 +20,8 @@ import CalendarView from "./components/date/CalenderView.jsx"
 import GuestRoute from "./components/GuestRoute.jsx"
 // This is your custom theme provider for dark/light mode
 import { AppThemeProvider } from "./theme/ThemeContext.jsx"
+import Settings from "./components/Settings.jsx"
+
 
 const App = () => {
   return (
@@ -48,7 +49,7 @@ const App = () => {
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="calendar" element={<CalendarView />} />
                     <Route path="profile" element={<Me />} />
-                    <Route path="settings" element={<Settings />} />
+                    <Route path="setting" element={<Settings />} />
                     <Route path="project/:projectId" element={<ProjectPage />} />
                   </Route>
                 </Route>

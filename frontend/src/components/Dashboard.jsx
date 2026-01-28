@@ -130,12 +130,11 @@ const Dashboard = () => {
         apiService.getAllProjects(),
         apiService.getAllTaskOfUser(),
       ])
+      // console.log(`Projects Response: ${JSON.stringify(projectsResponse)}`)
+      console.log(`Tasks Response: ${JSON.stringify(tasksResponse)}`)
       if (projectsResponse.success && tasksResponse.success) {
         const projectsData = projectsResponse.data.projects
         const tasksData = tasksResponse.data
-        // console.log(`Projects Response: ${JSON.stringify(projectsData)}`);
-        console.log(`Tasks Data: ${JSON.stringify(tasksResponse)}`)
-        console.log(`Tasks Length: ${tasksData.length}`)
 
         setProjects(projectsData.slice(0, 6))
         setStats({

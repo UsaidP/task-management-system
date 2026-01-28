@@ -2,85 +2,85 @@ import mongoose, { Schema } from "mongoose"
 
 // A sub-schema for comments to keep collaboration organized within the task.
 const commentSchema = new Schema(
-	{
-		content: { required: true, trim: true, type: String },
-		user: { ref: "User", required: true, type: Schema.Types.ObjectId },
-	},
-	{ timestamps: { createdAt: true, updatedAt: false } },
+  {
+    content: { required: true, trim: true, type: String },
+    user: { ref: "User", required: true, type: Schema.Types.ObjectId },
+  },
+  { timestamps: { createdAt: true, updatedAt: false } },
 )
 
 const taskSchema = new Schema(
-	{
-		// --- Assignment & Status ---
-		assignedTo: [
-			{
-				ref: "User",
-				type: Schema.Types.ObjectId,
-			},
-		],
-		attachments: [
-			{
-				filename: { required: true, type: String },
-				url: { required: true, type: String },
-			},
-		],
-		comments: {
-			default: [],
-			type: [commentSchema],
-		},
-		createdBy: {
-			ref: "User",
-			required: true,
-			type: Schema.Types.ObjectId,
-		},
-		description: {
-			trim: true,
-			type: String,
-		},
-		dueDate: {
-			type: Date,
-		},
-		labels: [
-			{
-				type: String,
-			},
-		],
+  {
+    // --- Assignment & Status ---
+    assignedTo: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    attachments: [
+      {
+        filename: { required: true, type: String },
+        url: { required: true, type: String },
+      },
+    ],
+    comments: {
+      default: [],
+      type: [commentSchema],
+    },
+    createdBy: {
+      ref: "User",
+      required: true,
+      type: Schema.Types.ObjectId,
+    },
+    description: {
+      trim: true,
+      type: String,
+    },
+    dueDate: {
+      type: Date,
+    },
+    labels: [
+      {
+        type: String,
+      },
+    ],
 
-		// --- Scheduling & Prioritization ---
-		priority: {
-			default: "Medium",
-			enum: ["low", "medium", "high", "urgent"],
-			type: String,
-		},
-		project: {
-			ref: "Project",
-			required: true,
-			type: Schema.Types.ObjectId,
-		},
-		startDate: {
-			type: Date,
-		},
-		status: {
-			default: "todo",
-			enum: ["todo", "in-progress", "under-review", "completed"],
-			type: String,
-		},
+    // --- Scheduling & Prioritization ---
+    priority: {
+      default: "Medium",
+      enum: ["low", "medium", "high", "urgent"],
+      type: String,
+    },
+    project: {
+      ref: "Project",
+      required: true,
+      type: Schema.Types.ObjectId,
+    },
+    startDate: {
+      type: Date,
+    },
+    status: {
+      default: "todo",
+      enum: ["todo", "in-progress", "under-review", "completed"],
+      type: String,
+    },
 
-		// --- Nested Data & Collaboration ---
-		subtasks: [
-			{
-				ref: "SubTask",
-				type: Schema.Types.ObjectId,
-			},
-		],
-		// --- Core Fields & Relationships ---
-		title: {
-			required: [true, "Task title is required."],
-			trim: true,
-			type: String,
-		},
-	},
-	{ timestamps: true },
+    // --- Nested Data & Collaboration ---
+    subtasks: [
+      {
+        ref: "SubTask",
+        type: Schema.Types.ObjectId,
+      },
+    ],
+    // --- Core Fields & Relationships ---
+    title: {
+      required: [true, "Task title is required."],
+      trim: true,
+      type: String,
+    },
+  },
+  { timestamps: true },
 )
 
 // --- OPTIMIZED INDEXING STRATEGY ---

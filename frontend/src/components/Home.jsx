@@ -2,12 +2,10 @@ import { motion } from "framer-motion"
 import React from "react"
 import { FiArrowRight, FiCheckCircle } from "react-icons/fi"
 import { Link } from "react-router-dom"
-// 1. IMPORT YOUR DYNAMIC ICON COMPONENT
-// (Adjust path if needed)
+
 import { Icon } from "./landing-page/Icons.jsx"
 import { featureData, pricingData, testimonialData } from "./landing-page/landingPageComponent.js"
 
-// 2. FIX THE FEATURECARD COMPONENT
 const FeatureCard = ({ icon, title, description, delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -16,11 +14,6 @@ const FeatureCard = ({ icon, title, description, delay = 0 }) => (
     className="card group p-6"
   >
     <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-lg bg-accent-primary group-hover:shadow-lg transition-all duration-300">
-      {/* HERE IS THE FIX:
-        - Use the <Icon> component.
-        - Pass the 'icon' string (e.g., "FiTrello") to its 'name' prop.
-        - Add classes for color and size.
-      */}
       <Icon name={icon} className="w-6 h-6 text-white" />
     </div>
     <h3 className="text-xl font-bold mb-3 text-light-text-primary dark:text-dark-text-primary group-hover:text-accent-primary transition-colors duration-300">

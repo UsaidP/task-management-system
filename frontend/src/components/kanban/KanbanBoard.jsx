@@ -23,11 +23,13 @@ const KanbanBoard = ({
   const [searchTerm, setSearchTerm] = useState("")
   const [filterPriority, setFilterPriority] = useState("all")
   const [filterAssignee, setFilterAssignee] = useState("all")
+  const [isPriorityMenuOpen, setIsPriorityMenuOpen] = useState(false)
+  const [isAssigneeMenuOpen, setIsAssigneeMenuOpen] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
 
   // Priority options
   const priorityOptions = [
-    { id: "all", name: "All Priorities" },
+    { id: "all", name: "Priorities" },
     { id: "low", name: "Low" },
     { id: "medium", name: "Medium" },
     { id: "high", name: "High" },
@@ -36,7 +38,7 @@ const KanbanBoard = ({
 
   // Assignee options
   const assigneeOptions = useMemo(() => {
-    const options = [{ id: "all", name: "All Members" }]
+    const options = [{ id: "all", name: "Members" }]
     if (members) {
       members.forEach((member) => {
         const user = member.user || member
@@ -203,9 +205,7 @@ const KanbanBoard = ({
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className={`w-full md:w-auto btn-secondary flex gap-2 ${
-                  showFilters || hasActiveFilters ? "bg-primary text-black" : ""
-                }`}
+                className={`w-full md:w-auto btn-secondary flex gap-2 ${showFilters || hasActiveFilters ? "bg-secondary text-black" : ""}`}
               >
                 <FiFilter className="w-4 h-4" />
                 Filters
@@ -231,30 +231,34 @@ const KanbanBoard = ({
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="pt-3 border-t border-border overflow-visible"
+                className="pt-3  flex flex-col gap-3"
               >
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center justify-end pr-5 gap-3 flex-wrap ">
                   {/* Priority Filter */}
                   <div className="relative">
                     <label htmlFor="priority" className="sr-only">
                       Priority
                     </label>
                     <Listbox value={filterPriority} onChange={setFilterPriority}>
-                      <Listbox.Button className="filter-dropdown ">
+                      <Listbox.Button onClick={() => setIsPriorityMenuOpen(!isPriorityMenuOpen)} className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-utility-divider-dark rounded-md overflow-hidden">
                         <span className="truncate capitalize">
                           {selectedPriorityObject?.name || "Priority"}
                         </span>
-                        <FiChevronDown className="w-4 h-4 text-text-muted" />
+                        <FiChevronDown className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
+                             transition-transform duration-200 ${isPriorityMenuOpen ? "rotate-180" : ""
+                          }`} />
                       </Listbox.Button>
-                      <Listbox.Options className="filter-dropdown-options bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                      <Listbox.Options className="absolute top-full mt-2 w-full filter-dropdown-options p-2 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-sm cursor-pointer shadow-lg max-h-60 overflow-auto z-50">
                         {priorityOptions.map((option) => (
                           <Listbox.Option key={option.id} value={option.id} as={Fragment}>
                             {({ active, selected }) => (
-                              <li className={`filter-dropdown-item ${active ? "bg-primary" : ""}`}>
-                                <span
-                                  className={`block truncate ${
-                                    selected ? "font-semibold" : "font-normal"
+                              <li
+                                className={`filter-dropdown-item px-3 py-1.5 rounded-sm transition-colors duration-150 cursor-pointer border-b-1 last:border-b-0 ${active ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary"
                                   }`}
+                              >
+                                <span
+                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
+                                    }`}
                                 >
                                   {option.name}
                                 </span>
@@ -272,22 +276,26 @@ const KanbanBoard = ({
                       Assignee
                     </label>
                     <Listbox value={filterAssignee} onChange={setFilterAssignee}>
-                      <Listbox.Button className="filter-dropdown">
+                      <Listbox.Button onClick={() => setIsAssigneeMenuOpen(!isAssigneeMenuOpen)} className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-utility-divider-dark rounded-md overflow-hidden">
                         <span className="truncate">
                           {selectedAssigneeObject?.name || "Assignee"}
                         </span>
-                        <FiChevronDown className="w-4 h-4 text-text-muted" />
+                        <FiChevronDown className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
+                             transition-transform duration-200 ${isAssigneeMenuOpen ? "rotate-180" : ""
+                          }`} />
                       </Listbox.Button>
                       {/* --- FIX 3: Copied styling from Priority dropdown for consistency --- */}
-                      <Listbox.Options className="filter-dropdown-options bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                      <Listbox.Options className="absolute top-full mt-2 min-w-[10rem] filter-dropdown-options p-2 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-sm shadow-lg focus:outline-none max-h-60 overflow-auto z-50">
                         {assigneeOptions.map((option) => (
                           <Listbox.Option key={option.id} value={option.id} as={Fragment}>
                             {({ active, selected }) => (
-                              <li className={`filter-dropdown-item ${active ? "bg-primary" : ""}`}>
-                                <span
-                                  className={`block truncate ${
-                                    selected ? "font-semibold" : "font-normal"
+                              <li
+                                className={`filter-dropdown-item px-2 py-1.5 rounded-sm transition-colors duration-150 cursor-pointer ${active ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary"
                                   }`}
+                              >
+                                <span
+                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
+                                    }`}
                                 >
                                   {option.name}
                                 </span>
@@ -312,11 +320,11 @@ const KanbanBoard = ({
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-      </div>
+        </div >
+      </div >
 
       {/* Kanban Board */}
-      <DndProvider backend={HTML5Backend}>
+      <DndProvider DndProvider backend={HTML5Backend} >
         <div className="flex-1 overflow-x-auto">
           <div className="flex items-stretch gap-6 px-1 md:px-4 pb-6 pt-2">
             {Object.entries(columns).map(([status, column]) => {

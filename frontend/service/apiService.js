@@ -31,7 +31,7 @@ class NetworkError extends Error {
 // --- API Service Implementation ---
 class ApiService {
   constructor() {
-    this.baseURL = "/api/v1";
+    this.baseURL = import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -61,6 +61,7 @@ class ApiService {
    */
   async customFetch(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
+    console.log(url);
     const headers = { ...this.defaultHeader, ...options.headers };
 
     if (options.body instanceof FormData) {
@@ -86,13 +87,13 @@ class ApiService {
 
         // --- 🚀 START: Token Refresh Interceptor Logic ---
         if (response.status === 401 && endpoint !== "/users/refresh-token") {
-          
+
           if (this.isRefreshing) {
             // If already refreshing, queue this request
             return new Promise((resolve, reject) => {
               this.failedQueue.push({
                 resolve: () => {
-fetch(url, config)
+                  fetch(url, config)
                     .then(res => res.json())
                     .then(data => resolve(data))
                     .catch(err => reject(err));
@@ -108,7 +109,7 @@ fetch(url, config)
           try {
             // 1. Attempt to get a new access token
             await this.refreshSession();
-            
+
             // 2. Success: Process the queue and resolve them
             this.processQueue(null);
 
@@ -122,7 +123,7 @@ fetch(url, config)
           } catch (refreshError) {
             // 4. Refresh Failed: This is a hard logout.
             this.processQueue(refreshError);
-            
+
             // TODO: You should trigger a global logout state here
             // e.g., (if using a state manager) store.dispatch(logoutUser());
             // e.g., (simple) window.location.href = '/login';

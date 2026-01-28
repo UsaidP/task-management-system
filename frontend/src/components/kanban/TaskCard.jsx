@@ -71,6 +71,9 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
   return (
     <motion.div
       ref={ref}
+      onClick={() => {
+        onEdit(task)
+      }}
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}

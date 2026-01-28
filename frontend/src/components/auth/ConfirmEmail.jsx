@@ -35,6 +35,7 @@ export const ConfirmEmail = () => {
     setError("")
     try {
       const response = await resendVerifyEmail(email)
+      console.log(response)
       if (response.success) {
         setFeedbackMessage(`A new confirmation link has been sent to ${email}.`)
       } else {

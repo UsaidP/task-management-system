@@ -4,7 +4,7 @@ import toast from "react-hot-toast"
 
 import { FiAlertCircle, FiCheckCircle, FiCircle, FiClock, FiUsers } from "react-icons/fi"
 import { useParams } from "react-router-dom"
-import apiService from "../../../service/apiService.js" // Adjust path if needed
+import apiService from "../../../service/apiService.js"
 import KanbanBoard from "../kanban/KanbanBoard"
 import Modal from "../Modal"
 import Skeleton from "../Skeleton"
@@ -224,7 +224,7 @@ const ProjectPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="h-full flex flex-col p-6"
+      className="h-full flex flex-col p-6 bg-light-bg-primary dark:bg-dark-bg-primary m-0 rounded-lg shadow-xl"
     >
       <header className="flex items-center justify-between mb-8">
         {loading ? (

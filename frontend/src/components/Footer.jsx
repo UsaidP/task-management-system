@@ -2,11 +2,10 @@ import { AnimatePresence, motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
 import { FiChevronDown, FiLogOut, FiMenu, FiSettings, FiUser } from "react-icons/fi"
 import { NavLink, useNavigate } from "react-router-dom"
-import ThemeToggle from "../theme/ThemeToggle.jsx"
 import { useAuth } from "./context/customHook.js" // Or your AuthContext path
 import { useSidebar } from "./context/SidebarContext.jsx"
 
-const Header = () => {
+const Footer = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const { user, logout } = useAuth()
   const { toggleSidebar } = useSidebar()
@@ -58,7 +57,7 @@ const Header = () => {
   const userRole = user?.role?.toUpperCase() || "USER"
 
   return (
-    <header className="flex items-center justify-between px-4 py-4 bg-light-bg-primary dark:bg-dark-bg-primary shadow-md sticky top-0 z-40">
+    <footer className="flex items-center justify-center px-4 py-4 bg-light-bg-primary dark:bg-dark-bg-primary shadow-md sticky top-0 z-40">
       {/* Left side: Sidebar Toggle for mobile */}
       <div className="flex items-center">
         <button
@@ -73,21 +72,21 @@ const Header = () => {
 
       {/* Right side: Theme Toggle and User Menu */}
       <div className="flex items-center gap-4">
-        <ThemeToggle />
+
 
         {user && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.3 }}
-            className="relative"
+            className="relative "
             ref={menuRef}
           >
             {/* User Menu Button */}
             <button
               type="button"
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center justify-between p-2 md:p-3 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2"
+              className="flex items-center w-64 justify-between p-2 md:p-3 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2"
               aria-expanded={isUserMenuOpen}
               aria-haspopup="true"
               aria-label="User menu"
@@ -119,9 +118,8 @@ const Header = () => {
 
               {/* Chevron Icon */}
               <FiChevronDown
-                className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ml-2 ${
-                  isUserMenuOpen ? "rotate-180" : ""
-                }`}
+                className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ml-2 ${isUserMenuOpen ? "rotate-180" : ""
+                  }`}
               />
             </button>
 
@@ -129,11 +127,11 @@ const Header = () => {
             <AnimatePresence>
               {isUserMenuOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute top-full right-0 mt-2 w-56 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg shadow-xl border border-light-border dark:border-dark-border overflow-hidden z-50"
+                  initial={{ opacity: 0, y: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, y: -75, scale: 1.1 }}
+                  exit={{ opacity: 0, y: 0, scale: 0.95 }}
+                  transition={{ duration: 0.25 }}
+                  className="absolute bottom-0 left-5 flex mt-2 w-56 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg shadow-xl border border-light-border dark:border-dark-border overflow-hidden z-50"
                 >
                   {/* User Name/Role (Mobile) */}
                   <div className="md:hidden px-4 py-3 border-b border-light-border dark:border-dark-border">
@@ -146,7 +144,7 @@ const Header = () => {
                   </div>
 
                   {/* Menu Items */}
-                  <div className="py-1">
+                  <div className="py-1 w-full">
                     <NavLink
                       to="/profile"
                       className="flex items-center px-4 py-3 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200"
@@ -156,31 +154,30 @@ const Header = () => {
                       <span>Profile</span>
                     </NavLink>
 
-                    <button
-                      type="button"
+                    <NavLink
+                      to="/setting"
                       onClick={() => {
                         setIsUserMenuOpen(false)
-                        navigate("/settings")
                       }}
                       className="w-full flex items-center px-4 py-3 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200"
                     >
                       <FiSettings className="mr-3 w-4 h-4 flex-shrink-0" />
                       <span>Settings</span>
-                    </button>
+                    </NavLink>
 
                     <div className="border-t border-light-border dark:border-dark-border my-1"></div>
 
-                    <button
-                      type="button"
+                    <NavLink
+                      to="/logout"
                       onClick={() => {
                         setIsUserMenuOpen(false)
                         handleLogout()
                       }}
-                      className="w-full flex items-center px-4 py-3 text-accent-danger hover:bg-accent-danger/10 transition-colors duration-200"
+                      className="w-full flex items-center px-4 py-3 dark:text-accent-danger text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200"
                     >
                       <FiLogOut className="mr-3 w-4 h-4 flex-shrink-0" />
-                      <span>Sign Out</span>
-                    </button>
+                      <span>Logout</span>
+                    </NavLink>
                   </div>
                 </motion.div>
               )}
@@ -188,8 +185,8 @@ const Header = () => {
           </motion.div>
         )}
       </div>
-    </header>
+    </footer>
   )
 }
 
-export default Header
+export default Footer

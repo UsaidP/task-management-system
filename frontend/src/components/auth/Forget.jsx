@@ -6,7 +6,7 @@ export const Forget = () => {
   const [email, setEmail] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const { forget_password } = useAuth()
+  const { forgetPassword } = useAuth()
   const [responseMsg, setResponseMsg] = useState("")
   const navigate = useNavigate()
 
@@ -17,9 +17,10 @@ export const Forget = () => {
     setResponseMsg("")
 
     try {
-      const response = await forget_password(email)
+      const response = await forgetPassword(email)
       if (response.success) {
         setResponseMsg(response.message)
+        setEmail("")
         // Optionally navigate to a confirmation page
         // navigate("/confirm-password-reset");
       } else {
@@ -51,7 +52,7 @@ export const Forget = () => {
               type="email"
               name="email"
               id="email"
-              placeholder="you@example.com"
+              placeholder="Enter your email"
               onChange={(e) => setEmail(e.target.value)}
               required
               className="input-field w-full mt-1"

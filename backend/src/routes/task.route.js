@@ -4,70 +4,68 @@ const router = Router()
 
 // Importing controllers
 import {
-	createTask,
-	deleteTask,
-	getAllTasks,
-	getTaskById,
-	getTasks,
-	updateTask,
+  createTask,
+  deleteTask,
+  getAllTasks,
+  getTaskById,
+  getTasks,
+  updateTask,
 } from "../controllers/task.controller.js"
 import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
 import { asyncHandler } from "../utils/async-handler.js"
 import { UserRoleEnum } from "../utils/constants.js"
 
 router
-	.route("/:projectId")
-	.post(protect, asyncHandler(createTask))
-	.get(
-		protect,
-		validateProjectPermission([
-			UserRoleEnum.ADMIN,
-			UserRoleEnum.PROJECT_ADMIN,
-			UserRoleEnum.MEMBER,
-		]),
-		asyncHandler(getTasks),
-	)
+  .route("/:projectId")
+  .post(protect, asyncHandler(createTask))
+  .get(
+    protect,
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+    ]),
+    asyncHandler(getTasks),
+  )
 router
-	.route("/tasks")
-	.get(
-		protect,
-		validateProjectPermission([
-			UserRoleEnum.ADMIN,
-			UserRoleEnum.PROJECT_ADMIN,
-			UserRoleEnum.MEMBER,
-		]),
-		asyncHandler(getAllTasks),
-	)
+  .route("/tasks")
+  .get(
+    protect,
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.MEMBER,
+    ]),
+    asyncHandler(getAllTasks),
+  )
 
 router
-	.route("/:projectId/:taskId")
-	.get(
-		protect,
-		validateProjectPermission([
-			UserRoleEnum.ADMIN,
-			UserRoleEnum.PROJECT_ADMIN,
-			UserRoleEnum.MEMBER,
-		]),
-		asyncHandler(getTaskById),
-	)
-	.put(
-		protect,
-		validateProjectPermission([
-			UserRoleEnum.ADMIN,
-			UserRoleEnum.PROJECT_ADMIN,
-			UserRoleEnum.MEMBER,
-		]),
-		asyncHandler(updateTask),
-	)
-	.delete(
-		protect,
-		validateProjectPermission([
-			UserRoleEnum.ADMIN,
-			UserRoleEnum.PROJECT_ADMIN,
-			UserRoleEnum.MEMBER,
-		]),
-		asyncHandler(deleteTask),
-	)
+  .route("/:projectId/:taskId")
+  .get(
+    protect,
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.MEMBER,
+    ]),
+    asyncHandler(getTaskById),
+  )
+  .put(
+    protect,
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+      UserRoleEnum.MEMBER,
+    ]),
+    asyncHandler(updateTask),
+  )
+  .delete(
+    protect,
+    validateProjectPermission([
+      UserRoleEnum.ADMIN,
+      UserRoleEnum.PROJECT_ADMIN,
+    ]),
+    asyncHandler(deleteTask),
+  )
 router.route("/").get(protect, asyncHandler(getAllTasks))
 
 export default router

@@ -101,10 +101,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
+
   // Memoized email resend function.
   const resendVerifyEmail = useCallback(async (email) => {
     try {
-      return await apiService.resendVerifyEmail(email)
+      const response = await apiService.resendVerifyEmail(email)
+      console.log(response)
+      return response
     } catch (error) {
       console.error("❌ Resend verify email error:", error)
       throw error
@@ -117,6 +120,25 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(updatedUser))
       return updatedUser
     })
+  }, [])
+
+  const updatePassword = useCallback((newPassword) => {
+    setUser((currentUser) => {
+      const updatedUser = { ...currentUser, password: newPassword }
+      localStorage.setItem("user", JSON.stringify(updatedUser))
+      return updatedUser
+    })
+  }, [])
+  const forgetPassword = useCallback(async (email) => {
+    console.log("here in forget password")
+    try {
+      const response = await apiService.forgetPassword(email)
+      console.log(response)
+      return response
+    } catch (error) {
+      console.error("❌ Forget password error:", error)
+      throw error
+    }
   }, [])
 
   // Derived state, computed directly from the `user` object.
@@ -136,7 +158,7 @@ export const AuthProvider = ({ children }) => {
       resendVerifyEmail,
       updateUser,
     }
-  }, [user, loading, isAuthenticated, userID, login, logout, signup, resendVerifyEmail, updateUser])
+  }, [user, loading, isAuthenticated, userID, login, logout, signup, resendVerifyEmail, updateUser, forgetPassword])
 
   // Provide the context value to the rest of the app.
   return (

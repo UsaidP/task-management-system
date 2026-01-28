@@ -23,11 +23,13 @@ const statusOptions = [
 ]
 
 const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members }) => {
+  // console.log(`Members: ${JSON.stringify(members)}`)
+  // console.log(`Project Members: ${JSON.stringify(projectId)}`)
   const initialFormState = {
     title: "",
     description: "",
     status: "todo", // Default status
-    priority: "medium", // Default priority (matches option ID)
+    priority: "medium", // Default priority 
     assignedTo: [],
     dueDate: "",
     labels: "",
@@ -40,9 +42,11 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
 
   const assigneeOptions = useMemo(() => {
     if (!members) return []
+    // console.log(`Members: ${JSON.stringify(members)}`)
     return members.map((member) => ({
-      id: member._id,
-      name: member.user?.fullname || member.fullname || member.email || "Unknown",
+      id: member.user._id,
+      name: member.user?.fullname || member.fullname || "Unknown",
+      email: member.user?.email || member.email || "Unknown",
     }))
   }, [members])
 
@@ -68,13 +72,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
 
   // Specific handler for Headless UI Listbox (works for single and multi-select)
   const handleListboxChange = (name, value) => {
+    // console.log(`Name: ${name}, Value: ${value}`)
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   const handleAddSubtask = () => {
     const trimmedTitle = newSubtaskTitle.trim()
     if (trimmedTitle) {
-      // --- FIX: Use crypto.randomUUID() for a more robust unique key ---
       setSubtasks((prev) => [...prev, { id: crypto.randomUUID(), title: trimmedTitle }])
       setNewSubtaskTitle("")
     }
@@ -83,7 +87,11 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
   const handleRemoveSubtask = (id) => {
     setSubtasks((prev) => prev.filter((sub) => sub.id !== id))
   }
-
+  const handleAssigneeChange = (e) => {
+    const { name, value } = e.target
+    console.log(`Name: ${name}, Value: ${value}`)
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -153,7 +161,6 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Status Listbox */}
           <div>
-            {/* --- FIX: Use Listbox.Label and consistent className --- */}
             <Listbox
               value={formData.status}
               onChange={(value) => handleListboxChange("status", value)}
@@ -190,7 +197,6 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
 
           {/* Priority Listbox */}
           <div>
-            {/* --- FIX: Use Listbox.Label and consistent className --- */}
             <Listbox
               value={formData.priority}
               onChange={(value) => handleListboxChange("priority", value)}
@@ -241,6 +247,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                 </ListboxButton>
                 <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {assigneeOptions.map((option) => (
+                    console.log(`Option: ${JSON.stringify(option)}`),
                     <ListboxOption
                       key={option.id}
                       value={option.id}
@@ -331,7 +338,6 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
             <button
               type="button"
               onClick={handleAddSubtask}
-              // --- FIX: Using btn-primary for consistency, but smaller ---
               className="btn-primary px-4 py-2"
             >
               Add
@@ -348,7 +354,6 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                   <button
                     type="button"
                     onClick={() => handleRemoveSubtask(sub.id)}
-                    // --- FIX: Added aria-label and icon ---
                     aria-label={`Remove subtask: ${sub.title}`}
                     className="text-red-500 hover:text-red-700 dark:hover:text-red-400 ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900"
                   >
