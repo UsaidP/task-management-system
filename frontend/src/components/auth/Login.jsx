@@ -61,7 +61,7 @@ export const Login = () => {
             Welcome Back
           </h1>
           <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
-            Sign in to continue to Taskly.
+            Sign in to continue to TaskFlow.
           </p>
         </motion.div>
 

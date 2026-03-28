@@ -5,155 +5,157 @@ export default {
   theme: {
     extend: {
       colors: {
-        //  Professional Minimal Palette
+        // ═══════════════════════════════════════════
+        // 🎨 TaskFlow — Warm Earth-Tone Palette
+        // "Work that feels human"
+        // ═══════════════════════════════════════════
 
-        // Light Mode - Clean & Airy
+        // Light Mode — Warm & Organic
         light: {
-          // Backgrounds
           bg: {
-            primary: "#FFFFFF", // Pure white for main bg
-            secondary: "#F8FAFC", // Slightly off-white for contrast
-            tertiary: "#F1F5F9", // Subtle gray for cards
-            hover: "#E2E8F0", // Hover states
+            primary: "#FAF6F1", // Linen — main background
+            secondary: "#F5EDE3", // Warm off-white — cards, surfaces
+            tertiary: "#F0E6D6", // Sand — secondary surfaces
+            hover: "#E8DED0", // Warm hover state
           },
-          // Text
           text: {
-            primary: "#0F172A", // Rich black for headings
-            secondary: "#475569", // Medium gray for body
-            tertiary: "#94A3B8", // Light gray for hints
-            inverse: "#FFFFFF", // White text on dark bg
+            primary: "#2C2420", // Espresso — headings, strong text
+            secondary: "#5C4B3A", // Earth — body text
+            tertiary: "#8B8178", // Warm gray — hints, placeholders
+            inverse: "#FAF6F1", // Linen — text on dark bg
           },
-          // Borders
           border: {
-            DEFAULT: "#E2E8F0", // Soft borders
-            strong: "#CBD5E1", // Stronger dividers
-            focus: "#3B82F6", // Focus rings
+            DEFAULT: "#E0D5C7", // Warm sand border
+            strong: "#C9BAA8", // Stronger divider
+            focus: "#C4654A", // Terracotta focus ring
           },
         },
 
-        // Dark Mode - Deep & Sophisticated
+        // Dark Mode — Warm Charcoal (not pure black)
         dark: {
-          // Backgrounds
           bg: {
-            primary: "#0A0E1A", // Deep navy base
-            secondary: "#131720", // Slightly lighter navy
-            tertiary: "#1A2030", // Card backgrounds
-            hover: "#232938", // Hover states
+            primary: "#1A1614", // Warm charcoal — main background
+            secondary: "#231F1C", // Slightly lighter warm dark
+            tertiary: "#2C2723", // Card backgrounds
+            hover: "#363028", // Hover states
           },
-          // Text
           text: {
-            primary: "#F8FAFC", // Almost white for headings
-            secondary: "#CBD5E1", // Soft gray for body
-            tertiary: "#94A3B8", // Muted for hints
-            inverse: "#0F172A", // Dark text on light bg
+            primary: "#F5EDE3", // Warm white for headings
+            secondary: "#C9BAA8", // Warm gray for body
+            tertiary: "#8B8178", // Muted for hints
+            inverse: "#1A1614", // Dark text on light bg
           },
-          // Borders
           border: {
-            DEFAULT: "#1E293B", // Subtle borders
-            strong: "#334155", // Stronger dividers
-            focus: "#60A5FA", // Focus rings
+            DEFAULT: "#2C2723", // Subtle warm borders
+            strong: "#3D3530", // Stronger dividers
+            focus: "#C4654A", // Terracotta focus ring (dark mode)
           },
         },
 
-        //  Accent Colors - Vibrant but Professional
+        // Accent Colors — Warm & Purposeful
         accent: {
-          // Primary - Blue (Trust, Productivity)
+          // Primary — Terracotta (Action, CTA)
           primary: {
-            light: "#3B82F6", // Bright blue
-            DEFAULT: "#2563EB", // Standard blue
-            dark: "#1D4ED8", // Deep blue
+            light: "#D4856A", // Lighter terracotta
+            DEFAULT: "#C4654A", // Terracotta
+            dark: "#A8503A", // Deep terracotta
           },
-          // Success - Green (Completion, Growth)
+          // Secondary — Blush (Soft highlights)
+          secondary: {
+            light: "#F0D4CA", // Light blush
+            DEFAULT: "#E8C4B8", // Blush
+            dark: "#D4A898", // Deep blush
+          },
+          // Success — Sage (Done, Growth)
           success: {
-            light: "#10B981", // Fresh green
-            DEFAULT: "#059669", // Rich green
-            dark: "#047857", // Deep green
+            light: "#9AB88D", // Light sage
+            DEFAULT: "#7A9A6D", // Sage
+            dark: "#5E7D52", // Deep sage
           },
-          // Warning - Amber (Medium Priority, Attention)
+          // Warning — Ochre (Attention)
           warning: {
-            light: "#F59E0B", // Bright amber
-            DEFAULT: "#D97706", // Rich amber
-            dark: "#B45309", // Deep amber
+            light: "#E4C068", // Light ochre
+            DEFAULT: "#D4A548", // Ochre
+            dark: "#B88A30", // Deep ochre
           },
-          // Danger - Red (High Priority, Urgent)
+          // Danger — Warm Red (Urgent, Error)
           danger: {
-            light: "#EF4444", // Bright red
-            DEFAULT: "#DC2626", // Rich red
-            dark: "#B91C1C", // Deep red
+            light: "#D46A6A", // Light warm red
+            DEFAULT: "#C44A4A", // Warm red
+            dark: "#A83030", // Deep warm red
           },
-          // Info - Cyan (Low Priority, Information)
+          // Info — Dusty Blue (Information)
           info: {
-            light: "#06B6D4", // Bright cyan
-            DEFAULT: "#0891B2", // Rich cyan
-            dark: "#0E7490", // Deep cyan
+            light: "#88A8C0", // Light dusty blue
+            DEFAULT: "#6888A0", // Dusty blue
+            dark: "#4A6A82", // Deep dusty blue
           },
-          // Purple - Special/Premium features
+          // Purple — Muted (Labels, categories)
           purple: {
-            light: "#A855F7", // Bright purple
-            DEFAULT: "#9333EA", // Rich purple
-            dark: "#7E22CE", // Deep purple
+            light: "#AB90C0", // Light muted purple
+            DEFAULT: "#8B70A0", // Muted purple
+            dark: "#6E5482", // Deep muted purple
           },
         },
 
-        // 📋 Task Status Colors (Semantic)
+        // Task Status Colors (Semantic — warm variants)
         task: {
-          // Priority levels
           priority: {
-            urgent: "#DC2626", // Critical tasks
-            high: "#EF4444", // High priority
-            medium: "#F59E0B", // Medium priority
-            low: "#0891B2", // Low priority
-            none: "#94A3B8", // No priority
+            urgent: "#C44A4A", // Warm red
+            high: "#D45A5A", // Lighter warm red
+            medium: "#D4A548", // Ochre
+            low: "#6888A0", // Dusty blue
+            none: "#8B8178", // Warm gray
           },
-          // Status indicators
           status: {
-            todo: "#64748B", // Not started
-            progress: "#3B82F6", // In progress
-            review: "#A855F7", // Under review
-            done: "#10B981", // Completed
-            blocked: "#DC2626", // Blocked
+            todo: "#8B8178", // Warm gray
+            progress: "#C4654A", // Terracotta
+            review: "#D4A548", // Ochre
+            done: "#7A9A6D", // Sage
+            blocked: "#C44A4A", // Warm red
           },
         },
 
-        // 🎭 Utility Colors
+        // Utility Colors
         utility: {
-          overlay: "rgba(15, 23, 42, 0.5)", // Modal overlays
-          "overlay-dark": "rgba(0, 0, 0, 0.7)", // Dark mode overlays
-          divider: "#E5E7EB", // Subtle dividers
-          "divider-dark": "#1E293B", // Dark dividers
+          overlay: "rgba(26, 22, 20, 0.6)", // Warm overlay for modal backdrops
+          "overlay-dark": "rgba(0, 0, 0, 0.7)", // Dark overlay for modal backdrops
+          divider: "#E0D5C7", // Warm divider
+          "divider-dark": "#2C2723", // Dark warm divider
         },
       },
 
       boxShadow: {
-        // Light mode shadows - Soft & Subtle
-        sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-        DEFAULT: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)",
-        md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)",
-        lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
-        xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+        // Light mode — Warm shadows (not pure black)
+        sm: "0 1px 2px 0 rgba(44, 36, 32, 0.05)",
+        DEFAULT: "0 1px 3px 0 rgba(44, 36, 32, 0.08), 0 1px 2px -1px rgba(44, 36, 32, 0.06)",
+        md: "0 4px 6px -1px rgba(44, 36, 32, 0.08), 0 2px 4px -2px rgba(44, 36, 32, 0.05)",
+        lg: "0 10px 15px -3px rgba(44, 36, 32, 0.08), 0 4px 6px -4px rgba(44, 36, 32, 0.04)",
+        xl: "0 20px 25px -5px rgba(44, 36, 32, 0.10), 0 8px 10px -6px rgba(44, 36, 32, 0.06)",
 
-        // Dark mode shadows - Deeper
-        "dark-sm": "0 1px 2px 0 rgba(0, 0, 0, 0.3)",
-        "dark-md": "0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3)",
-        "dark-lg": "0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4)",
+        // Dark mode shadows
+        "dark-sm": "0 1px 2px 0 rgba(0, 0, 0, 0.25)",
+        "dark-md": "0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.25)",
+        "dark-lg": "0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -4px rgba(0, 0, 0, 0.35)",
 
-        // Special effects
-        glow: "0 0 20px rgba(59, 130, 246, 0.4)",
-        "glow-success": "0 0 20px rgba(16, 185, 129, 0.4)",
-        "glow-danger": "0 0 20px rgba(220, 38, 38, 0.4)",
+        // Special effects — Warm glows
+        glow: "0 0 20px rgba(196, 101, 74, 0.3)", // Terracotta glow
+        "glow-success": "0 0 20px rgba(122, 154, 109, 0.3)", // Sage glow
+        "glow-danger": "0 0 20px rgba(196, 74, 74, 0.3)", // Warm red glow
 
-        // Focus states
-        focus: "0 0 0 3px rgba(59, 130, 246, 0.1)",
-        "focus-dark": "0 0 0 3px rgba(96, 165, 250, 0.2)",
+        // Focus states — Terracotta
+        focus: "0 0 0 3px rgba(196, 101, 74, 0.15)",
+        "focus-dark": "0 0 0 3px rgba(196, 101, 74, 0.25)",
       },
 
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        serif: ["Lora", "Georgia", "Cambria", "serif"],
+        sans: ["DM Sans", "system-ui", "-apple-system", "sans-serif"],
         mono: ["JetBrains Mono", "Consolas", "monospace"],
       },
 
       fontSize: {
-        // Professional type scale
+        // Professional type scale + display size
         xs: ["0.75rem", { lineHeight: "1rem" }],
         sm: ["0.875rem", { lineHeight: "1.25rem" }],
         base: ["1rem", { lineHeight: "1.5rem" }],
@@ -161,42 +163,56 @@ export default {
         xl: ["1.25rem", { lineHeight: "1.75rem" }],
         "2xl": ["1.5rem", { lineHeight: "2rem" }],
         "3xl": ["1.875rem", { lineHeight: "2.25rem" }],
+        "4xl": ["2.25rem", { lineHeight: "2.5rem" }], // Display size
       },
 
       spacing: {
-        // Consistent spacing scale
         18: "4.5rem",
         88: "22rem",
       },
 
       borderRadius: {
-        // Modern, slightly rounded
+        // Organic, soft rounded
         sm: "0.25rem",
-        DEFAULT: "0.5rem",
+        DEFAULT: "0.5rem", // 8px — default
         md: "0.625rem",
-        lg: "0.75rem",
-        xl: "1rem",
+        lg: "0.75rem", // 12px — cards
+        xl: "1rem", // 16px — modals
         "2xl": "1.25rem",
       },
 
       transitionDuration: {
-        // Smooth, professional animations
         DEFAULT: "200ms",
         fast: "150ms",
         slow: "300ms",
       },
 
+      transitionTimingFunction: {
+        DEFAULT: "ease-out",
+      },
+
       animation: {
-        "fade-in": "fadeIn 0.2s ease-in",
+        "fade-in": "fadeIn 0.2s ease-out",
+        "scale-in": "scaleIn 0.2s ease-out",
+        "slide-in-left": "slideInLeft 0.3s ease-out",
         "slide-up": "slideUp 0.3s ease-out",
         "slide-down": "slideDown 0.3s ease-out",
-        "scale-in": "scaleIn 0.2s ease-out",
+        "slide-in-right": "slideInRight 0.3s ease-out",
+        "slide-out-right": "slideOutRight 0.2s ease-in",
       },
 
       keyframes: {
         fadeIn: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
+        },
+        scaleIn: {
+          "0%": { transform: "scale(0.95)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        slideInLeft: {
+          "0%": { transform: "translateX(-100%)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
         },
         slideUp: {
           "0%": { transform: "translateY(10px)", opacity: "0" },
@@ -206,9 +222,13 @@ export default {
           "0%": { transform: "translateY(-10px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
-        scaleIn: {
-          "0%": { transform: "scale(0.95)", opacity: "0" },
-          "100%": { transform: "scale(1)", opacity: "1" },
+        slideInRight: {
+          "0%": { transform: "translateX(100%)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
+        slideOutRight: {
+          "0%": { transform: "translateX(0)", opacity: "1" },
+          "100%": { transform: "translateX(100%)", opacity: "0" },
         },
       },
     },

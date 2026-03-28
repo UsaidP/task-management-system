@@ -116,7 +116,7 @@ export const Signup = () => {
             Create an Account
           </h1>
           <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
-            Join Taskly to organize your work.
+            Join TaskFlow to organize your work.
           </p>
         </motion.div>
 

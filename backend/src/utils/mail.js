@@ -21,7 +21,7 @@ const sendMail = async (options) => {
     product: {
       copyright: `Copyright © ${new Date().getFullYear()} Mailgen. All rights reserved.`,
       link: "https://mailgen.js",
-      name: "Taskly",
+      name: "TaskFlow",
     },
     theme: "default",
   })
@@ -37,7 +37,7 @@ const sendMail = async (options) => {
     secure: false, // true for port 465, false for other ports
   })
   const mailOptions = {
-    from: '"Taskly 👻" <taskly@email.com>',
+    from: '"TaskFlow 👻" <taskflow@email.com>',
     html: emailHTML,
     subject: options.subject,
     text: emailPlainText,
