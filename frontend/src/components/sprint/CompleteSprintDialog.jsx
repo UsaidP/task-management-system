@@ -1,6 +1,6 @@
+import { Dialog, Listbox, Transition } from "@headlessui/react"
 import { Fragment, useState } from "react"
-import { Dialog, Transition, Listbox } from "@headlessui/react"
-import { FiX, FiCheck, FiChevronDown, FiArrowRight } from "react-icons/fi"
+import { FiArrowRight, FiCheck, FiChevronDown, FiX } from "react-icons/fi"
 
 const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
   const [moveOption, setMoveOption] = useState("backlog")
@@ -45,7 +45,7 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 shadow-xl transition-all border border-light-border dark:border-dark-border">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary p-6 shadow-xl transition-all border border-light-border dark:border-dark-border">
                 <Dialog.Title className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">
                   Complete Sprint: {sprint.name}
                 </Dialog.Title>

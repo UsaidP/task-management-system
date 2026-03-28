@@ -1,296 +1,391 @@
 import { motion } from "framer-motion"
-import React from "react"
-import { FiArrowRight, FiCheckCircle } from "react-icons/fi"
+import {
+  FiArrowRight,
+  FiBriefcase,
+  FiCalendar,
+  FiCheckCircle,
+  FiGlobe,
+  FiLayout,
+  FiList,
+  FiMoon,
+  FiTarget,
+  FiTrello,
+  FiUsers,
+  FiZap,
+} from "react-icons/fi"
 import { Link } from "react-router-dom"
 
-import { Icon } from "./landing-page/Icons.jsx"
-import { featureData, pricingData, testimonialData } from "./landing-page/landingPageComponent.js"
+import {
+  featureData,
+  pricingData,
+  statsData,
+  teamTypes,
+  testimonialData,
+} from "./landing-page/landingPageComponent.js"
 
-const FeatureCard = ({ icon, title, description, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay }}
-    className="card group p-6"
-  >
-    <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-lg bg-accent-primary group-hover:shadow-lg transition-all duration-300">
-      <Icon name={icon} className="w-6 h-6 text-white" />
+// Icon map — all SVG, no emoji
+const ICON_MAP = {
+  FiLayout,
+  FiTrello,
+  FiCalendar,
+  FiList,
+  FiUsers,
+  FiMoon,
+  FiZap,
+  FiBriefcase,
+  FiTarget,
+  FiGlobe,
+}
+
+const SectionIcon = ({ name, className }) => {
+  const Icon = ICON_MAP[name]
+  return Icon ? <Icon className={className} /> : null
+}
+
+// Shared viewport animation variant
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+}
+
+const FeatureCard = ({ icon, title, description }) => (
+  <div className="card group p-6 flex flex-col gap-4">
+    <div className="w-11 h-11 rounded-xl bg-accent-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent-primary transition-colors duration-200">
+      <SectionIcon
+        name={icon}
+        className="w-5 h-5 text-accent-primary group-hover:text-white transition-colors duration-200"
+      />
     </div>
-    <h3 className="text-xl font-bold mb-3 text-light-text-primary dark:text-dark-text-primary group-hover:text-accent-primary transition-colors duration-300">
-      {title}
-    </h3>
-    <p className="text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
-      {description}
-    </p>
-  </motion.div>
-)
-
-const StatCard = ({ number, label, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.8 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.6, delay }}
-    className="text-center"
-  >
-    <div className="text-4xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-      {number}
-    </div>
-    <div className="text-light-text-secondary dark:text-dark-text-secondary">{label}</div>
-  </motion.div>
-)
-
-const PricingCard = ({ name, price, period, features, highlighted = false }) => (
-  <div className={`card ${highlighted ? "border-2 border-accent-primary shadow-lg" : ""}`}>
-    <div className="p-6">
-      <h3 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-        {name}
+    <div>
+      <h3 className="text-base font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 group-hover:text-accent-primary transition-colors duration-200">
+        {title}
       </h3>
-      <p className="text-4xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-        {price}
-        {period && (
-          <span className="text-lg text-light-text-secondary dark:text-dark-text-secondary ml-2">
-            /{period}
-          </span>
-        )}
+      <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
+        {description}
       </p>
-      <ul className="space-y-3 mt-6">
-        {features.map((feature, i) => (
-          <li key={i} className="flex items-center">
-            <FiCheckCircle className="w-5 h-5 text-accent-success mr-3" />
-            <span className="text-light-text-secondary dark:text-dark-text-secondary">
-              {feature}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-    <div className="p-6 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-b-lg">
-      <button type="button" className={`w-full ${highlighted ? "btn-primary" : "btn-secondary"}`}>
-        Get Started
-      </button>
     </div>
   </div>
 )
 
-const TestimonialCard = ({ name, role, company, avatar, content }) => (
-  <div className="card">
-    <div className="p-6">
-      <p className="text-light-text-secondary dark:text-dark-text-secondary mb-6">"{content}"</p>
-      <div className="flex items-center">
-        <div className="w-12 h-12 rounded-full bg-accent-primary flex items-center justify-center font-bold text-white mr-4">
-          {avatar}
-        </div>
-        <div>
-          <p className="font-bold text-light-text-primary dark:text-dark-text-primary">{name}</p>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">
-            {role}, {company}
-          </p>
-        </div>
+const TestimonialCard = ({ name, role, company, initials, content }) => (
+  <div className="card p-6 flex flex-col gap-4">
+    <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary leading-relaxed italic">
+      "{content}"
+    </p>
+    <div className="flex items-center gap-3 pt-2 border-t border-light-border dark:border-dark-border">
+      <div className="w-9 h-9 rounded-full bg-accent-primary flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+        {initials}
       </div>
+      <div>
+        <p className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
+          {name}
+        </p>
+        <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+          {role}, {company}
+        </p>
+      </div>
+    </div>
+  </div>
+)
+
+const PricingCard = ({ name, price, period, features, highlighted, badge, cta }) => (
+  <div
+    className={`card flex flex-col ${highlighted ? "border-2 border-accent-primary shadow-glow relative" : ""}`}
+  >
+    {badge && (
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+        <span className="bg-accent-primary text-white text-xs font-semibold px-3 py-1 rounded-full">
+          {badge}
+        </span>
+      </div>
+    )}
+    <div className="p-6 flex-1">
+      <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
+        {name}
+      </h3>
+      <div className="flex items-end gap-1 mb-1">
+        <span className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary">
+          {price}
+        </span>
+        {period && (
+          <span className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mb-1">
+            /{period}
+          </span>
+        )}
+      </div>
+      <ul className="mt-5 space-y-3">
+        {features.map((feature) => (
+          <li
+            key={feature}
+            className="flex items-start gap-2 text-sm text-light-text-secondary dark:text-dark-text-secondary"
+          >
+            <FiCheckCircle className="w-4 h-4 text-accent-success flex-shrink-0 mt-0.5" />
+            {feature}
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div className="p-6 pt-0">
+      <Link
+        to="/register"
+        className={`block text-center py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer ${
+          highlighted ? "btn-primary w-full" : "btn-secondary w-full"
+        }`}
+      >
+        {cta}
+      </Link>
     </div>
   </div>
 )
 
 export const Home = () => {
   return (
-    <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary bg-[url('public/bg_light_image.png')] bg-no-repeat bg-cover bg-center">
-      {/* Navigation */}
-      <nav
-        nav
-        className="bg-light-bg-primary/80 dark:bg-dark-bg-primary/80 backdrop-blur-md border-b border-light-border/50 dark:border-dark-border/50 fixed top-0 left-0 right-0 z-50 px-6 py-4"
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary"
-          >
-            TaskFlow
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center space-x-4"
-          >
-            <Link to="/login" className="btn-secondary">
+    <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary overflow-x-hidden">
+      {/* ── Navbar ─────────────────────────────── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-light-bg-primary/80 dark:bg-dark-bg-primary/80 backdrop-blur-md border-b border-light-border/50 dark:border-dark-border/50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-accent-primary flex items-center justify-center">
+              <span className="font-serif font-bold text-white text-sm leading-none">T</span>
+            </div>
+            <span className="font-serif font-bold text-lg text-light-text-primary dark:text-dark-text-primary">
+              TaskFlow
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link to="/login" className="btn-ghost text-sm px-4 py-2">
               Sign In
             </Link>
-            <Link to="/register" className="btn-primary">
+            <Link to="/register" className="btn-primary text-sm px-4 py-2">
               Get Started
             </Link>
-          </motion.div>
+          </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section section className="pt-32 pb-20 px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-8"
-          >
-            <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight text-light-text-primary dark:text-dark-text-primary">
-              Manage Tasks with
-              <span className="block">Stunning Simplicity</span>
+      {/* ── Hero ───────────────────────────────── */}
+      <section className="pt-32 pb-20 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div variants={fadeUp} initial="hidden" animate="visible">
+            <span className="inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold bg-accent-primary/10 text-accent-primary border border-accent-primary/20">
+              The All-In-One Task Management Platform
+            </span>
+            <h1 className="text-4xl md:text-6xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary leading-tight mb-6">
+              Streamline Your Workflow,{" "}
+              <span className="text-accent-primary">Elevate Your Team</span>
             </h1>
-            <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto leading-relaxed">
-              Transform your productivity with our beautiful, intuitive task management platform.
-              Collaborate seamlessly, track progress effortlessly, and achieve more together.
+            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto leading-relaxed mb-10">
+              Stop juggling scattered tasks across endless spreadsheets. TaskFlow brings your
+              projects, sprints, and team collaboration into one seamless workspace.
             </p>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.15 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16"
           >
-            <Link to="/register" className="btn-primary text-lg px-8 py-4 group">
+            <Link to="/register" className="btn-primary px-6 py-3 flex items-center gap-2 group">
               Start Free Today
-              <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              <FiArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
-            <Link to="/login" className="btn-secondary text-lg px-8 py-4">
+            <Link to="/login" className="btn-secondary px-6 py-3">
               Sign In
             </Link>
           </motion.div>
 
-          {/* Stats */}
+          {/* Stats row */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-3 gap-8 max-w-2xl mx-auto"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-3 gap-6 max-w-lg mx-auto"
           >
-            <StatCard number="10K+" label="Active Users" delay={0.5} />
-            <StatCard number="50K+" label="Tasks Completed" delay={0.6} />
-            <StatCard number="99.9%" label="Uptime" delay={0.7} />
+            {statsData.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <div className="text-2xl font-bold font-serif text-light-text-primary dark:text-dark-text-primary">
+                  {stat.number}
+                </div>
+                <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section section className="py-20 px-6">
+      {/* ── Features ───────────────────────────── */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="py-20 px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+      >
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-light-text-primary dark:text-dark-text-primary">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
               Everything You Need
             </h2>
-            <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto">
-              Powerful features designed to streamline your workflow and boost team productivity
+            <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+              Powerful features designed to streamline your workflow and boost team productivity.
             </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* 3. NO CHANGE NEEDED HERE
-              This mapping is now correct because the FeatureCard 
-              component internally handles the 'feature.icon' string.
-            */}
-            {featureData.map((feature, i) => (
-              <FeatureCard
-                key={i}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-                delay={i * 0.1}
-              />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featureData.map((feature) => (
+              <FeatureCard key={feature.title} {...feature} />
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* Pricing Section */}
-      <section section className="py-20 px-6">
+      {/* ── Who It's For ───────────────────────── */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="py-20 px-6"
+      >
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-light-text-primary dark:text-dark-text-primary">
-              Choose Your Plan
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
+              Built for Modern Teams
             </h2>
-            <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto">
-              Simple, transparent pricing for teams of all sizes.
+            <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+              Whether you're a startup or an enterprise, TaskFlow adapts to how your team works.
             </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {pricingData.map((plan, i) => (
-              <PricingCard key={i} {...plan} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {teamTypes.map((team) => (
+              <div
+                key={team.label}
+                className="card p-5 text-center flex flex-col items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
+                  <SectionIcon name={team.icon} className="w-5 h-5 text-accent-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
+                    {team.label}
+                  </p>
+                  <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
+                    {team.description}
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* Testimonials Section */}
-      <section section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-light-text-primary dark:text-dark-text-primary">
+      {/* ── Pricing ────────────────────────────── */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="py-20 px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+              Start free for 14 days. No credit card required.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {pricingData.map((plan) => (
+              <PricingCard key={plan.name} {...plan} />
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* ── Testimonials ───────────────────────── */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="py-20 px-6"
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
               Loved by Teams Worldwide
             </h2>
-            <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-3xl mx-auto">
-              See what our users are saying about TaskFlow.
+            <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+              See what teams are saying about TaskFlow.
             </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonialData.map((testimonial, i) => (
-              <TestimonialCard key={i} {...testimonial} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonialData.map((t) => (
+              <TestimonialCard key={t.name} {...t} />
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* CTA Section */}
-      <section section className="py-20 px-6 flex flex-col items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto card p-8"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-light-text-primary dark:text-dark-text-primary">
+      {/* ── CTA ────────────────────────────────── */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="py-20 px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+      >
+        <div className="max-w-2xl mx-auto text-center card p-10">
+          <h2 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
             Ready to Transform Your Workflow?
           </h2>
-          <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary mb-8 leading-relaxed">
-            Join thousands of teams who have already revolutionized their productivity with
-            TaskFlow. Start your journey today, completely free.
+          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-8 leading-relaxed">
+            Get started in 30 seconds. Create your account, add your first project, invite your
+            team, and start shipping.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/register" className="btn-primary text-lg px-8 py-4 group">
-              Get Started Free
-              <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link to="/register" className="btn-primary px-6 py-3 flex items-center gap-2 group">
+              Start Free Trial
+              <FiArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
-            <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-              No credit card required • Free forever
-            </p>
+            <Link to="/login" className="btn-secondary px-6 py-3">
+              Sign In
+            </Link>
           </div>
-        </motion.div>
-      </section>
-
-      {/* Footer */}
-      <footer footer className="py-12 px-6 border-t border-light-border dark:border-dark-border">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-4">
-            TaskFlow
-          </div>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">
-            © {new Date().getFullYear()} TaskFlow. Crafted with ❤️ for productive teams.
+          <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-4">
+            No credit card required · Free for 14 days
           </p>
+        </div>
+      </motion.section>
+
+      {/* ── Footer ─────────────────────────────── */}
+      <footer className="py-10 px-6 border-t border-light-border dark:border-dark-border">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-accent-primary flex items-center justify-center">
+              <span className="font-serif font-bold text-white text-xs leading-none">T</span>
+            </div>
+            <span className="font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
+              TaskFlow
+            </span>
+          </div>
+          <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+            © {new Date().getFullYear()} TaskFlow. All rights reserved.
+          </p>
+          <div className="flex items-center gap-4 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+            <a
+              href="mailto:hello@taskly.app"
+              className="hover:text-accent-primary transition-colors duration-200"
+            >
+              hello@taskly.app
+            </a>
+          </div>
         </div>
       </footer>
     </div>

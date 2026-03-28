@@ -1,15 +1,15 @@
-import { useState } from "react"
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react"
-import { FiX, FiCalendar } from "react-icons/fi"
-import apiService from "../../../service/apiService"
+import { useState } from "react"
 import toast from "react-hot-toast"
+import { FiCalendar, FiX } from "react-icons/fi"
+import apiService from "../../../service/apiService"
 
 const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => {
   const [formData, setFormData] = useState({
     name: "",
     goal: "",
     startDate: "",
-    endDate: ""
+    endDate: "",
   })
   const [loading, setLoading] = useState(false)
 
@@ -24,7 +24,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
     try {
       const response = await apiService.createSprint({
         ...formData,
-        projectId
+        projectId,
       })
       if (response.success) {
         toast.success("Sprint created successfully")
@@ -43,7 +43,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-md rounded-2xl bg-light-bg-primary dark:bg-dark-bg-secondary p-6 shadow-xl border border-light-border dark:border-dark-border">
+        <DialogPanel className="w-full max-w-md rounded-2xl bg-light-bg-primary dark:bg-dark-bg-tertiary p-6 shadow-xl border border-light-border dark:border-dark-border">
           <div className="flex items-center justify-between mb-4">
             <DialogTitle className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
               Create New Sprint
@@ -65,7 +65,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="e.g., Sprint 1"
                 className="w-full px-4 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:border-accent-primary"
                 required
@@ -78,7 +78,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
               </label>
               <textarea
                 value={formData.goal}
-                onChange={(e) => setFormData(prev => ({ ...prev, goal: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, goal: e.target.value }))}
                 placeholder="What do you want to achieve this sprint?"
                 rows={3}
                 className="w-full px-4 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:border-accent-primary resize-none"
@@ -95,7 +95,9 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                   <input
                     type="date"
                     value={formData.startDate}
-                    onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, startDate: e.target.value }))
+                    }
                     className="w-full pl-10 px-4 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:border-accent-primary"
                     required
                   />
@@ -110,7 +112,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                   <input
                     type="date"
                     value={formData.endDate}
-                    onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
                     className="w-full pl-10 px-4 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:border-accent-primary"
                     required
                   />

@@ -1,8 +1,18 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { FiUser, FiMail, FiPhone, FiMapPin, FiBriefcase, FiGlobe, FiX, FiGithub, FiLinkedin } from "react-icons/fi"
-import apiService from "../../../service/apiService.js"
 import toast from "react-hot-toast"
+import {
+  FiBriefcase,
+  FiGithub,
+  FiGlobe,
+  FiLinkedin,
+  FiMail,
+  FiMapPin,
+  FiPhone,
+  FiUser,
+  FiX,
+} from "react-icons/fi"
+import apiService from "../../../service/apiService.js"
 
 const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
   const [formData, setFormData] = useState({
@@ -71,13 +81,55 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
 
   const inputFields = [
     { name: "fullname", label: "Full Name", icon: FiUser, type: "text", placeholder: "John Doe" },
-    { name: "phone", label: "Phone Number", icon: FiPhone, type: "tel", placeholder: "+1 234 567 8900" },
-    { name: "company", label: "Company", icon: FiBriefcase, type: "text", placeholder: "Acme Inc." },
-    { name: "jobTitle", label: "Job Title", icon: FiBriefcase, type: "text", placeholder: "Software Engineer" },
-    { name: "location", label: "Location", icon: FiMapPin, type: "text", placeholder: "San Francisco, CA" },
-    { name: "website", label: "Website", icon: FiGlobe, type: "url", placeholder: "https://example.com" },
-    { name: "linkedin", label: "LinkedIn", icon: FiLinkedin, type: "text", placeholder: "linkedin.com/in/username" },
-    { name: "github", label: "GitHub", icon: FiGithub, type: "text", placeholder: "github.com/username" },
+    {
+      name: "phone",
+      label: "Phone Number",
+      icon: FiPhone,
+      type: "tel",
+      placeholder: "+1 234 567 8900",
+    },
+    {
+      name: "company",
+      label: "Company",
+      icon: FiBriefcase,
+      type: "text",
+      placeholder: "Acme Inc.",
+    },
+    {
+      name: "jobTitle",
+      label: "Job Title",
+      icon: FiBriefcase,
+      type: "text",
+      placeholder: "Software Engineer",
+    },
+    {
+      name: "location",
+      label: "Location",
+      icon: FiMapPin,
+      type: "text",
+      placeholder: "San Francisco, CA",
+    },
+    {
+      name: "website",
+      label: "Website",
+      icon: FiGlobe,
+      type: "url",
+      placeholder: "https://example.com",
+    },
+    {
+      name: "linkedin",
+      label: "LinkedIn",
+      icon: FiLinkedin,
+      type: "text",
+      placeholder: "linkedin.com/in/username",
+    },
+    {
+      name: "github",
+      label: "GitHub",
+      icon: FiGithub,
+      type: "text",
+      placeholder: "github.com/username",
+    },
   ]
 
   return (
@@ -92,12 +144,12 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
           onClick={onClose}
         >
           <motion.div
-            className="bg-light-bg-secondary dark:bg-dark-bg-secondary w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl shadow-xl border border-light-border dark:border-dark-border"
+            className="bg-light-bg-secondary dark:bg-dark-bg-tertiary w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl shadow-xl border border-light-border dark:border-dark-border"
             variants={modalVariants}
             exit="exit"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-6 border-b border-light-border dark:border-dark-border sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-secondary z-10">
+            <div className="flex items-center justify-between p-6 border-b border-light-border dark:border-dark-border sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary z-10">
               <h2 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
                 Edit Your Profile
               </h2>
@@ -111,7 +163,10 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label htmlFor="fullname" className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                <label
+                  htmlFor="fullname"
+                  className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
+                >
                   Full Name *
                 </label>
                 <div className="relative">
@@ -129,7 +184,10 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
               </div>
 
               <div>
-                <label htmlFor="bio" className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                <label
+                  htmlFor="bio"
+                  className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
+                >
                   Bio
                 </label>
                 <textarea
@@ -146,7 +204,10 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {inputFields.slice(1).map((field) => (
                   <div key={field.name}>
-                    <label htmlFor={field.name} className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                    <label
+                      htmlFor={field.name}
+                      className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
+                    >
                       {field.label}
                     </label>
                     <div className="relative">
@@ -166,10 +227,18 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
               </div>
 
               <div className="mt-8 flex justify-end space-x-4">
-                <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                >
                   Cancel
                 </button>
-                <button type="submit" disabled={loading} className="px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50"
+                >
                   {loading ? "Saving..." : "Save Changes"}
                 </button>
               </div>

@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { FiPlus, FiCalendar, FiClock, FiCheckCircle } from "react-icons/fi"
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useMemo, useState } from "react"
+import { FiCalendar, FiCheckCircle, FiClock, FiPlus } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
@@ -16,7 +16,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
     try {
       const [backlogRes, sprintsRes] = await Promise.all([
         apiService.getBacklog(projectId),
-        apiService.getSprintsByProject(projectId)
+        apiService.getSprintsByProject(projectId),
       ])
       if (backlogRes.success) {
         setBacklogTasks(backlogRes.data)
@@ -42,7 +42,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
   const handleRemoveFromSprint = async (taskId) => {
     try {
       await apiService.removeTaskFromSprint(taskId)
-      setBacklogTasks(prev => prev.filter(t => t._id !== taskId))
+      setBacklogTasks((prev) => prev.filter((t) => t._id !== taskId))
     } catch (err) {
       console.error("Failed to remove task from sprint:", err)
     }
@@ -51,7 +51,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
   const handleAssignToSprint = async (taskId, sprintId) => {
     try {
       await apiService.assignTaskToSprint(sprintId, taskId)
-      setBacklogTasks(prev => prev.filter(t => t._id !== taskId))
+      setBacklogTasks((prev) => prev.filter((t) => t._id !== taskId))
     } catch (err) {
       console.error("Failed to assign task to sprint:", err)
     }
@@ -59,28 +59,40 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "completed": return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-      case "in-progress": return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-      case "under-review": return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
-      default: return "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300"
+      case "completed":
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+      case "in-progress":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+      case "under-review":
+        return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+      default:
+        return "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300"
     }
   }
 
   const getPriorityClass = (priority) => {
     switch (priority) {
-      case "urgent": return "text-red-500"
-      case "high": return "text-orange-500"
-      case "medium": return "text-amber-500"
-      case "low": return "text-blue-500"
-      default: return "text-slate-500"
+      case "urgent":
+        return "text-red-500"
+      case "high":
+        return "text-orange-500"
+      case "medium":
+        return "text-amber-500"
+      case "low":
+        return "text-blue-500"
+      default:
+        return "text-slate-500"
     }
   }
 
   if (loading) {
     return (
       <div className="p-6 space-y-4">
-        {[1, 2, 3].map(i => (
-          <div key={i} className="h-20 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg animate-pulse" />
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="h-20 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg animate-pulse"
+          />
         ))}
       </div>
     )
@@ -91,7 +103,9 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border">
         <div>
-          <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">Backlog</h2>
+          <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
+            Backlog
+          </h2>
           <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
             {backlogTasks.length} tasks not in any sprint
           </p>
@@ -129,10 +143,14 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusClass(task.status)}`}>
+                        <span
+                          className={`px-2 py-0.5 rounded text-xs font-medium ${getStatusClass(task.status)}`}
+                        >
                           {task.status?.replace("-", " ")}
                         </span>
-                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${getPriorityClass(task.priority)} bg-light-bg-hover dark:bg-dark-bg-hover`}>
+                        <span
+                          className={`px-2 py-0.5 rounded text-xs font-medium ${getPriorityClass(task.priority)} bg-light-bg-hover dark:bg-dark-bg-hover`}
+                        >
                           {task.priority}
                         </span>
                       </div>
@@ -151,9 +169,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                             {new Date(task.dueDate).toLocaleDateString()}
                           </span>
                         )}
-                        {task.project?.name && (
-                          <span>{task.project.name}</span>
-                        )}
+                        {task.project?.name && <span>{task.project.name}</span>}
                       </div>
                     </div>
                     {/* Sprint Assignment Dropdown */}
@@ -165,15 +181,17 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                             handleAssignToSprint(task._id, e.target.value)
                           }
                         }}
-                        className="px-3 py-1.5 rounded-lg text-sm bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border"
+                        className="px-3 py-1.5 rounded-lg text-sm bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border"
                         defaultValue=""
                       >
                         <option value="">Add to Sprint...</option>
-                        {sprints.filter(s => s.status !== "completed").map(sprint => (
-                          <option key={sprint._id} value={sprint._id}>
-                            {sprint.name} {sprint.status === "active" ? "(Active)" : ""}
-                          </option>
-                        ))}
+                        {sprints
+                          .filter((s) => s.status !== "completed")
+                          .map((sprint) => (
+                            <option key={sprint._id} value={sprint._id}>
+                              {sprint.name} {sprint.status === "active" ? "(Active)" : ""}
+                            </option>
+                          ))}
                       </select>
                     )}
                   </div>
@@ -190,9 +208,9 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
           isOpen={!!selectedTask}
           onClose={() => setSelectedTask(null)}
           task={selectedTask}
-          members={selectedTask.assignedTo?.map(u => ({ user: u })) || []}
+          members={selectedTask.assignedTo?.map((u) => ({ user: u })) || []}
           onTaskUpdated={(updated) => {
-            setBacklogTasks(prev => prev.map(t => t._id === updated._id ? updated : t))
+            setBacklogTasks((prev) => prev.map((t) => (t._id === updated._id ? updated : t)))
           }}
         />
       )}

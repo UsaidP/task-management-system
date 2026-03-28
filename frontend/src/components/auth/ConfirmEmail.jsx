@@ -49,7 +49,7 @@ export const ConfirmEmail = () => {
         <p className="text-light-text-secondary dark:text-dark-text-secondary">
           We've sent a confirmation link to:
         </p>
-        <p className="font-semibold text-lg text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary dark:bg-dark-bg-secondary py-2 px-4 rounded-lg inline-block my-2">
+        <p className="font-semibold text-lg text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary dark:bg-dark-bg-tertiary py-2 px-4 rounded-lg inline-block my-2">
           {email}
         </p>
         <p className="text-light-text-secondary dark:text-dark-text-secondary">

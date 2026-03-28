@@ -90,7 +90,10 @@ const KanbanBoard = ({
   // --- ROBUST handleTaskDrop ---
   const handleTaskDrop = useCallback(
     async (item, newStatus, destinationIndex) => {
-      const { id: taskId, status: originalStatus } = item
+      const { id: taskId, status: originalStatus, projectId: droppedTaskProjectId } = item
+
+      // Use the task's specific project ID if available, fallback to the board's projectId
+      const targetProjectId = droppedTaskProjectId || projectId
 
       // We need to store the *original* state for rollback
       let originalColumnsForRollback
@@ -164,7 +167,7 @@ const KanbanBoard = ({
 
       // --- API Call & Rollback ---
       try {
-        await apiService.updateTask(projectId, taskId, { status: newStatus })
+        await apiService.updateTask(targetProjectId, taskId, { status: newStatus })
         toast.success("Task moved successfully!")
       } catch (error) {
         toast.error("Failed to move task. Reverting.")
@@ -188,7 +191,7 @@ const KanbanBoard = ({
     <div className="flex h-full flex-col relative">
       {/* Fixed Filter Section */}
       <div className="pb-4 px-1 md:px-4">
-        <div className="glass rounded-xl p-4 shadow-md">
+        <div className="rounded-xl p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border">
           <div className="flex flex-col md:flex-row items-center gap-3 mb-3">
             <div className="w-full md:flex-1 relative">
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
@@ -197,7 +200,7 @@ const KanbanBoard = ({
                 placeholder="Search tasks..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input-field pl-10"
+                className="w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-10 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary"
               />
             </div>
 
@@ -205,17 +208,17 @@ const KanbanBoard = ({
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className={`w-full md:w-auto btn-secondary flex gap-2 ${showFilters || hasActiveFilters ? "bg-secondary text-black" : ""}`}
+                className={`w-full md:w-auto px-4 py-2 rounded-lg flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors ${showFilters || hasActiveFilters ? "border-accent-primary text-accent-primary" : ""}`}
               >
                 <FiFilter className="w-4 h-4" />
-                Filters
+                <span>Filters</span>
               </button>
 
               {onCreateTask && (
                 <button
                   type="button"
                   onClick={onCreateTask}
-                  className="w-full md:w-auto btn-primary group flex gap-2"
+                  className="w-full md:w-auto px-4 py-2 rounded-lg flex gap-2 bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors"
                 >
                   <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                   New Task
@@ -240,25 +243,35 @@ const KanbanBoard = ({
                       Priority
                     </label>
                     <Listbox value={filterPriority} onChange={setFilterPriority}>
-                      <Listbox.Button onClick={() => setIsPriorityMenuOpen(!isPriorityMenuOpen)} className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-utility-divider-dark rounded-md overflow-hidden">
+                      <Listbox.Button
+                        onClick={() => setIsPriorityMenuOpen(!isPriorityMenuOpen)}
+                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-utility-divider-dark rounded-md overflow-hidden"
+                      >
                         <span className="truncate capitalize">
                           {selectedPriorityObject?.name || "Priority"}
                         </span>
-                        <FiChevronDown className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
-                             transition-transform duration-200 ${isPriorityMenuOpen ? "rotate-180" : ""
-                          }`} />
+                        <FiChevronDown
+                          className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
+                             transition-transform duration-200 ${
+                               isPriorityMenuOpen ? "rotate-180" : ""
+                             }`}
+                        />
                       </Listbox.Button>
                       <Listbox.Options className="absolute top-full mt-2 w-full filter-dropdown-options p-2 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-sm cursor-pointer shadow-lg max-h-60 overflow-auto z-50">
                         {priorityOptions.map((option) => (
                           <Listbox.Option key={option.id} value={option.id} as={Fragment}>
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item px-3 py-1.5 rounded-sm transition-colors duration-150 cursor-pointer border-b-1 last:border-b-0 ${active ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary"
-                                  }`}
+                                className={`filter-dropdown-item px-3 py-1.5 rounded-sm transition-colors duration-150 cursor-pointer border-b-1 last:border-b-0 ${
+                                  active
+                                    ? "bg-accent-primary text-white"
+                                    : "text-light-text-secondary dark:text-dark-text-secondary"
+                                }`}
                               >
                                 <span
-                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
-                                    }`}
+                                  className={`block truncate ${
+                                    selected ? "font-semibold" : "font-normal"
+                                  }`}
                                 >
                                   {option.name}
                                 </span>
@@ -276,13 +289,19 @@ const KanbanBoard = ({
                       Assignee
                     </label>
                     <Listbox value={filterAssignee} onChange={setFilterAssignee}>
-                      <Listbox.Button onClick={() => setIsAssigneeMenuOpen(!isAssigneeMenuOpen)} className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-utility-divider-dark rounded-md overflow-hidden">
+                      <Listbox.Button
+                        onClick={() => setIsAssigneeMenuOpen(!isAssigneeMenuOpen)}
+                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-utility-divider-dark rounded-md overflow-hidden"
+                      >
                         <span className="truncate">
                           {selectedAssigneeObject?.name || "Assignee"}
                         </span>
-                        <FiChevronDown className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
-                             transition-transform duration-200 ${isAssigneeMenuOpen ? "rotate-180" : ""
-                          }`} />
+                        <FiChevronDown
+                          className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
+                             transition-transform duration-200 ${
+                               isAssigneeMenuOpen ? "rotate-180" : ""
+                             }`}
+                        />
                       </Listbox.Button>
                       {/* --- FIX 3: Copied styling from Priority dropdown for consistency --- */}
                       <Listbox.Options className="absolute top-full mt-2 min-w-[10rem] filter-dropdown-options p-2 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-sm shadow-lg focus:outline-none max-h-60 overflow-auto z-50">
@@ -290,12 +309,16 @@ const KanbanBoard = ({
                           <Listbox.Option key={option.id} value={option.id} as={Fragment}>
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item px-2 py-1.5 rounded-sm transition-colors duration-150 cursor-pointer ${active ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary"
-                                  }`}
+                                className={`filter-dropdown-item px-2 py-1.5 rounded-sm transition-colors duration-150 cursor-pointer ${
+                                  active
+                                    ? "bg-accent-primary text-white"
+                                    : "text-light-text-secondary dark:text-dark-text-secondary"
+                                }`}
                               >
                                 <span
-                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"
-                                    }`}
+                                  className={`block truncate ${
+                                    selected ? "font-semibold" : "font-normal"
+                                  }`}
                                 >
                                   {option.name}
                                 </span>
@@ -320,11 +343,11 @@ const KanbanBoard = ({
               </motion.div>
             )}
           </AnimatePresence>
-        </div >
-      </div >
+        </div>
+      </div>
 
       {/* Kanban Board */}
-      <DndProvider DndProvider backend={HTML5Backend} >
+      <DndProvider backend={HTML5Backend}>
         <div className="flex-1 overflow-x-auto">
           <div className="flex items-stretch gap-6 px-1 md:px-4 pb-6 pt-2">
             {Object.entries(columns).map(([status, column]) => {
@@ -347,16 +370,15 @@ const KanbanBoard = ({
                     }}
                     className="w-full md:w-[280px] xl:w-[320px] flex-shrink-0"
                   >
-                    <div className="flex p-4 h-full flex-col rounded-xl glass">
+                    <div className="flex p-3 h-full flex-col rounded-xl bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border overflow-visible">
                       <ColumnHeader
                         title={column.title}
                         count={tasksToRender.length}
                         totalCount={totalTasks}
-                        color={column.color}
-                        icon={column.icon}
+                        status={status}
                         showFilterCount={hasActiveFilters && tasksToRender.length !== totalTasks}
                       />
-                      <div className="flex-grow space-y-3 overflow-y-auto p-1 -mr-2 pr-2">
+                      <div className="flex-grow space-y-3 overflow-visible">
                         <AnimatePresence mode="popLayout">
                           {tasksToRender.length > 0 ? (
                             tasksToRender.map((task, index) => (
@@ -364,17 +386,16 @@ const KanbanBoard = ({
                                 key={task._id}
                                 task={task}
                                 index={index}
-                                onEdit={() => openEditModal(task)}
-                                onDelete={() => openDeleteModal(task)}
+                                onEdit={openEditModal ? () => openEditModal(task) : undefined}
+                                onDelete={openDeleteModal ? () => openDeleteModal(task) : undefined}
                                 membersMap={membersMap}
-                                // FIX: Pass the onDrop handler for reordering
                                 onDrop={handleTaskDrop}
                               />
                             ))
                           ) : (
                             <motion.div
                               layout
-                              className="flex items-center justify-center text-sm text-text-muted text-center h-full p-10 border-2 border-dashed border-border rounded-lg"
+                              className="flex items-center justify-center text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center h-32 p-4 border-2 border-dashed border-light-border dark:border-dark-border rounded-lg"
                             >
                               {hasActiveFilters
                                 ? "No tasks match your filters."
