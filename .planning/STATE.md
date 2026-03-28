@@ -18,7 +18,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** Users can see, organize, and move their work forward across all projects from one unified workspace
-**Current focus:** Phase 6 — sprint-management
+**Current focus:** Phase 8 — settings, profile & polish
 
 ## Current Milestone
 
@@ -91,4 +91,14 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - **Key changes:** auth-bg grain texture, auth-card enhanced shadows, TaskFlow → Taskly brand fix, copy fixes
 
 ---
-*Last updated: 2026-03-28 after execute-phase 3*
+## Discuss Phase 8 Run Log
+
+- **Date:** 2026-03-28
+- **Phase:** 08 — Settings, Profile & Polish
+- **Areas discussed:** Loading Skeletons
+- **Decisions:** View-specific skeletons for all 8 views, CSS animate-pulse, rebuild base Skeleton.jsx with warm tokens
+- **Context file:** `.planning/phases/08-settings-profile-polish/08-CONTEXT.md`
+- **Commit:** `1f0850c` — docs(08): capture phase context
+
+---
+*Last updated: 2026-03-28 after discuss-phase 8*
