@@ -1,61 +1,53 @@
 import dayjs from "dayjs"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { useEffect, useMemo, useState } from "react"
-import { FiAlertCircle, FiChevronLeft, FiChevronRight, FiClock, FiPlus } from "react-icons/fi"
-import apiService from "../../../service/apiService"
+import { useEffect, useMemo, useState } from "react"
+import { FiChevronLeft, FiChevronRight, FiPlus } from "react-icons/fi"
+import apiService from "../../../service/apiService.js"
 import { useAuth } from "../context/customHook.js"
-import { EmptyState, NetworkError } from "../ErrorStates.jsx"
+import { useFilter } from "../context/FilterContext.jsx"
 import CreateTaskModal from "../task/CreateTaskModal"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
-const priorityColors = {
-  urgent: "bg-accent-danger",
-  high: "bg-task-priority-high",
-  medium: "bg-accent-warning",
-  low: "bg-accent-info",
-  none: "bg-light-text-tertiary",
+const priorityStyles = {
+  urgent: "bg-task-priority-urgent/20 text-task-priority-urgent",
+  high: "bg-task-priority-high/20 text-task-priority-high",
+  medium: "bg-task-priority-medium/20 text-task-priority-medium",
+  low: "bg-task-priority-low/20 text-task-priority-low",
 }
 
-const statusColors = {
+const statusBorder = {
   todo: "border-l-4 border-l-task-status-todo",
-  "in-progress": "border-l-4 border-l-accent-primary",
-  "under-review": "border-l-4 border-l-accent-warning",
-  completed: "border-l-4 border-l-accent-success",
+  "in-progress": "border-l-4 border-l-task-status-progress",
+  "under-review": "border-l-4 border-l-task-status-review",
+  completed: "border-l-4 border-l-task-status-done",
 }
+
+const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 const CalendarView = () => {
+  const { user } = useAuth()
+  const { projectFilter, sprintFilter } = useFilter()
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [tasks, setTasks] = useState([])
-  const [projects, setProjects] = useState([])
   const [selectedDate, setSelectedDate] = useState(null)
   const [selectedTask, setSelectedTask] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
   const [viewMode, setViewMode] = useState("month")
   const [hoveredDay, setHoveredDay] = useState(null)
-  const { user } = useAuth()
 
   const today = dayjs()
 
   const fetchData = async () => {
     if (!user) return
     setIsLoading(true)
-    setError(null)
     try {
-      const [tasksRes, projectsRes] = await Promise.all([
-        apiService.getAllTaskOfUser(),
-        apiService.getAllProjects(),
-      ])
+      const tasksRes = await apiService.getAllTaskOfUser()
       if (tasksRes.success) {
         setTasks(tasksRes.data || [])
       }
-      if (projectsRes.success) {
-        setProjects(Array.isArray(projectsRes.data) ? projectsRes.data : [])
-      }
     } catch (err) {
       console.error("Failed to fetch calendar data", err)
-      setError(err)
     } finally {
       setIsLoading(false)
     }
@@ -65,9 +57,19 @@ const CalendarView = () => {
     fetchData()
   }, [user])
 
-  const goToNextMonth = () => setCurrentDate(currentDate.add(1, "month"))
-  const goToPrevMonth = () => setCurrentDate(currentDate.add(-1, "month"))
-  const goToToday = () => setCurrentDate(dayjs())
+  const filteredTasks = useMemo(() => {
+    let result = tasks
+    if (projectFilter) {
+      result = result.filter((t) => {
+        const pid = typeof t.project === "object" ? t.project?._id : t.project
+        return pid === projectFilter
+      })
+    }
+    if (sprintFilter) {
+      result = result.filter((t) => t.sprint === sprintFilter)
+    }
+    return result
+  }, [tasks, projectFilter, sprintFilter])
 
   const handleDayClick = (day) => {
     setSelectedDate(currentDate.date(day))
@@ -84,7 +86,7 @@ const CalendarView = () => {
   }
 
   const getTasksForDay = (day) => {
-    return tasks.filter((task) => {
+    return filteredTasks.filter((task) => {
       const taskDate = dayjs(task.dueDate)
       return (
         taskDate.date() === day &&
@@ -94,10 +96,9 @@ const CalendarView = () => {
     })
   }
 
-  const getProjectName = (projectId) => {
-    if (!projectId || !Array.isArray(projects)) return "Unknown"
-    const project = projects.find((p) => p._id === projectId)
-    return project?.name || "Unknown"
+  const getProjectName = (task) => {
+    if (task.project && typeof task.project === "object") return task.project.name || "Unknown"
+    return "Unknown"
   }
 
   const calendarDays = useMemo(() => {
@@ -106,35 +107,23 @@ const CalendarView = () => {
     const daysInMonth = currentDate.daysInMonth()
 
     const days = []
-
     for (let i = 0; i < startDay; i++) {
       days.push({ day: null, isCurrentMonth: false })
     }
-
     for (let i = 1; i <= daysInMonth; i++) {
       days.push({ day: i, isCurrentMonth: true })
     }
-
     const remainingDays = 42 - days.length
     for (let i = 1; i <= remainingDays; i++) {
       days.push({ day: i, isCurrentMonth: false })
     }
-
     return days
   }, [currentDate])
 
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-
-  const monthName = currentDate.format("MMMM")
-  const year = currentDate.format("YYYY")
-
-  if (error) {
-    return <NetworkError onRetry={fetchData} />
-  }
-
   return (
-    <div className="h-full flex flex-col" style={{ boxShadow: "0px 0px 1px 0.1px #000000" }}>
-      <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full bg-light-bg-secondary dark:bg-dark-bg-secondary">
         <div>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-1">
             Calendar
@@ -146,6 +135,7 @@ const CalendarView = () => {
         <div className="flex items-center gap-3">
           <div className="flex rounded-lg border border-light-border dark:border-dark-border overflow-hidden">
             <button
+              type="button"
               onClick={() => setViewMode("month")}
               className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                 viewMode === "month"
@@ -156,6 +146,7 @@ const CalendarView = () => {
               Month
             </button>
             <button
+              type="button"
               onClick={() => setViewMode("week")}
               className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                 viewMode === "week"
@@ -168,44 +159,39 @@ const CalendarView = () => {
           </div>
           {viewMode === "month" && (
             <>
-              <button onClick={goToToday} className="btn-secondary text-sm">
+              <button type="button" onClick={() => setCurrentDate(dayjs())} className="btn-secondary text-sm">
                 Today
               </button>
-              <button onClick={goToPrevMonth} className="btn-ghost p-2">
+              <button type="button" onClick={() => setCurrentDate(currentDate.add(-1, "month"))} className="btn-ghost p-2">
                 <FiChevronLeft className="w-5 h-5" />
               </button>
               <span className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[180px] text-center">
-                {monthName} {year}
+                {currentDate.format("MMMM YYYY")}
               </span>
-              <button onClick={goToNextMonth} className="btn-ghost p-2">
+              <button type="button" onClick={() => setCurrentDate(currentDate.add(1, "month"))} className="btn-ghost p-2">
                 <FiChevronRight className="w-5 h-5" />
               </button>
             </>
           )}
           {viewMode === "week" && (
             <>
-              <button onClick={goToToday} className="btn-secondary text-sm">
+              <button type="button" onClick={() => setCurrentDate(dayjs())} className="btn-secondary text-sm">
                 Today
               </button>
-              <button
-                onClick={() => setCurrentDate(currentDate.add(-1, "week"))}
-                className="btn-ghost p-2"
-              >
+              <button type="button" onClick={() => setCurrentDate(currentDate.add(-1, "week"))} className="btn-ghost p-2">
                 <FiChevronLeft className="w-5 h-5" />
               </button>
               <span className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[250px] text-center">
                 {currentDate.startOf("week").format("MMM D")} -{" "}
                 {currentDate.endOf("week").format("MMM D, YYYY")}
               </span>
-              <button
-                onClick={() => setCurrentDate(currentDate.add(1, "week"))}
-                className="btn-ghost p-2"
-              >
+              <button type="button" onClick={() => setCurrentDate(currentDate.add(1, "week"))} className="btn-ghost p-2">
                 <FiChevronRight className="w-5 h-5" />
               </button>
             </>
           )}
           <button
+            type="button"
             onClick={() => {
               setSelectedDate(dayjs())
               setIsModalOpen(true)
@@ -221,7 +207,7 @@ const CalendarView = () => {
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-light-bg-primary dark:bg-dark-bg-primary">
         <div className="max-w-[1400px] mx-auto">
           {viewMode === "week" ? (
-            <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border overflow-hidden">
+            <div className="bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border border-light-border dark:border-dark-border overflow-hidden">
               <div className="grid grid-cols-7 text-center text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide border-b border-light-border dark:border-dark-border">
                 {weekDays.map((day) => (
                   <div key={day} className="py-3 bg-light-bg-hover dark:bg-dark-bg-hover">
@@ -229,14 +215,13 @@ const CalendarView = () => {
                   </div>
                 ))}
               </div>
-
               <div className="grid grid-cols-7">
                 {Array.from({ length: 7 }).map((_, dayIndex) => {
                   const date = currentDate.startOf("week").add(dayIndex, "day")
                   const dayNum = date.date()
                   const isToday = date.isSame(today, "day")
 
-                  const dayTasks = tasks.filter((task) => {
+                  const dayTasks = filteredTasks.filter((task) => {
                     const taskDate = dayjs(task.dueDate)
                     return taskDate.isSame(date, "day")
                   })
@@ -263,30 +248,20 @@ const CalendarView = () => {
                       >
                         {dayNum}
                       </div>
-
                       <div className="space-y-1">
                         {dayTasks.map((task) => (
                           <motion.div
                             key={task._id}
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setSelectedTask(task)
-                            }}
+                            onClick={(e) => handleTaskClick(e, task)}
                             className={`text-xs p-2 rounded cursor-pointer transition-all hover:scale-[1.02] ${
-                              task.priority === "urgent"
-                                ? "bg-accent-danger/20 text-accent-danger"
-                                : task.priority === "high"
-                                  ? "bg-task-priority-high/20 text-task-priority-high"
-                                  : task.priority === "medium"
-                                    ? "bg-accent-warning/20 text-accent-warning"
-                                    : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
-                            }`}
+                              priorityStyles[task.priority] || "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
+                            } ${statusBorder[task.status] || ""}`}
                           >
                             <div className="font-semibold truncate">{task.title}</div>
                             <div className="text-[10px] mt-0.5 opacity-75">
-                              {task.status?.replace("-", " ")} • {getProjectName(task.projectId)}
+                              {task.status?.replace("-", " ")} • {getProjectName(task)}
                             </div>
                           </motion.div>
                         ))}
@@ -297,7 +272,7 @@ const CalendarView = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border overflow-hidden">
+            <div className="bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border border-light-border dark:border-dark-border overflow-hidden">
               <div className="grid grid-cols-7 text-center text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide border-b border-light-border dark:border-dark-border">
                 {weekDays.map((day) => (
                   <div key={day} className="py-3 bg-light-bg-hover dark:bg-dark-bg-hover">
@@ -305,7 +280,6 @@ const CalendarView = () => {
                   </div>
                 ))}
               </div>
-
               <div className="grid grid-cols-7">
                 {calendarDays.map((item, index) => {
                   if (!item.isCurrentMonth) {
@@ -346,7 +320,6 @@ const CalendarView = () => {
                       >
                         {item.day}
                       </div>
-
                       <div className="space-y-1">
                         {dayTasks.slice(0, 3).map((task) => (
                           <motion.div
@@ -355,21 +328,13 @@ const CalendarView = () => {
                             animate={{ opacity: 1, y: 0 }}
                             onClick={(e) => handleTaskClick(e, task)}
                             className={`text-xs p-1.5 rounded truncate cursor-pointer transition-all hover:scale-[1.02] ${
-                              statusColors[task.status] || ""
-                            } ${
-                              task.priority === "urgent"
-                                ? "bg-accent-danger/20 text-accent-danger"
-                                : task.priority === "high"
-                                  ? "bg-task-priority-high/20 text-task-priority-high"
-                                  : task.priority === "medium"
-                                    ? "bg-accent-warning/20 text-accent-warning"
-                                    : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
-                            }`}
+                              priorityStyles[task.priority] || "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
+                            } ${statusBorder[task.status] || ""}`}
                           >
                             <div className="font-medium truncate">{task.title}</div>
                             {isHovered && (
                               <div className="text-[10px] mt-0.5 opacity-75">
-                                {getProjectName(task.projectId)}
+                                {getProjectName(task)}
                               </div>
                             )}
                           </motion.div>
@@ -387,13 +352,14 @@ const CalendarView = () => {
             </div>
           )}
 
+          {/* Hover Tooltip */}
           <AnimatePresence>
             {hoveredDay && getTasksForDay(hoveredDay).length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="fixed z-50 mt-2 p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg shadow-lg border border-light-border dark:border-dark-border w-64"
+                className="fixed z-50 mt-2 p-4 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-lg shadow-lg border border-light-border dark:border-dark-border w-64"
                 style={{
                   top: "50%",
                   left: "50%",
@@ -416,7 +382,13 @@ const CalendarView = () => {
                       <div className="flex items-center gap-2">
                         <div
                           className={`w-2 h-2 rounded-full ${
-                            priorityColors[task.priority] || priorityColors.none
+                            task.priority === "urgent"
+                              ? "bg-task-priority-urgent"
+                              : task.priority === "high"
+                                ? "bg-task-priority-high"
+                                : task.priority === "medium"
+                                  ? "bg-task-priority-medium"
+                                  : "bg-task-priority-low"
                           }`}
                         />
                         <span className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary">
@@ -424,7 +396,7 @@ const CalendarView = () => {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-                        <span>{getProjectName(task.projectId)}</span>
+                        <span>{getProjectName(task)}</span>
                         <span className="capitalize">{task.status?.replace("-", " ")}</span>
                       </div>
                     </div>
@@ -440,8 +412,19 @@ const CalendarView = () => {
             </div>
           )}
 
-          {!isLoading && !error && tasks.length === 0 && (
-            <EmptyState message="No tasks found. Create a task to get started." />
+          {!isLoading && filteredTasks.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16">
+              <FiChevronLeft className="hidden" />
+              <div className="text-center">
+                <FiChevronLeft className="hidden" />
+                <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary">
+                  No tasks found
+                </p>
+                <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                  Create a task to see it on the calendar
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>

@@ -22,7 +22,7 @@ import "./App.css"
 
 import { FilterProvider } from "./components/context/FilterContext.jsx"
 import { SidebarProvider } from "./components/context/SidebarContext.jsx"
-import CalendarView from "./components/date/CalenderView.jsx"
+import CalendarView from "./components/date/CalendarView.jsx"
 import GuestRoute from "./components/GuestRoute.jsx"
 import Settings from "./components/Settings.jsx"
 import SprintView from "./components/sprint/SprintView.jsx"
