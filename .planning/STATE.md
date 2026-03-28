@@ -37,12 +37,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Active Phase
 
-**Phase 7: Additional Views — Timeline, Table, Calendar**
+**Phase 8: Settings, Profile & Polish**
 
-- Status: ◐ In Progress (1/4 plans complete)
-- Requirements: TL-01–05, TB-01–05, CAL-01–04
-- Wave 1: 07-01 Filter Context + Sidebar Wiring ✅
-- Wave 2: 07-02 Timeline View, 07-03 Table View, 07-04 Calendar View (pending)
+- Status: ○ Planned (3 plans in 2 waves)
+- Requirements: SET-01–03
+- Wave 1: 08-01 Skeleton Library + View Integration, 08-02 Settings & Profile Polish + Error States
+- Wave 2: 08-03 Route Transitions + Final Audit
 
 ## Context
 
@@ -100,4 +100,17 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - **Commit:** `1f0850c` — docs(08): capture phase context
 
 ---
-*Last updated: 2026-03-28 after discuss-phase 8*
+
+## Plan Phase 8 Run Log
+
+- **Date:** 2026-03-28
+- **Phase:** 08 — Settings, Profile & Polish
+- **Research:** Created `08-RESEARCH.md` directly (no gsd-phase-researcher agent available)
+- **Plans:** 3 plans created (08-01 Skeleton Library, 08-02 Settings/Profile/Error Polish, 08-03 Route Transitions + Final Audit)
+- **Waves:** 2 (Wave 1: 08-01 + 08-02 parallel, Wave 2: 08-03 after both)
+- **Verification:** Self-verified quality gate — all checks pass
+- **Requirements covered:** SET-01 (Settings redesign), SET-02 (Profile redesign), SET-03 (Avatar/name/email update)
+
+---
+
+*Last updated: 2026-03-28 after plan-phase 8*
