@@ -231,7 +231,6 @@ const ProjectPage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="h-full flex flex-col p-6 bg-light-bg-primary dark:bg-dark-bg-primary m-0 rounded-lg"
-      style={{ boxShadow: "0px 0px 1px 0.1px #000000" }}
     >
       <header className="flex items-center justify-between mb-8">
         {loading ? (
