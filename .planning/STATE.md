@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-last_updated: "2026-03-28T14:34:10.659Z"
+  status: Executing
+last_updated: "2026-03-28T15:06:32.796Z"
 progress:
   total_phases: 8
   completed_phases: 3
-  total_plans: 3
-  completed_plans: 6
+  total_plans: 30
+  completed_plans: 7
 ---
 
 # Project State: Taskly
@@ -18,7 +18,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** Users can see, organize, and move their work forward across all projects from one unified workspace
-**Current focus:** Phase 8 — settings, profile & polish
+**Current focus:** Phase 07 — additional-views-timeline-table-calendar
 
 ## Current Milestone
 
@@ -32,18 +32,17 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | 4 | Core Views | ✅ Complete | OV-01–05, MT-01–04, BRD-01–05 |
 | 5 | Task Detail Panel | ✅ Complete | TDP-01–09 |
 | 6 | Sprint Management | ◐ In Progress | SPR-01–08 |
-| 7 | Additional Views | ○ Pending | TL-01–05, TB-01–05, CAL-01–04 |
+| 7 | Additional Views | ◐ In Progress | TL-01–05, TB-01–05, CAL-01–04 |
 | 8 | Settings, Profile & Polish | ○ Pending | SET-01–03 |
 
 ## Active Phase
 
-**Phase 6: Sprint Management**
+**Phase 7: Additional Views — Timeline, Table, Calendar**
 
-- Status: ◐ In Progress
-- Requirements: SPR-01–08 (partially done)
-- Backend: Sprint model + all CRUD endpoints
-- Frontend: Backlog view + Create sprint dialog
-- Remaining: Sprint board view, velocity chart, sidebar integration
+- Status: ◐ In Progress (1/4 plans complete)
+- Requirements: TL-01–05, TB-01–05, CAL-01–04
+- Wave 1: 07-01 Filter Context + Sidebar Wiring ✅
+- Wave 2: 07-02 Timeline View, 07-03 Table View, 07-04 Calendar View (pending)
 
 ## Context
 
