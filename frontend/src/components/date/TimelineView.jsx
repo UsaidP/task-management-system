@@ -1,19 +1,103 @@
 import dayjs from "dayjs"
 import { motion } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
-import { FiCalendar, FiChevronLeft, FiChevronRight, FiFilter, FiZoomIn } from "react-icons/fi"
+import { FiCalendar, FiChevronLeft, FiChevronRight } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../context/customHook.js"
+import { useFilter } from "../context/FilterContext.jsx"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
+
+const getStatusColor = (status) => {
+  const colors = {
+    todo: "bg-task-status-todo",
+    "in-progress": "bg-task-status-progress",
+    "under-review": "bg-task-status-review",
+    completed: "bg-task-status-done",
+  }
+  return colors[status] || colors.todo
+}
+
+const getPriorityColor = (priority) => {
+  const colors = {
+    low: "border-l-task-priority-low",
+    medium: "border-l-task-priority-medium",
+    high: "border-l-task-priority-high",
+    urgent: "border-l-task-priority-urgent",
+  }
+  return colors[priority] || colors.medium
+}
+
+const getDateColumns = (zoom, currentDate) => {
+  if (zoom === "day") {
+    const start = currentDate.startOf("day")
+    return Array.from({ length: 14 }, (_, i) => {
+      const d = start.add(i, "day")
+      return {
+        label: d.format("DD"),
+        sublabel: d.format("ddd"),
+        start: d.startOf("day"),
+        end: d.endOf("day"),
+      }
+    })
+  }
+
+  if (zoom === "week") {
+    const start = currentDate.startOf("week")
+    return Array.from({ length: 12 }, (_, i) => {
+      const s = start.add(i * 7, "day")
+      return {
+        label: `W${s.week()}`,
+        sublabel: s.format("MMM D"),
+        start: s.startOf("day"),
+        end: s.add(6, "day").endOf("day"),
+      }
+    })
+  }
+
+  // month (default)
+  const startOfMonth = currentDate.startOf("month")
+  const daysInMonth = currentDate.daysInMonth()
+  return Array.from({ length: daysInMonth }, (_, i) => {
+    const d = startOfMonth.add(i, "day")
+    return {
+      label: d.format("DD"),
+      sublabel: d.format("ddd"),
+      start: d.startOf("day"),
+      end: d.endOf("day"),
+    }
+  })
+}
+
+const getTaskPosition = (task, columns) => {
+  if (!task.dueDate && !task.startDate) return null
+
+  const start = task.startDate ? dayjs(task.startDate) : dayjs(task.dueDate).subtract(3, "day")
+  const end = task.dueDate ? dayjs(task.dueDate) : start.add(3, "day")
+
+  const firstCol = columns[0].start
+  const lastCol = columns[columns.length - 1].end
+
+  if (end.isBefore(firstCol) || start.isAfter(lastCol)) return null
+
+  const totalSpan = lastCol.diff(firstCol, "day") + 1
+  const startOffset = Math.max(0, start.diff(firstCol, "day"))
+  const duration = Math.max(1, end.diff(start, "day") + 1)
+
+  return {
+    left: (startOffset / totalSpan) * 100,
+    width: Math.max((duration / totalSpan) * 100, 5),
+  }
+}
 
 const TimelineView = () => {
   const { user } = useAuth()
+  const { projectFilter, sprintFilter } = useFilter()
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
-  const [zoom, setZoom] = useState("month") // day, week, month
+  const [zoom, setZoom] = useState("month")
   const [selectedTask, setSelectedTask] = useState(null)
   const [currentDate, setCurrentDate] = useState(dayjs())
-  const [groupBy, setGroupBy] = useState("project") // project, sprint
+  const [groupBy, setGroupBy] = useState("project")
 
   useEffect(() => {
     fetchTasks()
@@ -33,75 +117,66 @@ const TimelineView = () => {
     }
   }
 
-  const getDatesForZoom = () => {
-    const startOfMonth = currentDate.startOf("month")
-    const endOfMonth = currentDate.endOf("month")
-    const dates = []
-    let current = startOfMonth
-    while (current.isBefore(endOfMonth) || current.isSame(endOfMonth, "day")) {
-      dates.push(current)
-      current = current.add(1, "day")
+  const filteredTasks = useMemo(() => {
+    let result = tasks
+    if (projectFilter) {
+      result = result.filter((t) => {
+        const pid = typeof t.project === "object" ? t.project?._id : t.project
+        return pid === projectFilter
+      })
     }
-    return dates
-  }
+    if (sprintFilter) {
+      result = result.filter((t) => t.sprint === sprintFilter)
+    }
+    return result
+  }, [tasks, projectFilter, sprintFilter])
 
-  const dates = getDatesForZoom()
+  const columns = useMemo(() => getDateColumns(zoom, currentDate), [zoom, currentDate])
 
-  const getTaskPosition = (task) => {
-    if (!task.dueDate && !task.startDate) return null
-
-    const start = task.startDate ? dayjs(task.startDate) : dayjs(task.dueDate).subtract(3, "day")
-    const end = task.dueDate ? dayjs(task.dueDate) : start.add(3, "day")
-
-    const monthStart = currentDate.startOf("month")
-    const monthEnd = currentDate.startOf("month").endOf("month")
-
-    const daysInMonth = monthEnd.date()
-
-    const startOffset = start.diff(monthStart, "day")
-    const duration = end.diff(start, "day")
-
-    if (end.isBefore(monthStart) || start.isAfter(monthEnd)) return null
-
-    const clampedStart = Math.max(0, startOffset)
-    const clampedDuration = Math.min(duration, daysInMonth - clampedStart)
-
-    return {
-      left: (clampedStart / daysInMonth) * 100,
-      width: (clampedDuration / daysInMonth) * 100,
+  const navigateDate = (direction) => {
+    if (zoom === "day") {
+      setCurrentDate((prev) => prev.add(direction * 14, "day"))
+    } else if (zoom === "week") {
+      setCurrentDate((prev) => prev.add(direction * 12, "week"))
+    } else {
+      setCurrentDate((prev) => prev.add(direction, "month"))
     }
   }
 
-  const getStatusColor = (status) => {
-    const colors = {
-      todo: "bg-slate-400",
-      "in-progress": "bg-blue-500",
-      "under-review": "bg-amber-500",
-      completed: "bg-emerald-500",
+  const getDateLabel = () => {
+    if (zoom === "day") {
+      const end = currentDate.add(13, "day")
+      if (currentDate.month() === end.month()) {
+        return `${currentDate.format("MMM D")} - ${end.format("D, YYYY")}`
+      }
+      return `${currentDate.format("MMM D")} - ${end.format("MMM D, YYYY")}`
     }
-    return colors[status] || colors.todo
+    if (zoom === "week") {
+      const end = currentDate.startOf("week").add(11 * 7, "day")
+      return `${currentDate.startOf("week").format("MMM D")} - ${end.format("MMM D, YYYY")}`
+    }
+    return currentDate.format("MMMM YYYY")
   }
 
-  const getPriorityColor = (priority) => {
-    const colors = {
-      low: "border-l-blue-500",
-      medium: "border-l-amber-500",
-      high: "border-l-orange-500",
-      urgent: "border-l-red-500",
-    }
-    return colors[priority] || colors.medium
-  }
+  const todayColumnIndex = useMemo(() => {
+    const today = dayjs()
+    return columns.findIndex((col) => today.isAfter(col.start) && today.isBefore(col.end))
+  }, [columns])
 
   const groupedTasks = useMemo(() => {
     const groups = {}
-    tasks.forEach((task) => {
-      const projectName =
-        typeof task.project === "object" ? task.project?.name || "Personal" : "Personal"
-      if (!groups[projectName]) groups[projectName] = []
-      groups[projectName].push(task)
+    filteredTasks.forEach((task) => {
+      let key
+      if (groupBy === "sprint") {
+        key = task.sprint?.name || task.sprint || "Backlog"
+      } else {
+        key = typeof task.project === "object" ? task.project?.name || "Personal" : "Personal"
+      }
+      if (!groups[key]) groups[key] = []
+      groups[key].push(task)
     })
     return groups
-  }, [tasks])
+  }, [filteredTasks, groupBy])
 
   if (loading) {
     return (
@@ -117,9 +192,9 @@ const TimelineView = () => {
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ boxShadow: "0px 0px 1px 0.1px #000000" }}>
+    <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-tertiary">
+      <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary">
         <div>
           <h1 className="text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
             Timeline
@@ -130,23 +205,64 @@ const TimelineView = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Group By Toggle */}
+          <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1">
+            <button
+              type="button"
+              onClick={() => setGroupBy("project")}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                groupBy === "project"
+                  ? "bg-accent-primary text-white"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+              }`}
+            >
+              Project
+            </button>
+            <button
+              type="button"
+              onClick={() => setGroupBy("sprint")}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                groupBy === "sprint"
+                  ? "bg-accent-primary text-white"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+              }`}
+            >
+              Sprint
+            </button>
+          </div>
+
           {/* Zoom Controls */}
           <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1">
             <button
+              type="button"
               onClick={() => setZoom("day")}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${zoom === "day" ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"}`}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                zoom === "day"
+                  ? "bg-accent-primary text-white"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+              }`}
             >
               Day
             </button>
             <button
+              type="button"
               onClick={() => setZoom("week")}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${zoom === "week" ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"}`}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                zoom === "week"
+                  ? "bg-accent-primary text-white"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+              }`}
             >
               Week
             </button>
             <button
+              type="button"
               onClick={() => setZoom("month")}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${zoom === "month" ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"}`}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                zoom === "month"
+                  ? "bg-accent-primary text-white"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+              }`}
             >
               Month
             </button>
@@ -155,16 +271,18 @@ const TimelineView = () => {
           {/* Navigation */}
           <div className="flex items-center gap-1">
             <button
-              onClick={() => setCurrentDate(currentDate.subtract(1, "month"))}
+              type="button"
+              onClick={() => navigateDate(-1)}
               className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
             >
               <FiChevronLeft className="w-5 h-5 text-light-text-secondary" />
             </button>
-            <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[120px] text-center">
-              {currentDate.format("MMMM YYYY")}
+            <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[180px] text-center">
+              {getDateLabel()}
             </span>
             <button
-              onClick={() => setCurrentDate(currentDate.add(1, "month"))}
+              type="button"
+              onClick={() => navigateDate(1)}
               className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
             >
               <FiChevronRight className="w-5 h-5 text-light-text-secondary" />
@@ -176,22 +294,24 @@ const TimelineView = () => {
       {/* Timeline Content */}
       <div className="flex-1 overflow-auto custom-scrollbar">
         {/* Date Header */}
-        <div className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border z-10">
+        <div className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
           <div className="flex">
             <div className="w-48 flex-shrink-0 p-3 border-r border-light-border dark:border-dark-border text-sm font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
-              Project
+              {groupBy === "sprint" ? "Sprint" : "Project"}
             </div>
             <div className="flex-1 flex">
-              {dates.map((date, i) => (
+              {columns.map((col, i) => (
                 <div
                   key={i}
-                  className="flex-1 min-w-[40px] p-2 border-r border-light-border dark:border-dark-border text-center"
+                  className={`flex-1 min-w-[40px] p-2 border-r border-light-border dark:border-dark-border text-center ${
+                    todayColumnIndex === i ? "bg-accent-primary/10 dark:bg-accent-primary/15" : ""
+                  }`}
                 >
                   <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-                    {date.format("DD")}
+                    {col.label}
                   </div>
                   <div className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
-                    {date.format("ddd")}
+                    {col.sublabel}
                   </div>
                 </div>
               ))}
@@ -199,32 +319,32 @@ const TimelineView = () => {
           </div>
         </div>
 
-        {/* Project Rows */}
+        {/* Group Rows */}
         <div className="divide-y divide-light-border dark:divide-dark-border">
-          {Object.entries(groupedTasks).map(([projectName, projectTasks]) => (
-            <div key={projectName} className="flex">
+          {Object.entries(groupedTasks).map(([groupName, groupTasks]) => (
+            <div key={groupName} className="flex">
               <div className="w-48 flex-shrink-0 p-4 border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
                 <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary">
-                  {projectName}
+                  {groupName}
                 </h3>
                 <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
-                  {projectTasks.length} tasks
+                  {groupTasks.length} tasks
                 </p>
               </div>
               <div className="flex-1 relative min-h-[80px]">
                 {/* Today Line */}
-                {dates.some((d) => d.isSame(dayjs(), "day")) && (
+                {todayColumnIndex >= 0 && (
                   <div
                     className="absolute top-0 bottom-0 w-0.5 bg-accent-primary z-20"
                     style={{
-                      left: `${(dayjs().diff(currentDate.startOf("month"), "day") / dates.length) * 100}%`,
+                      left: `${((todayColumnIndex + 0.5) / columns.length) * 100}%`,
                     }}
                   />
                 )}
 
                 {/* Task Bars */}
-                {projectTasks.map((task, idx) => {
-                  const position = getTaskPosition(task)
+                {groupTasks.map((task, idx) => {
+                  const position = getTaskPosition(task, columns)
                   if (!position) return null
 
                   return (
@@ -237,7 +357,7 @@ const TimelineView = () => {
                       className={`absolute top-2 bottom-2 rounded-lg cursor-pointer hover:opacity-90 transition-opacity border-l-4 ${getStatusColor(task.status)} ${getPriorityColor(task.priority)} bg-opacity-20`}
                       style={{
                         left: `${position.left}%`,
-                        width: `${Math.max(position.width, 5)}%`,
+                        width: `${position.width}%`,
                       }}
                     >
                       <div className="p-2 overflow-hidden">
@@ -255,22 +375,22 @@ const TimelineView = () => {
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Empty State */}
-      {tasks.length === 0 && (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <FiCalendar className="w-16 h-16 mx-auto mb-4 text-light-text-tertiary opacity-30" />
-            <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
-              No tasks yet
-            </h3>
-            <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-              Create tasks with due dates to see them on the timeline
-            </p>
+        {/* Empty State */}
+        {filteredTasks.length === 0 && (
+          <div className="flex-1 flex items-center justify-center py-16">
+            <div className="text-center">
+              <FiCalendar className="w-16 h-16 mx-auto mb-4 text-light-text-tertiary opacity-30" />
+              <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
+                No tasks yet
+              </h3>
+              <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                Create tasks with due dates to see them on the timeline
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Task Detail Panel */}
       {selectedTask && (
