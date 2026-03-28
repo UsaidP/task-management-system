@@ -2,19 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════
+   Taskly — "Work that feels human"
+   Warm earth-tone design system
+   ═══════════════════════════════════════════ */
+
 @layer base {
 
   body {
     @apply bg-light-bg-primary text-light-text-secondary dark:bg-dark-bg-primary dark:text-dark-text-secondary font-sans antialiased transition-colors duration-fast;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply text-light-text-primary dark:text-dark-text-primary font-semibold;
+  h1, h2, h3 {
+    @apply text-light-text-primary dark:text-dark-text-primary font-serif font-semibold;
+  }
+
+  h4, h5, h6 {
+    @apply text-light-text-primary dark:text-dark-text-primary font-sans font-semibold;
   }
 
   a {
@@ -24,84 +28,178 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
-/* ========================================
+/* ════════════════════════════════════════════
    🧩 REUSABLE COMPONENTS
-   ======================================== */
+   ════════════════════════════════════════════ */
 
 @layer components {
 
+  /* ── Buttons ─────────────────────────────── */
+
   .btn-primary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white bg-accent-primary hover:bg-accent-primary-dark dark:bg-accent-primary-light dark:text-dark-text-inverse dark:hover:bg-accent-primary shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-primary hover:bg-accent-primary-dark dark:bg-accent-primary-light dark:text-dark-text-inverse dark:hover:bg-accent-primary shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary hover:bg-light-bg-hover dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-hover border-2 border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary hover:bg-light-bg-hover dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-hover border-2 border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
   }
 
-  /* Danger Button */
   .btn-danger {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-white bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger-light dark:text-dark-text-inverse dark:hover:bg-accent-danger shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger-light dark:text-dark-text-inverse dark:hover:bg-accent-danger shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
   }
 
-  /* Ghost Button */
   .btn-ghost {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast cursor-pointer focus-visible-ring;
   }
 
-  /* ======================================== 
-     📝 FORMS
-     ======================================== */
+  .btn-accent {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-warning hover:bg-accent-warning-dark dark:bg-accent-warning-light dark:text-dark-text-inverse dark:hover:bg-accent-warning shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+  }
 
-  /* Input Field */
+  /* ── Forms ────────────────────────────────── */
+
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-primary dark:text-dark-text-primary border-2 border-light-border dark:border-dark-border focus:outline-none placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary/50 dark:focus:ring-accent-primary-light/50 dark:focus:border-accent-primary-light/50;
+    @apply w-full px-4 py-3 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-primary dark:text-dark-text-primary border-2 border-light-border dark:border-dark-border placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary dark:focus:ring-accent-primary-light/20 dark:focus:border-accent-primary-light;
   }
 
-  /* Select Dropdown */
   .select-field {
     @apply appearance-none bg-[url('data:image/svg+xml')] bg-no-repeat bg-[center_right_1rem];
   }
 
-  /* Checkbox */
   .checkbox {
     @apply w-5 h-5 rounded bg-light-bg-secondary dark:bg-dark-bg-secondary border-2 border-light-border dark:border-dark-border text-accent-primary focus:ring-2 focus:ring-accent-primary/30 focus:ring-offset-0 cursor-pointer transition-all duration-200 checked:bg-accent-primary checked:border-accent-primary hover:border-accent-primary dark:hover:border-accent-primary-light;
   }
 
-  /* Input Label */
   .input-label {
-    @apply block text-sm font-medium mb-2 text-light-text-primary dark:text-dark-text-primary;
+    @apply block text-sm font-sans font-medium mb-2 text-light-text-primary dark:text-dark-text-primary;
   }
 
-  /* Input Error */
   .input-error {
     @apply text-sm text-accent-danger mt-1;
   }
 
+  /* ── Cards ────────────────────────────────── */
+
   .card {
-    @apply bg-light-bg-tertiary dark:bg-dark-bg-tertiary border-2 border-light-border dark:border-dark-border rounded-xl p-6 shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transition-all duration-200;
+    @apply bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl p-6 shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transition-all duration-200;
   }
 
-  /* Card with hover effect */
   .card-interactive {
-    @apply card cursor-pointer hover:scale-[1.01] hover:border-accent-primary dark:hover:border-accent-primary-light active:scale-[0.99];
+    @apply card cursor-pointer hover:scale-[1.01] hover:border-accent-primary/40 dark:hover:border-accent-primary-light/40 active:scale-[0.99];
   }
 
-  /* Modal/Dialog */
+  /* ── Auth Pages ──────────────────────────── */
+
+  .auth-bg {
+    @apply relative min-h-screen flex items-center justify-center p-6;
+  }
+
+  .auth-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+  }
+
+  .dark .auth-bg::before {
+    opacity: 0.12;
+  }
+
+  .auth-bg > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .auth-card {
+    @apply bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl p-8 shadow-lg dark:shadow-dark-lg;
+  }
+
+  /* ── Modals ───────────────────────────────── */
+
   .modal-overlay {
     @apply fixed inset-0 z-50 bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm flex items-center justify-center animate-fade-in;
   }
 
   .modal-content {
-    @apply bg-light-bg-primary dark:bg-dark-bg-primary border-2 border-light-border dark:border-dark-border rounded-2xl p-6 max-w-lg w-full mx-4 shadow-xl dark:shadow-dark-lg animate-scale-in;
+    @apply bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-2xl p-6 max-w-lg w-full mx-4 shadow-xl dark:shadow-dark-lg animate-scale-in;
   }
 
-  /* ======================================== 
-     📋 TASK-SPECIFIC COMPONENTS
-     ======================================== */
+  /* ── Task Cards ───────────────────────────── */
 
-  /* Priority Badge */
+  .task-card {
+    @apply bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-xl shadow-sm border border-light-border dark:border-dark-border p-4 flex flex-col gap-3 transition-all duration-200 cursor-pointer;
+  }
+
+  .task-card:hover {
+    @apply -translate-y-0.5 shadow-md dark:shadow-dark-md border-accent-primary/30 dark:border-accent-primary-light/30;
+  }
+
+  .task-card-header {
+    @apply flex justify-between items-center;
+  }
+
+  .task-card-body .task-title {
+    @apply text-base font-sans font-semibold text-light-text-primary dark:text-dark-text-primary mb-1;
+  }
+
+  .task-card-body .task-description {
+    @apply text-sm text-light-text-secondary dark:text-dark-text-secondary leading-relaxed;
+  }
+
+  .task-card-metadata {
+    @apply flex justify-between items-center;
+  }
+
+  .due-date {
+    @apply flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary;
+  }
+
+  .task-card-progress .progress-label {
+    @apply flex justify-between text-xs text-light-text-secondary dark:text-dark-text-secondary mb-2;
+  }
+
+  .progress-bar-track {
+    @apply bg-light-bg-hover dark:bg-dark-bg-hover rounded-full h-2 overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply bg-accent-primary dark:bg-accent-primary-light h-full rounded-full transition-all duration-slow;
+  }
+
+  .task-card-footer {
+    @apply flex justify-between items-center pt-3 border-t border-light-border dark:border-dark-border;
+  }
+
+  .task-meta-icons {
+    @apply flex gap-4;
+  }
+
+  .icon-group {
+    @apply flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary;
+  }
+
+  .icon-group i {
+    @apply mr-2;
+  }
+
+  /* ── Badges ───────────────────────────────── */
+
   .badge-priority-urgent {
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-urgent/10 text-task-priority-urgent dark:bg-task-priority-urgent/20;
   }
@@ -118,7 +216,6 @@
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-low/10 text-task-priority-low dark:bg-task-priority-low/20;
   }
 
-  /* Status Badge */
   .badge-status-done {
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-done/10 text-task-status-done dark:bg-task-status-done/20;
   }
@@ -127,42 +224,116 @@
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-progress/10 text-task-status-progress dark:bg-task-status-progress/20;
   }
 
+  .badge-status-review {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-review/10 text-task-status-review dark:bg-task-status-review/20;
+  }
+
   .badge-status-todo {
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-todo/10 text-task-status-todo dark:bg-task-status-todo/20;
   }
 
-  /* ======================================== 
-     🎨 UTILITY COMPONENTS
-     ======================================== */
+  /* ── Avatars ──────────────────────────────── */
 
-  /* Divider */
-  .divider {
-    @apply border-t-2 border-light-border dark:border-dark-border;
+  .avatar-group {
+    @apply flex;
   }
 
-  /* Skeleton Loader */
+  .avatar {
+    @apply w-8 h-8 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-primary bg-cover bg-center -ml-2 first:ml-0;
+  }
+
+  /* ── Tags & Labels ────────────────────────── */
+
+  .tag {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .tag-category {
+    @apply bg-accent-purple/10 text-accent-purple dark:bg-accent-purple/20 dark:text-accent-purple-light;
+  }
+
+  .tag-project {
+    @apply bg-accent-info/10 text-accent-info dark:bg-accent-info/20 dark:text-accent-info-light;
+  }
+
+  .tag-sprint {
+    @apply bg-accent-warning/10 text-accent-warning dark:bg-accent-warning/20 dark:text-accent-warning-light;
+  }
+
+  /* ── Utility Components ───────────────────── */
+
+  .divider {
+    @apply border-t border-light-border dark:border-dark-border;
+  }
+
   .skeleton {
     @apply animate-pulse bg-light-bg-hover dark:bg-dark-bg-hover rounded;
   }
 
-  /* Tooltip */
   .tooltip {
     @apply absolute z-50 px-3 py-2 text-xs font-medium rounded-lg bg-light-text-primary dark:bg-dark-bg-tertiary text-light-text-inverse dark:text-dark-text-primary shadow-lg dark:shadow-dark-md animate-fade-in;
   }
 
-  /* Focus visible utility */
   .focus-visible-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-light-bg-primary dark:focus-visible:ring-offset-dark-bg-primary;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-light-bg-primary dark:focus-visible:ring-offset-dark-bg-primary;
+  }
+
+  /* ── Status & Priority Utility Classes ───── */
+
+  .status-in-progress {
+    @apply bg-task-status-progress/10 text-task-status-progress dark:bg-task-status-progress/20;
+  }
+
+  .status-under-review {
+    @apply bg-task-status-review/10 text-task-status-review dark:bg-task-status-review/20;
+  }
+
+  .status-completed {
+    @apply bg-task-status-done/10 text-task-status-done dark:bg-task-status-done/20;
+  }
+
+  .status-todo {
+    @apply bg-task-status-todo/10 text-task-status-todo dark:bg-task-status-todo/20;
+  }
+
+  .priority-urgent {
+    @apply bg-task-priority-urgent/10 text-task-priority-urgent dark:bg-task-priority-urgent/20;
+  }
+
+  .priority-high {
+    @apply bg-task-priority-high/10 text-task-priority-high dark:bg-task-priority-high/20;
+  }
+
+  .priority-medium {
+    @apply bg-task-priority-medium/10 text-task-priority-medium dark:bg-task-priority-medium/20;
+  }
+
+  .priority-low {
+    @apply bg-task-priority-low/10 text-task-priority-low dark:bg-task-priority-low/20;
+  }
+
+  /* ── Delete Button ────────────────────────── */
+
+  .delete-task-btn {
+    @apply bg-transparent border-0 cursor-pointer p-1 rounded-full flex items-center justify-center transition-colors duration-200 hover:bg-accent-danger/10 dark:hover:bg-accent-danger/20;
+  }
+
+  .delete-icon {
+    @apply text-light-text-tertiary dark:text-dark-text-tertiary transition-colors duration-200;
+  }
+
+  .delete-task-btn:hover .delete-icon {
+    @apply text-accent-danger dark:text-accent-danger-light;
   }
 }
 
-/* ========================================
+/* ════════════════════════════════════════════
    🎯 SCROLLBAR STYLING
-   ======================================== */
+   ════════════════════════════════════════════ */
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -174,199 +345,15 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-light-border-strong dark:bg-dark-border-strong;
+  @apply bg-light-text-tertiary dark:bg-dark-text-tertiary;
 }
 
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: theme("colors.light.border.DEFAULT") theme("colors.light.bg.hover");
+  scrollbar-color: theme("colors.light.border.strong") transparent;
 }
 
 .dark * {
-  scrollbar-color: theme("colors.dark.border.DEFAULT") theme("colors.dark.bg.hover");
-}
-
-/* ========================================
-   Task Card Styles
-   ======================================== */
-
-.task-card {
-  @apply bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-xl shadow-md border-2 border-light-border dark:border-dark-border p-6 flex flex-col gap-4 transition-all duration-200;
-}
-
-.task-card:hover {
-  @apply -translate-y-1 shadow-lg dark:shadow-dark-lg;
-}
-
-.task-card-header {
-  @apply flex justify-between items-center;
-}
-
-.task-card-body .task-title {
-  @apply text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-2;
-}
-
-.task-card-body .task-description {
-  @apply text-sm text-light-text-secondary dark:text-dark-text-secondary leading-relaxed;
-}
-
-.task-card-metadata {
-  @apply flex justify-between items-center;
-}
-
-.due-date {
-  @apply flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary;
-}
-
-.due-date .fa-calendar {
-  @apply mr-2 text-light-text-tertiary dark:text-dark-text-tertiary;
-}
-
-.task-card-progress .progress-label {
-  @apply flex justify-between text-xs text-light-text-secondary dark:text-dark-text-secondary mb-2;
-}
-
-.progress-bar-track {
-  @apply bg-light-bg-hover dark:bg-dark-bg-hover rounded-full h-2 overflow-hidden;
-}
-
-.progress-bar-fill {
-  @apply bg-accent-primary dark:bg-accent-primary-light h-full rounded-full transition-all duration-300;
-}
-
-.task-card-footer {
-  @apply flex justify-between items-center pt-4 border-t-2 border-light-border dark:border-dark-border;
-}
-
-.task-meta-icons {
-  @apply flex gap-4;
-}
-
-.icon-group {
-  @apply flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary;
-}
-
-.icon-group i {
-  @apply mr-2;
-}
-
-.avatar-group {
-  @apply flex;
-}
-
-.avatar {
-  @apply w-10 h-10 rounded-full border-2 border-light-border-strong dark:border-dark-border-strong bg-cover bg-center -ml-2.5 first:ml-0;
-}
-
-.tag {
-  @apply inline-block px-3 py-1 rounded-full text-xs font-medium;
-}
-
-.tag-category {
-  @apply bg-accent-purple/10 text-accent-purple dark:bg-accent-purple/20 dark:text-accent-purple-light;
-}
-
-.status-in-progress {
-  @apply bg-task-status-progress/10 text-task-status-progress dark:bg-task-status-progress/20;
-}
-
-.status-under-review {
-  @apply bg-task-status-review/10 text-task-status-review dark:bg-task-status-review/20;
-}
-
-.status-completed {
-  @apply bg-task-status-done/10 text-task-status-done dark:bg-task-status-done/20;
-}
-
-.status-todo {
-  @apply bg-task-status-todo/10 text-task-status-todo dark:bg-task-status-todo/20;
-}
-
-.priority-urgent {
-  @apply bg-task-priority-urgent/10 text-task-priority-urgent dark:bg-task-priority-urgent/20;
-}
-
-.priority-high {
-  @apply bg-task-priority-high/10 text-task-priority-high dark:bg-task-priority-high/20;
-}
-
-.priority-medium {
-  @apply bg-task-priority-medium/10 text-task-priority-medium dark:bg-task-priority-medium/20;
-}
-
-.priority-low {
-  @apply bg-task-priority-low/10 text-task-priority-low dark:bg-task-priority-low/20;
-}
-
-/* --- Dark Mode Tags --- */
-/*  * The dark mode pattern for tags is typically a semi-transparent
- * version of the color for the background and the light version
- * of the color for the text.
- */
-
-.dark .tag-category {
-  background-color: rgba(134, 85, 197, 0.2);
-  color: #d6bcfa;
-  /* Lighter purple */
-}
-
-.dark .status-in-progress {
-  background-color: rgba(43, 108, 176, 0.2);
-  color: #90cdf4;
-  /* Lighter blue */
-}
-
-.dark .status-under-review {
-  background-color: rgba(151, 90, 22, 0.2);
-  color: #fbd38d;
-}
-
-.dark .status-completed {
-  background-color: rgba(47, 133, 90, 0.2);
-  color: #9ae6b4;
-  /* Lighter green */
-}
-
-.dark .status-todo {
-  background-color: rgba(74, 85, 104, 0.2);
-  color: #e2e8f0;
-}
-
-.dark .priority-urgent {
-  background-color: rgba(197, 48, 48, 0.2);
-  color: #feb2b2;
-  /* Lighter red */
-}
-
-.dark .priority-high {
-  background-color: rgba(239, 68, 68, 0.2);
-  color: #fecaca;
-  /* Lighter red */
-}
-
-.dark .priority-medium {
-  background-color: rgba(217, 119, 6, 0.2);
-  color: #fcd34d;
-  /* Lighter yellow */
-}
-
-.dark .priority-low {
-  background-color: rgba(5, 150, 105, 0.2);
-  color: #a7f3d0;
-  /* Lighter green */
-}
-
-.delete-task-btn {
-  @apply bg-transparent border-0 cursor-pointer p-1 rounded-full flex items-center justify-center transition-colors duration-200 hover:bg-red-50 dark:hover:bg-red-950/20;
-}
-
-
-
-.delete-icon {
-  @apply text-light-text-tertiary dark:text-dark-text-tertiary transition-colors duration-200;
-}
-
-.delete-task-btn:hover .delete-icon {
-  @apply text-accent-danger dark:text-accent-danger-light;
+  scrollbar-color: theme("colors.dark.border.strong") transparent;
 }

@@ -1,24 +1,8 @@
-import React, { useState } from "react"
+import { motion } from "framer-motion"
+import { useState } from "react"
+import { FiMail } from "react-icons/fi"
 import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../context/customHook.js"
-
-const EmailIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="80"
-    height="80"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="text-gray-700 dark:text-gray-300 mx-auto"
-  >
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-    <polyline points="22,6 12,13 2,6" />
-  </svg>
-)
 
 export const ConfirmEmail = () => {
   const location = useLocation()
@@ -35,7 +19,6 @@ export const ConfirmEmail = () => {
     setError("")
     try {
       const response = await resendVerifyEmail(email)
-      console.log(response)
       if (response.success) {
         setFeedbackMessage(`A new confirmation link has been sent to ${email}.`)
       } else {
@@ -49,29 +32,71 @@ export const ConfirmEmail = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-primary-background">
-      <div className="w-full max-w-md p-8 space-y-6 text-center card">
-        <EmailIcon />
-        <h1 className="text-2xl font-bold text-highlight-text">Confirm Your Email</h1>
-        <p className="text-secondary-text">We've sent a confirmation link to:</p>
-        <p className="font-medium text-accent-blue">{email}</p>
-        <p className="text-secondary-text"> and click the link to complete your registration.</p>
-        <div className="pt-6 border-t border-borders-dividers">
-          <p className="text-secondary-text">Didn't receive the email?</p>
+    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-md auth-card space-y-6 text-center"
+      >
+        <div className="w-20 h-20 bg-accent-primary/10 dark:bg-accent-primary/20 text-accent-primary dark:text-accent-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
+          <FiMail className="w-10 h-10" />
+        </div>
+
+        <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+          Check your mail
+        </h1>
+        <p className="text-light-text-secondary dark:text-dark-text-secondary">
+          We've sent a confirmation link to:
+        </p>
+        <p className="font-semibold text-lg text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary dark:bg-dark-bg-secondary py-2 px-4 rounded-lg inline-block my-2">
+          {email}
+        </p>
+        <p className="text-light-text-secondary dark:text-dark-text-secondary">
+          Click the link in the email to verify your account.
+        </p>
+
+        {feedbackMessage && (
+          <div className="p-3 mt-4 bg-accent-success/10 border border-accent-success/20 rounded-lg text-accent-success text-sm">
+            {feedbackMessage}
+          </div>
+        )}
+
+        {error && (
+          <div className="p-3 mt-4 bg-accent-danger/10 border border-accent-danger/20 rounded-lg text-accent-danger text-sm">
+            {error}
+          </div>
+        )}
+
+        <div className="pt-8 border-t border-light-border dark:border-dark-border mt-8">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-4">
+            Didn't receive the email?
+          </p>
           <button
+            type="button"
             onClick={handleResendEmail}
             disabled={isSending}
-            className="w-full px-4 py-2 mt-4 font-medium text-white btn-primary disabled:opacity-50"
+            className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200"
           >
-            {isSending ? "Sending..." : "Resend Confirmation Link"}
+            {isSending ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+              </div>
+            ) : (
+              "Resend Confirmation Link"
+            )}
           </button>
         </div>
-        {feedbackMessage && <p className="mt-4 text-sm text-green-600">{feedbackMessage}</p>}
-        {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
-        <Link to="/login" className="inline-block mt-6 text-sm text-secondary-text hover:underline">
-          Back to Login
-        </Link>
-      </div>
+
+        <div className="pt-4">
+          <Link
+            to="/login"
+            className="inline-block text-sm font-medium text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors"
+          >
+            Return to Login
+          </Link>
+        </div>
+      </motion.div>
     </div>
   )
 }

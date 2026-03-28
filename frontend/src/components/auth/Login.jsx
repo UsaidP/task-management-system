@@ -44,21 +44,24 @@ export const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-light-bg-primary dark:bg-dark-bg-primary">
-      <div className="w-full max-w-lg h-full card p-8">
+    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary">
+      <div className="w-full max-w-lg auth-card">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-8"
         >
-          <Link to="/" className="inline-block">
-            <h1 className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-              TaskFlow
-            </h1>
+          <Link to="/" className="inline-block flex justify-center mb-4">
+            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-2 shadow-sm">
+              <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
+            </div>
           </Link>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">
-            Welcome back! Please sign in to continue.
+          <h1 className="text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
+            Sign in to continue to Taskly.
           </p>
         </motion.div>
 
