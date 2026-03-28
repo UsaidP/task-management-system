@@ -2,15 +2,16 @@ import { motion } from "framer-motion"
 import React, { useCallback, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
-import { FiAlertCircle, FiCheckCircle, FiCircle, FiClock, FiUsers } from "react-icons/fi"
+import { FiAlertCircle, FiCheckCircle, FiCircle, FiClock, FiLock, FiUsers } from "react-icons/fi"
 import { useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
+import { useAuth } from "../context/customHook.js"
 import KanbanBoard from "../kanban/KanbanBoard"
 import Modal from "../Modal"
 import Skeleton from "../Skeleton"
 import CreateTaskModal from "../task/CreateTaskModal"
-import EditTaskModal from "../task/EditTaskModal"
 import TaskCardSkeleton from "../task/TaskCardSkeleton"
+import TaskDetailPanel from "../task/TaskDetailPanel"
 import ProjectMembers from "./ProjectMembers"
 
 const deepCopy = (obj) => {
@@ -44,36 +45,41 @@ const initialColumns = {
   todo: {
     title: "To Do",
     tasks: [],
-    color: "bg-slate-500/20",
-    icon: <FiCircle className="w-5 h-5 text-slate-500" />,
+    color: "bg-task-status-todo/15",
+    icon: <FiCircle className="w-5 h-5 text-task-status-todo" />,
   },
   "in-progress": {
     title: "In Progress",
     tasks: [],
-    color: "bg-ocean-blue/20",
-    icon: <FiClock className="w-5 h-5 text-ocean-blue" />,
+    color: "bg-task-status-progress/15",
+    icon: <FiClock className="w-5 h-5 text-task-status-progress" />,
   },
   "under-review": {
     title: "Under Review",
     tasks: [],
-    color: "bg-amber-orange/20",
-    icon: <FiAlertCircle className="w-5 h-5 text-amber-orange" />,
+    color: "bg-task-status-review/15",
+    icon: <FiAlertCircle className="w-5 h-5 text-task-status-review" />,
   },
   completed: {
     title: "Completed",
     tasks: [],
-    color: "bg-emerald-green/20",
-    icon: <FiCheckCircle className="w-5 h-5 text-emerald-green" />,
+    color: "bg-task-status-done/15",
+    icon: <FiCheckCircle className="w-5 h-5 text-task-status-done" />,
   },
 }
 
 const ProjectPage = () => {
   const { projectId } = useParams()
+  const { user } = useAuth()
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [members, setMembers] = useState([])
   const [columns, setColumns] = useState(initialColumns)
+
+  const userRole = members.find((m) => (m.user?._id || m.user) === user?._id)?.role
+
+  const canViewBoard = userRole === "admin" || userRole === "project_admin"
 
   // Modal state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -213,8 +219,8 @@ const ProjectPage = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center h-full text-center p-4">
-        <h2 className="text-2xl font-bold text-rose-red mb-2">Error Loading Project</h2>
-        <p className="text-slate-700">{error}</p>
+        <h2 className="text-2xl font-bold text-accent-danger mb-2">Error Loading Project</h2>
+        <p className="text-light-text-secondary dark:text-dark-text-secondary">{error}</p>
       </div>
     )
   }
@@ -224,7 +230,8 @@ const ProjectPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="h-full flex flex-col p-6 bg-light-bg-primary dark:bg-dark-bg-primary m-0 rounded-lg shadow-xl"
+      className="h-full flex flex-col p-6 bg-light-bg-primary dark:bg-dark-bg-primary m-0 rounded-lg"
+      style={{ boxShadow: "0px 0px 1px 0.1px #000000" }}
     >
       <header className="flex items-center justify-between mb-8">
         {loading ? (
@@ -234,8 +241,12 @@ const ProjectPage = () => {
           </div>
         ) : (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl font-bold text-slate-900 mb-2">{project?.name}</h1>
-            <p className="text-lg text-slate-700">{project?.description}</p>
+            <h1 className="text-4xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+              {project?.name}
+            </h1>
+            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
+              {project?.description}
+            </p>
           </motion.div>
         )}
 
@@ -268,7 +279,7 @@ const ProjectPage = () => {
               </div>
             ))}
           </div>
-        ) : (
+        ) : canViewBoard ? (
           <KanbanBoard
             columns={columns}
             setColumns={setColumns}
@@ -278,6 +289,19 @@ const ProjectPage = () => {
             openDeleteModal={openDeleteModal}
             onCreateTask={() => setIsCreateModalOpen(true)}
           />
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center max-w-md">
+              <FiLock className="w-12 h-12 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-40" />
+              <h2 className="text-xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+                Board Access Restricted
+              </h2>
+              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                Only Admins and Project Admins can view the project board. Contact your project
+                admin for access.
+              </p>
+            </div>
+          </div>
         )}
       </main>
 
@@ -295,7 +319,7 @@ const ProjectPage = () => {
         members={members}
         setMembers={setMembers}
       />
-      <EditTaskModal
+      <TaskDetailPanel
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onTaskUpdated={handleTaskUpdated}
