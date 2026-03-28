@@ -9,6 +9,7 @@ import {
   registerUser,
   resendVerifyEmail,
   resetPassword,
+  updateProfile,
   updateUserAvatar,
   verifyUser,
 } from "../controllers/auth.controller.js"
@@ -57,6 +58,9 @@ router.get("/me", protect, asyncHandler(getUserProfile))
 router.get("/get-active-sessions", protect, asyncHandler(getActiveSession))
 
 router.put("/update-avatar", protect, upload.single("avatars"), asyncHandler(updateUserAvatar))
+
+router.put("/update-profile", protect, asyncHandler(updateProfile))
+
 // In your auth routes
 router.get("/debug-cookies", (req, res) => {
   res.json({

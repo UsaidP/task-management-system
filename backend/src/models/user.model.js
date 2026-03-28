@@ -63,6 +63,47 @@ const userSchema = new Schema(
 			type: String,
 			unique: true,
 		},
+		phone: {
+			type: String,
+			default: "",
+		},
+		bio: {
+			type: String,
+			default: "",
+		},
+		location: {
+			type: String,
+			default: "",
+		},
+		company: {
+			type: String,
+			default: "",
+		},
+		jobTitle: {
+			type: String,
+			default: "",
+		},
+		website: {
+			type: String,
+			default: "",
+		},
+		linkedin: {
+			type: String,
+			default: "",
+		},
+		github: {
+			type: String,
+			default: "",
+		},
+		theme: {
+			type: String,
+			default: "system",
+		},
+		notifications: {
+			email: { type: Boolean, default: true },
+			push: { type: Boolean, default: true },
+			dueSoon: { type: Boolean, default: true },
+		},
 	},
 	{ timestamps: true },
 )

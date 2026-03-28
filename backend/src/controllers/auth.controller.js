@@ -385,6 +385,34 @@ export const getActiveSession = asyncHandler(async (req, res) => {
     )
 })
 
+export const updateProfile = asyncHandler(async (req, res) => {
+  const userId = req.user._id
+  const { fullname, phone, bio, location, company, jobTitle, website, linkedin, github, theme, notifications } = req.body
+
+  const user = await User.findById(userId)
+  if (!user) {
+    throw new ApiError(404, "User not found")
+  }
+
+  if (fullname !== undefined) user.fullname = fullname
+  if (phone !== undefined) user.phone = phone
+  if (bio !== undefined) user.bio = bio
+  if (location !== undefined) user.location = location
+  if (company !== undefined) user.company = company
+  if (jobTitle !== undefined) user.jobTitle = jobTitle
+  if (website !== undefined) user.website = website
+  if (linkedin !== undefined) user.linkedin = linkedin
+  if (github !== undefined) user.github = github
+  if (theme !== undefined) user.theme = theme
+  if (notifications !== undefined) user.notifications = notifications
+
+  await user.save()
+
+  const updatedUser = await User.findById(userId).select("-password")
+
+  return res.status(200).json(new ApiResponse(200, updatedUser, "Profile updated successfully"))
+})
+
 export const updateUserAvatar = asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(400, "Avatar image file is required")

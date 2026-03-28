@@ -190,6 +190,13 @@ class ApiService {
     });
   }
 
+  async updateProfile(profileData) {
+    return await this.customFetch("/users/update-profile", {
+      method: "PUT",
+      body: JSON.stringify(profileData),
+    });
+  }
+
   async logout() {
     return await this.customFetch("/users/logout", {
       method: "POST",
@@ -289,6 +296,25 @@ class ApiService {
     });
   }
 
+  async deleteComment(projectId, taskId, commentId) {
+    return await this.customFetch(`/tasks/${projectId}/${taskId}/comments/${commentId}`, {
+      method: "DELETE",
+    });
+  }
+
+  async uploadAttachment(projectId, taskId, formData) {
+    return await this.customFetch(`/tasks/${projectId}/${taskId}/attachments`, {
+      method: "POST",
+      body: formData,
+    });
+  }
+
+  async deleteAttachment(projectId, taskId, attachmentIndex) {
+    return await this.customFetch(`/tasks/${projectId}/${taskId}/attachments/${attachmentIndex}`, {
+      method: "DELETE",
+    });
+  }
+
   // --- Member Methods ---
   async getAllMembers(projectId) {
     return await this.customFetch(`/members/all-members/${projectId}`, {
@@ -334,6 +360,66 @@ class ApiService {
   async deleteSubTask(subtaskId) {
     return await this.customFetch(`/subtasks/subtask/${subtaskId}`, {
       method: "DELETE",
+    });
+  }
+
+  // --- Sprint Methods ---
+  async createSprint(sprintData) {
+    return await this.customFetch("/sprints", {
+      method: "POST",
+      body: JSON.stringify(sprintData),
+    });
+  }
+
+  async getSprintsByProject(projectId) {
+    return await this.customFetch(`/sprints/project/${projectId}`, {
+      method: "GET",
+    });
+  }
+
+  async getBacklog(projectId) {
+    return await this.customFetch(`/sprints/project/${projectId}/backlog`, {
+      method: "GET",
+    });
+  }
+
+  async updateSprint(sprintId, sprintData) {
+    return await this.customFetch(`/sprints/${sprintId}`, {
+      method: "PUT",
+      body: JSON.stringify(sprintData),
+    });
+  }
+
+  async startSprint(sprintId, projectId) {
+    return await this.customFetch(`/sprints/${sprintId}/start`, {
+      method: "PUT",
+      body: JSON.stringify({ projectId }),
+    });
+  }
+
+  async completeSprint(sprintId, moveTasksTo) {
+    return await this.customFetch(`/sprints/${sprintId}/complete`, {
+      method: "PUT",
+      body: JSON.stringify({ moveTasksTo }),
+    });
+  }
+
+  async assignTaskToSprint(sprintId, taskId) {
+    return await this.customFetch(`/sprints/${sprintId}/assign-task`, {
+      method: "PUT",
+      body: JSON.stringify({ taskId }),
+    });
+  }
+
+  async removeTaskFromSprint(taskId) {
+    return await this.customFetch(`/sprints/task/${taskId}/remove-from-sprint`, {
+      method: "PUT",
+    });
+  }
+
+  async getSprintVelocity(projectId) {
+    return await this.customFetch(`/sprints/project/${projectId}/velocity`, {
+      method: "GET",
     });
   }
 }
