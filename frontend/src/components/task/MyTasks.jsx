@@ -422,7 +422,7 @@ export const MyTasks = () => {
           fetchData()
         }}
         projectId={null}
-        members={projects}
+        members={[]}
       />
     </div>
   )

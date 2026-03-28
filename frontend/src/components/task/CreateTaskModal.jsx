@@ -41,13 +41,15 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
   const [subtasks, setSubtasks] = useState([])
 
   const assigneeOptions = useMemo(() => {
-    if (!members) return []
-    // console.log(`Members: ${JSON.stringify(members)}`)
-    return members.map((member) => ({
-      id: member.user._id,
-      name: member.user?.fullname || member.fullname || "Unknown",
-      email: member.user?.email || member.email || "Unknown",
-    }))
+    if (!members || !Array.isArray(members)) return []
+    return members.map((member) => {
+      const userObj = member.user || member
+      return {
+        id: userObj?._id || member._id || Math.random().toString(),
+        name: userObj?.fullname || member.fullname || "Unknown",
+        email: userObj?.email || member.email || "Unknown",
+      }
+    })
   }, [members])
 
   // Find full objects for display names in Listbox buttons
