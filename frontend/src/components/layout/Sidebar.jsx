@@ -19,6 +19,7 @@ import { NavLink } from "react-router-dom"
 import { useMediaQuery } from "../../../hooks/useMediaQuery"
 import apiService from "../../../service/apiService"
 import { useAuth } from "../context/customHook"
+import { useFilter } from "../context/FilterContext"
 import { useSidebar } from "../context/SidebarContext"
 import { EmptyState, NetworkError } from "../ErrorStates"
 import CreateProjectModal from "../project/CreateProjectModal"
@@ -34,7 +35,41 @@ const Sidebar = () => {
 
   const { user } = useAuth()
   const { isSidebarOpen, toggleSidebar, isCollapsed, toggleCollapse } = useSidebar()
+  const { projectFilter, setProjectFilter, sprintFilter, setSprintFilter } = useFilter()
   const isDesktop = useMediaQuery("(min-width: 1024px)")
+
+  const [sprints, setSprints] = useState([])
+  const [sprintsLoading, setSprintsLoading] = useState(false)
+  const [isSprintMenuOpen, setIsSprintMenuOpen] = useState(false)
+
+  const fetchSprintsForProject = async (projectId) => {
+    if (!projectId) {
+      setSprints([])
+      return
+    }
+    try {
+      setSprintsLoading(true)
+      const response = await apiService.getSprintsByProject(projectId)
+      if (response?.success) {
+        setSprints(response.data || [])
+      }
+    } catch (err) {
+      console.error("Sidebar: Failed to fetch sprints", err)
+    } finally {
+      setSprintsLoading(false)
+    }
+  }
+
+  const handleProjectFilterClick = (projectId) => {
+    setProjectFilter(projectId)
+    setSprintFilter(null)
+    setSprints([])
+    trackProjectClick(projectId)
+    handleMobileNavClick()
+    if (projectId) {
+      fetchSprintsForProject(projectId)
+    }
+  }
 
   const fetchProjects = async () => {
     if (!user) return
@@ -176,23 +211,17 @@ const Sidebar = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: index * 0.02 }}
       >
-        <NavLink
-          to={`/project/${project._id}`}
-          onClick={() => {
-            trackProjectClick(project._id)
-            handleMobileNavClick()
-          }}
+        <button
+          onClick={() => handleProjectFilterClick(project._id)}
           title={isCollapsed ? project.name : ""}
-          className={({ isActive }) =>
-            `flex items-center px-4 py-2 mt-1 rounded-lg text-sm transition-colors group
-             ${
-               isActive
-                 ? "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary/20"
-                 : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover text-light-text-primary dark:hover:text-dark-text-primary"
-             }
-             ${isCollapsed ? "justify-center px-0 w-10 h-10 mx-auto" : ""}
-          `
-          }
+          className={`flex items-center w-full px-4 py-2 mt-1 rounded-lg text-sm transition-colors group
+            ${
+              projectFilter === project._id
+                ? "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary/20"
+                : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover text-light-text-primary dark:hover:text-dark-text-primary"
+            }
+            ${isCollapsed ? "justify-center px-0 w-10 h-10 mx-auto" : ""}
+          `}
         >
           <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
             <span
@@ -200,12 +229,23 @@ const Sidebar = () => {
             />
           </div>
           {!isCollapsed && <span className="truncate">{project.name}</span>}
-        </NavLink>
+        </button>
       </motion.div>
     )
 
     return (
       <>
+        {/* All Projects */}
+        {!isCollapsed && projectFilter && (
+          <button
+            onClick={() => handleProjectFilterClick(null)}
+            className="flex items-center w-full px-4 py-2 mt-1 rounded-lg text-sm text-accent-primary hover:bg-accent-primary/10 transition-colors"
+          >
+            <span className="mr-3 w-2 h-2 rounded-full bg-transparent border border-accent-primary" />
+            <span className="truncate font-medium">All Projects</span>
+          </button>
+        )}
+
         {/* Recent Projects */}
         {!isCollapsed && recent.length > 0 && (
           <div className="mb-2">
@@ -302,18 +342,72 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Global Sprint Selector (Mockup for NAV-03) */}
+        {/* Sprint Selector */}
         {!isCollapsed && (
           <div className="px-4 py-3 border-b border-light-border dark:border-dark-border">
             <p className="text-[10px] font-semibold text-light-text-tertiary uppercase tracking-wider mb-1 px-1">
               Active Sprint
             </p>
-            <button className="flex items-center justify-between w-full px-3 py-2 text-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border border-light-border dark:border-dark-border rounded-lg transition-colors group">
-              <span className="text-light-text-primary dark:text-dark-text-primary font-medium truncate">
-                Sprint 4: Q3 Goals
-              </span>
-              <FiChevronDown className="w-4 h-4 text-light-text-tertiary group-hover:text-light-text-primary" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsSprintMenuOpen(!isSprintMenuOpen)}
+                disabled={!projectFilter}
+                className="flex items-center justify-between w-full px-3 py-2 text-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border border-light-border dark:border-dark-border rounded-lg transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="text-light-text-primary dark:text-dark-text-primary font-medium truncate">
+                  {!projectFilter
+                    ? "Select a project first"
+                    : sprintFilter
+                      ? sprints.find((s) => s._id === sprintFilter)?.name || "Sprint"
+                      : "All Sprints"}
+                </span>
+                <FiChevronDown className="w-4 h-4 text-light-text-tertiary group-hover:text-light-text-primary" />
+              </button>
+
+              {isSprintMenuOpen && projectFilter && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full left-0 right-0 mt-1 bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg z-50 overflow-hidden"
+                >
+                  <button
+                    onClick={() => {
+                      setSprintFilter(null)
+                      setIsSprintMenuOpen(false)
+                    }}
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors ${
+                      !sprintFilter
+                        ? "text-accent-primary font-medium bg-accent-primary/5"
+                        : "text-light-text-primary dark:text-dark-text-primary"
+                    }`}
+                  >
+                    All Sprints
+                  </button>
+                  {sprintsLoading ? (
+                    <div className="px-3 py-2 text-xs text-light-text-tertiary">Loading...</div>
+                  ) : sprints.length === 0 ? (
+                    <div className="px-3 py-2 text-xs text-light-text-tertiary">No sprints</div>
+                  ) : (
+                    sprints.map((sprint) => (
+                      <button
+                        key={sprint._id}
+                        onClick={() => {
+                          setSprintFilter(sprint._id)
+                          setIsSprintMenuOpen(false)
+                        }}
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors ${
+                          sprintFilter === sprint._id
+                            ? "text-accent-primary font-medium bg-accent-primary/5"
+                            : "text-light-text-primary dark:text-dark-text-primary"
+                        }`}
+                      >
+                        {sprint.name}
+                      </button>
+                    ))
+                  )}
+                </motion.div>
+              )}
+            </div>
           </div>
         )}
 
