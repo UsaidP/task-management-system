@@ -140,6 +140,16 @@
 
 **Total: 8 phases | 57 requirements mapped | 0 unmapped ✓**
 
+### Phase 9: Project Page Redesign
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 8
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 9 to break down)
+
 ---
 *Roadmap created: 2026-03-28*
 *Last updated: 2026-03-28 after initial creation*
