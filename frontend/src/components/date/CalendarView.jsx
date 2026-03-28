@@ -35,6 +35,11 @@ const CalendarView = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [viewMode, setViewMode] = useState("month")
   const [hoveredDay, setHoveredDay] = useState(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = (e) => {
+    setMousePos({ x: e.clientX, y: e.clientY })
+  }
 
   const today = dayjs()
 
@@ -305,6 +310,7 @@ const CalendarView = () => {
                       onClick={() => handleDayClick(item.day)}
                       onMouseEnter={() => setHoveredDay(item.day)}
                       onMouseLeave={() => setHoveredDay(null)}
+                      onMouseMove={handleMouseMove}
                       className={`min-h-[120px] p-2 border-b border-r border-light-border dark:border-dark-border cursor-pointer transition-colors ${
                         isToday
                           ? "bg-accent-primary/10 dark:bg-accent-primary/20"
@@ -361,9 +367,8 @@ const CalendarView = () => {
                 exit={{ opacity: 0, y: 10 }}
                 className="fixed z-50 mt-2 p-4 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-lg shadow-lg border border-light-border dark:border-dark-border w-64"
                 style={{
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
+                  top: `${mousePos.y + 16}px`,
+                  left: `${mousePos.x + 16}px`,
                 }}
               >
                 <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
