@@ -1,2 +1,19 @@
 node_modules/
 .env
+.agent
+.kiro
+.planning
+agents
+get-shit-done
+skills
+copilot-instruction.md
+gst-file-manifest.json
+ide
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+*.md

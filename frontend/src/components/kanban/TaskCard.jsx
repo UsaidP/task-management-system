@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
+import { motion } from "framer-motion"
+import { useRef } from "react"
 import { useDrag, useDrop } from "react-dnd"
 import { FiCalendar, FiMessageSquare, FiPaperclip } from "react-icons/fi"
 
@@ -8,7 +8,11 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: "task",
-      item: { id: task._id, status: task.status },
+      item: {
+        id: task._id,
+        status: task.status,
+        projectId: typeof task.project === "object" ? task.project?._id : task.project,
+      },
       collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
     }),
     [task]
@@ -78,24 +82,26 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      whileHover={{ y: -2 }}
-      className={`w-full p-4 rounded-lg shadow-md bg-white dark:bg-gray-800 ${isDragging ? "opacity-50 shadow-lg rotate-2" : "opacity-100"}`}
+      whileHover={{ y: -2, zIndex: 10 }}
+      className={`w-full p-4 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:border-accent-primary/50 dark:hover:border-accent-primary/50 transition-all cursor-pointer relative z-0 hover:z-20 ${isDragging ? "opacity-50 shadow-lg rotate-2 z-50" : "opacity-100"}`}
     >
-      <header className="flex justify-between items-center mb-2">
-        <span className="tag tag-category">{category}</span>
+      <header className="flex justify-between items-start mb-3">
+        <span className="tag tag-project">{task.project?.name || "Personal"}</span>
         <span className={getStatusClass(task.status)}>{task.status}</span>
       </header>
       <main className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-1">
+        <h3 className="text-base font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 line-clamp-2">
           {task.title}
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">{task.description}</p>
+        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary line-clamp-2">
+          {task.description}
+        </p>
       </main>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-3">
         <span className={getPriorityClass(task.priority)}>{task.priority}</span>
         {task.dueDate && (
-          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-            <FiCalendar />
+          <div className="flex items-center gap-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+            <FiCalendar className="w-3 h-3" />
             <span>
               {new Date(task.dueDate).toLocaleDateString("en-US", {
                 month: "short",
@@ -105,31 +111,37 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
           </div>
         )}
       </div>
-      <div className="mb-4">
-        <div className="flex justify-between items-center mb-1">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Subtasks</span>
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            {completedSubtasks}/{totalSubtasks}
-          </span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-          <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${progress}%` }}></div>
-        </div>
-      </div>
-      <footer className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-            <FiMessageSquare />
-            <span>{comments}</span>
+      {totalSubtasks > 0 && (
+        <div className="mb-3">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
+              Subtasks
+            </span>
+            <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
+              {completedSubtasks}/{totalSubtasks}
+            </span>
           </div>
-          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-            <FiPaperclip />
-            <span>{attachments.filename}</span>
-            <span>{attachments.url}</span>
+          <div className="w-full bg-light-bg-hover dark:bg-dark-bg-hover rounded-full h-1.5">
+            <div
+              className="bg-accent-primary h-1.5 rounded-full transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      )}
+      <footer className="flex justify-between items-center pt-2 border-t border-light-border dark:border-dark-border">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+            <FiMessageSquare className="w-3 h-3" />
+            <span>{task.comments?.length || 0}</span>
+          </div>
+          <div className="flex items-center gap-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+            <FiPaperclip className="w-3 h-3" />
+            <span>{(task.attachments && task.attachments.length) || 0}</span>
           </div>
         </div>
         <div className="flex items-center">
-          <div className="avatar-group flex -space-x-2">
+          <div className="flex -space-x-1">
             {assignees.length > 0 &&
               assignees.slice(0, 3).map((assignee) => {
                 const user = membersMap[assignee._id]
@@ -137,40 +149,15 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
                 return (
                   <div
                     key={user._id}
-                    className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-800 bg-cover bg-center"
+                    className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-tertiary bg-cover bg-center"
                     style={{
                       backgroundImage: `url(${user.avatar?.url || `https://i.pravatar.cc/150?u=${user._id}`})`,
                     }}
                     title={user.fullname}
-                  ></div>
+                  />
                 )
               })}
           </div>
-          <button
-            className="ml-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-            onClick={(e) => {
-              e.stopPropagation()
-              onDelete(task)
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="feather feather-trash-2 text-gray-500 dark:text-gray-400"
-            >
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-              <line x1="10" y1="11" x2="10" y2="17"></line>
-              <line x1="14" y1="11" x2="14" y2="17"></line>
-            </svg>
-          </button>
         </div>
       </footer>
     </motion.div>

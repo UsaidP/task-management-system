@@ -3,7 +3,7 @@ import { ProjectMember } from "../models/projectmember.model.js"
 import ApiError from "../utils/api-error.js"
 import { ApiResponse } from "../utils/api-response.js"
 import { asyncHandler } from "../utils/async-handler.js"
-import { UserRoleEnum } from "../utils/constants.js"
+import { ProjectRoleEnum } from "../utils/constants.js"
 
 const validateProjectData = (name, description) => {
 	if (!name || name.trim().length === 0) {
@@ -16,10 +16,12 @@ const validateProjectData = (name, description) => {
 		throw new ApiError(400, "Project Description is too long, max 500 characters allowed")
 	}
 }
+
 // Create a project
 const createProject = asyncHandler(async (req, res, next) => {
 	const { name, description } = req.body
 	validateProjectData(name, description)
+
 	// Check if project with the same name already exists
 	const existingProject = await Project.findOne({
 		createdBy: req.user._id,
@@ -31,6 +33,7 @@ const createProject = asyncHandler(async (req, res, next) => {
 			"You already have a project with this name. Please choose a different name.",
 		)
 	}
+
 	const project = await Project.create({
 		createdBy: req.user._id,
 		description: description?.trim() || "",
@@ -40,18 +43,17 @@ const createProject = asyncHandler(async (req, res, next) => {
 	if (!project) {
 		throw new ApiError(400, "Project creation failed")
 	}
-	// Optionally, you can add the creator as a admin of the project
+
+	// ✅ Creator gets OWNER role (not ADMIN - that's for global admin)
 	const projectMember = await ProjectMember.create({
 		project: project._id,
-		role: UserRoleEnum.ADMIN, // or "admin" based on your role definitions
+		role: ProjectRoleEnum.OWNER,
 		user: req.user._id,
 	})
 
 	if (!projectMember) {
-		throw new ApiError(400, "Failed to add creator as project admin")
+		throw new ApiError(400, "Failed to add creator as project owner")
 	}
-
-	// await project.save();
 
 	res
 		.status(201)

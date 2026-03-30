@@ -101,7 +101,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
-
   // Memoized email resend function.
   const resendVerifyEmail = useCallback(async (email) => {
     try {
@@ -158,7 +157,18 @@ export const AuthProvider = ({ children }) => {
       resendVerifyEmail,
       updateUser,
     }
-  }, [user, loading, isAuthenticated, userID, login, logout, signup, resendVerifyEmail, updateUser, forgetPassword])
+  }, [
+    user,
+    loading,
+    isAuthenticated,
+    userID,
+    login,
+    logout,
+    signup,
+    resendVerifyEmail,
+    updateUser,
+    forgetPassword,
+  ])
 
   // Provide the context value to the rest of the app.
   return (

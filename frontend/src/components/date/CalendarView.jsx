@@ -164,33 +164,57 @@ const CalendarView = () => {
           </div>
           {viewMode === "month" && (
             <>
-              <button type="button" onClick={() => setCurrentDate(dayjs())} className="btn-secondary text-sm">
+              <button
+                type="button"
+                onClick={() => setCurrentDate(dayjs())}
+                className="btn-secondary text-sm"
+              >
                 Today
               </button>
-              <button type="button" onClick={() => setCurrentDate(currentDate.add(-1, "month"))} className="btn-ghost p-2">
+              <button
+                type="button"
+                onClick={() => setCurrentDate(currentDate.add(-1, "month"))}
+                className="btn-ghost p-2"
+              >
                 <FiChevronLeft className="w-5 h-5" />
               </button>
               <span className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[180px] text-center">
                 {currentDate.format("MMMM YYYY")}
               </span>
-              <button type="button" onClick={() => setCurrentDate(currentDate.add(1, "month"))} className="btn-ghost p-2">
+              <button
+                type="button"
+                onClick={() => setCurrentDate(currentDate.add(1, "month"))}
+                className="btn-ghost p-2"
+              >
                 <FiChevronRight className="w-5 h-5" />
               </button>
             </>
           )}
           {viewMode === "week" && (
             <>
-              <button type="button" onClick={() => setCurrentDate(dayjs())} className="btn-secondary text-sm">
+              <button
+                type="button"
+                onClick={() => setCurrentDate(dayjs())}
+                className="btn-secondary text-sm"
+              >
                 Today
               </button>
-              <button type="button" onClick={() => setCurrentDate(currentDate.add(-1, "week"))} className="btn-ghost p-2">
+              <button
+                type="button"
+                onClick={() => setCurrentDate(currentDate.add(-1, "week"))}
+                className="btn-ghost p-2"
+              >
                 <FiChevronLeft className="w-5 h-5" />
               </button>
               <span className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[250px] text-center">
                 {currentDate.startOf("week").format("MMM D")} -{" "}
                 {currentDate.endOf("week").format("MMM D, YYYY")}
               </span>
-              <button type="button" onClick={() => setCurrentDate(currentDate.add(1, "week"))} className="btn-ghost p-2">
+              <button
+                type="button"
+                onClick={() => setCurrentDate(currentDate.add(1, "week"))}
+                className="btn-ghost p-2"
+              >
                 <FiChevronRight className="w-5 h-5" />
               </button>
             </>
@@ -261,7 +285,8 @@ const CalendarView = () => {
                             animate={{ opacity: 1, y: 0 }}
                             onClick={(e) => handleTaskClick(e, task)}
                             className={`text-xs p-2 rounded cursor-pointer transition-all hover:scale-[1.02] ${
-                              priorityStyles[task.priority] || "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
+                              priorityStyles[task.priority] ||
+                              "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
                             } ${statusBorder[task.status] || ""}`}
                           >
                             <div className="font-semibold truncate">{task.title}</div>
@@ -334,7 +359,8 @@ const CalendarView = () => {
                             animate={{ opacity: 1, y: 0 }}
                             onClick={(e) => handleTaskClick(e, task)}
                             className={`text-xs p-1.5 rounded truncate cursor-pointer transition-all hover:scale-[1.02] ${
-                              priorityStyles[task.priority] || "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
+                              priorityStyles[task.priority] ||
+                              "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
                             } ${statusBorder[task.status] || ""}`}
                           >
                             <div className="font-medium truncate">{task.title}</div>

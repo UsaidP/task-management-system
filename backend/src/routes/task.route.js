@@ -1,71 +1,105 @@
 import { Router } from "express"
+import fs from "fs"
+import multer from "multer"
+import path from "path"
 
-const router = Router()
-
-// Importing controllers
 import {
   createTask,
+  deleteAttachment,
+  deleteComment,
   deleteTask,
   getAllTasks,
   getTaskById,
   getTasks,
   updateTask,
+  uploadAttachment,
 } from "../controllers/task.controller.js"
 import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
-import { asyncHandler } from "../utils/async-handler.js"
-import { UserRoleEnum } from "../utils/constants.js"
+import { ProjectRoleEnum, UserRoleEnum } from "../utils/constants.js"
 
-router
-  .route("/:projectId")
-  .post(protect, asyncHandler(createTask))
-  .get(
+// ── Multer setup ────────────────────────────────────────────────────────────
+const uploadDir = path.join(process.cwd(), "uploads")
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
+
+const upload = multer({ dest: uploadDir })
+const router = Router()
+
+const { OWNER, PROJECT_ADMIN, MEMBER } = ProjectRoleEnum
+const { ADMIN } = UserRoleEnum
+
+// Role arrays for cleaner route definitions
+const allRoles = [ADMIN, OWNER, PROJECT_ADMIN, MEMBER]
+const adminRoles = [ADMIN, OWNER, PROJECT_ADMIN]
+
+// ── ✅ Static routes FIRST (before dynamic /:projectId) ─────────────────────
+// Get all tasks for user across all projects
+router.route("/tasks").get(
+  protect,
+  getAllTasks
+)
+
+// ── Project-scoped task routes ───────────────────────────────────────────────
+
+// Create task & Get all tasks for project
+router.route("/:projectId")
+  .post(
     protect,
-    validateProjectPermission([
-      UserRoleEnum.ADMIN,
-      UserRoleEnum.PROJECT_ADMIN,
-    ]),
-    asyncHandler(getTasks),
+    validateProjectPermission(...allRoles),
+    createTask
   )
-router
-  .route("/tasks")
   .get(
     protect,
-    validateProjectPermission([
-      UserRoleEnum.ADMIN,
-      UserRoleEnum.PROJECT_ADMIN,
-      UserRoleEnum.MEMBER,
-    ]),
-    asyncHandler(getAllTasks),
+    validateProjectPermission(...allRoles),
+    getTasks
   )
 
-router
-  .route("/:projectId/:taskId")
+// Get, Update, Delete single task
+router.route("/:projectId/:taskId")
   .get(
     protect,
-    validateProjectPermission([
-      UserRoleEnum.ADMIN,
-      UserRoleEnum.PROJECT_ADMIN,
-      UserRoleEnum.MEMBER,
-    ]),
-    asyncHandler(getTaskById),
+    validateProjectPermission(...allRoles),
+    getTaskById
   )
   .put(
     protect,
-    validateProjectPermission([
-      UserRoleEnum.ADMIN,
-      UserRoleEnum.PROJECT_ADMIN,
-      UserRoleEnum.MEMBER,
-    ]),
-    asyncHandler(updateTask),
+    validateProjectPermission(...allRoles),
+    updateTask
   )
   .delete(
     protect,
-    validateProjectPermission([
-      UserRoleEnum.ADMIN,
-      UserRoleEnum.PROJECT_ADMIN,
-    ]),
-    asyncHandler(deleteTask),
+    validateProjectPermission(...adminRoles),
+    deleteTask
   )
-router.route("/").get(protect, asyncHandler(getAllTasks))
+
+// ── Attachments ──────────────────────────────────────────────────────────────
+
+// Upload attachment - permission check BEFORE multer
+router.route("/:projectId/:taskId/attachments")
+  .post(
+    protect,
+    validateProjectPermission(...allRoles),  // ✅ Permission checked FIRST
+    upload.single("file"),                    // ✅ Then file uploaded
+    uploadAttachment
+  )
+
+// Delete attachment - Admin roles only
+router.route("/:projectId/:taskId/attachments/:attachmentIndex")
+  .delete(
+    protect,
+    validateProjectPermission(...adminRoles),
+    deleteAttachment
+  )
+
+// ── Comments ─────────────────────────────────────────────────────────────────
+
+// Delete comment - Admin roles only
+router.route("/:projectId/:taskId/comments/:commentId")
+  .delete(
+    protect,
+    validateProjectPermission(...adminRoles),
+    deleteComment
+  )
 
 export default router

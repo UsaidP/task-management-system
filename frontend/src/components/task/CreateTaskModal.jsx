@@ -29,7 +29,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
     title: "",
     description: "",
     status: "todo", // Default status
-    priority: "medium", // Default priority 
+    priority: "medium", // Default priority
     assignedTo: [],
     dueDate: "",
     labels: "",
@@ -178,14 +178,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                     <ListboxOption
                       key={option.id}
                       value={option.id}
-                      // --- FIX: Cleaned up className template literal ---
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"}`
+                        `cursor-pointer select-none relative py-2 px-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-slate-700 hover:bg-light-bg-hover"}`
                       }
                     >
                       {({ selected }) => (
                         <span
-                          className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
+                          className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
                         >
                           {option.name}
                         </span>
@@ -214,14 +213,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                     <ListboxOption
                       key={option.id}
                       value={option.id}
-                      // --- FIX: Cleaned up className template literal ---
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"}`
+                        `cursor-pointer select-none relative py-2 px-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-slate-700 hover:bg-light-bg-hover"}`
                       }
                     >
                       {({ selected }) => (
                         <span
-                          className={`block truncate ${selected ? "font-bold" : "font-normal"}`}
+                          className={`block truncate ${selected ? "font-bold text-accent-primary" : "font-normal"}`}
                         >
                           {option.name}
                         </span>
@@ -235,7 +233,6 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
 
           {/* Assignees (Multi-select Listbox) */}
           <div className="md:col-span-2">
-            {/* --- FIX: Use Listbox.Label and consistent className --- */}
             <Listbox
               value={formData.assignedTo}
               onChange={(value) => handleListboxChange("assignedTo", value)}
@@ -248,33 +245,32 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                   <FiChevronDown className="w-4 h-4 text-slate-700" />
                 </ListboxButton>
                 <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
-                  {assigneeOptions.map((option) => (
-                    console.log(`Option: ${JSON.stringify(option)}`),
-                    <ListboxOption
-                      key={option.id}
-                      value={option.id}
-                      // --- FIX: Cleaned up className template literal ---
-                      className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 pl-10 pr-4 ${active ? "bg-slate-200 text-slate-900" : "text-slate-700"}`
-                      }
-                    >
-                      {({ selected }) => (
-                        <>
-                          <span
-                            // --- FIX: Cleaned up className template literal ---
-                            className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
-                          >
-                            {option.name}
-                          </span>
-                          {selected ? (
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                              <FiCheck className="w-5 h-5" aria-hidden="true" />
+                  {assigneeOptions.map(
+                    (option) => (
+                      <ListboxOption
+                        key={option.id}
+                        value={option.id}
+                        className={({ active }) =>
+                          `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-slate-700 hover:bg-light-bg-hover"}`
+                        }
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span
+                              className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                            >
+                              {option.name}
                             </span>
-                          ) : null}
-                        </>
-                      )}
-                    </ListboxOption>
-                  ))}
+                            {selected ? (
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <FiCheck className="w-5 h-5 text-accent-primary" aria-hidden="true" />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </ListboxOption>
+                    )
+                  )}
                 </ListboxOptions>
               </div>
             </Listbox>
@@ -337,11 +333,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               placeholder="Add a subtask title"
               className="input-field flex-grow"
             />
-            <button
-              type="button"
-              onClick={handleAddSubtask}
-              className="btn-primary px-4 py-2"
-            >
+            <button type="button" onClick={handleAddSubtask} className="btn-primary px-4 py-2">
               Add
             </button>
           </div>

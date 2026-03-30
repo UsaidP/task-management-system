@@ -5,7 +5,7 @@ import express, { urlencoded } from "express"
 const app = express()
 const allowedOrigins = [
   "http://localhost:5173", // For local testing
-
+  "http://localhost:4000", // For local testing
 ]
 
 const corsOptions = {
@@ -45,12 +45,14 @@ app.use(urlencoded({ extended: true }))
 app.use(cookieParser())
 
 // Router imports
-import userRouter from "./src/routes/auth.route.js"
+import authRouter from "./src/routes/auth.route.js"
 import dashboardRoute from "./src/routes/dashboard.route.js"
+import emailRouter from "./src/routes/email.route.js"
 import healthCheck from "./src/routes/healthcheck.route.js"
 import noteRouter from "./src/routes/note.route.js"
 import projectRouter from "./src/routes/project.route.js"
 import projectMemberRoute from "./src/routes/projectMember.route.js"
+import sprintRouter from "./src/routes/sprint.route.js"
 import subtaskRouter from "./src/routes/subtask.route.js"
 import taskRouter from "./src/routes/task.route.js"
 
@@ -58,12 +60,28 @@ import taskRouter from "./src/routes/task.route.js"
 if (process.env.NODE_ENV !== "test") {
   app.use("/api/v1/healthcheck", healthCheck)
 }
-app.use("/api/v1/users", userRouter)
+app.use("/api/v1/auth", authRouter)
+app.use("/api/v1/users", authRouter)
 app.use("/api/v1/projects", projectRouter)
 app.use("/api/v1/tasks", taskRouter)
+app.use("/api/v1/sprints", sprintRouter)
 app.use("/api/v1/notes", noteRouter)
 app.use("/api/v1/members", projectMemberRoute)
 app.use("/api/v1/subtasks", subtaskRouter)
 app.use("/api/v1/dashboard", dashboardRoute)
+app.use("/api/v1/email", emailRouter) // Email testing routes
+
+// Global error handler
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500
+  const message = err.message || "Internal Server Error"
+
+  res.status(statusCode).json({
+    success: false,
+    message,
+    errors: err.errors || [],
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+  })
+})
 
 export default app

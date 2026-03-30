@@ -1,38 +1,43 @@
-import React, { useState, useEffect } from "react"
-import apiService from "../../../service/apiService.js"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { FaTrash, FaCheckCircle, FaRegCircle } from "react-icons/fa"
-import AddSubtask from "./AddSubtask"
+import { FiCheck, FiPlus, FiTrash2 } from "react-icons/fi"
+import apiService from "../../../service/apiService.js"
 
 const SubtaskView = ({ taskId }) => {
   const [subtasks, setSubtasks] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [newSubtask, setNewSubtask] = useState("")
 
   useEffect(() => {
-    fetchSubtasks()
+    if (taskId) {
+      fetchSubtasks()
+    }
   }, [taskId])
 
   const fetchSubtasks = async () => {
     try {
       setLoading(true)
       const response = await apiService.getSubTasksForTask(taskId)
-      setSubtasks(response.data)
+      setSubtasks(response.data || [])
     } catch (err) {
-      setError(err)
-      toast.error("Failed to fetch subtasks.")
+      toast.error("Failed to fetch subtasks")
     } finally {
       setLoading(false)
     }
   }
 
-  const handleAddSubtask = async (title) => {
+  const handleAddSubtask = async (e) => {
+    e.preventDefault()
+    const trimmedTitle = newSubtask.trim()
+    if (!trimmedTitle) return
+
     try {
-      const response = await apiService.createSubTask(taskId, title)
+      const response = await apiService.createSubTask(taskId, trimmedTitle)
       setSubtasks((prev) => [...prev, response.data])
-      toast.success("Subtask added successfully!")
+      setNewSubtask("")
+      toast.success("Subtask added!")
     } catch (err) {
-      toast.error("Failed to add subtask.")
+      toast.error("Failed to add subtask")
     }
   }
 
@@ -40,9 +45,8 @@ const SubtaskView = ({ taskId }) => {
     try {
       const response = await apiService.updateSubTask(subtaskId, { completed: !currentStatus })
       setSubtasks((prev) => prev.map((sub) => (sub._id === subtaskId ? response.data : sub)))
-      toast.success("Subtask updated successfully!")
     } catch (err) {
-      toast.error("Failed to update subtask.")
+      toast.error("Failed to update subtask")
     }
   }
 
@@ -50,52 +54,112 @@ const SubtaskView = ({ taskId }) => {
     try {
       await apiService.deleteSubTask(subtaskId)
       setSubtasks((prev) => prev.filter((sub) => sub._id !== subtaskId))
-      toast.success("Subtask deleted successfully!")
+      toast.success("Subtask deleted!")
     } catch (err) {
-      toast.error("Failed to delete subtask.")
+      toast.error("Failed to delete subtask")
     }
   }
 
-  if (loading) return <div className="text-center py-4">Loading subtasks...</div>
-  if (error) return <div className="text-center py-4 text-red-500">Error: {error.message}</div>
+  const completedCount = subtasks.filter((s) => s.completed).length
+
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="h-12 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg animate-pulse"
+          />
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Subtasks</h3>
-      <AddSubtask onAddSubtask={handleAddSubtask} />
+      {/* Progress Bar */}
+      {subtasks.length > 0 && (
+        <div className="mb-4">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
+              Progress
+            </span>
+            <span className="text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
+              {completedCount}/{subtasks.length} completed
+            </span>
+          </div>
+          <div className="w-full bg-light-bg-hover dark:bg-dark-bg-hover rounded-full h-2">
+            <div
+              className="bg-accent-primary h-2 rounded-full transition-all duration-300"
+              style={{ width: `${(completedCount / subtasks.length) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Add Subtask Form */}
+      <form onSubmit={handleAddSubtask} className="flex gap-2">
+        <input
+          type="text"
+          value={newSubtask}
+          onChange={(e) => setNewSubtask(e.target.value)}
+          placeholder="Add a subtask..."
+          className="flex-1 px-4 py-2.5 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl text-sm text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
+        />
+        <button
+          type="submit"
+          disabled={!newSubtask.trim()}
+          className="btn-primary px-4 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <FiPlus className="w-5 h-5" />
+        </button>
+      </form>
+
+      {/* Subtasks List */}
       {subtasks.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400">No subtasks yet. Add one above!</p>
+        <div className="text-center py-8 text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-sm">No subtasks yet</p>
+          <p className="text-xs mt-1">Add subtasks to track progress</p>
+        </div>
       ) : (
         <ul className="space-y-2">
           {subtasks.map((subtask) => (
             <li
               key={subtask._id}
-              className="flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm"
+              className="flex items-center justify-between p-3 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border hover:border-accent-primary/30 transition-colors group"
             >
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleToggleComplete(subtask._id, subtask.completed)}
-                  className="text-xl focus:outline-none"
+              <button
+                type="button"
+                onClick={() => handleToggleComplete(subtask._id, subtask.completed)}
+                className={`flex items-center gap-3 flex-1 text-left ${
+                  subtask.completed ? "opacity-60" : ""
+                }`}
+              >
+                <div
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                    subtask.completed
+                      ? "bg-accent-primary border-accent-primary"
+                      : "border-light-text-tertiary dark:border-dark-text-tertiary"
+                  }`}
                 >
-                  {subtask.completed ? (
-                    <FaCheckCircle className="text-green-500" />
-                  ) : (
-                    <FaRegCircle className="text-gray-400 dark:text-gray-500" />
-                  )}
-                </button>
+                  {subtask.completed && <FiCheck className="w-3 h-3 text-white" />}
+                </div>
                 <span
-                  className={`text-gray-800 dark:text-gray-200 ${
-                    subtask.completed ? "line-through text-gray-500 dark:text-gray-400" : ""
+                  className={`text-sm font-medium transition-all ${
+                    subtask.completed
+                      ? "text-light-text-tertiary dark:text-dark-text-tertiary line-through"
+                      : "text-light-text-primary dark:text-dark-text-primary"
                   }`}
                 >
                   {subtask.title}
                 </span>
-              </div>
+              </button>
               <button
+                type="button"
                 onClick={() => handleDeleteSubtask(subtask._id)}
-                className="text-red-500 hover:text-red-700 dark:hover:text-red-400 focus:outline-none"
+                className="p-2 text-light-text-tertiary hover:text-error hover:bg-error/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
               >
-                <FaTrash />
+                <FiTrash2 className="w-4 h-4" />
               </button>
             </li>
           ))}

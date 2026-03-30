@@ -1,38 +1,48 @@
 import { Router } from "express"
 import {
-	createProject,
-	deleteProject,
-	getAllProjects,
-	getProjectById,
-	updateProject,
+  createProject,
+  deleteProject,
+  getAllProjects,
+  getProjectById,
+  updateProject,
 } from "../controllers/project.controller.js"
 import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
-import { asyncHandler } from "../utils/async-handler.js"
-import { UserRoleEnum } from "../utils/constants.js"
+import { ProjectRoleEnum, UserRoleEnum } from "../utils/constants.js"
 import { createProjectValidator } from "../validators/auth.validator.js"
 
 const router = Router()
 
-router.post("/create", protect, asyncHandler(createProject))
+const { OWNER, PROJECT_ADMIN, MEMBER } = ProjectRoleEnum
+const { ADMIN } = UserRoleEnum
 
+// Create project - any authenticated user
+router.post("/create", protect, createProject)
+
+// Update project - Owner, Project Admin, or Global Admin
 router.post(
-	"/update/:projectId",
-	protect,
-	validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-	asyncHandler(updateProject),
+  "/update/:projectId",
+  protect,
+  validateProjectPermission(ADMIN, OWNER, PROJECT_ADMIN),
+  updateProject,
 )
+
+// Get project by ID - Any member
 router.get(
-	"/get-project-by-id/:projectId",
-	protect,
-	validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN, UserRoleEnum.MEMBER]),
-	asyncHandler(getProjectById),
+  "/get-project-by-id/:projectId",
+  protect,
+  validateProjectPermission(ADMIN, OWNER, PROJECT_ADMIN, MEMBER),
+  getProjectById,
 )
+
+// Delete project - Owner or Global Admin ONLY
 router.post(
-	"/delete/:projectId",
-	protect,
-	validateProjectPermission([UserRoleEnum.ADMIN]),
-	asyncHandler(deleteProject),
+  "/delete/:projectId",
+  protect,
+  validateProjectPermission(ADMIN, OWNER),
+  deleteProject,
 )
-router.get("/all-projects", protect, asyncHandler(getAllProjects))
+
+// Get all projects - any authenticated user
+router.get("/all-projects", protect, getAllProjects)
 
 export default router

@@ -19,8 +19,46 @@ import {
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../context/customHook.js"
 import { EmptyState } from "../ErrorStates.jsx"
+import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import CreateTaskModal from "./CreateTaskModal"
 import TaskDetailPanel from "./TaskDetailPanel.jsx"
+
+const MyTasksSkeleton = () => (
+  <div className="h-full flex flex-col">
+    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 items-center p-6 bg-light-bg-primary dark:bg-dark-bg-primary shrink-0">
+      <div>
+        <SkeletonText width="w-40" height="h-8" className="mb-2" />
+        <SkeletonText width="w-64" height="h-4" />
+      </div>
+      <Skeleton className="w-28 h-10 rounded-lg" />
+    </div>
+    <div className="p-6 pt-0 flex gap-5 items-center">
+      <Skeleton className="w-full md:flex-1 h-10 rounded-lg" />
+      <Skeleton className="w-24 h-10 rounded-lg" />
+    </div>
+    <div className="flex-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border shadow-sm overflow-hidden flex flex-col">
+      <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30 p-4 gap-4">
+        <SkeletonText width="flex-1 min-w-[300px]" />
+        <SkeletonText width="w-32" />
+        <SkeletonText width="w-32" />
+        <SkeletonText width="w-48" className="hidden md:block" />
+        <SkeletonText width="w-32" />
+      </div>
+      <div className="p-4 space-y-3">
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <div key={i} className="flex items-center gap-3 p-4">
+            <SkeletonCircle size="w-2 h-2" className="!rounded-full" />
+            <SkeletonText width={`w-${32 + (i % 4) * 16}`} className="flex-1 min-w-[300px]" />
+            <Skeleton className="w-20 h-6 rounded-full" />
+            <Skeleton className="w-16 h-4 rounded" />
+            <Skeleton className="w-28 h-4 rounded hidden md:block" />
+            <Skeleton className="w-20 h-4 rounded" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)
 
 // Mock Sprint data for filtering
 const SPRINTS = [
@@ -168,6 +206,10 @@ export const MyTasks = () => {
     ) : (
       <FiArrowDown className="w-4 h-4" />
     )
+  }
+
+  if (loading) {
+    return <MyTasksSkeleton />
   }
 
   return (

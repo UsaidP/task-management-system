@@ -118,4 +118,23 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+
+.env
+.agent
+.kiro
+.planning
+agents
+get-shit-done
+skills
+copilot-instruction.md
+gst-file-manifest.json
+ide
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
+

@@ -7,7 +7,10 @@ const Column = ({ children, status, onDrop, taskCount }) => {
 
     // Pass the destinationIndex (taskCount) for drops on the column
     // This allows dropping into an empty column or at the end of the list
-    drop: (item) => onDrop(item, status, taskCount),
+    drop: (item, monitor) => {
+      if (monitor.didDrop()) return // Already handled by a nested TaskCard
+      onDrop(item, status, taskCount)
+    },
 
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),

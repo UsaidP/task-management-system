@@ -1,46 +1,52 @@
 import { Router } from "express"
 import {
-	addMember,
-	projectMemberController,
-	removeMember,
-	updateMember,
+  addMember,
+  projectMemberController,
+  removeMember,
+  updateMember,
 } from "../controllers/projectMember.controller.js"
 import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
-import { asyncHandler } from "../utils/async-handler.js"
-import { UserRoleEnum } from "../utils/constants.js"
+import { ProjectRoleEnum, UserRoleEnum } from "../utils/constants.js"
 
 const router = Router()
 
+const { OWNER, PROJECT_ADMIN, MEMBER } = ProjectRoleEnum
+const { ADMIN } = UserRoleEnum
+
+// Add member - Owner, Project Admin, or Global Admin
 router
-	.route("/add/:projectId")
-	.post(
-		protect,
-		validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-		asyncHandler(addMember),
-	)
+  .route("/add/:projectId")
+  .post(
+    protect,
+    validateProjectPermission(ADMIN, OWNER, PROJECT_ADMIN),
+    addMember,
+  )
+
+// Update member role - Owner, Project Admin, or Global Admin
 router
-	.route("/update/:projectId")
-	.post(
-		protect,
-		validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-		asyncHandler(updateMember),
-	)
+  .route("/update/:projectId")
+  .post(
+    protect,
+    validateProjectPermission(ADMIN, OWNER, PROJECT_ADMIN),
+    updateMember,
+  )
+
+// Remove member - Owner, Project Admin, or Global Admin
 router
-	.route("/remove/:projectId")
-	.post(
-		protect,
-		validateProjectPermission([UserRoleEnum.ADMIN, UserRoleEnum.PROJECT_ADMIN]),
-		asyncHandler(removeMember),
-	)
+  .route("/remove/:projectId")
+  .post(
+    protect,
+    validateProjectPermission(ADMIN, OWNER, PROJECT_ADMIN),
+    removeMember,
+  )
+
+// Get all members - Any member can view
 router
-	.route("/all-members/:projectId")
-	.get(
-		protect,
-		validateProjectPermission([
-			UserRoleEnum.ADMIN,
-			UserRoleEnum.PROJECT_ADMIN,
-			UserRoleEnum.MEMBER,
-		]),
-		asyncHandler(projectMemberController.getAllMembers),
-	)
+  .route("/all-members/:projectId")
+  .get(
+    protect,
+    validateProjectPermission(ADMIN, OWNER, PROJECT_ADMIN, MEMBER),
+    projectMemberController.getAllMembers,
+  )
+
 export default router

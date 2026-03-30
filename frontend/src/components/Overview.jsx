@@ -20,8 +20,51 @@ import CreateProjectModal from "../components/project/CreateProjectModal.jsx"
 import ProjectCardSkeleton from "../components/project/ProjectCardSkeleton.jsx"
 import { useAuth } from "./context/customHook.js"
 import { EmptyState, NetworkError, ServerError } from "./ErrorStates.jsx"
-
+import { Skeleton, SkeletonCard, SkeletonCircle, SkeletonText } from "./Skeleton.jsx"
 import TaskDetailPanel from "./task/TaskDetailPanel.jsx"
+
+const OverviewSkeleton = () => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3 }}
+    className="space-y-8 p-8 max-w-[1400px] mx-auto"
+  >
+    <div className="flex animate-pulse items-center justify-between">
+      <div>
+        <div className="mb-3 h-10 w-64 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
+        <div className="h-6 w-80 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
+      </div>
+      <div className="hidden h-6 w-48 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover md:block" />
+    </div>
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {[1, 2, 3, 4].map((i) => (
+        <SkeletonCard key={i} className="p-6 h-32" />
+      ))}
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="lg:col-span-2 space-y-8">
+        <SkeletonCard className="p-6 h-48" />
+        <SkeletonCard className="p-6 h-40" />
+      </div>
+      <div className="lg:col-span-1">
+        <SkeletonCard className="p-6 h-96">
+          <div className="space-y-6">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex gap-4">
+                <SkeletonCircle size="w-2 h-2 mt-2" className="!rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <SkeletonText width="w-3/4" />
+                  <SkeletonText width="w-1/2" height="h-3" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </SkeletonCard>
+      </div>
+    </div>
+  </motion.div>
+)
 
 const HeaderSkeleton = () => (
   <div className="flex animate-pulse items-center justify-between">
@@ -186,6 +229,10 @@ const Overview = () => {
     return "Good evening"
   }
 
+  if (loading) {
+    return <OverviewSkeleton />
+  }
+
   if (error) {
     if (error.name === "NetworkError") {
       return <NetworkError onRetry={fetchDashboardData} />
@@ -231,28 +278,28 @@ const Overview = () => {
         <StatCard
           icon={<FiClipboard className="h-6 w-6" />}
           label="To Do"
-          value={loading ? "..." : stats.todo}
+          value={stats.todo}
           color="bg-light-text-tertiary dark:bg-dark-text-tertiary"
           delay={0.1}
         />
         <StatCard
           icon={<FiClock className="h-6 w-6" />}
           label="In Progress"
-          value={loading ? "..." : stats.inProgress}
+          value={stats.inProgress}
           color="bg-accent-primary"
           delay={0.2}
         />
         <StatCard
           icon={<FiEye className="h-6 w-6" />}
           label="Under Review"
-          value={loading ? "..." : stats.underReview}
+          value={stats.underReview}
           color="bg-accent-warning"
           delay={0.3}
         />
         <StatCard
           icon={<FiCheckSquare className="h-6 w-6" />}
           label="Completed"
-          value={loading ? "..." : stats.completed}
+          value={stats.completed}
           color="bg-accent-success"
           delay={0.4}
         />

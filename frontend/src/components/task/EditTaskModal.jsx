@@ -1,11 +1,5 @@
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  ListboxLabel,
-} from "@headlessui/react" // ListboxLabel is used as Listbox.Label
-import { useEffect, useMemo, useState } from "react"
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react" // ListboxLabel is used as Listbox.Label
+import { useEffect, useId, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import { FiCheck, FiChevronDown } from "react-icons/fi"
 import apiService from "../../../service/apiService"
@@ -28,6 +22,14 @@ const statusOptions = [
 ]
 
 const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
+  const uid = useId()
+  const ids = {
+    title: `${uid}-title`,
+    description: `${uid}-description`,
+    dueDate: `${uid}-dueDate`,
+    labels: `${uid}-labels`,
+  }
+
   const initialFormState = {
     title: "",
     description: "",
@@ -120,12 +122,12 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title */}
         <div>
-          <label htmlFor="title" className="input-label">
+          <label htmlFor={ids.title} className="input-label">
             Title
           </label>
           <input
             type="text"
-            id="title" // Added id for label association
+            id={ids.title}
             name="title"
             value={formData.title}
             onChange={handleChange}
@@ -136,11 +138,11 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
 
         {/* Description */}
         <div>
-          <label htmlFor="description" className="input-label">
+          <label htmlFor={ids.description} className="input-label">
             Description
           </label>
           <textarea
-            id="description" // Added id for label association
+            id={ids.description}
             name="description"
             value={formData.description}
             onChange={handleChange}
@@ -268,12 +270,12 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
 
           {/* Due Date */}
           <div className="md:col-span-2">
-            <label htmlFor="dueDate" className="input-label">
+            <label htmlFor={ids.dueDate} className="input-label">
               Due Date
             </label>
             <input
               type="date"
-              id="dueDate" // Added id for label association
+              id={ids.dueDate}
               name="dueDate"
               value={formData.dueDate}
               onChange={handleChange}
@@ -283,12 +285,12 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
 
           {/* Labels */}
           <div className="md:col-span-2">
-            <label htmlFor="labels" className="input-label">
+            <label htmlFor={ids.labels} className="input-label">
               Labels
             </label>
             <input
               type="text"
-              id="labels" // Added id for label association
+              id={ids.labels}
               name="labels"
               value={formData.labels}
               onChange={handleChange}
@@ -309,7 +311,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Save Changes"}
+            {isSubmitting ? "Updating..." : "Update"}
           </button>
         </div>
       </form>

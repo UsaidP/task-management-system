@@ -1,9 +1,9 @@
-import React, { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
+import React, { useState } from "react"
 
 // --- DEPENDENCIES START ---
 
-import { FiSun, FiMoon } from "react-icons/fi"
+import { FiMoon, FiSun } from "react-icons/fi"
 import { useTheme } from "./ThemeContext" // Use the real hook
 
 // --- DEPENDENCIES END ---

@@ -15,7 +15,7 @@ import {
   FiSettings,
   FiX,
 } from "react-icons/fi"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { useMediaQuery } from "../../../hooks/useMediaQuery"
 import apiService from "../../../service/apiService"
 import { useAuth } from "../context/customHook"
@@ -34,6 +34,7 @@ const Sidebar = () => {
   const [recentProjects, setRecentProjects] = useState([])
 
   const { user } = useAuth()
+  const navigate = useNavigate()
   const { isSidebarOpen, toggleSidebar, isCollapsed, toggleCollapse } = useSidebar()
   const { projectFilter, setProjectFilter, sprintFilter, setSprintFilter } = useFilter()
   const isDesktop = useMediaQuery("(min-width: 1024px)")
@@ -68,6 +69,8 @@ const Sidebar = () => {
     handleMobileNavClick()
     if (projectId) {
       fetchSprintsForProject(projectId)
+      // Navigate to the project page
+      navigate(`/project/${projectId}`)
     }
   }
 

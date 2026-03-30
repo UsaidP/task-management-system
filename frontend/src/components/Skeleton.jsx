@@ -1,22 +1,63 @@
-const Skeleton = ({ className }) => (
-  <div className={`bg-slate-100 animate-pulse rounded-md ${className}`} />
+import { motion } from "framer-motion"
+
+export const Skeleton = ({ className = "", variant = "primary" }) => {
+  const base =
+    variant === "secondary"
+      ? "bg-light-bg-hover dark:bg-dark-bg-hover"
+      : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary"
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className={`${base} animate-pulse rounded-md ${className}`}
+    />
+  )
+}
+
+export const SkeletonText = ({ width = "w-32", height = "h-4", className = "" }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3 }}
+    className={`bg-light-bg-tertiary dark:bg-dark-bg-tertiary animate-pulse rounded-md ${width} ${height} ${className}`}
+  />
 )
 
-// Create this new component for your header's skeleton state
+export const SkeletonCircle = ({ size = "w-12 h-12", className = "" }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3 }}
+    className={`bg-light-bg-tertiary dark:bg-dark-bg-tertiary animate-pulse rounded-full ${size} ${className}`}
+  />
+)
+
+export const SkeletonCard = ({ className = "", children }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3 }}
+    className={`bg-light-bg-tertiary dark:bg-dark-bg-tertiary animate-pulse rounded-xl ${className}`}
+  >
+    {children}
+  </motion.div>
+)
+
 export const HeaderSkeleton = () => (
-  <div className="flex items-center justify-between animate-pulse">
-    {/* Left side of the header */}
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3 }}
+    className="flex animate-pulse items-center justify-between"
+  >
     <div>
-      {/* Mimics the "Good morning, User!" h1 tag */}
-      <div className="h-10 bg-slate-100 rounded-lg w-64 mb-3"></div>
-
-      {/* Mimics the "Here's what's happening..." p tag */}
-      <div className="h-6 bg-slate-100 rounded-lg w-80"></div>
+      <div className="mb-3 h-10 w-64 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
+      <div className="h-6 w-80 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
     </div>
-
-    {/* Right side of the header (date) */}
-    {/* "hidden md:block" makes it responsive, hiding on small screens */}
-    <div className="hidden md:block h-6 bg-slate-100 rounded-lg w-48"></div>
-  </div>
+    <div className="hidden h-6 w-48 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover md:block" />
+  </motion.div>
 )
+
 export default Skeleton

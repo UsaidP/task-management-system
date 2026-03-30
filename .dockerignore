@@ -1,0 +1,9 @@
+# Environment variables (contains secrets)
+.env
+
+# Docker volumes (local development)
+mongodb_data/
+mongodb_config/
+
+# Local overrides
+docker-compose.override.yml

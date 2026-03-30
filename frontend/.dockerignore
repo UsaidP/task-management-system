@@ -1,8 +1,56 @@
+# Dependencies
 node_modules
-.env
+npm-debug.log
+
+# Build output (will be generated in Docker)
 dist
 build
-.cache
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea
 .vscode
+*.swp
+*.swo
+
+# OS
 .DS_Store
-npm-debug.log
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Test coverage
+coverage
+.nyc_output
+
+# Testing
+playwright-report
+test-results
+playwright.config.js
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!package.json
+!package-lock.json
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+# Keep nginx.conf - needed for build
+# nginx.conf
+
+# Misc
+*.tgz
+.cache
+vite.config.ts

@@ -1,29 +1,34 @@
-import { motion } from "framer-motion"
+const statusColors = {
+  todo: { dot: "bg-slate-400" },
+  "in-progress": { dot: "bg-accent-primary" },
+  "under-review": { dot: "bg-accent-warning" },
+  completed: { dot: "bg-accent-success" },
+}
+
+export { statusColors }
 
 const ColumnHeader = ({
   title,
   count,
   totalCount,
   showFilterCount,
-  color,
-  icon,
+  status,
   children,
   className = "",
 }) => {
   const taskText = (num) => (num === 1 ? "task" : "tasks")
 
+  const colors = statusColors[status] || statusColors.todo
+
   return (
-    <div className={`flex items-center justify-between mb-4 ${className}`}>
-      <div className="flex items-center space-x-3">
-        {/* Added check for icon */}
-        {icon && (
-          <motion.div whileHover={{ scale: 1.1 }} className={`p-2 rounded-lg ${color}`}>
-            {icon}
-          </motion.div>
-        )}
+    <div className={`flex items-center justify-between mb-3 ${className}`}>
+      <div className="flex items-center gap-2">
+        <div className={`w-2.5 h-2.5 rounded-full ${colors.dot}`} />
         <div>
-          <h2 className="text-lg font-bold text-highlight-text">{title}</h2>
-          <span className="text-sm text-default-text">
+          <h2 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wide">
+            {title}
+          </h2>
+          <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
             {showFilterCount
               ? `${count} of ${totalCount} ${taskText(totalCount)}`
               : `${count} ${taskText(count)}`}

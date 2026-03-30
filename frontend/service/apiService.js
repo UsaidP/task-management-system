@@ -197,6 +197,12 @@ class ApiService {
     });
   }
 
+  async deleteAccount() {
+    return await this.customFetch("/users/delete-account", {
+      method: "DELETE",
+    });
+  }
+
   async logout() {
     return await this.customFetch("/users/logout", {
       method: "POST",

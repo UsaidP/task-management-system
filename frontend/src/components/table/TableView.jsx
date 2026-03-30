@@ -1,4 +1,11 @@
-import { createColumnHelper, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table"
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
 import dayjs from "dayjs"
 import { motion } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
@@ -42,7 +49,9 @@ const PriorityBadge = ({ priority }) => {
     urgent: "text-task-priority-urgent",
   }
   return (
-    <span className={`text-xs font-semibold uppercase tracking-wider ${styles[priority] || styles.medium}`}>
+    <span
+      className={`text-xs font-semibold uppercase tracking-wider ${styles[priority] || styles.medium}`}
+    >
       {priority}
     </span>
   )
@@ -93,13 +102,15 @@ const columns = [
   columnHelper.accessor("status", {
     header: "Status",
     cell: (info) => <StatusBadge status={info.getValue()} />,
-    sortingFn: (rowA, rowB) => STATUS_ORDER[rowA.original.status] - STATUS_ORDER[rowB.original.status],
+    sortingFn: (rowA, rowB) =>
+      STATUS_ORDER[rowA.original.status] - STATUS_ORDER[rowB.original.status],
     filterFn: (row, columnId, filterValue) => row.original.status === filterValue,
   }),
   columnHelper.accessor("priority", {
     header: "Priority",
     cell: (info) => <PriorityBadge priority={info.getValue()} />,
-    sortingFn: (rowA, rowB) => PRIORITY_ORDER[rowA.original.priority] - PRIORITY_ORDER[rowB.original.priority],
+    sortingFn: (rowA, rowB) =>
+      PRIORITY_ORDER[rowA.original.priority] - PRIORITY_ORDER[rowB.original.priority],
     filterFn: (row, columnId, filterValue) => row.original.priority === filterValue,
   }),
   columnHelper.accessor((row) => row.assignedTo, {
@@ -108,20 +119,24 @@ const columns = [
     cell: (info) => <AssigneeAvatars assignees={info.getValue()} />,
     enableSorting: false,
   }),
-  columnHelper.accessor((row) => (typeof row.project === "object" ? row.project?.name : "Personal"), {
-    id: "project",
-    header: "Project",
-    cell: (info) => (
-      <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-        {info.getValue()}
-      </span>
-    ),
-    sortingFn: "alphanumeric",
-    filterFn: (row, columnId, filterValue) => {
-      const name = typeof row.original.project === "object" ? row.original.project?.name : "Personal"
-      return name === filterValue
-    },
-  }),
+  columnHelper.accessor(
+    (row) => (typeof row.project === "object" ? row.project?.name : "Personal"),
+    {
+      id: "project",
+      header: "Project",
+      cell: (info) => (
+        <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+          {info.getValue()}
+        </span>
+      ),
+      sortingFn: "alphanumeric",
+      filterFn: (row, columnId, filterValue) => {
+        const name =
+          typeof row.original.project === "object" ? row.original.project?.name : "Personal"
+        return name === filterValue
+      },
+    }
+  ),
   columnHelper.accessor((row) => row.sprint?.name || "Backlog", {
     id: "sprint",
     header: "Sprint",
@@ -143,14 +158,20 @@ const columns = [
       if (!date) return <span className="text-sm text-light-text-tertiary">—</span>
       const isOverdue = dayjs(date).isBefore(dayjs()) && info.row.original.status !== "completed"
       return (
-        <span className={`text-sm ${isOverdue ? "text-accent-danger font-medium" : "text-light-text-secondary dark:text-dark-text-secondary"}`}>
+        <span
+          className={`text-sm ${isOverdue ? "text-accent-danger font-medium" : "text-light-text-secondary dark:text-dark-text-secondary"}`}
+        >
           {dayjs(date).format("MMM DD, YYYY")}
         </span>
       )
     },
     sortingFn: (rowA, rowB) => {
-      const a = rowA.original.dueDate ? new Date(rowA.original.dueDate).getTime() : Number.POSITIVE_INFINITY
-      const b = rowB.original.dueDate ? new Date(rowB.original.dueDate).getTime() : Number.POSITIVE_INFINITY
+      const a = rowA.original.dueDate
+        ? new Date(rowA.original.dueDate).getTime()
+        : Number.POSITIVE_INFINITY
+      const b = rowB.original.dueDate
+        ? new Date(rowB.original.dueDate).getTime()
+        : Number.POSITIVE_INFINITY
       return a - b
     },
   }),
@@ -273,11 +294,13 @@ const TableView = () => {
         {/* Filters */}
         <div className="flex items-center gap-3">
           <select
-            value={(columnFilters.find((f) => f.id === "status")?.value) || ""}
+            value={columnFilters.find((f) => f.id === "status")?.value || ""}
             onChange={(e) => {
               const val = e.target.value
               setColumnFilters((prev) =>
-                val ? [...prev.filter((f) => f.id !== "status"), { id: "status", value: val }] : prev.filter((f) => f.id !== "status")
+                val
+                  ? [...prev.filter((f) => f.id !== "status"), { id: "status", value: val }]
+                  : prev.filter((f) => f.id !== "status")
               )
             }}
             className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary"
@@ -290,11 +313,13 @@ const TableView = () => {
           </select>
 
           <select
-            value={(columnFilters.find((f) => f.id === "priority")?.value) || ""}
+            value={columnFilters.find((f) => f.id === "priority")?.value || ""}
             onChange={(e) => {
               const val = e.target.value
               setColumnFilters((prev) =>
-                val ? [...prev.filter((f) => f.id !== "priority"), { id: "priority", value: val }] : prev.filter((f) => f.id !== "priority")
+                val
+                  ? [...prev.filter((f) => f.id !== "priority"), { id: "priority", value: val }]
+                  : prev.filter((f) => f.id !== "priority")
               )
             }}
             className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary"
@@ -307,34 +332,42 @@ const TableView = () => {
           </select>
 
           <select
-            value={(columnFilters.find((f) => f.id === "project")?.value) || ""}
+            value={columnFilters.find((f) => f.id === "project")?.value || ""}
             onChange={(e) => {
               const val = e.target.value
               setColumnFilters((prev) =>
-                val ? [...prev.filter((f) => f.id !== "project"), { id: "project", value: val }] : prev.filter((f) => f.id !== "project")
+                val
+                  ? [...prev.filter((f) => f.id !== "project"), { id: "project", value: val }]
+                  : prev.filter((f) => f.id !== "project")
               )
             }}
             className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary"
           >
             <option value="">All Projects</option>
             {projectNames.map((p) => (
-              <option key={p} value={p}>{p}</option>
+              <option key={p} value={p}>
+                {p}
+              </option>
             ))}
           </select>
 
           <select
-            value={(columnFilters.find((f) => f.id === "sprint")?.value) || ""}
+            value={columnFilters.find((f) => f.id === "sprint")?.value || ""}
             onChange={(e) => {
               const val = e.target.value
               setColumnFilters((prev) =>
-                val ? [...prev.filter((f) => f.id !== "sprint"), { id: "sprint", value: val }] : prev.filter((f) => f.id !== "sprint")
+                val
+                  ? [...prev.filter((f) => f.id !== "sprint"), { id: "sprint", value: val }]
+                  : prev.filter((f) => f.id !== "sprint")
               )
             }}
             className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary"
           >
             <option value="">All Sprints</option>
             {sprintNames.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
 

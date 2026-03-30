@@ -5,7 +5,33 @@ import apiService from "../../service/apiService.js"
 import { useAuth } from "./context/customHook.js"
 import { NetworkError, ServerError } from "./ErrorStates.jsx"
 import KanbanBoard from "./kanban/KanbanBoard.jsx"
+import { Skeleton, SkeletonCircle, SkeletonText } from "./Skeleton.jsx"
 import TaskDetailPanel from "./task/TaskDetailPanel.jsx"
+
+const BoardSkeleton = () => (
+  <div className="flex h-full p-6 gap-6 overflow-x-auto">
+    {[1, 2, 3, 4].map((idx) => (
+      <div
+        key={idx}
+        className="w-[320px] flex-shrink-0 flex flex-col gap-4 bg-light-bg-primary/50 dark:bg-dark-bg-primary/50 rounded-xl p-4"
+      >
+        <SkeletonText width="w-1/2" height="h-8" className="mb-2" />
+        {[1, 2, 3].map((card) => (
+          <div
+            key={card}
+            className="p-3 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover space-y-3"
+          >
+            <SkeletonText width="w-3/4" height="h-4" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="w-12 h-4 rounded-full" />
+              <SkeletonCircle size="w-5 h-5" />
+            </div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+)
 
 const initialColumns = {
   todo: { title: "To Do", items: [], tasks: [] },
@@ -83,7 +109,7 @@ const Board = () => {
         {canAddTask && (
           <button
             type="button"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors"
+            className="btn-primary flex items-center gap-2"
           >
             <FiPlus className="w-4 h-4" />
             Add Task
@@ -93,18 +119,7 @@ const Board = () => {
 
       <div className="flex-1 overflow-hidden min-h-0">
         {loading ? (
-          <div className="flex h-full p-6 gap-6 overflow-x-auto">
-            {[1, 2, 3, 4].map((idx) => (
-              <div
-                key={idx}
-                className="w-[320px] flex-shrink-0 flex flex-col gap-4 bg-light-bg-primary/50 dark:bg-dark-bg-primary/50 rounded-xl p-4 animate-pulse"
-              >
-                <div className="h-8 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg w-1/2" />
-                <div className="h-24 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg" />
-                <div className="h-24 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg" />
-              </div>
-            ))}
-          </div>
+          <BoardSkeleton />
         ) : (
           <KanbanBoard
             columns={columns}
