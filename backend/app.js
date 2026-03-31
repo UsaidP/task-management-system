@@ -7,6 +7,7 @@ const allowedOrigins = [
   "http://localhost:5173", // For local testing
   "http://localhost:4000", // For local testing
   "http://localhost:8080", // For local testing
+  "https://task-management-system-production-3110.up.railway.app"
 ]
 
 app.use(express.json());
