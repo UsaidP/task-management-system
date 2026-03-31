@@ -5,12 +5,7 @@ import { ProjectMember } from "../models/projectmember.model.js"
 import { User } from "../models/user.model.js"
 import ApiError from "../utils/api-error.js"
 import { asyncHandler } from "../utils/async-handler.js"
-import {
-	hasHigherOrEqualRole,
-	
-	ROLE_PERMISSIONS,
-	UserRoleEnum,
-} from "../utils/constants.js"
+import { hasHigherOrEqualRole, ROLE_PERMISSIONS, UserRoleEnum } from "../utils/constants.js"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. Verify JWT & Attach User

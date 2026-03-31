@@ -31,9 +31,9 @@ services:
     volumes:
       - ../.env:/app/.env
     environment:
-      NODE_ENV: development
+      NODE_ENV: ${NODE_ENV}
       PORT: 3000
-      MONGODB_URI: mongodb://${MONGO_USERNAME:-admin}:${MONGO_PASSWORD:-admin123}@mongodb:27017/taskflow?authSource=admin
+      MONGODB_URI: ${MONGODB_URI:}
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
       ACCESS_TOKEN_EXPIRY: ${ACCESS_TOKEN_EXPIRY}
