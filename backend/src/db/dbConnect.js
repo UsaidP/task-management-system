@@ -12,9 +12,10 @@ const connectDB = asyncHandler(async () => {
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       // Change 'true' to a dynamic check
-      tls: true, // Disable TLS in development for local MongoDB
-      tlsAllowInvalidCertificates: false,
-      w: "majority",
+      tls: false, // Disable TLS in development for local MongoDB
+      ssl: false, // Disable SSL in development for local MongoDB
+
+
     })
 
     console.log(`✅ MongoDB Connected: ${conn.connection?.host}`)
