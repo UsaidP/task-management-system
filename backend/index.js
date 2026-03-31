@@ -7,7 +7,7 @@ import connectDB from "./src/db/dbConnect.js"
 dotenv.config()
 
 if (process.env.NODE_ENV !== "test") {
-  const PORT = process.env.PORT || 3001
+  const PORT = process.env.PORT || 3000
 
   // Optional: Debugging line to see if variables are actually loading
 
