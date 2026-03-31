@@ -4,35 +4,57 @@ import express, { urlencoded } from "express"
 
 const app = express()
 const allowedOrigins = [
-	"http://localhost:5173", // For local testing
-	"http://localhost:4000", // For local testing
-	"http://localhost:8080", // For local testing
+  "http://localhost:5173", // For local testing
+  "http://localhost:4000", // For local testing
+  "http://localhost:8080", // For local testing
 ]
 
-const corsOptions = {
-	allowedHeaders: [
-		"Content-Type",
-		"Authorization",
-		"X-Requested-With",
-		"Accept",
-		"Origin",
-		"Access-Control-Request-Method",
-		"Access-Control-Request-Headers",
-	],
-	credentials: true, // Critical for cookies
-	exposedHeaders: ["Set-Cookie"],
-	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-	optionsSuccessStatus: 200, // For legacy browsers
-	origin: (origin, callback) => {
-		if (!origin) return callback(null, true)
+app.use(express.json());
 
-		if (allowedOrigins.includes(origin)) {
-			return callback(null, true)
-		} else {
-			console.log("Blocked origin:", origin) // Debug log
-			return callback(new Error("Not allowed by CORS"))
-		}
-	},
+
+// Add this Spy Middleware:
+app.use((req, res, next) => {
+  console.log(`🕵️ Incoming Request: ${req.method} ${req.url}`);
+  next();
+});
+
+// Your routes should be below this:
+// app.use("/api/v1/users", userRoutes);
+// Add this Spy Middleware:
+app.use((req, res, next) => {
+  console.log(`🕵️ Incoming Request: ${req.method} ${req.url}`);
+  next();
+});
+
+// Your routes should be below this:
+// app.use("/api/v1/users", userRoutes);
+
+
+
+const corsOptions = {
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+    "Access-Control-Request-Method",
+    "Access-Control-Request-Headers",
+  ],
+  credentials: true, // Critical for cookies
+  exposedHeaders: ["Set-Cookie"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  optionsSuccessStatus: 200, // For legacy browsers
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true)
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    } else {
+      console.log("Blocked origin:", origin) // Debug log
+      return callback(new Error("Not allowed by CORS"))
+    }
+  },
 }
 
 // 2. Use these exact options for BOTH preflight and main requests
@@ -59,7 +81,7 @@ import taskRouter from "./src/routes/task.route.js"
 
 // Route definitions
 if (process.env.NODE_ENV !== "test") {
-	app.use("/api/v1/healthcheck", healthCheck)
+  app.use("/api/v1/healthcheck", healthCheck)
 }
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/users", authRouter)
@@ -74,15 +96,15 @@ app.use("/api/v1/email", emailRouter) // Email testing routes
 
 // Global error handler
 app.use((err, req, res, next) => {
-	const statusCode = err.statusCode || 500
-	const message = err.message || "Internal Server Error"
+  const statusCode = err.statusCode || 500
+  const message = err.message || "Internal Server Error"
 
-	res.status(statusCode).json({
-		errors: err.errors || [],
-		message,
-		stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
-		success: false,
-	})
+  res.status(statusCode).json({
+    errors: err.errors || [],
+    message,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    success: false,
+  })
 })
 
 export default app
