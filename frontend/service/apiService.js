@@ -31,7 +31,7 @@ class NetworkError extends Error {
 // --- API Service Implementation ---
 class ApiService {
   constructor() {
-    this.baseURL = import.meta.env.VITE_API_URL || "/api/v1";
+    this.baseURL = import.meta.env.VITE_API_URL || "https://glorious-stillness-production-0853.up.railway.app/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
