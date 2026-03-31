@@ -26,3 +26,36 @@ tests
 design-system
 get-shit-done
 e2e
+
+# Additional unnecessary files
+# Environment variations
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+*.log
+logs/
+
+# Temp files
+*.tmp
+*.temp
+
+# Cache directories
+.cache/
+__pycache__/
+*.pyc
+
+# Build outputs
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+Thumbs.db
+*.swp
+*.swo
