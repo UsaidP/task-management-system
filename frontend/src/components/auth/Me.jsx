@@ -72,11 +72,15 @@ const StatCard = ({ icon: Icon, label, value, color, subtext }) => (
     whileHover={{ y: -2, scale: 1.02 }}
     className="group relative overflow-hidden bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border p-5 transition-all duration-200 hover:shadow-md dark:hover:shadow-dark-md"
   >
-    <div className={`absolute top-0 right-0 w-20 h-20 ${color} opacity-10 rounded-bl-full transition-opacity group-hover:opacity-20`} />
+    <div
+      className={`absolute top-0 right-0 w-20 h-20 ${color} opacity-10 rounded-bl-full transition-opacity group-hover:opacity-20`}
+    />
     <div className="relative">
       <div className="flex items-center justify-between mb-3">
         <div className={`p-2.5 rounded-lg ${color} bg-opacity-10`}>
-          <Icon className={`w-5 h-5 ${color.replace('bg-', 'text-').replace('from-', '').replace('to-', '')}`} />
+          <Icon
+            className={`w-5 h-5 ${color.replace("bg-", "text-").replace("from-", "").replace("to-", "")}`}
+          />
         </div>
         {subtext && (
           <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary px-2 py-1 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover">
@@ -99,18 +103,20 @@ const SettingsItem = ({ icon: Icon, title, subtitle, color, onClick, danger }) =
     whileHover={{ x: 4 }}
     whileTap={{ scale: 0.99 }}
     onClick={onClick}
-    className={`w-full flex items-center gap-4 p-4 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all duration-200 border-b border-light-border dark:border-dark-border last:border-b-0 group ${danger ? 'hover:bg-accent-danger/5 dark:hover:bg-accent-danger/10' : ''}`}
+    className={`w-full flex items-center gap-4 p-4 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all duration-200 border-b border-light-border dark:border-dark-border last:border-b-0 group ${danger ? "hover:bg-accent-danger/5 dark:hover:bg-accent-danger/10" : ""}`}
   >
-    <div className={`p-2.5 rounded-xl ${danger ? 'bg-accent-danger/10 group-hover:bg-accent-danger/20' : 'bg-light-bg-hover dark:bg-dark-bg-hover group-hover:scale-110'} transition-all duration-200`}>
-      <Icon className={`w-5 h-5 ${danger ? 'text-accent-danger' : color}`} />
+    <div
+      className={`p-2.5 rounded-xl ${danger ? "bg-accent-danger/10 group-hover:bg-accent-danger/20" : "bg-light-bg-hover dark:bg-dark-bg-hover group-hover:scale-110"} transition-all duration-200`}
+    >
+      <Icon className={`w-5 h-5 ${danger ? "text-accent-danger" : color}`} />
     </div>
     <div className="flex-1 text-left">
-      <p className={`font-semibold ${danger ? 'text-accent-danger' : 'text-light-text-primary dark:text-dark-text-primary'}`}>
+      <p
+        className={`font-semibold ${danger ? "text-accent-danger" : "text-light-text-primary dark:text-dark-text-primary"}`}
+      >
         {title}
       </p>
-      <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-        {subtitle}
-      </p>
+      <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{subtitle}</p>
     </div>
     <FiChevronRight className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary group-hover:text-accent-primary transition-colors" />
   </motion.button>
@@ -125,10 +131,10 @@ const Me = () => {
   const [recentActivity, setRecentActivity] = useState([])
   const [showPersonalInfo, setShowPersonalInfo] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') || 'system'
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("theme") || "system"
     }
-    return 'system'
+    return "system"
   })
   const [stats, setStats] = useState({
     tasksCompleted: 0,
@@ -178,9 +184,9 @@ const Me = () => {
   const displayRole = user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Member"
   const joinDate = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-    })
+        year: "numeric",
+        month: "long",
+      })
     : "N/A"
 
   const editProfileHandler = () => setIsEditModalOpen(true)
@@ -195,7 +201,7 @@ const Me = () => {
       }
 
       // Validate file type
-      if (!file.type.startsWith('image/')) {
+      if (!file.type.startsWith("image/")) {
         toast.error("Please select a valid image file")
         return
       }
@@ -230,18 +236,18 @@ const Me = () => {
 
   const handleThemeChange = (theme) => {
     setSelectedTheme(theme)
-    localStorage.setItem('theme', theme)
+    localStorage.setItem("theme", theme)
 
-    if (theme === 'light') {
-      document.documentElement.classList.remove('dark')
-    } else if (theme === 'dark') {
-      document.documentElement.classList.add('dark')
+    if (theme === "light") {
+      document.documentElement.classList.remove("dark")
+    } else if (theme === "dark") {
+      document.documentElement.classList.add("dark")
     } else {
       // System preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      document.documentElement.classList.toggle('dark', prefersDark)
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      document.documentElement.classList.toggle("dark", prefersDark)
     }
-    toast.success(`Theme changed to ${theme === 'system' ? 'System' : theme} mode`)
+    toast.success(`Theme changed to ${theme === "system" ? "System" : theme} mode`)
   }
 
   const handleDeleteAccount = async () => {
@@ -284,7 +290,9 @@ const Me = () => {
       <div className="flex justify-center items-center h-full">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-accent-primary/30 border-t-accent-primary rounded-full animate-spin" />
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm">Loading profile...</p>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
+            Loading profile...
+          </p>
         </div>
       </div>
     )
@@ -303,28 +311,48 @@ const Me = () => {
       title: "Notifications",
       subtitle: "Email & push notifications",
       color: "text-accent-warning",
-      onClick: () => handleSettingClick({ icon: FiBell, title: "Notifications", subtitle: "Email & push notifications" }),
+      onClick: () =>
+        handleSettingClick({
+          icon: FiBell,
+          title: "Notifications",
+          subtitle: "Email & push notifications",
+        }),
     },
     {
       icon: FiMoon,
       title: "Appearance",
       subtitle: "Theme & display settings",
       color: "text-accent-info",
-      onClick: () => handleSettingClick({ icon: FiMoon, title: "Appearance", subtitle: "Theme & display settings" }),
+      onClick: () =>
+        handleSettingClick({
+          icon: FiMoon,
+          title: "Appearance",
+          subtitle: "Theme & display settings",
+        }),
     },
     {
       icon: FiLock,
       title: "Security",
       subtitle: "Password & authentication",
       color: "text-accent-danger",
-      onClick: () => handleSettingClick({ icon: FiLock, title: "Security", subtitle: "Password & authentication" }),
+      onClick: () =>
+        handleSettingClick({
+          icon: FiLock,
+          title: "Security",
+          subtitle: "Password & authentication",
+        }),
     },
     {
       icon: FiSettings,
       title: "Preferences",
       subtitle: "Language, timezone, defaults",
       color: "text-accent-purple",
-      onClick: () => handleSettingClick({ icon: FiSettings, title: "Preferences", subtitle: "Language, timezone, defaults" }),
+      onClick: () =>
+        handleSettingClick({
+          icon: FiSettings,
+          title: "Preferences",
+          subtitle: "Language, timezone, defaults",
+        }),
     },
   ]
 
@@ -338,7 +366,6 @@ const Me = () => {
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-6xl mx-auto p-6 md:p-8 space-y-6">
-
           {/* Profile Header Card */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
@@ -351,11 +378,11 @@ const Me = () => {
 
             <div className="relative flex flex-col md:flex-row items-center gap-6">
               {/* Avatar */}
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="relative group"
-              >
-                <label htmlFor="profile" className="block w-32 h-32 rounded-2xl cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow">
+              <motion.div whileHover={{ scale: 1.05 }} className="relative group">
+                <label
+                  htmlFor="profile"
+                  className="block w-32 h-32 rounded-2xl cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow"
+                >
                   <div className="w-full h-full bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-5xl font-bold text-white relative">
                     {user?.avatar?.url ? (
                       <>
@@ -364,11 +391,14 @@ const Me = () => {
                           className="w-full h-full object-cover"
                           src={user.avatar.url}
                           onError={(e) => {
-                            e.target.style.display = 'none'
-                            e.target.nextSibling.style.display = 'flex'
+                            e.target.style.display = "none"
+                            e.target.nextSibling.style.display = "flex"
                           }}
                         />
-                        <span className="absolute inset-0 w-full h-full flex items-center justify-center" style={{ display: 'none' }}>
+                        <span
+                          className="absolute inset-0 w-full h-full flex items-center justify-center"
+                          style={{ display: "none" }}
+                        >
                           {displayName.charAt(0).toUpperCase()}
                         </span>
                       </>
@@ -470,14 +500,17 @@ const Me = () => {
             <StatCard
               icon={FiTrendingUp}
               label="Productivity"
-              value={stats.tasksCompleted > 0 ? `${Math.round((stats.tasksCompleted / Math.max(stats.tasksCount, 1)) * 100)}%` : "0%"}
+              value={
+                stats.tasksCompleted > 0
+                  ? `${Math.round((stats.tasksCompleted / Math.max(stats.tasksCount, 1)) * 100)}%`
+                  : "0%"
+              }
               color="bg-accent-info"
             />
           </motion.div>
 
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
             {/* Left Column - Profile Info */}
             <motion.div
               initial={{ x: -20, opacity: 0 }}
@@ -503,9 +536,24 @@ const Me = () => {
                     <InfoItem icon={FiBriefcase} label="Company" value={user?.company} />
                     <InfoItem icon={FiBriefcase} label="Job Title" value={user?.jobTitle} />
                     <InfoItem icon={FiMapPin} label="Location" value={user?.location} />
-                    <InfoItem icon={FiGlobe} label="Website" value={user?.website} href={user?.website} />
-                    <InfoItem icon={FiLinkedin} label="LinkedIn" value={user?.linkedin} href={user?.linkedin} />
-                    <InfoItem icon={FiGithub} label="GitHub" value={user?.github} href={user?.github} />
+                    <InfoItem
+                      icon={FiGlobe}
+                      label="Website"
+                      value={user?.website}
+                      href={user?.website}
+                    />
+                    <InfoItem
+                      icon={FiLinkedin}
+                      label="LinkedIn"
+                      value={user?.linkedin}
+                      href={user?.linkedin}
+                    />
+                    <InfoItem
+                      icon={FiGithub}
+                      label="GitHub"
+                      value={user?.github}
+                      href={user?.github}
+                    />
                   </div>
                   {user?.bio && (
                     <div className="mt-4 p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 border border-light-border dark:border-dark-border">
@@ -620,9 +668,7 @@ const Me = () => {
                     <div className="p-2 rounded-lg bg-accent-danger/10">
                       <FiTrash2 className="w-5 h-5 text-accent-danger" />
                     </div>
-                    <h3 className="text-lg font-bold text-accent-danger">
-                      Danger Zone
-                    </h3>
+                    <h3 className="text-lg font-bold text-accent-danger">Danger Zone</h3>
                   </div>
                 </div>
                 <div className="p-5">
@@ -723,22 +769,36 @@ const Me = () => {
               <div className="flex items-center gap-4 p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
                 <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-2xl font-bold text-white flex-shrink-0">
                   {user?.avatar?.url ? (
-                    <img src={user.avatar.url} alt="Avatar" className="w-full h-full object-cover rounded-xl" />
+                    <img
+                      src={user.avatar.url}
+                      alt="Avatar"
+                      className="w-full h-full object-cover rounded-xl"
+                    />
                   ) : (
                     user?.fullname?.charAt(0).toUpperCase() || "?"
                   )}
                 </div>
                 <div>
-                  <p className="font-semibold text-light-text-primary dark:text-dark-text-primary">{user?.fullname}</p>
-                  <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{user?.email}</p>
-                  <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1 capitalize">{user?.role}</p>
+                  <p className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    {user?.fullname}
+                  </p>
+                  <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                    {user?.email}
+                  </p>
+                  <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1 capitalize">
+                    {user?.role}
+                  </p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <InfoItem icon={FiPhone} label="Phone" value={user?.phone || "Not set"} />
                 <InfoItem icon={FiBriefcase} label="Company" value={user?.company || "Not set"} />
-                <InfoItem icon={FiBriefcase} label="Job Title" value={user?.jobTitle || "Not set"} />
+                <InfoItem
+                  icon={FiBriefcase}
+                  label="Job Title"
+                  value={user?.jobTitle || "Not set"}
+                />
                 <InfoItem icon={FiMapPin} label="Location" value={user?.location || "Not set"} />
               </div>
 
@@ -746,33 +806,45 @@ const Me = () => {
                 <div className="p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
                   <div className="flex items-center gap-2 mb-2">
                     <FiAward className="w-4 h-4 text-accent-primary" />
-                    <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide font-semibold">Bio</p>
+                    <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide font-semibold">
+                      Bio
+                    </p>
                   </div>
-                  <p className="text-sm text-light-text-primary dark:text-dark-text-primary leading-relaxed">{user.bio}</p>
+                  <p className="text-sm text-light-text-primary dark:text-dark-text-primary leading-relaxed">
+                    {user.bio}
+                  </p>
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-3">
                 {user?.website && (
                   <a
-                    href={user.website.startsWith("http") ? user.website : `https://${user.website}`}
+                    href={
+                      user.website.startsWith("http") ? user.website : `https://${user.website}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
                   >
                     <FiGlobe className="w-5 h-5 text-accent-primary flex-shrink-0" />
-                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">{user.website}</span>
+                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                      {user.website}
+                    </span>
                   </a>
                 )}
                 {user?.linkedin && (
                   <a
-                    href={user.linkedin.startsWith("http") ? user.linkedin : `https://${user.linkedin}`}
+                    href={
+                      user.linkedin.startsWith("http") ? user.linkedin : `https://${user.linkedin}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
                   >
                     <FiLinkedin className="w-5 h-5 text-accent-primary flex-shrink-0" />
-                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">LinkedIn</span>
+                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                      LinkedIn
+                    </span>
                   </a>
                 )}
                 {user?.github && (
@@ -783,7 +855,9 @@ const Me = () => {
                     className="flex items-center gap-3 p-3 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
                   >
                     <FiGithub className="w-5 h-5 text-accent-primary flex-shrink-0" />
-                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">GitHub</span>
+                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                      GitHub
+                    </span>
                   </a>
                 )}
               </div>
@@ -791,7 +865,14 @@ const Me = () => {
               <div className="pt-4 border-t border-light-border dark:border-dark-border">
                 <div className="flex items-center gap-2 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                   <FiCalendar className="w-4 h-4" />
-                  <span>Joined {new Date(user.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                  <span>
+                    Joined{" "}
+                    {new Date(user.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -815,7 +896,7 @@ const Me = () => {
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className={`p-3 rounded-xl bg-light-bg-hover dark:bg-dark-bg-hover`}>
+                <div className={"p-3 rounded-xl bg-light-bg-hover dark:bg-dark-bg-hover"}>
                   <activeSetting.icon className={`w-6 h-6 ${activeSetting.color}`} />
                 </div>
                 <div>
@@ -840,8 +921,12 @@ const Me = () => {
                 <>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
                     <div>
-                      <p className="font-medium text-light-text-primary dark:text-dark-text-primary">Email Notifications</p>
-                      <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">Receive task updates via email</p>
+                      <p className="font-medium text-light-text-primary dark:text-dark-text-primary">
+                        Email Notifications
+                      </p>
+                      <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
+                        Receive task updates via email
+                      </p>
                     </div>
                     <div className="w-12 h-6 bg-accent-primary rounded-full relative cursor-pointer">
                       <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow" />
@@ -849,8 +934,12 @@ const Me = () => {
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
                     <div>
-                      <p className="font-medium text-light-text-primary dark:text-dark-text-primary">Push Notifications</p>
-                      <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">Get instant alerts</p>
+                      <p className="font-medium text-light-text-primary dark:text-dark-text-primary">
+                        Push Notifications
+                      </p>
+                      <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
+                        Get instant alerts
+                      </p>
                     </div>
                     <div className="w-12 h-6 bg-light-border dark:bg-dark-border rounded-full relative cursor-pointer">
                       <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow" />
@@ -867,15 +956,21 @@ const Me = () => {
                   <div className="grid grid-cols-3 gap-3">
                     <button className="p-4 rounded-xl border-2 border-accent-primary bg-light-bg-primary dark:bg-dark-bg-primary">
                       <div className="w-full h-12 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary mb-2" />
-                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">Light</p>
+                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
+                        Light
+                      </p>
                     </button>
                     <button className="p-4 rounded-xl border border-light-border dark:border-dark-border bg-dark-bg-primary">
                       <div className="w-full h-12 rounded-lg bg-dark-bg-tertiary mb-2" />
-                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">Dark</p>
+                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
+                        Dark
+                      </p>
                     </button>
                     <button className="p-4 rounded-xl border border-light-border dark:border-dark-border">
                       <div className="w-full h-12 rounded-lg bg-gradient-to-r from-light-bg-secondary to-dark-bg-tertiary mb-2" />
-                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">System</p>
+                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
+                        System
+                      </p>
                     </button>
                   </div>
                 </>
@@ -884,16 +979,28 @@ const Me = () => {
               {activeSetting.title === "Security" && (
                 <>
                   <div className="p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
-                    <p className="font-medium text-light-text-primary dark:text-dark-text-primary mb-1">Password</p>
-                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">Last changed 30 days ago</p>
+                    <p className="font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                      Password
+                    </p>
+                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                      Last changed 30 days ago
+                    </p>
                   </div>
                   <button className="w-full p-4 rounded-xl border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors text-left">
-                    <p className="font-medium text-light-text-primary dark:text-dark-text-primary">Change Password</p>
-                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">Update your password</p>
+                    <p className="font-medium text-light-text-primary dark:text-dark-text-primary">
+                      Change Password
+                    </p>
+                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
+                      Update your password
+                    </p>
                   </button>
                   <button className="w-full p-4 rounded-xl border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors text-left">
-                    <p className="font-medium text-light-text-primary dark:text-dark-text-primary">Two-Factor Authentication</p>
-                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">Add an extra layer of security</p>
+                    <p className="font-medium text-light-text-primary dark:text-dark-text-primary">
+                      Two-Factor Authentication
+                    </p>
+                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
+                      Add an extra layer of security
+                    </p>
                   </button>
                 </>
               )}
@@ -902,7 +1009,9 @@ const Me = () => {
                 <>
                   <div className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">Language</label>
+                      <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">
+                        Language
+                      </label>
                       <select className="w-full p-3 rounded-xl bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none">
                         <option>English (US)</option>
                         <option>Spanish</option>
@@ -911,7 +1020,9 @@ const Me = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">Timezone</label>
+                      <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">
+                        Timezone
+                      </label>
                       <select className="w-full p-3 rounded-xl bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none">
                         <option>UTC-5 (Eastern Time)</option>
                         <option>UTC-8 (Pacific Time)</option>
@@ -968,7 +1079,8 @@ const Me = () => {
               </h3>
             </div>
             <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-6 leading-relaxed">
-              This action cannot be undone. All your data, tasks, and projects will be permanently deleted.
+              This action cannot be undone. All your data, tasks, and projects will be permanently
+              deleted.
             </p>
             <div className="flex gap-3">
               <button

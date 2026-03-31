@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { FiCheckCircle, FiXCircle } from "react-icons/fi"
-import { Link, useParams, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
 
 export const Verify = () => {
@@ -27,7 +27,9 @@ export const Verify = () => {
         }
       } catch (error) {
         setStatus("error")
-        setMessage(error.data?.message || "Failed to verify email. The link may be expired or invalid.")
+        setMessage(
+          error.data?.message || "Failed to verify email. The link may be expired or invalid."
+        )
       }
     }
 

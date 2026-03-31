@@ -107,10 +107,7 @@ const Board = () => {
           </p>
         </div>
         {canAddTask && (
-          <button
-            type="button"
-            className="btn-primary flex items-center gap-2"
-          >
+          <button type="button" className="btn-primary flex items-center gap-2">
             <FiPlus className="w-4 h-4" />
             Add Task
           </button>

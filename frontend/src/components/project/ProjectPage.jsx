@@ -1,6 +1,6 @@
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import { motion } from "framer-motion"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
@@ -557,30 +557,33 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => setTimelineZoom("day")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "day"
-                ? "bg-accent-primary text-white"
-                : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                }`}
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+                timelineZoom === "day"
+                  ? "bg-accent-primary text-white"
+                  : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+              }`}
             >
               Day
             </button>
             <button
               type="button"
               onClick={() => setTimelineZoom("week")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "week"
-                ? "bg-accent-primary text-white"
-                : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                }`}
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+                timelineZoom === "week"
+                  ? "bg-accent-primary text-white"
+                  : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+              }`}
             >
               Week
             </button>
             <button
               type="button"
               onClick={() => setTimelineZoom("month")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "month"
-                ? "bg-accent-primary text-white"
-                : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                }`}
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+                timelineZoom === "month"
+                  ? "bg-accent-primary text-white"
+                  : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+              }`}
             >
               Month
             </button>
@@ -752,14 +755,16 @@ const ProjectPage = () => {
                 return (
                   <div
                     key={item.day}
-                    className={`min-h-[100px] p-2 border-b border-r border-light-border dark:border-dark-border ${isToday
-                      ? "bg-accent-primary/10"
-                      : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                      }`}
+                    className={`min-h-[100px] p-2 border-b border-r border-light-border dark:border-dark-border ${
+                      isToday
+                        ? "bg-accent-primary/10"
+                        : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                    }`}
                   >
                     <div
-                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${isToday ? "bg-accent-primary text-white" : "text-light-text-tertiary"
-                        }`}
+                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${
+                        isToday ? "bg-accent-primary text-white" : "text-light-text-tertiary"
+                      }`}
                     >
                       {item.day}
                     </div>
@@ -770,12 +775,13 @@ const ProjectPage = () => {
                           initial={{ opacity: 0, y: -3 }}
                           animate={{ opacity: 1, y: 0 }}
                           onClick={() => openEditModal(task)}
-                          className={`text-[10px] p-1 rounded truncate cursor-pointer ${task.priority === "urgent" || task.priority === "high"
-                            ? "bg-[#C44A4A22] text-[#C44A4A]"
-                            : task.priority === "medium"
-                              ? "bg-[#D4A54822] text-[#D4A548]"
-                              : "bg-[#6888A022] text-[#6888A0]"
-                            }`}
+                          className={`text-[10px] p-1 rounded truncate cursor-pointer ${
+                            task.priority === "urgent" || task.priority === "high"
+                              ? "bg-[#C44A4A22] text-[#C44A4A]"
+                              : task.priority === "medium"
+                                ? "bg-[#D4A54822] text-[#D4A548]"
+                                : "bg-[#6888A022] text-[#6888A0]"
+                          }`}
                         >
                           {task.title}
                         </motion.div>
@@ -830,10 +836,11 @@ const ProjectPage = () => {
           {Object.entries(filteredColumns).map(([status, column]) => (
             <div
               key={status}
-              className={`w-[270px] flex-shrink-0 flex flex-col gap-2 transition-all duration-200 ${dragOverColumn === status
-                ? "outline-2 outline outline-accent-primary outline-offset-[-2px]"
-                : ""
-                }`}
+              className={`w-[270px] flex-shrink-0 flex flex-col gap-2 transition-all duration-200 ${
+                dragOverColumn === status
+                  ? "outline-2 outline outline-accent-primary outline-offset-[-2px]"
+                  : ""
+              }`}
               onDragOver={(e) => handleDragOver(e, status)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, status)}
@@ -885,8 +892,18 @@ const ProjectPage = () => {
     // Status color configuration
     const statusConfig = {
       todo: { color: "#8B8178", bg: "bg-[#8B817822]", text: "text-[#8B8178]", label: "To Do" },
-      "in-progress": { color: "#C4654A", bg: "bg-[#C4654A22]", text: "text-[#C4654A]", label: "In Progress" },
-      "under-review": { color: "#D4A548", bg: "bg-[#D4A54822]", text: "text-[#D4A548]", label: "Review" },
+      "in-progress": {
+        color: "#C4654A",
+        bg: "bg-[#C4654A22]",
+        text: "text-[#C4654A]",
+        label: "In Progress",
+      },
+      "under-review": {
+        color: "#D4A548",
+        bg: "bg-[#D4A54822]",
+        text: "text-[#D4A548]",
+        label: "Review",
+      },
       completed: { color: "#7A9A6D", bg: "bg-[#7A9A6D22]", text: "text-[#7A9A6D]", label: "Done" },
     }
     const currentStatus = statusConfig[task.status] || statusConfig.todo
@@ -916,10 +933,16 @@ const ProjectPage = () => {
     const getAssigneeInitials = (assignedTo) => {
       if (!assignedTo || assignedTo.length === 0) return "?"
       const assignee = assignedTo[0]
-      const name = typeof assignee === "object"
-        ? (assignee.user?.fullname || assignee.fullname || "User")
-        : "User"
-      return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2)
+      const name =
+        typeof assignee === "object"
+          ? assignee.user?.fullname || assignee.fullname || "User"
+          : "User"
+      return name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
     }
 
     const assigneeAvatar = getAssigneeAvatar(task.assignedTo)
@@ -932,7 +955,9 @@ const ProjectPage = () => {
 
       if (!src || hasError) {
         return (
-          <div className={`${size} rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center font-bold text-white ${textSize}`}>
+          <div
+            className={`${size} rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center font-bold text-white ${textSize}`}
+          >
             {alt}
           </div>
         )
@@ -956,7 +981,11 @@ const ProjectPage = () => {
         animate={{ opacity: 1, y: 0 }}
         onClick={() => openEditModal(task)}
         className="group bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl p-3.5 cursor-pointer hover:border-accent-primary/50 dark:hover:border-accent-primary-light/50 hover:shadow-md dark:hover:shadow-dark-md hover:-translate-y-0.5 transition-all duration-200"
-        style={isCompleted ? { borderLeft: "4px solid #7A9A6D" } : { borderLeft: `4px solid ${currentStatus.color}` }}
+        style={
+          isCompleted
+            ? { borderLeft: "4px solid #7A9A6D" }
+            : { borderLeft: `4px solid ${currentStatus.color}` }
+        }
         draggable
         onDragStart={(e) => handleDragStart(e, task)}
         onDragEnd={handleDragEnd}
@@ -967,7 +996,9 @@ const ProjectPage = () => {
             {task.title}
           </h4>
           {!isCompleted && (
-            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${currentPriority.bg} ${currentPriority.text} uppercase tracking-wide flex-shrink-0`}>
+            <span
+              className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${currentPriority.bg} ${currentPriority.text} uppercase tracking-wide flex-shrink-0`}
+            >
               {task.priority || "Medium"}
             </span>
           )}
@@ -990,15 +1021,20 @@ const ProjectPage = () => {
         {totalSubtasks > 0 && !isCompleted && (
           <div className="mb-3">
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[10px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide">Progress</span>
-              <span className="text-[10px] font-bold text-light-text-primary dark:text-dark-text-primary">{progress}%</span>
+              <span className="text-[10px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide">
+                Progress
+              </span>
+              <span className="text-[10px] font-bold text-light-text-primary dark:text-dark-text-primary">
+                {progress}%
+              </span>
             </div>
             <div className="w-full h-1.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-300"
                 style={{
                   width: `${progress}%`,
-                  backgroundColor: progress > 60 ? "#7A9A6D" : progress > 30 ? "#C4654A" : "#8B8178",
+                  backgroundColor:
+                    progress > 60 ? "#7A9A6D" : progress > 30 ? "#C4654A" : "#8B8178",
                 }}
               />
             </div>
@@ -1009,7 +1045,9 @@ const ProjectPage = () => {
         <div className="flex items-center justify-between pt-3 border-t border-light-border dark:border-dark-border mt-1">
           <div className="flex items-center gap-1">
             {task.dueDate && (
-              <span className={`flex items-center gap-1 text-[10px] font-medium ${dayjs(task.dueDate).isBefore(dayjs()) && !isCompleted ? 'text-accent-danger' : 'text-light-text-tertiary dark:text-dark-text-tertiary'}`}>
+              <span
+                className={`flex items-center gap-1 text-[10px] font-medium ${dayjs(task.dueDate).isBefore(dayjs()) && !isCompleted ? "text-accent-danger" : "text-light-text-tertiary dark:text-dark-text-tertiary"}`}
+              >
                 <FiClock className="w-3 h-3" />
                 {formatDate(task.dueDate)}
               </span>
@@ -1366,10 +1404,11 @@ const ProjectPage = () => {
         <button
           type="button"
           onClick={() => setActiveTab("board")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors flex items-center gap-1.5 ${activeTab === "board"
-            ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-            : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
+          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors flex items-center gap-1.5 ${
+            activeTab === "board"
+              ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
+              : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+          }`}
         >
           <FiCircle className="w-4 h-4" />
           Board
@@ -1377,30 +1416,33 @@ const ProjectPage = () => {
         <button
           type="button"
           onClick={() => setActiveTab("list")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "list"
-            ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-            : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
+          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${
+            activeTab === "list"
+              ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
+              : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+          }`}
         >
           List
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("timeline")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "timeline"
-            ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-            : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
+          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${
+            activeTab === "timeline"
+              ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
+              : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+          }`}
         >
           Timeline
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("calendar")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "calendar"
-            ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-            : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
+          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${
+            activeTab === "calendar"
+              ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
+              : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+          }`}
         >
           Calendar
         </button>
@@ -1418,10 +1460,11 @@ const ProjectPage = () => {
           </div>
           <button
             type="button"
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 h-8 text-[12px] font-medium rounded border transition-all appearance-none ${statusFilter || priorityFilter || assigneeFilter || dateFilter
-              ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm"
-              : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"
-              }`}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 h-8 text-[12px] font-medium rounded border transition-all appearance-none ${
+              statusFilter || priorityFilter || assigneeFilter || dateFilter
+                ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm"
+                : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"
+            }`}
           >
             <FiFilter className="w-4 h-4" />
             Filters
@@ -1444,7 +1487,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       All Status
                     </span>
                   )}
@@ -1456,7 +1501,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       To Do
                     </span>
                   )}
@@ -1468,7 +1515,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       In Progress
                     </span>
                   )}
@@ -1480,7 +1529,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       Under Review
                     </span>
                   )}
@@ -1492,7 +1543,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       Completed
                     </span>
                   )}
@@ -1505,9 +1558,7 @@ const ProjectPage = () => {
           <Listbox value={priorityFilter} onChange={setPriorityFilter}>
             <div className="relative min-w-[130px]">
               <ListboxButton className="input-field w-full text-left flex items-center justify-between h-8 px-3 text-[12px] font-medium">
-                <span className="truncate capitalize">
-                  {priorityFilter || "All Priority"}
-                </span>
+                <span className="truncate capitalize">{priorityFilter || "All Priority"}</span>
                 <FiChevronDown className="w-4 h-4 text-light-text-tertiary flex-shrink-0" />
               </ListboxButton>
               <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
@@ -1518,7 +1569,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       All Priority
                     </span>
                   )}
@@ -1532,7 +1585,9 @@ const ProjectPage = () => {
                     }
                   >
                     {({ selected }) => (
-                      <span className={`block truncate capitalize ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                      <span
+                        className={`block truncate capitalize ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
                         {priority}
                       </span>
                     )}
@@ -1546,9 +1601,7 @@ const ProjectPage = () => {
           <Listbox value={assigneeFilter} onChange={setAssigneeFilter}>
             <div className="relative min-w-[160px]">
               <ListboxButton className="input-field w-full text-left flex items-center justify-between h-8 px-3 text-[12px] font-medium">
-                <span className="truncate">
-                  {assigneeFilter || "All Assignees"}
-                </span>
+                <span className="truncate">{assigneeFilter || "All Assignees"}</span>
                 <FiChevronDown className="w-4 h-4 text-light-text-tertiary flex-shrink-0" />
               </ListboxButton>
               <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
@@ -1559,7 +1612,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       All Assignees
                     </span>
                   )}
@@ -1573,7 +1628,9 @@ const ProjectPage = () => {
                     }
                   >
                     {({ selected }) => (
-                      <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
                         {m.user?.fullname}
                       </span>
                     )}
@@ -1600,7 +1657,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       Any Date
                     </span>
                   )}
@@ -1612,7 +1671,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       Overdue
                     </span>
                   )}
@@ -1624,7 +1685,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       Due Today
                     </span>
                   )}
@@ -1636,7 +1699,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       Due This Week
                     </span>
                   )}
@@ -1648,7 +1713,9 @@ const ProjectPage = () => {
                   }
                 >
                   {({ selected }) => (
-                    <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>
+                    <span
+                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                    >
                       Due This Month
                     </span>
                   )}

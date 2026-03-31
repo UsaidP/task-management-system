@@ -245,32 +245,30 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
                   <FiChevronDown className="w-4 h-4 text-slate-700" />
                 </ListboxButton>
                 <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
-                  {assigneeOptions.map(
-                    (option) => (
-                      <ListboxOption
-                        key={option.id}
-                        value={option.id}
-                        className={({ active }) =>
-                          `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-slate-700 hover:bg-light-bg-hover"}`
-                        }
-                      >
-                        {({ selected }) => (
-                          <>
-                            <span
-                              className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                            >
-                              {option.name}
+                  {assigneeOptions.map((option) => (
+                    <ListboxOption
+                      key={option.id}
+                      value={option.id}
+                      className={({ active }) =>
+                        `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-slate-700 hover:bg-light-bg-hover"}`
+                      }
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span
+                            className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                          >
+                            {option.name}
+                          </span>
+                          {selected ? (
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                              <FiCheck className="w-5 h-5 text-accent-primary" aria-hidden="true" />
                             </span>
-                            {selected ? (
-                              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <FiCheck className="w-5 h-5 text-accent-primary" aria-hidden="true" />
-                              </span>
-                            ) : null}
-                          </>
-                        )}
-                      </ListboxOption>
-                    )
-                  )}
+                          ) : null}
+                        </>
+                      )}
+                    </ListboxOption>
+                  ))}
                 </ListboxOptions>
               </div>
             </Listbox>
