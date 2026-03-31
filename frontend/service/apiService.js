@@ -297,7 +297,7 @@ class ApiService {
   }
 
   async getAllTaskOfUser() {
-    return await this.customFetch(`/tasks`, {
+    return await this.customFetch(`/tasks/tasks`, {
       method: "GET",
     });
   }
