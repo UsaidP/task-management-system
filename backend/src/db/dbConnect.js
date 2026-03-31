@@ -1,21 +1,16 @@
 import mongoose from "mongoose"
-import { asyncHandler } from "../utils/async-handler.js"
+// ❌ REMOVED: import { asyncHandler } from "../utils/async-handler.js"
 
-const connectDB = asyncHandler(async () => {
+// ✅ Changed to a standard async function
+const connectDB = async () => {
   try {
-    // Check if we are in production
-    // const isProduction = process.env.NODE_ENV === "production"
-
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
       heartbeatFrequencyMS: 30000,
       retryWrites: true,
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
-      // Change 'true' to a dynamic check
-      tls: false, // Disable TLS in development for local MongoDB
-      ssl: false, // Disable SSL in development for local MongoDB
-
-
+      tls: false,
+      ssl: false,
     })
 
     console.log(`✅ MongoDB Connected: ${conn.connection?.host}`)
@@ -23,6 +18,6 @@ const connectDB = asyncHandler(async () => {
     console.error(`❌ MongoDB Connection Failed: ${error.message}`)
     process.exit(1)
   }
-})
+}
 
 export default connectDB
