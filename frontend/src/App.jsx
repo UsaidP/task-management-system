@@ -7,6 +7,7 @@ import { Login } from "./components/auth/Login.jsx"
 import Me from "./components/auth/Me.jsx"
 import { Reset } from "./components/auth/Reset.jsx"
 import { Signup } from "./components/auth/Signup.jsx"
+import { Verify } from "./components/auth/Verify.jsx"
 
 import TimelineView from "./components/date/TimelineView.jsx"
 import { Home } from "./components/Home.jsx"
@@ -42,6 +43,7 @@ const App = () => {
                   <Route path="/forget-password" element={<Forget />} />
                   <Route path="/reset-password/:token" element={<Reset />} />
                   <Route path="/confirm" element={<ConfirmEmail />} />
+                  <Route path="/verify/:token" element={<Verify />} />
 
                   {/* --- Routes for Guests Only --- */}
                   <Route element={<GuestRoute />}>

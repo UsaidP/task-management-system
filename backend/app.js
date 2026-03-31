@@ -6,6 +6,7 @@ const app = express()
 const allowedOrigins = [
   "http://localhost:5173", // For local testing
   "http://localhost:4000", // For local testing
+  "http://localhost:8080", // For local testing
 ]
 
 const corsOptions = {

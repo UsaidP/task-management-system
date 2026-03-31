@@ -31,7 +31,7 @@ class NetworkError extends Error {
 // --- API Service Implementation ---
 class ApiService {
   constructor() {
-    this.baseURL = import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
+    this.baseURL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -223,6 +223,12 @@ class ApiService {
     });
   }
 
+  async verifyEmail(token) {
+    return await this.customFetch(`/users/verify/${token}`, {
+      method: "POST",
+      body: JSON.stringify({ token }),
+    });
+  }
   async resendVerifyEmail(email) {
     return await this.customFetch("/users/resend-verify-email", {
       method: "POST",

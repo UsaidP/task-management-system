@@ -12,7 +12,7 @@ const connectDB = asyncHandler(async () => {
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       // Change 'true' to a dynamic check
-      tls: false, // Disable TLS in development for local MongoDB
+      tls: isProduction, // Disable TLS in development for local MongoDB
       tlsAllowInvalidCertificates: false,
       w: "majority",
     })

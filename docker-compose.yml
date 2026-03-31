@@ -28,18 +28,20 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    volumes:
+      - ../.env:/app/.env
     environment:
       NODE_ENV: development
       PORT: 3000
       MONGODB_URI: mongodb://${MONGO_USERNAME:-admin}:${MONGO_PASSWORD:-admin123}@mongodb:27017/taskflow?authSource=admin
-      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
-      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-your-super-secret-refresh-token-key}
-      ACCESS_TOKEN_EXPIRY: ${ACCESS_TOKEN_EXPIRY:-15m}
-      REFRESH_TOKEN_EXPIRY: ${REFRESH_TOKEN_EXPIRY:-7d}
-      TEMPORARY_TOKEN_EXPIRY: ${TEMPORARY_TOKEN_EXPIRY:-20m}
-      BLACKLISTED_TOKEN_EXPIRY: ${BLACKLISTED_TOKEN_EXPIRY:-1d}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:4000}
-      HASH_PEPPER: ${HASH_PEPPER:-your-hash-pepper-change-in-production}
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      ACCESS_TOKEN_EXPIRY: ${ACCESS_TOKEN_EXPIRY}
+      REFRESH_TOKEN_EXPIRY: ${REFRESH_TOKEN_EXPIRY}
+      TEMPORARY_TOKEN_EXPIRY: ${TEMPORARY_TOKEN_EXPIRY}
+      BLACKLISTED_TOKEN_EXPIRY: ${BLACKLISTED_TOKEN_EXPIRY}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      HASH_PEPPER: ${HASH_PEPPER}
       IMAGEKIT_PUBLIC_KEY: ${IMAGEKIT_PUBLIC_KEY}
       IMAGEKIT_PRIVATE_KEY: ${IMAGEKIT_PRIVATE_KEY}
       IMAGEKIT_URL_ENDPOINT: ${IMAGEKIT_URL_ENDPOINT}
@@ -73,7 +75,7 @@ services:
     ports:
       - "${PORT:-80}:80"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     depends_on:
       - backend
     networks:
