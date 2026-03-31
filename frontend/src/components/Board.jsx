@@ -51,8 +51,10 @@ const Board = () => {
 
   const canAddTask =
     user?.role === "admin" ||
+    user?.role === "owner" ||
     user?.role === "projectAdmin" ||
     user?.role === "ADMIN" ||
+    user?.role === "OWNER" ||
     user?.role === "PROJECT_ADMIN"
 
   const fetchTasks = async () => {

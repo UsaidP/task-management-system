@@ -96,7 +96,7 @@ const ProjectPage = () => {
   const [calendarDate, setCalendarDate] = useState(dayjs())
 
   const userRole = members.find((m) => (m.user?._id || m.user) === user?._id)?.role
-  const canViewBoard = userRole === "admin" || userRole === "project_admin"
+  const canViewBoard = userRole === "admin" || userRole === "project_admin" || userRole === "owner"
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -557,33 +557,30 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => setTimelineZoom("day")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
-                timelineZoom === "day"
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "day"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-              }`}
+                }`}
             >
               Day
             </button>
             <button
               type="button"
               onClick={() => setTimelineZoom("week")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
-                timelineZoom === "week"
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "week"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-              }`}
+                }`}
             >
               Week
             </button>
             <button
               type="button"
               onClick={() => setTimelineZoom("month")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
-                timelineZoom === "month"
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "month"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-              }`}
+                }`}
             >
               Month
             </button>
@@ -755,16 +752,14 @@ const ProjectPage = () => {
                 return (
                   <div
                     key={item.day}
-                    className={`min-h-[100px] p-2 border-b border-r border-light-border dark:border-dark-border ${
-                      isToday
+                    className={`min-h-[100px] p-2 border-b border-r border-light-border dark:border-dark-border ${isToday
                         ? "bg-accent-primary/10"
                         : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                    }`}
+                      }`}
                   >
                     <div
-                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${
-                        isToday ? "bg-accent-primary text-white" : "text-light-text-tertiary"
-                      }`}
+                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${isToday ? "bg-accent-primary text-white" : "text-light-text-tertiary"
+                        }`}
                     >
                       {item.day}
                     </div>
@@ -775,13 +770,12 @@ const ProjectPage = () => {
                           initial={{ opacity: 0, y: -3 }}
                           animate={{ opacity: 1, y: 0 }}
                           onClick={() => openEditModal(task)}
-                          className={`text-[10px] p-1 rounded truncate cursor-pointer ${
-                            task.priority === "urgent" || task.priority === "high"
+                          className={`text-[10px] p-1 rounded truncate cursor-pointer ${task.priority === "urgent" || task.priority === "high"
                               ? "bg-[#C44A4A22] text-[#C44A4A]"
                               : task.priority === "medium"
                                 ? "bg-[#D4A54822] text-[#D4A548]"
                                 : "bg-[#6888A022] text-[#6888A0]"
-                          }`}
+                            }`}
                         >
                           {task.title}
                         </motion.div>
@@ -836,11 +830,10 @@ const ProjectPage = () => {
           {Object.entries(filteredColumns).map(([status, column]) => (
             <div
               key={status}
-              className={`w-[270px] flex-shrink-0 flex flex-col gap-2 transition-all duration-200 ${
-                dragOverColumn === status
+              className={`w-[270px] flex-shrink-0 flex flex-col gap-2 transition-all duration-200 ${dragOverColumn === status
                   ? "outline-2 outline outline-accent-primary outline-offset-[-2px]"
                   : ""
-              }`}
+                }`}
               onDragOver={(e) => handleDragOver(e, status)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, status)}
@@ -1404,11 +1397,10 @@ const ProjectPage = () => {
         <button
           type="button"
           onClick={() => setActiveTab("board")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors flex items-center gap-1.5 ${
-            activeTab === "board"
+          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors flex items-center gap-1.5 ${activeTab === "board"
               ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
               : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-          }`}
+            }`}
         >
           <FiCircle className="w-4 h-4" />
           Board
@@ -1416,33 +1408,30 @@ const ProjectPage = () => {
         <button
           type="button"
           onClick={() => setActiveTab("list")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${
-            activeTab === "list"
+          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "list"
               ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
               : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-          }`}
+            }`}
         >
           List
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("timeline")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${
-            activeTab === "timeline"
+          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "timeline"
               ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
               : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-          }`}
+            }`}
         >
           Timeline
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("calendar")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${
-            activeTab === "calendar"
+          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "calendar"
               ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
               : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-          }`}
+            }`}
         >
           Calendar
         </button>
@@ -1460,11 +1449,10 @@ const ProjectPage = () => {
           </div>
           <button
             type="button"
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 h-8 text-[12px] font-medium rounded border transition-all appearance-none ${
-              statusFilter || priorityFilter || assigneeFilter || dateFilter
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 h-8 text-[12px] font-medium rounded border transition-all appearance-none ${statusFilter || priorityFilter || assigneeFilter || dateFilter
                 ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm"
                 : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"
-            }`}
+              }`}
           >
             <FiFilter className="w-4 h-4" />
             Filters
