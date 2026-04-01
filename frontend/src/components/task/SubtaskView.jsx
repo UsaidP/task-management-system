@@ -43,7 +43,7 @@ const SubtaskView = ({ taskId }) => {
 
   const handleToggleComplete = async (subtaskId, currentStatus) => {
     try {
-      const response = await apiService.updateSubTask(subtaskId, { completed: !currentStatus })
+      const response = await apiService.updateSubTask(subtaskId, { isCompleted: !currentStatus })
       setSubtasks((prev) => prev.map((sub) => (sub._id === subtaskId ? response.data : sub)))
     } catch (err) {
       toast.error("Failed to update subtask")
@@ -60,7 +60,7 @@ const SubtaskView = ({ taskId }) => {
     }
   }
 
-  const completedCount = subtasks.filter((s) => s.completed).length
+  const completedCount = subtasks.filter((s) => s.isCompleted).length
 
   if (loading) {
     return (
@@ -130,23 +130,23 @@ const SubtaskView = ({ taskId }) => {
             >
               <button
                 type="button"
-                onClick={() => handleToggleComplete(subtask._id, subtask.completed)}
+                onClick={() => handleToggleComplete(subtask._id, subtask.isCompleted)}
                 className={`flex items-center gap-3 flex-1 text-left ${
-                  subtask.completed ? "opacity-60" : ""
+                  subtask.isCompleted ? "opacity-60" : ""
                 }`}
               >
                 <div
                   className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                    subtask.completed
+                    subtask.isCompleted
                       ? "bg-accent-primary border-accent-primary"
                       : "border-light-text-tertiary dark:border-dark-text-tertiary"
                   }`}
                 >
-                  {subtask.completed && <FiCheck className="w-3 h-3 text-white" />}
+                  {subtask.isCompleted && <FiCheck className="w-3 h-3 text-white" />}
                 </div>
                 <span
                   className={`text-sm font-medium transition-all ${
-                    subtask.completed
+                    subtask.isCompleted
                       ? "text-light-text-tertiary dark:text-dark-text-tertiary line-through"
                       : "text-light-text-primary dark:text-dark-text-primary"
                   }`}

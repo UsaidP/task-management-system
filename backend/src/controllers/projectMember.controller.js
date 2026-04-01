@@ -6,18 +6,18 @@ import { ApiResponse } from "../utils/api-response.js"
 import { asyncHandler } from "../utils/async-handler.js"
 import { AvailableProjectRole, ProjectRoleEnum, UserRoleEnum } from "../utils/constants.js"
 
-export const addMember = asyncHandler(async (req, res, next) => {
+export const addMember = asyncHandler(async (req, res) => {
 	const { projectId } = req.params
 	const { email, role } = req.body
 
 	if (!projectId) {
-		throw new ApiError(401, "Project Id not found from params")
+		throw new ApiError(400, "Project Id not found from params")
 	}
 	if (!email) {
-		throw new ApiError(403, "Email is required.")
+		throw new ApiError(400, "Email is required.")
 	}
 	if (!role) {
-		throw new ApiError(403, "Role is required.")
+		throw new ApiError(400, "Role is required.")
 	}
 
 	const project = await Project.findById(projectId)
@@ -26,11 +26,10 @@ export const addMember = asyncHandler(async (req, res, next) => {
 	}
 
 	const user = await User.findOne({ email: email })
-	const userId = user?._id
-
 	if (!user) {
 		throw new ApiError(404, "User not found in database.")
 	}
+	const userId = user._id
 
 	// ✅ Use constants instead of hardcoded strings
 	if (!AvailableProjectRole.includes(role)) {
@@ -54,7 +53,7 @@ export const addMember = asyncHandler(async (req, res, next) => {
 
 	const projectMember = await ProjectMember.create({
 		project: projectId,
-		role: role || ProjectRoleEnum.MEMBER,
+		role,
 		user: userId,
 	})
 
@@ -62,16 +61,24 @@ export const addMember = asyncHandler(async (req, res, next) => {
 		throw new ApiError(500, "Something went wrong while adding member to project.")
 	}
 
-	res.status(201).json(new ApiResponse(201, projectMember, "Member added"))
-	next()
+	const populatedMember = await ProjectMember.findById(projectMember._id).populate(
+		"user",
+		"email fullname avatar username",
+	)
+
+	if (!populatedMember) {
+		throw new ApiError(500, "Something went wrong while adding member to project.")
+	}
+
+	return res.status(201).json(new ApiResponse(201, populatedMember, "Member added"))
 })
 
-export const updateMember = asyncHandler(async (req, res, next) => {
+export const updateMember = asyncHandler(async (req, res) => {
 	const { projectId } = req.params
 	const { userId, role } = req.body
 
 	if (!projectId) {
-		throw new ApiError(401, "Project Id not found from params")
+		throw new ApiError(400, "Project Id not found from params")
 	}
 	if (!userId) {
 		throw new ApiError(400, "User ID is required.")
@@ -110,16 +117,15 @@ export const updateMember = asyncHandler(async (req, res, next) => {
 		throw new ApiError(500, "Something went wrong while updating member in project.")
 	}
 
-	res.status(200).json(new ApiResponse(200, updatedMember, "Member updated"))
-	next()
+	return res.status(200).json(new ApiResponse(200, updatedMember, "Member updated"))
 })
 
-export const removeMember = asyncHandler(async (req, res, next) => {
+export const removeMember = asyncHandler(async (req, res) => {
 	const { projectId, memberId } = req.params
 	const { transferRoleTo } = req.body
 
 	if (!projectId) {
-		throw new ApiError(401, "Project Id not found from params")
+		throw new ApiError(400, "Project Id not found from params")
 	}
 
 	const project = await Project.findById(projectId)
@@ -162,11 +168,10 @@ export const removeMember = asyncHandler(async (req, res, next) => {
 	member.deactivatedBy = req.user._id
 	await member.save()
 
-	res.status(200).json(new ApiResponse(200, null, "Member removed successfully"))
-	next()
+	return res.status(200).json(new ApiResponse(200, null, "Member removed successfully"))
 })
 
-export const getAllMembers = asyncHandler(async (req, res, next) => {
+export const getAllMembers = asyncHandler(async (req, res) => {
 	const { projectId } = req.params
 
 	const members = await ProjectMember.find({
@@ -178,8 +183,7 @@ export const getAllMembers = asyncHandler(async (req, res, next) => {
 		return res.status(200).json(new ApiResponse(200, [], "No members found for this project."))
 	}
 
-	res.status(200).json(new ApiResponse(200, members, "Project members retrieved"))
-	next()
+	return res.status(200).json(new ApiResponse(200, members, "Project members retrieved"))
 })
 
 export const projectMemberController = {

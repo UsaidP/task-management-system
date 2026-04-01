@@ -19,16 +19,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Your routes should be below this:
-// app.use("/api/v1/users", userRoutes);
-// Add this Spy Middleware:
-app.use((req, res, next) => {
-  console.log(`🕵️ Incoming Request: ${req.method} ${req.url}`);
-  next();
-});
-
-// Your routes should be below this:
-// app.use("/api/v1/users", userRoutes);
 
 
 

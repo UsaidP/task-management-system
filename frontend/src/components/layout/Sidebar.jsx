@@ -83,15 +83,9 @@ const Sidebar = () => {
       if (response?.success) {
         const allProjects = response.data?.projects || []
         setProjects(allProjects)
-
-        // Filter to projects where user is a member or owner
-        const userId = user._id
-        const userProjects = allProjects.filter(
-          (p) =>
-            p.createdBy === userId ||
-            (p.members && p.members.some((m) => m.user === userId || m._id === userId))
-        )
-        setMyProjects(userProjects)
+        // Backend already filters to only return projects where user is a member
+        // No need to filter again on frontend
+        setMyProjects(allProjects)
       } else {
         setError(new Error("Failed to load projects"))
       }

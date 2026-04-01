@@ -27,13 +27,13 @@ services:
     container_name: taskflow-backend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "4000:4000"
     volumes:
       - ../.env:/app/.env
     environment:
       NODE_ENV: ${NODE_ENV}
-      PORT: 3000
-      MONGODB_URI: ${MONGODB_URI:}
+      PORT: 4000
+      MONGODB_URI: ${MONGODB_URI}
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
       ACCESS_TOKEN_EXPIRY: ${ACCESS_TOKEN_EXPIRY}
@@ -52,14 +52,14 @@ services:
       MAIL_PASSWORD: ${MAIL_PASS}
       MAIL_FROM: ${EMAIL_FROM:-arkammulla@gmail.com}
       EMAIL_FROM: ${EMAIL_FROM:-arkammulla@gmail.com}
-      BASE_URL: ${BASE_URL:-http://localhost:3000}
+      BASE_URL: ${BASE_URL:-http://localhost:4000}
     depends_on:
       mongodb:
         condition: service_healthy
     networks:
       - taskflow-network
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/v1/healthcheck', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:4000/api/v1/healthcheck', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
       timeout: 10s
       retries: 3

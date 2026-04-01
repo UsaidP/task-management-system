@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import {
+  FiAlertCircle,
   FiCalendar,
   FiCheck,
   FiDownload,
@@ -75,17 +76,12 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
   const [newComment, setNewComment] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  const [activeTab, setActiveTab] = useState("subtasks") // subtasks, comments, attachments
+  const [activeTab, setActiveTab] = useState("subtasks")
+  const [prevTaskId, setPrevTaskId] = useState(null)
 
-  useEffect(() => {
-    if (task && isOpen) {
-      setFormData({ ...task })
-    }
-  }, [task, isOpen])
-
-  // Map members to selection options
+  // Map members to selection options - memoized to prevent re-creation
   const assigneeOptions = useMemo(() => {
-    if (!members) return []
+    if (!members || members.length === 0) return []
     return members.map((member) => {
       const u = member.user || member
       return {
@@ -96,53 +92,88 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
     })
   }, [members])
 
+  // Compute assignedToIds from formData - memoized
+  const assignedToIds = useMemo(() => {
+    if (!formData?.assignedTo) return []
+    return formData.assignedTo.map(a => typeof a === "object" ? a._id : a)
+  }, [formData?.assignedTo])
+
+  // Only update formData when task actually changes (by ID) or panel opens
+  useEffect(() => {
+    if (task && isOpen && task._id !== prevTaskId) {
+      // Normalize assignedTo to only contain IDs
+      const normalizedAssignedTo = task.assignedTo?.map(a =>
+        typeof a === "object" ? a._id : a
+      ) || []
+
+      setFormData({
+        ...task,
+        assignedTo: normalizedAssignedTo
+      })
+      setPrevTaskId(task._id)
+    }
+
+    // Reset when panel closes
+    if (!isOpen) {
+      setFormData(null)
+      setPrevTaskId(null)
+    }
+  }, [task, isOpen, prevTaskId])
+
+  // Early return AFTER all hooks
   if (!isOpen || !formData) return null
 
   // Fallback projectId lookup since global tasks might have a populated project object
   const projectId = typeof formData.project === "object" ? formData.project._id : formData.project
 
-  const handleInlineUpdate = async (field, value) => {
-    if (formData[field] === value) return // No change
-
-    // Optimistic UI update
-    const previousState = { ...formData }
-    const updatedState = { ...formData, [field]: value }
-    setFormData(updatedState)
-
-    try {
-      const response = await apiService.updateTask(projectId, formData._id, { [field]: value })
-      if (response.success) {
-        onTaskUpdated(response.data || response.task || updatedState) // Adjust based on API structure
-      } else {
-        throw new Error("Update failed")
-      }
-    } catch (_err) {
-      toast.error(`Failed to update ${field}`)
-      setFormData(previousState) // Revert on failure
-    }
+  // Field change handlers - NO auto-save, just update local state
+  const handleFieldChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleUpdate = async () => {
+    console.log("=== handleUpdate CLICKED ===")
+    console.log("projectId:", projectId)
+    console.log("formData._id:", formData?._id)
+    
+    if (!projectId || !formData?._id) {
+      console.error("handleUpdate - Missing IDs:", { projectId, taskId: formData?._id })
+      toast.error("Missing task or project ID")
+      return
+    }
+
+    console.log("handleUpdate - payload:", {
+      title: formData.title?.trim(),
+      description: formData.description?.trim() || "",
+      status: formData.status,
+      priority: formData.priority,
+      assignedTo: formData.assignedTo,
+      dueDate: formData.dueDate || null,
+      labels: Array.isArray(formData.labels) ? formData.labels : (formData.labels?.trim() || ""),
+    })
+
     setIsUpdating(true)
     const toastId = toast.loading("Updating task...")
     try {
       const response = await apiService.updateTask(projectId, formData._id, {
-        title: formData.title,
-        description: formData.description,
+        title: formData.title?.trim(),
+        description: formData.description?.trim() || "",
         status: formData.status,
         priority: formData.priority,
         assignedTo: formData.assignedTo,
-        dueDate: formData.dueDate,
-        labels: formData.labels,
+        dueDate: formData.dueDate || null,
+        labels: Array.isArray(formData.labels) ? formData.labels : (formData.labels?.trim() || ""),
       })
+      console.log("handleUpdate - response:", response)
       if (response.success) {
         onTaskUpdated(response.data || formData)
         toast.success("Task updated!", { id: toastId })
       } else {
-        toast.error("Failed to update task", { id: toastId })
+        toast.error(response.message || "Failed to update task", { id: toastId })
       }
-    } catch {
-      toast.error("An error occurred.", { id: toastId })
+    } catch (err) {
+      console.error("handleUpdate - error:", err)
+      toast.error(err.message || "An error occurred.", { id: toastId })
     } finally {
       setIsUpdating(false)
     }
@@ -223,11 +254,11 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 {/* Status Badge */}
                 <Listbox
                   value={formData.status}
-                  onChange={(val) => handleInlineUpdate("status", val)}
+                  onChange={(val) => handleFieldChange("status", val)}
                 >
                   <div className="relative">
                     <ListboxButton
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all hover:opacity-80 ${statusOptions.find((s) => s.id === formData.status)?.bg || "bg-light-bg-secondary dark:bg-dark-bg-tertiary"}`}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all hover:opacity-80 border border-transparent hover:border-light-border dark:hover:border-dark-border ${statusOptions.find((s) => s.id === formData.status)?.bg || "bg-light-bg-secondary dark:bg-dark-bg-tertiary"}`}
                     >
                       {statusOptions.find((o) => o.id === formData.status)?.name || "Status"}
                     </ListboxButton>
@@ -237,7 +268,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                           key={option.id}
                           value={option.id}
                           className={({ active }) =>
-                            `px-4 py-2 text-sm cursor-pointer ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
+                            `px-4 py-2 text-sm cursor-pointer transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
                           }
                         >
                           {option.name}
@@ -250,28 +281,30 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 {/* Priority Badge */}
                 <Listbox
                   value={formData.priority}
-                  onChange={(val) => handleInlineUpdate("priority", val)}
+                  onChange={(val) => handleFieldChange("priority", val)}
                 >
                   <div className="relative">
                     <ListboxButton
-                      className={`flex items-center gap-2 min-h-[40px] bg-light-bg-secondary dark:bg-dark-bg-tertiary border-2 border-transparent hover:border-light-border dark:hover:border-dark-border px-3 py-2 rounded-xl transition-colors w-full text-left ${priorityOptions.find((p) => p.id === formData.priority)?.color || ""}`}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all border border-transparent hover:border-light-border dark:hover:border-dark-border ${priorityOptions.find((p) => p.id === formData.priority)?.color || "bg-slate-100 text-slate-700"}`}
                     >
-                      <span className="text-sm font-medium">
+                      <span className="text-xs font-semibold uppercase tracking-wider">
                         {priorityOptions.find((p) => p.id === formData.priority)?.name ||
-                          "Select Priority"}
+                          "Priority"}
                       </span>
                     </ListboxButton>
-                    <ListboxOptions className="absolute left-0 mt-1 w-48 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+                    <ListboxOptions className="absolute left-0 mt-1 w-40 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
                       {priorityOptions.map((option) => (
                         <ListboxOption
                           key={option.id}
                           value={option.id}
                           className={({ active }) =>
-                            `px-4 py-3 text-sm cursor-pointer flex items-center gap-2 ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
+                            `px-4 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
                           }
                         >
-                          <div className={`w-3 h-3 rounded-full ${option.dot}`} />
-                          {option.name}
+                          <div className={`w-2.5 h-2.5 rounded-full ${option.dot}`} />
+                          <span className="text-xs font-semibold uppercase tracking-wider">
+                            {option.name}
+                          </span>
                         </ListboxOption>
                       ))}
                     </ListboxOptions>
@@ -320,16 +353,14 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   <input
                     type="text"
                     value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    onBlur={(e) => handleInlineUpdate("title", e.target.value)}
-                    className="w-full text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary dark:bg-dark-bg-tertiary border-2 border-transparent hover:border-light-border dark:hover:border-dark-border focus:border-accent-primary rounded-xl px-4 py-3 mb-3 placeholder:text-light-text-tertiary transition-colors"
+                    onChange={(e) => handleFieldChange("title", e.target.value)}
+                    className="w-full text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-4 py-3 mb-3 placeholder:text-light-text-tertiary transition-colors"
                     placeholder="Task Title"
                   />
                   <textarea
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    onBlur={(e) => handleInlineUpdate("description", e.target.value)}
-                    className="w-full text-sm text-light-text-secondary dark:text-dark-text-secondary bg-light-bg-secondary dark:bg-dark-bg-tertiary border-2 border-transparent hover:border-light-border dark:hover:border-dark-border focus:border-accent-primary rounded-xl px-4 py-3 resize-none min-h-[100px] placeholder:text-light-text-tertiary selection:bg-accent-primary/20 transition-colors"
+                    onChange={(e) => handleFieldChange("description", e.target.value)}
+                    className="w-full text-sm text-light-text-secondary dark:text-dark-text-secondary bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-4 py-3 resize-none min-h-[100px] placeholder:text-light-text-tertiary selection:bg-accent-primary/20 transition-colors"
                     placeholder="Add a description..."
                   />
                 </div>
@@ -342,19 +373,19 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   </div>
                   <div>
                     <Listbox
-                      value={formData.assignedTo || []}
-                      onChange={(val) => handleInlineUpdate("assignedTo", val)}
+                      value={assignedToIds}
+                      onChange={(val) => handleFieldChange("assignedTo", val)}
                       multiple
                     >
                       <div className="relative inline-block w-full">
-                        <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-light-bg-secondary dark:bg-dark-bg-tertiary border-2 border-transparent hover:border-light-border dark:hover:border-dark-border px-3 py-2 rounded-xl transition-colors w-full text-left">
-                          {(formData.assignedTo || []).length === 0 ? (
+                        <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary px-3 py-2 rounded-xl transition-colors w-full text-left">
+                          {assignedToIds.length === 0 ? (
                             <span className="text-light-text-tertiary italic text-sm pl-1">
                               Click to add assignees...
                             </span>
                           ) : (
                             <div className="flex -space-x-2">
-                              {(formData.assignedTo || []).map((id) => {
+                              {assignedToIds.map((id) => {
                                 const opt = assigneeOptions.find((a) => a.id === id)
                                 if (!opt) return null
                                 return (
@@ -363,7 +394,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                     src={opt.avatar}
                                     alt={opt.name}
                                     title={opt.name}
-                                    className="w-6 h-6 rounded-full border border-white dark:border-dark-bg-secondary"
+                                    className="w-6 h-6 rounded-full border-2 border-white dark:border-dark-bg-secondary ring-2 ring-accent-primary/20"
                                   />
                                 )
                               })}
@@ -372,13 +403,13 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                         </ListboxButton>
                         <ListboxOptions className="absolute left-0 mt-1 w-64 max-h-48 overflow-y-auto bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1">
                           {assigneeOptions.map((option) => {
-                            const selected = (formData.assignedTo || []).includes(option.id)
+                            const selected = assignedToIds.includes(option.id)
                             return (
                               <ListboxOption
                                 key={option.id}
                                 value={option.id}
                                 className={({ active }) =>
-                                  `flex items-center gap-3 px-4 py-2 text-sm cursor-pointer ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
+                                  `flex items-center gap-3 px-4 py-2 text-sm cursor-pointer transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
                                 }
                               >
                                 <div className="flex-1 flex items-center gap-2 text-light-text-secondary dark:text-dark-text-secondary">
@@ -389,7 +420,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                   />
                                   <span className="truncate">{option.name}</span>
                                 </div>
-                                {selected && <FiCheck className="text-accent-primary" />}
+                                {selected && <FiCheck className="text-accent-primary w-4 h-4" />}
                               </ListboxOption>
                             )
                           })}
@@ -406,8 +437,8 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     <input
                       type="date"
                       value={formData.dueDate ? dayjs(formData.dueDate).format("YYYY-MM-DD") : ""}
-                      onChange={(e) => handleInlineUpdate("dueDate", e.target.value)}
-                      className="text-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary border-2 border-transparent hover:border-light-border dark:hover:border-dark-border focus:border-accent-primary rounded-xl px-3 py-2 text-light-text-secondary dark:text-dark-text-secondary cursor-pointer transition-colors w-full"
+                      onChange={(e) => handleFieldChange("dueDate", e.target.value)}
+                      className="text-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-3 py-2 text-light-text-secondary dark:text-dark-text-secondary cursor-pointer transition-colors w-full"
                     />
                   </div>
 
@@ -418,12 +449,12 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   <div>
                     <Listbox
                       value={formData.priority}
-                      onChange={(val) => handleInlineUpdate("priority", val)}
+                      onChange={(val) => handleFieldChange("priority", val)}
                     >
-                      <div className="relative inline-block flex-1">
-                        <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-light-bg-secondary dark:bg-dark-bg-tertiary border-2 border-transparent hover:border-light-border dark:hover:border-dark-border px-3 py-2 rounded-xl transition-colors w-full text-left">
+                      <div className="relative inline-block w-full">
+                        <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary px-3 py-2 rounded-xl transition-colors w-full text-left">
                           <span
-                            className={`px-2 py-0.5 rounded text-xs font-semibold uppercase tracking-wider ${priorityOptions.find((p) => p.id === formData.priority)?.color}`}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider ${priorityOptions.find((p) => p.id === formData.priority)?.color || "bg-slate-100 text-slate-700"}`}
                           >
                             {priorityOptions.find((p) => p.id === formData.priority)?.name ||
                               "Set Priority"}
@@ -435,7 +466,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                               key={option.id}
                               value={option.id}
                               className={({ active }) =>
-                                `flex items-center gap-2 px-4 py-2 text-sm cursor-pointer ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : "text-light-text-secondary dark:text-dark-text-secondary"}`
+                                `flex items-center gap-2 px-4 py-2 text-sm cursor-pointer transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : "text-light-text-secondary dark:text-dark-text-secondary"}`
                               }
                             >
                               <span
@@ -553,95 +584,20 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     <div className="flex flex-col h-full gap-4">
                       <div className="flex-1">
                         {formData.attachments && formData.attachments.length > 0 ? (
-                          <div className="grid grid-cols-2 gap-3">
-                            {formData.attachments.map((attachment, i) => {
-                              const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(
-                                attachment.filename || attachment.url
+                          <AttachmentGrid
+                            attachments={formData.attachments}
+                            projectId={projectId}
+                            taskId={formData._id}
+                            onDelete={(index) => {
+                              const updatedAttachments = formData.attachments.filter(
+                                (_, idx) => idx !== index
                               )
-                              return isImage ? (
-                                <div
-                                  key={i}
-                                  className="relative aspect-square rounded-xl overflow-hidden border border-light-border dark:border-dark-border hover:border-accent-primary transition-colors group"
-                                >
-                                  <img
-                                    src={attachment.url}
-                                    alt={attachment.filename}
-                                    className="w-full h-full object-cover"
-                                  />
-                                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                    <a
-                                      href={attachment.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="p-2 bg-white/20 rounded-full hover:bg-white/30"
-                                    >
-                                      <FiDownload className="w-4 h-4 text-white" />
-                                    </a>
-                                    <button
-                                      type="button"
-                                      onClick={async () => {
-                                        try {
-                                          await apiService.deleteAttachment(
-                                            projectId,
-                                            formData._id,
-                                            i
-                                          )
-                                          const updatedAttachments = formData.attachments.filter(
-                                            (_, idx) => idx !== i
-                                          )
-                                          setFormData((prev) => ({
-                                            ...prev,
-                                            attachments: updatedAttachments,
-                                          }))
-                                          toast.success("Attachment removed")
-                                        } catch (_err) {
-                                          toast.error("Failed to remove attachment")
-                                        }
-                                      }}
-                                      className="p-2 bg-white/20 rounded-full hover:bg-red-500"
-                                    >
-                                      <FiTrash2 className="w-4 h-4 text-white" />
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div
-                                  key={i}
-                                  className="flex flex-col items-center gap-2 p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border hover:border-accent-primary transition-colors group relative"
-                                >
-                                  <FiFileText className="w-8 h-8 text-light-text-tertiary" />
-                                  <span className="text-xs text-light-text-secondary dark:text-dark-text-secondary text-center truncate w-full">
-                                    {attachment.filename}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    onClick={async () => {
-                                      try {
-                                        await apiService.deleteAttachment(
-                                          projectId,
-                                          formData._id,
-                                          i
-                                        )
-                                        const updatedAttachments = formData.attachments.filter(
-                                          (_, idx) => idx !== i
-                                        )
-                                        setFormData((prev) => ({
-                                          ...prev,
-                                          attachments: updatedAttachments,
-                                        }))
-                                        toast.success("Attachment removed")
-                                      } catch (_err) {
-                                        toast.error("Failed to remove attachment")
-                                      }
-                                    }}
-                                    className="absolute top-2 right-2 p-1.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg opacity-0 group-hover:opacity-100 hover:bg-error/20"
-                                  >
-                                    <FiTrash2 className="w-3.5 h-3.5 text-error" />
-                                  </button>
-                                </div>
-                              )
-                            })}
-                          </div>
+                              setFormData((prev) => ({
+                                ...prev,
+                                attachments: updatedAttachments,
+                              }))
+                            }}
+                          />
                         ) : (
                           <div className="text-center py-8">
                             <FiFileText className="w-12 h-12 mx-auto mb-2 text-light-text-tertiary opacity-50" />
@@ -667,31 +623,57 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                             onChange={async (e) => {
                               const file = e.target.files?.[0]
                               if (!file) return
+                              
+                              console.log("Uploading attachment:", file.name, file.size, file.type)
+                              console.log("Project ID:", projectId)
+                              console.log("Task ID:", formData._id)
+                              
                               try {
                                 const formDataAttach = new FormData()
                                 formDataAttach.append("file", file)
+                                
                                 const response = await apiService.uploadAttachment(
                                   projectId,
                                   formData._id,
                                   formDataAttach
                                 )
+                                
+                                console.log("Upload response:", response)
+                                
                                 if (response.success) {
+                                  let imageUrl = response.data?.url || response.data?.data?.url || response.data
+                                  
+                                  // Ensure ImageKit URL has proper format
+                                  if (imageUrl && imageUrl.includes('ik.imagekit.io')) {
+                                    // Add cache-busting parameter
+                                    imageUrl = imageUrl + (imageUrl.includes('?') ? '&' : '?') + 't=' + Date.now()
+                                  }
+                                  
+                                  const newAttachment = {
+                                    filename: file.name,
+                                    url: imageUrl,
+                                  }
+                                  console.log("New attachment:", newAttachment)
+                                  
                                   const updatedAttachments = [
                                     ...(formData.attachments || []),
-                                    {
-                                      filename: file.name,
-                                      url: response.data?.url || response.data,
-                                    },
+                                    newAttachment,
                                   ]
                                   setFormData((prev) => ({
                                     ...prev,
                                     attachments: updatedAttachments,
                                   }))
-                                  toast.success("Attachment uploaded")
+                                  toast.success("Attachment uploaded: " + file.name)
+                                } else {
+                                  toast.error("Upload failed: " + (response.message || "Unknown error"))
                                 }
-                              } catch (_err) {
-                                toast.error("Failed to upload attachment")
+                              } catch (err) {
+                                console.error("Upload error:", err)
+                                toast.error(err.message || "Failed to upload attachment")
                               }
+                              
+                              // Reset file input
+                              e.target.value = ""
                             }}
                           />
                         </label>
@@ -709,3 +691,142 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
 }
 
 export default TaskDetailPanel
+
+// Attachment Grid Component
+const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
+  const [imgErrors, setImgErrors] = useState({})
+
+  const handleImageError = (index) => {
+    const imgUrl = attachments[index].url
+    console.error("Failed to load image:", imgUrl)
+    
+    // Fetch the image to see what's being returned
+    fetch(imgUrl, { method: 'HEAD' })
+      .then(res => {
+        console.error(`Image status: ${res.status} ${res.statusText}`)
+        console.error(`Content-Type: ${res.headers.get('content-type')}`)
+      })
+      .catch(err => console.error('Fetch error:', err))
+    
+    setImgErrors((prev) => ({ ...prev, [index]: true }))
+  }
+
+  // Get ImageKit URL - return as-is or with query params preserved
+  const getProxyUrl = (url) => {
+    if (!url) return ''
+    return url
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {attachments.map((attachment, i) => {
+        const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(attachment.filename || attachment.url)
+        const hasError = imgErrors[i]
+
+        if (isImage && !hasError) {
+          const proxyUrl = getProxyUrl(attachment.url)
+          return (
+            <div
+              key={i}
+              className="relative aspect-square rounded-xl overflow-hidden border border-light-border dark:border-dark-border hover:border-accent-primary transition-colors group bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+            >
+              <img
+                src={proxyUrl}
+                alt={attachment.filename || 'Attachment'}
+                className="w-full h-full object-cover"
+                onError={() => handleImageError(i)}
+              />
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                <a
+                  href={proxyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-white/20 rounded-full hover:bg-white/30"
+                  title="Download"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    window.open(proxyUrl, '_blank')
+                  }}
+                >
+                  <FiDownload className="w-4 h-4 text-white" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    try {
+                      apiService.deleteAttachment(projectId, taskId, i)
+                      onDelete(i)
+                      toast.success("Attachment removed")
+                    } catch (_err) {
+                      toast.error("Failed to remove attachment")
+                    }
+                  }}
+                  className="p-2 bg-white/20 rounded-full hover:bg-red-500"
+                  title="Delete"
+                >
+                  <FiTrash2 className="w-4 h-4 text-white" />
+                </button>
+              </div>
+            </div>
+          )
+        }
+
+        return (
+          <div
+            key={i}
+            className="flex flex-col items-center gap-2 p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border hover:border-accent-primary transition-colors group relative"
+          >
+            {isImage && hasError ? (
+              <FiAlertCircle className="w-8 h-8 text-accent-warning" />
+            ) : (
+              <FiFileText className="w-8 h-8 text-light-text-tertiary" />
+            )}
+            <span className="text-xs text-light-text-secondary dark:text-dark-text-secondary text-center truncate w-full" title={attachment.filename}>
+              {attachment.filename || 'Attachment'}
+            </span>
+            {isImage && hasError && (
+              <span className="text-[10px] text-accent-warning text-center">
+                Image not accessible
+              </span>
+            )}
+            <div className="flex gap-2 mt-2">
+              <a
+                href={getProxyUrl(attachment.url)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 text-xs bg-accent-primary text-white rounded-lg hover:bg-accent-primary/80 transition-colors flex items-center gap-1"
+              >
+                <FiDownload className="w-3.5 h-3.5" />
+                {isImage && hasError ? 'Open' : 'Download'}
+              </a>
+              <a
+                href={getProxyUrl(attachment.url)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 text-xs bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-secondary dark:text-dark-text-secondary rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors"
+              >
+                Preview
+              </a>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  apiService.deleteAttachment(projectId, taskId, i)
+                  onDelete(i)
+                  toast.success("Attachment removed")
+                } catch (_err) {
+                  toast.error("Failed to remove attachment")
+                }
+              }}
+              className="absolute top-2 right-2 p-1.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg opacity-0 group-hover:opacity-100 hover:bg-error/20"
+              title="Delete"
+            >
+              <FiTrash2 className="w-3.5 h-3.5 text-error" />
+            </button>
+          </div>
+        )
+      })}
+    </div>
+  )
+}

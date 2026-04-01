@@ -96,7 +96,8 @@ const ProjectPage = () => {
   const [calendarDate, setCalendarDate] = useState(dayjs())
 
   const userRole = members.find((m) => (m.user?._id || m.user) === user?._id)?.role
-  const canViewBoard = userRole === "admin" || userRole === "project_admin" || userRole === "owner"
+  // All project members (owner, project_admin, member) can view the board
+  const canViewBoard = userRole === "owner" || userRole === "project_admin" || userRole === "member"
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -449,7 +450,7 @@ const ProjectPage = () => {
         <tbody className="divide-y divide-light-border dark:divide-dark-border">
           {filteredTasks.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-4 py-12 text-center text-light-text-tertiary">
+              <td colSpan={5} className="px-4 py-12 text-center text-light-text-tertiary dark:text-dark-text-tertiary">
                 No tasks found
               </td>
             </tr>
@@ -500,7 +501,7 @@ const ProjectPage = () => {
                           </div>
                         ))
                       ) : (
-                        <span className="text-[12px] text-light-text-tertiary">Unassigned</span>
+                        <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">Unassigned</span>
                       )}
                     </div>
                   </td>
@@ -510,7 +511,7 @@ const ProjectPage = () => {
                         {dayjs(task.dueDate).format("MMM DD, YYYY")}
                       </span>
                     ) : (
-                      <span className="text-[12px] text-light-text-tertiary">—</span>
+                      <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
                     )}
                   </td>
                 </tr>
@@ -607,12 +608,12 @@ const ProjectPage = () => {
             </button>
           </div>
           <div className="flex-1" />
-          <span className="text-[12px] text-light-text-tertiary">{filteredTasks.length} tasks</span>
+          <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">{filteredTasks.length} tasks</span>
         </div>
         <div className="flex-1 overflow-auto">
           <div className="flex min-h-full">
             <div className="w-40 flex-shrink-0 border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
-              <div className="px-3 py-2 text-[11px] font-semibold text-light-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
+              <div className="px-3 py-2 text-[11px] font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
                 Task
               </div>
               {filteredTasks.map((task) => (
@@ -634,8 +635,8 @@ const ProjectPage = () => {
                     key={i}
                     className="flex-1 min-w-[30px] px-1 py-2 border-r border-light-border dark:border-dark-border text-center"
                   >
-                    <div className="text-[10px] text-light-text-tertiary">{col.label}</div>
-                    <div className="text-[9px] text-light-text-tertiary uppercase">
+                    <div className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">{col.label}</div>
+                    <div className="text-[9px] text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
                       {col.sublabel}
                     </div>
                   </div>
@@ -667,7 +668,7 @@ const ProjectPage = () => {
                 })}
               </div>
               {filteredTasks.length === 0 && (
-                <div className="flex items-center justify-center h-32 text-light-text-tertiary text-[13px]">
+                <div className="flex items-center justify-center h-32 text-light-text-tertiary dark:text-dark-text-tertiary text-[13px]">
                   No tasks found
                 </div>
               )}
@@ -723,11 +724,11 @@ const ProjectPage = () => {
             Today
           </button>
           <div className="flex-1" />
-          <span className="text-[12px] text-light-text-tertiary">{filteredTasks.length} tasks</span>
+          <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">{filteredTasks.length} tasks</span>
         </div>
         <div className="flex-1 overflow-auto p-4">
           <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg border border-light-border dark:border-dark-border overflow-hidden">
-            <div className="grid grid-cols-7 text-center text-[11px] font-semibold text-light-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
+            <div className="grid grid-cols-7 text-center text-[11px] font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
               {weekDays.map((day) => (
                 <div key={day} className="py-2 bg-light-bg-tertiary dark:bg-dark-bg-secondary">
                   {day}
@@ -758,7 +759,7 @@ const ProjectPage = () => {
                       }`}
                   >
                     <div
-                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${isToday ? "bg-accent-primary text-white" : "text-light-text-tertiary"
+                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${isToday ? "bg-accent-primary text-white" : "text-light-text-tertiary dark:text-dark-text-tertiary"
                         }`}
                     >
                       {item.day}
@@ -781,7 +782,7 @@ const ProjectPage = () => {
                         </motion.div>
                       ))}
                       {dayTasks.length > 2 && (
-                        <div className="text-[9px] text-light-text-tertiary pl-1">
+                        <div className="text-[9px] text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
                           +{dayTasks.length - 2} more
                         </div>
                       )}
@@ -801,13 +802,12 @@ const ProjectPage = () => {
       return (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md p-6">
-            <FiLock className="w-12 h-12 mx-auto mb-4 text-light-text-tertiary opacity-40" />
+            <FiLock className="w-12 h-12 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-50" />
             <h2 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
               Board Access Restricted
             </h2>
             <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-              Only Admins and Project Admins can view the project board. Contact your project admin
-              for access.
+              You are not a member of this project. Contact your project admin for access.
             </p>
           </div>
         </div>
@@ -867,11 +867,11 @@ const ProjectPage = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full text-center p-4 bg-light-bg-primary dark:bg-dark-bg-primary">
+      <div className="flex flex-col items-center justify-center h-full text-center p-4 bg-light-bg-primary dark:bg-dark-bg-primary">
         <h2 className="text-2xl font-bold text-accent-danger dark:text-accent-danger-light mb-2">
           Error Loading Project
         </h2>
-        <p className="text-light-text-secondary dark:text-dark-text-secondary">{error}</p>
+        <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-md">{error}</p>
       </div>
     )
   }
@@ -1109,7 +1109,7 @@ const ProjectPage = () => {
         </div>
         <div className="flex flex-col gap-3">
           {recentTasks.length === 0 ? (
-            <p className="text-[12px] text-light-text-tertiary">No recent activity</p>
+            <p className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">No recent activity</p>
           ) : (
             recentTasks.map((task) => {
               const member = members.find((m) => m.user?._id === task.createdBy)
@@ -1137,7 +1137,7 @@ const ProjectPage = () => {
                         {task.title}
                       </span>
                     </p>
-                    <p className="text-[11px] text-light-text-tertiary mt-0.5">
+                    <p className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
                       {dayjs(task.updatedAt).fromNow()}
                     </p>
                   </div>
@@ -1183,7 +1183,7 @@ const ProjectPage = () => {
         </div>
         <div className="flex gap-4">
           {memberStats.length === 0 ? (
-            <p className="text-[12px] text-light-text-tertiary">No team members</p>
+            <p className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">No team members</p>
           ) : (
             memberStats.slice(0, 5).map((member, idx) => (
               <div
@@ -1198,7 +1198,7 @@ const ProjectPage = () => {
                 <span className="text-[11px] font-semibold text-light-text-secondary dark:text-dark-text-secondary text-center truncate max-w-16">
                   {member.user?.fullname?.split(" ")[0] || "User"}
                 </span>
-                <span className="text-[11px] text-light-text-tertiary">
+                <span className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary">
                   {member.taskCount || 0} tasks
                 </span>
                 <div
@@ -1293,7 +1293,7 @@ const ProjectPage = () => {
             </button>
           </div>
         </div>
-        <div className="flex gap-0 mb-1.5 text-[10px] text-light-text-tertiary">
+        <div className="flex gap-0 mb-1.5 text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
           <div className="flex-1 text-center">{today.subtract(1, "month").format("MMM YYYY")}</div>
           <div className="flex-1 text-center">{today.format("MMM YYYY")}</div>
           <div className="flex-1 text-center">{today.add(1, "month").format("MMM YYYY")}</div>
@@ -1302,7 +1302,7 @@ const ProjectPage = () => {
         <div className="flex flex-col gap-1.5">
           {statusWithPercent.map((phase) => (
             <div key={phase.label} className="flex items-center gap-2.5">
-              <span className="text-[11px] text-light-text-tertiary w-20 flex-shrink-0">
+              <span className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary w-20 flex-shrink-0">
                 {phase.label}
               </span>
               <div className="flex-1 h-2.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded relative overflow-visible">
@@ -1350,7 +1350,7 @@ const ProjectPage = () => {
               <button
                 type="button"
                 onClick={() => setIsStarred(!isStarred)}
-                className="text-light-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary bg-none border-none cursor-pointer text-2xl leading-none"
+                className="text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary bg-none border-none cursor-pointer text-2xl leading-none"
               >
                 {isStarred ? "★" : "☆"}
               </button>
@@ -1399,7 +1399,7 @@ const ProjectPage = () => {
           onClick={() => setActiveTab("board")}
           className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors flex items-center gap-1.5 ${activeTab === "board"
               ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-              : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              : "border-transparent text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
             }`}
         >
           <FiCircle className="w-4 h-4" />
@@ -1410,7 +1410,7 @@ const ProjectPage = () => {
           onClick={() => setActiveTab("list")}
           className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "list"
               ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-              : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              : "border-transparent text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
             }`}
         >
           List
@@ -1420,7 +1420,7 @@ const ProjectPage = () => {
           onClick={() => setActiveTab("timeline")}
           className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "timeline"
               ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-              : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              : "border-transparent text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
             }`}
         >
           Timeline
@@ -1430,7 +1430,7 @@ const ProjectPage = () => {
           onClick={() => setActiveTab("calendar")}
           className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "calendar"
               ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-              : "border-transparent text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              : "border-transparent text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
             }`}
         >
           Calendar
@@ -1438,13 +1438,13 @@ const ProjectPage = () => {
         <div className="flex-1" />
         <div className="flex items-center gap-2">
           <div className="relative">
-            <FiSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+            <FiSearch className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
             <input
               type="text"
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-3 py-1.5 h-8 w-[180px] text-[12px] bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary focus:border-accent-primary focus:outline-none"
+              className="pl-8 pr-3 py-1.5 h-8 w-[180px] text-[12px] bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary dark:focus:border-accent-primary-light focus:outline-none focus:ring-1 focus:ring-accent-primary/30 dark:focus:ring-accent-primary-light/30"
             />
           </div>
           <button
@@ -1465,9 +1465,9 @@ const ProjectPage = () => {
                 <span className="truncate capitalize">
                   {statusFilter ? statusFilter.replace("-", " ") : "All Status"}
                 </span>
-                <FiChevronDown className="w-4 h-4 text-light-text-tertiary flex-shrink-0" />
+                <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
               </ListboxButton>
-              <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+              <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
                 <ListboxOption
                   value=""
                   className={({ active }) =>
@@ -1547,9 +1547,9 @@ const ProjectPage = () => {
             <div className="relative min-w-[130px]">
               <ListboxButton className="input-field w-full text-left flex items-center justify-between h-8 px-3 text-[12px] font-medium">
                 <span className="truncate capitalize">{priorityFilter || "All Priority"}</span>
-                <FiChevronDown className="w-4 h-4 text-light-text-tertiary flex-shrink-0" />
+                <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
               </ListboxButton>
-              <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+              <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
                 <ListboxOption
                   value=""
                   className={({ active }) =>
@@ -1590,9 +1590,9 @@ const ProjectPage = () => {
             <div className="relative min-w-[160px]">
               <ListboxButton className="input-field w-full text-left flex items-center justify-between h-8 px-3 text-[12px] font-medium">
                 <span className="truncate">{assigneeFilter || "All Assignees"}</span>
-                <FiChevronDown className="w-4 h-4 text-light-text-tertiary flex-shrink-0" />
+                <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
               </ListboxButton>
-              <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+              <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
                 <ListboxOption
                   value=""
                   className={({ active }) =>
@@ -1635,9 +1635,9 @@ const ProjectPage = () => {
                 <span className="truncate">
                   {dateFilter ? dateFilter.replace("due-", "Due ").replace("_", " ") : "Any Date"}
                 </span>
-                <FiChevronDown className="w-4 h-4 text-light-text-tertiary flex-shrink-0" />
+                <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
               </ListboxButton>
-              <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+              <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
                 <ListboxOption
                   value=""
                   className={({ active }) =>
@@ -1722,7 +1722,7 @@ const ProjectPage = () => {
                 setAssigneeFilter("")
                 setDateFilter("")
               }}
-              className="text-[12px] text-accent-primary hover:underline"
+              className="text-[12px] font-medium text-accent-primary dark:text-accent-primary-light hover:underline"
             >
               Clear
             </button>
@@ -1739,7 +1739,7 @@ const ProjectPage = () => {
                 className="w-[270px] flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg p-4"
               >
                 <div className="flex items-center gap-2 mb-4 px-1">
-                  <div className="w-2 h-2 rounded-full bg-light-text-tertiary" />
+                  <div className="w-2 h-2 rounded-full bg-light-text-tertiary dark:bg-dark-text-tertiary" />
                   <span className="text-[13px] font-bold text-light-text-primary dark:text-dark-text-primary flex-1">
                     {col === "in-progress"
                       ? "In Progress"
@@ -1775,34 +1775,34 @@ const ProjectPage = () => {
         <div className="flex items-center gap-3 px-5 py-2 text-[11px] border-b border-light-border dark:border-dark-border">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#8B8178]" />
-            <span className="text-light-text-tertiary">To Do:&nbsp;</span>
+            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">To Do:&nbsp;</span>
             <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
               {counts.todo}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#C4654A]" />
-            <span className="text-light-text-tertiary">In Progress:&nbsp;</span>
+            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">In Progress:&nbsp;</span>
             <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
               {counts.inProgress}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#D4A548]" />
-            <span className="text-light-text-tertiary">Under Review:&nbsp;</span>
+            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Under Review:&nbsp;</span>
             <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
               {counts.underReview}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#7A9A6D]" />
-            <span className="text-light-text-tertiary">Completed:&nbsp;</span>
+            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Completed:&nbsp;</span>
             <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
               {counts.completed}
             </span>
           </div>
           <div className="flex-1" />
-          <span className="text-light-text-tertiary">Progress: {completedPercent}%</span>
+          <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Progress: {completedPercent}%</span>
           <div className="w-28 h-1 bg-light-bg-hover dark:bg-dark-bg-hover rounded-full overflow-hidden">
             <div
               className="h-full bg-accent-primary rounded-full transition-all"

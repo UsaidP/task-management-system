@@ -49,21 +49,21 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Something went wrong while registering the user")
   }
 
-  // // Generate verification token
-  // const { unHashedToken, hashToken, tokenExpiry } = await user.generateTemporaryToken()
-  // user.emailVerificationToken = hashToken
-  // user.emailVerificationExpiry = tokenExpiry
-  // await user.save({ validateBeforeSave: false })
+  // Generate verification token
+  const { unHashedToken, hashToken, tokenExpiry } = await user.generateTemporaryToken()
+  user.emailVerificationToken = hashToken
+  user.emailVerificationExpiry = tokenExpiry
+  await user.save({ validateBeforeSave: false })
 
-  // // Send verification email
-  // const verificationUrl = `${process.env.CORS_ORIGIN}/verify/${unHashedToken}`
-  // const mailgenContent = emailVerificationMailGenContent(user.username, verificationUrl)
+  // Send verification email
+  const verificationUrl = `${process.env.CORS_ORIGIN}/verify/${unHashedToken}`
+  const mailgenContent = emailVerificationMailGenContent(user.username, verificationUrl)
 
-  // await sendMail({
-  //   email: user.email,
-  //   mailgenContent,
-  //   subject: "Verify Your Email Address",
-  // })
+  await sendMail({
+    email: user.email,
+    mailgenContent,
+    subject: "Verify Your Email Address",
+  })
 
   // Omit sensitive data from the final response
   const createdUser = await User.findById(user._id).select("-password -emailVerificationToken")

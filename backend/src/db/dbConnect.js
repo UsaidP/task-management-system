@@ -1,7 +1,9 @@
 import mongoose from "mongoose"
-// ❌ REMOVED: import { asyncHandler } from "../utils/async-handler.js"
 
-// ✅ Changed to a standard async function
+/**
+ * Connect to MongoDB database
+ * @returns {Promise<void>}
+ */
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
@@ -9,13 +11,13 @@ const connectDB = async () => {
       retryWrites: true,
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
-      tls: false,
-      ssl: false,
+      tls: true,
+      ssl: true,
     })
 
     console.log(`✅ MongoDB Connected: ${conn.connection?.host}`)
   } catch (error) {
-    console.error(`❌ MongoDB Connection Failed: ${error.message}`)
+    console.error("❌ MongoDB connection error:", error.message)
     process.exit(1)
   }
 }

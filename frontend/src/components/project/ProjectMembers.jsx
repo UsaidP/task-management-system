@@ -5,6 +5,38 @@ import { FiUserPlus, FiX } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
 import Modal from "../Modal"
 
+/** @param {{ user?: unknown }} member */
+const getMemberUserId = (member) => {
+	const u = member?.user
+	if (u == null) return ""
+	if (typeof u === "object" && u !== null && "_id" in u) return String(u._id)
+	return String(u)
+}
+
+/** @param {{ user?: unknown }} member */
+const getAvatarSrc = (member) => {
+	const u = member?.user
+	if (!u || typeof u !== "object") {
+		const id = getMemberUserId(member)
+		return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
+	}
+	const a = u.avatar
+	if (typeof a === "string") return a
+	if (a && typeof a === "object" && "url" in a && typeof a.url === "string") return a.url
+	const id = u._id != null ? String(u._id) : ""
+	return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
+}
+
+/** @param {{ user?: unknown }} member */
+const getAvatarAlt = (member) => {
+	const u = member?.user
+	if (u && typeof u === "object") {
+		const name = [u.fullname, u.username, u.email].find(Boolean)
+		if (typeof name === "string") return name
+	}
+	return "Member"
+}
+
 const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => {
   const [error, setError] = useState("")
   const [email, setEmail] = useState("")
@@ -57,7 +89,7 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
     try {
       await apiService.removeMember(projectId, userId)
       toast.success("Member removed successfully!", { id: toastId })
-      setMembers(members.filter((member) => member.user._id !== userId))
+      setMembers(members.filter((member) => getMemberUserId(member) !== userId))
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Failed to remove member"
       toast.error(errorMessage, { id: toastId })
@@ -89,14 +121,16 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                 <span className="block truncate">{selectedRoleObject?.name}</span>
                 {/* You can add a chevron icon here if you want */}
               </Listbox.Button>
-              <Listbox.Options className="absolute z-10 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none">
+              <Listbox.Options className="absolute z-[100] mt-1 w-full max-h-60 overflow-auto rounded-md border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary shadow-lg focus:outline-none">
                 {availableRoles.map((roleItem) => (
                   <Listbox.Option
                     key={roleItem.id}
                     value={roleItem.id}
                     className={({ active }) =>
-                      `cursor-pointer select-none relative py-2 px-4 ${
-                        active ? "bg-slate-200 text-slate-900" : "text-slate-700"
+                      `cursor-pointer select-none relative py-2 px-4 text-light-text-primary dark:text-dark-text-primary ${
+                        active
+                          ? "bg-light-bg-hover dark:bg-dark-bg-hover"
+                          : "bg-light-bg-primary dark:bg-dark-bg-secondary"
                       }`
                     }
                   >
@@ -126,30 +160,41 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
 
         {/* Members List */}
         <ul className="space-y-2 max-h-80 overflow-y-auto pr-2">
-          {members.map((member) => (
-            <li key={member.user._id} className="flex justify-between items-center p-3 card">
-              <div className="flex items-center">
-                <img
-                  src={member.user.avatar || `https://i.pravatar.cc/150?u=${member.user._id}`}
-                  alt={member.user.username}
-                  className="w-9 h-9 rounded-full mr-3 object-cover"
-                />
-                <div>
-                  <p className="font-semibold text-slate-900">{member?.user?.email}</p>
-                  <p className="text-sm text-slate-700 capitalize">
-                    {member.role.replace("_", " ")}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => handleRemoveMember(member.user._id)}
-                className="p-1 rounded-full text-slate-700 hover:text-rose-red hover:bg-rose-red/10 transition-colors"
-                aria-label={`Remove ${member.user.username}`}
+          {members.map((member) => {
+            const rowKey = getMemberUserId(member) || member._id
+            return (
+              <li
+                key={rowKey}
+                className="flex justify-between items-center rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary p-3 shadow-sm"
               >
-                <FiX size={20} />
-              </button>
-            </li>
-          ))}
+                <div className="flex min-w-0 items-center">
+                  <img
+                    src={getAvatarSrc(member)}
+                    alt={getAvatarAlt(member)}
+                    className="mr-3 h-9 w-9 flex-shrink-0 rounded-full object-cover"
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-light-text-primary dark:text-dark-text-primary">
+                      {typeof member?.user === "object" && member.user?.email
+                        ? member.user.email
+                        : "—"}
+                    </p>
+                    <p className="text-sm capitalize text-light-text-secondary dark:text-dark-text-secondary">
+                      {member.role.replace("_", " ")}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveMember(getMemberUserId(member))}
+                  className="flex-shrink-0 rounded-full p-1 text-light-text-secondary transition-colors hover:bg-rose-red/10 hover:text-rose-red dark:text-dark-text-secondary"
+                  aria-label={`Remove ${getAvatarAlt(member)}`}
+                >
+                  <FiX size={20} />
+                </button>
+              </li>
+            )
+          })}
         </ul>
       </div>
     </Modal>

@@ -1,23 +1,22 @@
 import dotenv from "dotenv"
 import app from "./app.js"
 import connectDB from "./src/db/dbConnect.js"
+import { fileURLToPath } from "url"
+import path from "path"
 
-// Use default config. It won't crash if the file is missing
-// (which is fine because Docker provides the variables anyway)
-dotenv.config()
+// Get directory name for ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Load .env from project root (one level up from backend/)
+dotenv.config({ path: path.resolve(__dirname, "../.env") })
 
 if (process.env.NODE_ENV !== "test") {
-  const PORT = process.env.PORT || 3000
+  const PORT = process.env.PORT || 4000
 
-  // Optional: Debugging line to see if variables are actually loading
-
-
-  connectDB()
-    .then(() => {
-      app.listen(PORT, "0.0.0.0", () => {
-        console.log(`Server is running on PORT: ${PORT}`)
-      })
-    })
+  connectDB().then(() => {
+    app.listen(PORT, "0.0.0.0")
+  })
     .catch((err) => {
       console.error("MongoDB connection failed!!! ", err)
     })
