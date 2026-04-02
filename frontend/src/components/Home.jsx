@@ -143,20 +143,23 @@ export const Home = () => {
     <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary overflow-x-hidden">
       {/* ── Navbar ─────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-light-bg-primary/80 dark:bg-dark-bg-primary/80 backdrop-blur-md border-b border-light-border/50 dark:border-dark-border/50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-accent-primary flex items-center justify-center">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-accent-primary flex items-center justify-center flex-shrink-0">
               <span className="font-serif font-bold text-white text-sm leading-none">T</span>
             </div>
-            <span className="font-serif font-bold text-lg text-light-text-primary dark:text-dark-text-primary">
+            <span className="font-serif font-bold text-base sm:text-lg text-light-text-primary dark:text-dark-text-primary hidden xs:block">
               TaskFlow
             </span>
           </div>
-          <div className="flex items-center gap-3">
-            <Link to="/login" className="btn-ghost text-sm px-4 py-2">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link to="/login" className="btn-ghost text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
               Sign In
             </Link>
-            <Link to="/register" className="btn-primary text-sm px-4 py-2">
+            <Link
+              to="/register"
+              className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2"
+            >
               Get Started
             </Link>
           </div>
@@ -164,17 +167,17 @@ export const Home = () => {
       </nav>
 
       {/* ── Hero ───────────────────────────────── */}
-      <section className="pt-32 pb-20 px-6">
+      <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div variants={fadeUp} initial="hidden" animate="visible">
-            <span className="inline-block mb-4 px-3 py-1 rounded-full text-xs font-semibold bg-accent-primary/10 text-accent-primary border border-accent-primary/20">
+            <span className="inline-block mb-3 sm:mb-4 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold bg-accent-primary/10 text-accent-primary border border-accent-primary/20">
               The All-In-One Task Management Platform
             </span>
-            <h1 className="text-4xl md:text-6xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary leading-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary leading-tight mb-4 sm:mb-6">
               Streamline Your Workflow,{" "}
               <span className="text-accent-primary">Elevate Your Team</span>
             </h1>
-            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto leading-relaxed mb-10">
+            <p className="text-base sm:text-lg text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto leading-relaxed mb-6 sm:mb-8 md:mb-10 px-2">
               Stop juggling scattered tasks across endless spreadsheets. TaskFlow brings your
               projects, sprints, and team collaboration into one seamless workspace.
             </p>
@@ -185,13 +188,19 @@ export const Home = () => {
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.15 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16"
+            className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-12 sm:mb-14 md:mb-16 px-4"
           >
-            <Link to="/register" className="btn-primary px-6 py-3 flex items-center gap-2 group">
+            <Link
+              to="/register"
+              className="btn-primary px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base flex items-center gap-2 group w-full sm:w-auto justify-center"
+            >
               Start Free Today
               <FiArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
-            <Link to="/login" className="btn-secondary px-6 py-3">
+            <Link
+              to="/login"
+              className="btn-secondary px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base w-full sm:w-auto justify-center"
+            >
               Sign In
             </Link>
           </motion.div>
@@ -202,14 +211,14 @@ export const Home = () => {
             initial="hidden"
             animate="visible"
             transition={{ delay: 0.3 }}
-            className="grid grid-cols-3 gap-6 max-w-lg mx-auto"
+            className="grid grid-cols-3 gap-3 sm:gap-6 max-w-lg mx-auto px-4"
           >
             {statsData.map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-2xl font-bold font-serif text-light-text-primary dark:text-dark-text-primary">
+                <div className="text-xl sm:text-2xl font-bold font-serif text-light-text-primary dark:text-dark-text-primary">
                   {stat.number}
                 </div>
-                <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
+                <div className="text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
                   {stat.label}
                 </div>
               </div>
@@ -224,18 +233,18 @@ export const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="py-20 px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+        className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
               Everything You Need
             </h2>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+            <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto px-4">
               Powerful features designed to streamline your workflow and boost team productivity.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {featureData.map((feature) => (
               <FeatureCard key={feature.title} {...feature} />
             ))}
@@ -249,31 +258,34 @@ export const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="py-20 px-6"
+        className="py-12 sm:py-16 md:py-20 px-4 sm:px-6"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
               Built for Modern Teams
             </h2>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+            <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto px-4">
               Whether you're a startup or an enterprise, TaskFlow adapts to how your team works.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             {teamTypes.map((team) => (
               <div
                 key={team.label}
-                className="card p-5 text-center flex flex-col items-center gap-3"
+                className="card p-4 sm:p-5 text-center flex flex-col items-center gap-3"
               >
-                <div className="w-10 h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
-                  <SectionIcon name={team.icon} className="w-5 h-5 text-accent-primary" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-accent-primary/10 flex items-center justify-center">
+                  <SectionIcon
+                    name={team.icon}
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-accent-primary"
+                  />
                 </div>
                 <div>
-                  <p className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
+                  <p className="font-semibold text-light-text-primary dark:text-dark-text-primary text-xs sm:text-sm">
                     {team.label}
                   </p>
-                  <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
+                  <p className="text-[10px] sm:text-xs text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
                     {team.description}
                   </p>
                 </div>
@@ -289,18 +301,18 @@ export const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="py-20 px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+        className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
       >
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
               Simple, Transparent Pricing
             </h2>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+            <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto px-4">
               Start free for 14 days. No credit card required.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {pricingData.map((plan) => (
               <PricingCard key={plan.name} {...plan} />
             ))}
@@ -314,18 +326,18 @@ export const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="py-20 px-6"
+        className="py-12 sm:py-16 md:py-20 px-4 sm:px-6"
       >
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
               Loved by Teams Worldwide
             </h2>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+            <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto px-4">
               See what teams are saying about TaskFlow.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {testimonialData.map((t) => (
               <TestimonialCard key={t.name} {...t} />
             ))}
@@ -339,46 +351,52 @@ export const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="py-20 px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+        className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
       >
-        <div className="max-w-2xl mx-auto text-center card p-10">
-          <h2 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
+        <div className="max-w-2xl mx-auto text-center card p-6 sm:p-8 md:p-10">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3">
             Ready to Transform Your Workflow?
           </h2>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary mb-8 leading-relaxed">
+          <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary mb-6 sm:mb-8 leading-relaxed">
             Get started in 30 seconds. Create your account, add your first project, invite your
             team, and start shipping.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link to="/register" className="btn-primary px-6 py-3 flex items-center gap-2 group">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+            <Link
+              to="/register"
+              className="btn-primary px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base flex items-center gap-2 group w-full sm:w-auto justify-center"
+            >
               Start Free Trial
               <FiArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
-            <Link to="/login" className="btn-secondary px-6 py-3">
+            <Link
+              to="/login"
+              className="btn-secondary px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base w-full sm:w-auto justify-center"
+            >
               Sign In
             </Link>
           </div>
-          <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-4">
+          <p className="text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-4">
             No credit card required · Free for 14 days
           </p>
         </div>
       </motion.section>
 
       {/* ── Footer ─────────────────────────────── */}
-      <footer className="py-10 px-6 border-t border-light-border dark:border-dark-border">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="py-8 sm:py-10 px-4 sm:px-6 border-t border-light-border dark:border-dark-border">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-md bg-accent-primary flex items-center justify-center">
               <span className="font-serif font-bold text-white text-xs leading-none">T</span>
             </div>
-            <span className="font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
+            <span className="font-serif font-bold text-sm text-light-text-primary dark:text-dark-text-primary">
               TaskFlow
             </span>
           </div>
-          <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary text-center sm:text-left">
             © {new Date().getFullYear()} TaskFlow. All rights reserved.
           </p>
-          <div className="flex items-center gap-4 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+          <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
             <a
               href="mailto:hello@taskly.app"
               className="hover:text-accent-primary transition-colors duration-200"

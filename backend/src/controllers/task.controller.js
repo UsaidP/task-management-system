@@ -145,10 +145,9 @@ const getAllTasks = asyncHandler(async (req, res, next) => {
 
 	const tasks = await Task.find({ assignedTo: userID }).populate("assignedTo", "name email")
 	console.log(`tasks: ${JSON.stringify(tasks)}`)
-	if (!tasks && tasks.length === 0) {
-		throw new ApiError(404, "Tasks not found")
-	}
-	return res.status(200).json(new ApiResponse(200, tasks, "Tasks fetched successfully"))
+
+	// Return empty array instead of 404 when user has no tasks
+	return res.status(200).json(new ApiResponse(200, tasks || [], "Tasks fetched successfully"))
 })
 const getTaskById = asyncHandler(async (req, res, next) => {
 	const { taskId } = req.params

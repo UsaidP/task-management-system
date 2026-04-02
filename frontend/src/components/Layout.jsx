@@ -17,8 +17,8 @@ const Layout = ({ children }) => {
         }`}
       >
         <Header />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-light-bg-primary dark:bg-dark-bg-primary p-6">
-          <div className="mx-auto max-w-[1400px]">{children}</div>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-light-bg-primary dark:bg-dark-bg-primary p-4 sm:p-6">
+          <div className="mx-auto w-full max-w-[1400px]">{children}</div>
         </main>
       </div>
     </div>

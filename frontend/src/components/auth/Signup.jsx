@@ -99,23 +99,23 @@ export const Signup = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary">
-      <div className="w-full max-w-xl auth-card space-y-6">
+    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
+      <div className="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
           <Link to="/" className="inline-block flex justify-center mb-4">
-            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-2 shadow-sm">
-              <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-2 shadow-sm">
+              <span className="font-serif font-bold text-2xl sm:text-3xl leading-none pt-1">T</span>
             </div>
           </Link>
-          <h1 className="text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
             Create an Account
           </h1>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-base sm:text-lg">
             Join TaskFlow to organize your work.
           </p>
         </motion.div>
@@ -125,10 +125,10 @@ export const Signup = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label htmlFor="fullname" className="input-label mb-2 block">
+                <label htmlFor="fullname" className="input-label mb-2 block text-xs sm:text-sm">
                   Full Name
                 </label>
                 <div className="relative">
@@ -147,7 +147,7 @@ export const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="username" className="input-label mb-2 block">
+                <label htmlFor="username" className="input-label mb-2 block text-xs sm:text-sm">
                   Username
                 </label>
                 <div className="relative">
@@ -167,7 +167,7 @@ export const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="input-label mb-2 block">
+              <label htmlFor="email" className="input-label mb-2 block text-xs sm:text-sm">
                 Email Address
               </label>
               <div className="relative">
@@ -186,7 +186,7 @@ export const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="input-label mb-2 block">
+              <label htmlFor="password" className="input-label mb-2 block text-xs sm:text-sm">
                 Password
               </label>
               <div className="relative">
@@ -233,7 +233,11 @@ export const Signup = () => {
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="w-full btn-primary group">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary group py-2.5 sm:py-3 text-sm sm:text-base"
+            >
               {loading ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
@@ -254,7 +258,7 @@ export const Signup = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-6"
         >
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm">
             Already have an account?{" "}
             <Link
               to="/login"

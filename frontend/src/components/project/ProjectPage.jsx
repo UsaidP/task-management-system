@@ -713,52 +713,62 @@ const ProjectPage = () => {
 
     return (
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex items-center gap-3 p-3 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary shrink-0">
-          <button
-            type="button"
-            onClick={() => setCalendarDate(calendarDate.add(-1, "month"))}
-            className="p-1.5 rounded hover:bg-light-border dark:hover:bg-dark-border transition-colors"
-          >
-            <FiChevronLeft className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
-          </button>
-          <span className="text-[14px] font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[160px] text-center">
-            {calendarDate.format("MMMM YYYY")}
-          </span>
-          <button
-            type="button"
-            onClick={() => setCalendarDate(calendarDate.add(1, "month"))}
-            className="p-1.5 rounded hover:bg-light-border dark:hover:bg-dark-border transition-colors"
-          >
-            <FiChevronRight className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setCalendarDate(dayjs())}
-            className="px-3 py-1.5 text-[12px] rounded bg-light-border dark:bg-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-border-strong dark:hover:bg-dark-border-strong transition-colors"
-          >
-            Today
-          </button>
-          <div className="flex-1" />
-          <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
-            {filteredTasks.length} tasks
-          </span>
+        {/* Calendar Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary shrink-0">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCalendarDate(calendarDate.add(-1, "month"))}
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors"
+            >
+              <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+            </button>
+            <span className="text-sm sm:text-base font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[140px] sm:min-w-[160px] text-center">
+              {calendarDate.format("MMMM YYYY")}
+            </span>
+            <button
+              type="button"
+              onClick={() => setCalendarDate(calendarDate.add(1, "month"))}
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors"
+            >
+              <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCalendarDate(dayjs())}
+              className="px-3 py-1.5 text-xs sm:text-sm rounded-lg bg-light-border dark:bg-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-border-strong dark:hover:bg-dark-border-strong transition-colors"
+            >
+              Today
+            </button>
+            <span className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+              {filteredTasks.length} tasks
+            </span>
+          </div>
         </div>
-        <div className="flex-1 overflow-auto p-4">
-          <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg border border-light-border dark:border-dark-border overflow-hidden">
-            <div className="grid grid-cols-7 text-center text-[11px] font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
+
+        {/* Calendar Grid */}
+        <div className="flex-1 overflow-auto p-3 sm:p-4">
+          <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg border border-light-border dark:border-dark-border overflow-hidden overflow-x-auto">
+            <div className="grid grid-cols-7 text-center text-[10px] sm:text-[11px] font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border min-w-[700px]">
               {weekDays.map((day) => (
-                <div key={day} className="py-2 bg-light-bg-tertiary dark:bg-dark-bg-secondary">
+                <div
+                  key={day}
+                  className="py-2 sm:py-3 bg-light-bg-tertiary dark:bg-dark-bg-secondary"
+                >
                   {day}
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-7">
+            <div className="grid grid-cols-7 min-w-[700px]">
               {calendarDaysData.map((item, index) => {
                 if (!item.isCurrentMonth) {
                   return (
                     <div
                       key={`empty-${index}`}
-                      className="min-h-[100px] bg-light-bg-hover/50 dark:bg-dark-bg-hover/50"
+                      className="min-h-[80px] sm:min-h-[100px] bg-light-bg-hover/50 dark:bg-dark-bg-hover/50"
                     />
                   )
                 }
@@ -770,14 +780,14 @@ const ProjectPage = () => {
                 return (
                   <div
                     key={item.day}
-                    className={`min-h-[100px] p-2 border-b border-r border-light-border dark:border-dark-border ${
+                    className={`min-h-[80px] sm:min-h-[100px] p-1 sm:p-2 border-b border-r border-light-border dark:border-dark-border last:border-r-0 ${
                       isToday
-                        ? "bg-accent-primary/10"
+                        ? "bg-accent-primary/10 dark:bg-accent-primary/20"
                         : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
                     }`}
                   >
                     <div
-                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${
+                      className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-[10px] sm:text-[11px] font-medium mb-1 ${
                         isToday
                           ? "bg-accent-primary text-white"
                           : "text-light-text-tertiary dark:text-dark-text-tertiary"
@@ -785,26 +795,20 @@ const ProjectPage = () => {
                     >
                       {item.day}
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5 sm:space-y-1">
                       {dayTasks.slice(0, 2).map((task) => (
                         <motion.div
                           key={task._id}
                           initial={{ opacity: 0, y: -3 }}
                           animate={{ opacity: 1, y: 0 }}
                           onClick={() => openEditModal(task)}
-                          className={`text-[10px] p-1 rounded truncate cursor-pointer ${
-                            task.priority === "urgent" || task.priority === "high"
-                              ? "bg-[#C44A4A22] text-[#C44A4A]"
-                              : task.priority === "medium"
-                                ? "bg-[#D4A54822] text-[#D4A548]"
-                                : "bg-[#6888A022] text-[#6888A0]"
-                          }`}
+                          className="text-[9px] sm:text-xs p-1 rounded truncate cursor-pointer bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:opacity-80 transition-opacity"
                         >
-                          {task.title}
+                          <div className="font-medium truncate">{task.title}</div>
                         </motion.div>
                       ))}
                       {dayTasks.length > 2 && (
-                        <div className="text-[9px] text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
+                        <div className="text-[9px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
                           +{dayTasks.length - 2} more
                         </div>
                       )}
@@ -848,7 +852,7 @@ const ProjectPage = () => {
 
     return (
       <div className="flex-1 overflow-x-auto p-4 sm:p-6">
-        <div className="flex gap-4 min-w-max">
+        <div className="flex gap-4 min-w-[288px]">
           {Object.entries(filteredColumns).map(([status, column]) => (
             <div
               key={status}
@@ -1434,242 +1438,102 @@ const ProjectPage = () => {
         </div>
       </header>
 
-      {/* View Tabs & Filter Bar */}
-      <div className="flex flex-col gap-3 px-4 sm:px-6 py-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
-        {/* Top Row: View Tabs */}
-        <div className="flex items-center justify-between gap-4">
-          {/* View Tabs */}
-          <div className="flex items-center gap-1 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg p-1">
-            <button
-              type="button"
-              onClick={() => setActiveTab("board")}
-              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
-                activeTab === "board"
-                  ? "bg-accent-primary text-white shadow-sm"
-                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-              }`}
-            >
-              <FiCircle className="w-4 h-4" />
-              <span className="hidden sm:inline">Board</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("list")}
-              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
-                activeTab === "list"
-                  ? "bg-accent-primary text-white shadow-sm"
-                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-              }`}
-            >
-              <FiCheckCircle className="w-4 h-4" />
-              <span className="hidden sm:inline">List</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("timeline")}
-              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
-                activeTab === "timeline"
-                  ? "bg-accent-primary text-white shadow-sm"
-                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-              }`}
-            >
-              <FiClock className="w-4 h-4" />
-              <span className="hidden sm:inline">Timeline</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("calendar")}
-              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
-                activeTab === "calendar"
-                  ? "bg-accent-primary text-white shadow-sm"
-                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-              }`}
-            >
-              <FiCalendar className="w-4 h-4" />
-              <span className="hidden sm:inline">Calendar</span>
-            </button>
+      {/* View Tabs & Filter Bar - Only show for Board/List views */}
+      {(activeTab === "board" || activeTab === "list") && (
+        <div className="flex flex-col gap-3 px-4 sm:px-6 py-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
+          {/* Top Row: View Tabs */}
+          <div className="flex items-center justify-between gap-4">
+            {/* View Tabs */}
+            <div className="flex items-center gap-1 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg p-1">
+              <button
+                type="button"
+                onClick={() => setActiveTab("board")}
+                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
+                  activeTab === "board"
+                    ? "bg-accent-primary text-white shadow-sm"
+                    : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                }`}
+              >
+                <FiCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">Board</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("list")}
+                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
+                  activeTab === "list"
+                    ? "bg-accent-primary text-white shadow-sm"
+                    : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                }`}
+              >
+                <FiCheckCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">List</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("timeline")}
+                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
+                  activeTab === "timeline"
+                    ? "bg-accent-primary text-white shadow-sm"
+                    : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                }`}
+              >
+                <FiClock className="w-4 h-4" />
+                <span className="hidden sm:inline">Timeline</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("calendar")}
+                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
+                  activeTab === "calendar"
+                    ? "bg-accent-primary text-white shadow-sm"
+                    : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                }`}
+              >
+                <FiCalendar className="w-4 h-4" />
+                <span className="hidden sm:inline">Calendar</span>
+              </button>
+            </div>
+
+            {/* Search */}
+            <div className="relative flex-shrink-0">
+              <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-40 sm:w-56 lg:w-64 pl-9 pr-3 py-2 h-9 text-sm bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all"
+              />
+            </div>
           </div>
 
-          {/* Search */}
-          <div className="relative flex-shrink-0">
-            <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
-            <input
-              type="text"
-              placeholder="Search tasks..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-40 sm:w-56 lg:w-64 pl-9 pr-3 py-2 h-9 text-sm bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all"
-            />
-          </div>
-        </div>
+          {/* Bottom Row: Filters */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${
+                statusFilter || priorityFilter || assigneeFilter || dateFilter
+                  ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm"
+                  : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"
+              }`}
+            >
+              <FiFilter className="w-4 h-4" />
+              <span>Filters</span>
+            </button>
 
-        {/* Bottom Row: Filters */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            type="button"
-            className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${
-              statusFilter || priorityFilter || assigneeFilter || dateFilter
-                ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm"
-                : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"
-            }`}
-          >
-            <FiFilter className="w-4 h-4" />
-            <span>Filters</span>
-          </button>
-
-          {/* Status Filter */}
-          <Listbox value={statusFilter} onChange={setStatusFilter}>
-            <div className="relative min-w-[150px] sm:min-w-[170px]">
-              <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
-                <span className="truncate capitalize">
-                  {statusFilter ? statusFilter.replace("-", " ") : "All Status"}
-                </span>
-                <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
-              </ListboxButton>
-              <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
-                <ListboxOption
-                  value=""
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      All Status
-                    </span>
-                  )}
-                </ListboxOption>
-                <ListboxOption
-                  value="todo"
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      To Do
-                    </span>
-                  )}
-                </ListboxOption>
-                <ListboxOption
-                  value="in-progress"
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      In Progress
-                    </span>
-                  )}
-                </ListboxOption>
-                <ListboxOption
-                  value="under-review"
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      Under Review
-                    </span>
-                  )}
-                </ListboxOption>
-                <ListboxOption
-                  value="completed"
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      Completed
-                    </span>
-                  )}
-                </ListboxOption>
-              </ListboxOptions>
-            </div>
-          </Listbox>
-
-          {/* Priority Filter */}
-          <Listbox value={priorityFilter} onChange={setPriorityFilter}>
-            <div className="relative min-w-[150px] sm:min-w-[170px]">
-              <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
-                <span className="truncate capitalize">{priorityFilter || "All Priority"}</span>
-                <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
-              </ListboxButton>
-              <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
-                <ListboxOption
-                  value=""
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      All Priority
-                    </span>
-                  )}
-                </ListboxOption>
-                {["low", "medium", "high", "urgent"].map((priority) => (
+            {/* Status Filter */}
+            <Listbox value={statusFilter} onChange={setStatusFilter}>
+              <div className="relative min-w-[150px] sm:min-w-[170px]">
+                <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
+                  <span className="truncate capitalize">
+                    {statusFilter ? statusFilter.replace("-", " ") : "All Status"}
+                  </span>
+                  <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+                </ListboxButton>
+                <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
                   <ListboxOption
-                    key={priority}
-                    value={priority}
-                    className={({ active }) =>
-                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                    }
-                  >
-                    {({ selected }) => (
-                      <span
-                        className={`block truncate capitalize ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                      >
-                        {priority}
-                      </span>
-                    )}
-                  </ListboxOption>
-                ))}
-              </ListboxOptions>
-            </div>
-          </Listbox>
-
-          {/* Assignee Filter */}
-          <Listbox value={assigneeFilter} onChange={setAssigneeFilter}>
-            <div className="relative min-w-[170px] sm:min-w-[190px]">
-              <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
-                <span className="truncate">{assigneeFilter || "All Assignees"}</span>
-                <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
-              </ListboxButton>
-              <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
-                <ListboxOption
-                  value=""
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      All Assignees
-                    </span>
-                  )}
-                </ListboxOption>
-                {members.map((m) => (
-                  <ListboxOption
-                    key={m.user?._id}
-                    value={m.user?.fullname || ""}
+                    value=""
                     className={({ active }) =>
                       `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
                     }
@@ -1678,120 +1542,316 @@ const ProjectPage = () => {
                       <span
                         className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
                       >
-                        {m.user?.fullname}
+                        All Status
                       </span>
                     )}
                   </ListboxOption>
-                ))}
-              </ListboxOptions>
-            </div>
-          </Listbox>
+                  <ListboxOption
+                    value="todo"
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        To Do
+                      </span>
+                    )}
+                  </ListboxOption>
+                  <ListboxOption
+                    value="in-progress"
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        In Progress
+                      </span>
+                    )}
+                  </ListboxOption>
+                  <ListboxOption
+                    value="under-review"
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        Under Review
+                      </span>
+                    )}
+                  </ListboxOption>
+                  <ListboxOption
+                    value="completed"
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        Completed
+                      </span>
+                    )}
+                  </ListboxOption>
+                </ListboxOptions>
+              </div>
+            </Listbox>
 
-          {/* Date Filter */}
-          <Listbox value={dateFilter} onChange={setDateFilter}>
-            <div className="relative min-w-[150px] sm:min-w-[170px]">
-              <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
-                <span className="truncate">
-                  {dateFilter ? dateFilter.replace("due-", "Due ").replace("_", " ") : "Any Date"}
-                </span>
-                <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
-              </ListboxButton>
-              <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
-                <ListboxOption
-                  value=""
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+            {/* Priority Filter */}
+            <Listbox value={priorityFilter} onChange={setPriorityFilter}>
+              <div className="relative min-w-[150px] sm:min-w-[170px]">
+                <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
+                  <span className="truncate capitalize">{priorityFilter || "All Priority"}</span>
+                  <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+                </ListboxButton>
+                <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+                  <ListboxOption
+                    value=""
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        All Priority
+                      </span>
+                    )}
+                  </ListboxOption>
+                  {["low", "medium", "high", "urgent"].map((priority) => (
+                    <ListboxOption
+                      key={priority}
+                      value={priority}
+                      className={({ active }) =>
+                        `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                      }
                     >
-                      Any Date
-                    </span>
-                  )}
-                </ListboxOption>
-                <ListboxOption
-                  value="overdue"
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      Overdue
-                    </span>
-                  )}
-                </ListboxOption>
-                <ListboxOption
-                  value="today"
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      Due Today
-                    </span>
-                  )}
-                </ListboxOption>
-                <ListboxOption
-                  value="week"
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      Due This Week
-                    </span>
-                  )}
-                </ListboxOption>
-                <ListboxOption
-                  value="month"
-                  className={({ active }) =>
-                    `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
-                  }
-                >
-                  {({ selected }) => (
-                    <span
-                      className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
-                    >
-                      Due This Month
-                    </span>
-                  )}
-                </ListboxOption>
-              </ListboxOptions>
-            </div>
-          </Listbox>
+                      {({ selected }) => (
+                        <span
+                          className={`block truncate capitalize ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                        >
+                          {priority}
+                        </span>
+                      )}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </div>
+            </Listbox>
 
-          {(searchQuery || statusFilter || priorityFilter || assigneeFilter || dateFilter) && (
-            <button
-              type="button"
-              onClick={() => {
-                setSearchQuery("")
-                setStatusFilter("")
-                setPriorityFilter("")
-                setAssigneeFilter("")
-                setDateFilter("")
-              }}
-              className="text-[12px] font-medium text-accent-primary dark:text-accent-primary-light hover:underline"
-            >
-              Clear
-            </button>
-          )}
+            {/* Assignee Filter */}
+            <Listbox value={assigneeFilter} onChange={setAssigneeFilter}>
+              <div className="relative min-w-[170px] sm:min-w-[190px]">
+                <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
+                  <span className="truncate">{assigneeFilter || "All Assignees"}</span>
+                  <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+                </ListboxButton>
+                <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+                  <ListboxOption
+                    value=""
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        All Assignees
+                      </span>
+                    )}
+                  </ListboxOption>
+                  {members.map((m) => (
+                    <ListboxOption
+                      key={m.user?._id}
+                      value={m.user?.fullname || ""}
+                      className={({ active }) =>
+                        `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                      }
+                    >
+                      {({ selected }) => (
+                        <span
+                          className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                        >
+                          {m.user?.fullname}
+                        </span>
+                      )}
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </div>
+            </Listbox>
+
+            {/* Date Filter */}
+            <Listbox value={dateFilter} onChange={setDateFilter}>
+              <div className="relative min-w-[150px] sm:min-w-[170px]">
+                <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
+                  <span className="truncate">
+                    {dateFilter ? dateFilter.replace("due-", "Due ").replace("_", " ") : "Any Date"}
+                  </span>
+                  <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+                </ListboxButton>
+                <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+                  <ListboxOption
+                    value=""
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        Any Date
+                      </span>
+                    )}
+                  </ListboxOption>
+                  <ListboxOption
+                    value="overdue"
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        Overdue
+                      </span>
+                    )}
+                  </ListboxOption>
+                  <ListboxOption
+                    value="today"
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        Due Today
+                      </span>
+                    )}
+                  </ListboxOption>
+                  <ListboxOption
+                    value="week"
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        Due This Week
+                      </span>
+                    )}
+                  </ListboxOption>
+                  <ListboxOption
+                    value="month"
+                    className={({ active }) =>
+                      `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                    }
+                  >
+                    {({ selected }) => (
+                      <span
+                        className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                      >
+                        Due This Month
+                      </span>
+                    )}
+                  </ListboxOption>
+                </ListboxOptions>
+              </div>
+            </Listbox>
+
+            {(searchQuery || statusFilter || priorityFilter || assigneeFilter || dateFilter) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("")
+                  setStatusFilter("")
+                  setPriorityFilter("")
+                  setAssigneeFilter("")
+                  setDateFilter("")
+                }}
+                className="text-xs sm:text-sm font-medium text-accent-primary dark:text-accent-primary-light hover:underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
-      <main className="flex-1 overflow-hidden flex flex-col min-h-0">
+      {/* Simple View Tabs - For Timeline/Calendar views */}
+      {(activeTab === "timeline" || activeTab === "calendar") && (
+        <div className="flex items-center gap-1 px-4 sm:px-6 py-3 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border overflow-x-auto">
+          <button
+            type="button"
+            onClick={() => setActiveTab("board")}
+            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${
+              activeTab === "board"
+                ? "bg-accent-primary text-white shadow-sm"
+                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+            }`}
+          >
+            <FiCircle className="w-4 h-4" />
+            <span className="hidden sm:inline">Board</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("list")}
+            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${
+              activeTab === "list"
+                ? "bg-accent-primary text-white shadow-sm"
+                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+            }`}
+          >
+            <FiCheckCircle className="w-4 h-4" />
+            <span className="hidden sm:inline">List</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("timeline")}
+            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${
+              activeTab === "timeline"
+                ? "bg-accent-primary text-white shadow-sm"
+                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+            }`}
+          >
+            <FiClock className="w-4 h-4" />
+            <span className="hidden sm:inline">Timeline</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("calendar")}
+            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${
+              activeTab === "calendar"
+                ? "bg-accent-primary text-white shadow-sm"
+                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+            }`}
+          >
+            <FiCalendar className="w-4 h-4" />
+            <span className="hidden sm:inline">Calendar</span>
+          </button>
+        </div>
+      )}
+
+      <main className="flex-1 overflow-auto min-h-0">
         {loading ? (
-          <div className="flex-1 flex gap-4 p-4 sm:p-6 overflow-x-auto">
+          <div className="flex gap-4 p-4 sm:p-6 min-w-max">
             {["todo", "in-progress", "under-review", "completed"].map((col) => (
               <div
                 key={col}

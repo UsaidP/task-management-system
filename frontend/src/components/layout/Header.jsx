@@ -54,24 +54,24 @@ const Header = () => {
   const userRole = user?.role?.toUpperCase() || "USER"
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 bg-light-bg-primary dark:bg-dark-bg-primary border-b border-light-border dark:border-dark-border sticky top-0 z-40 transition-colors duration-200">
+    <header className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-light-bg-primary dark:bg-dark-bg-primary border-b border-light-border dark:border-dark-border sticky top-0 z-40 transition-colors duration-200">
       {/* Left side: Mobile menu toggle + breadcrumbs placeholder */}
       <div className="flex items-center">
         <button
           type="button"
           onClick={toggleSidebar}
-          className="lg:hidden mr-4 p-2 rounded-md text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+          className="lg:hidden mr-3 sm:mr-4 p-2 rounded-md text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
           aria-label="Toggle sidebar"
         >
-          <FiMenu className="w-6 h-6" />
+          <FiMenu className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
-        <span className="text-light-text-primary dark:text-dark-text-primary font-serif font-semibold text-lg lg:hidden">
+        <span className="text-light-text-primary dark:text-dark-text-primary font-serif font-semibold text-base sm:text-lg lg:hidden">
           TaskFlow
         </span>
       </div>
 
       {/* Right side: User Menu */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         {user && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -82,19 +82,19 @@ const Header = () => {
             <button
               type="button"
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center gap-3 p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200 focus-visible-ring"
+              className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-200 focus-visible-ring"
               aria-expanded={isUserMenuOpen}
             >
               <div className="text-right hidden sm:block">
-                <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                <div className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                   {userName}
                 </div>
-                <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
+                <div className="text-[10px] sm:text-xs text-light-text-secondary dark:text-dark-text-secondary">
                   {userRole}
                 </div>
               </div>
 
-              <div className="w-9 h-9 rounded-full bg-accent-primary flex items-center justify-center text-white font-semibold flex-shrink-0 origin-center hover:scale-105 transition-transform duration-200 shadow-sm border border-light-border/20">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-accent-primary flex items-center justify-center text-white font-semibold flex-shrink-0 origin-center hover:scale-105 transition-transform duration-200 shadow-sm border border-light-border/20">
                 {user?.avatar?.url ? (
                   <img
                     alt="User Avatar"
@@ -102,12 +102,12 @@ const Header = () => {
                     src={user.avatar.url}
                   />
                 ) : (
-                  <span>{userInitial}</span>
+                  <span className="text-sm sm:text-base">{userInitial}</span>
                 )}
               </div>
 
               <FiChevronDown
-                className={`w-4 h-4 hidden sm:block text-light-text-tertiary transition-transform duration-200 ${isUserMenuOpen ? "rotate-180" : ""}`}
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 hidden sm:block text-light-text-tertiary transition-transform duration-200 ${isUserMenuOpen ? "rotate-180" : ""}`}
               />
             </button>
 

@@ -194,40 +194,42 @@ const TimelineView = () => {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between p-4 sm:p-6 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
+          <h1 className="text-xl sm:text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
             Timeline
           </h1>
-          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary mt-1">
             Visualize your project schedule
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Group By Toggle */}
           <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1">
             <button
               type="button"
               onClick={() => setGroupBy("project")}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
                 groupBy === "project"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
               }`}
             >
-              Project
+              <span className="hidden sm:inline">Project</span>
+              <span className="sm:hidden">Proj</span>
             </button>
             <button
               type="button"
               onClick={() => setGroupBy("sprint")}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
                 groupBy === "sprint"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
               }`}
             >
-              Sprint
+              <span className="hidden sm:inline">Sprint</span>
+              <span className="sm:hidden">Spr</span>
             </button>
           </div>
 
@@ -236,7 +238,7 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => setZoom("day")}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
                 zoom === "day"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
@@ -247,7 +249,7 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => setZoom("week")}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
                 zoom === "week"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
@@ -258,7 +260,7 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => setZoom("month")}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
                 zoom === "month"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
@@ -273,19 +275,19 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => navigateDate(-1)}
-              className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
             >
-              <FiChevronLeft className="w-5 h-5 text-light-text-secondary" />
+              <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary" />
             </button>
-            <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[180px] text-center">
+            <span className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[120px] sm:min-w-[180px] text-center">
               {getDateLabel()}
             </span>
             <button
               type="button"
               onClick={() => navigateDate(1)}
-              className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
             >
-              <FiChevronRight className="w-5 h-5 text-light-text-secondary" />
+              <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary" />
             </button>
           </div>
         </div>
@@ -295,8 +297,8 @@ const TimelineView = () => {
       <div className="flex-1 overflow-auto custom-scrollbar">
         {/* Date Header */}
         <div className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
-          <div className="flex">
-            <div className="w-48 flex-shrink-0 p-3 border-r border-light-border dark:border-dark-border text-sm font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
+          <div className="flex min-w-[800px]">
+            <div className="w-32 sm:w-48 flex-shrink-0 p-2 sm:p-3 border-r border-light-border dark:border-dark-border text-xs sm:text-sm font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
               {groupBy === "sprint" ? "Sprint" : "Project"}
             </div>
             <div className="flex-1 flex">
@@ -307,10 +309,10 @@ const TimelineView = () => {
                     todayColumnIndex === i ? "bg-accent-primary/10 dark:bg-accent-primary/15" : ""
                   }`}
                 >
-                  <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <div className="text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                     {col.label}
                   </div>
-                  <div className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
+                  <div className="text-[9px] sm:text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
                     {col.sublabel}
                   </div>
                 </div>
@@ -320,14 +322,14 @@ const TimelineView = () => {
         </div>
 
         {/* Group Rows */}
-        <div className="divide-y divide-light-border dark:divide-dark-border">
+        <div className="divide-y divide-light-border dark:divide-dark-border min-w-[800px]">
           {Object.entries(groupedTasks).map(([groupName, groupTasks]) => (
             <div key={groupName} className="flex">
-              <div className="w-48 flex-shrink-0 p-4 border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
-                <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <div className="w-32 sm:w-48 flex-shrink-0 p-3 sm:p-4 border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+                <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-xs sm:text-sm">
                   {groupName}
                 </h3>
-                <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                <p className="text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
                   {groupTasks.length} tasks
                 </p>
               </div>
@@ -360,10 +362,12 @@ const TimelineView = () => {
                         width: `${position.width}%`,
                       }}
                     >
-                      <div className="p-2 overflow-hidden">
-                        <p className="text-xs font-medium text-white truncate">{task.title}</p>
+                      <div className="p-1.5 sm:p-2 overflow-hidden">
+                        <p className="text-[10px] sm:text-xs font-medium text-white truncate">
+                          {task.title}
+                        </p>
                         {position.width > 15 && (
-                          <p className="text-[10px] text-white/70 truncate">
+                          <p className="text-[9px] sm:text-[10px] text-white/70 truncate">
                             {task.dueDate ? dayjs(task.dueDate).format("MMM DD") : ""}
                           </p>
                         )}

@@ -44,23 +44,23 @@ export const Login = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary">
-      <div className="w-full max-w-lg auth-card">
+    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
+      <div className="w-full max-w-md mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
           <Link to="/" className="inline-block flex justify-center mb-4">
-            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-2 shadow-sm">
-              <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-2 shadow-sm">
+              <span className="font-serif font-bold text-2xl sm:text-3xl leading-none pt-1">T</span>
             </div>
           </Link>
-          <h1 className="text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
             Welcome Back
           </h1>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-base sm:text-lg">
             Sign in to continue to TaskFlow.
           </p>
         </motion.div>
@@ -70,7 +70,7 @@ export const Login = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <form onSubmit={handleSubmit} className="space-y-6 gap-3">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 gap-3">
             <div>
               <label htmlFor="identifier" className="input-label">
                 Email or Username
@@ -122,7 +122,7 @@ export const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2 text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              className="group flex w-full items-center justify-center rounded-md btn-primary px-4 py-2.5 sm:py-3 text-sm sm:text-base text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
@@ -137,7 +137,7 @@ export const Login = () => {
             <div className="text-center">
               <Link
                 to="/forget-password"
-                className="text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors text-sm"
+                className="text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors text-xs sm:text-sm"
               >
                 Forgot your password?
               </Link>
@@ -151,7 +151,7 @@ export const Login = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-6"
         >
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm">
             Don't have an account?{" "}
             <Link
               to="/register"
