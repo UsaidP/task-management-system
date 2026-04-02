@@ -95,20 +95,19 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
   // Compute assignedToIds from formData - memoized
   const assignedToIds = useMemo(() => {
     if (!formData?.assignedTo) return []
-    return formData.assignedTo.map(a => typeof a === "object" ? a._id : a)
+    return formData.assignedTo.map((a) => (typeof a === "object" ? a._id : a))
   }, [formData?.assignedTo])
 
   // Only update formData when task actually changes (by ID) or panel opens
   useEffect(() => {
     if (task && isOpen && task._id !== prevTaskId) {
       // Normalize assignedTo to only contain IDs
-      const normalizedAssignedTo = task.assignedTo?.map(a =>
-        typeof a === "object" ? a._id : a
-      ) || []
+      const normalizedAssignedTo =
+        task.assignedTo?.map((a) => (typeof a === "object" ? a._id : a)) || []
 
       setFormData({
         ...task,
-        assignedTo: normalizedAssignedTo
+        assignedTo: normalizedAssignedTo,
       })
       setPrevTaskId(task._id)
     }
@@ -135,7 +134,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
     console.log("=== handleUpdate CLICKED ===")
     console.log("projectId:", projectId)
     console.log("formData._id:", formData?._id)
-    
+
     if (!projectId || !formData?._id) {
       console.error("handleUpdate - Missing IDs:", { projectId, taskId: formData?._id })
       toast.error("Missing task or project ID")
@@ -149,7 +148,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
       priority: formData.priority,
       assignedTo: formData.assignedTo,
       dueDate: formData.dueDate || null,
-      labels: Array.isArray(formData.labels) ? formData.labels : (formData.labels?.trim() || ""),
+      labels: Array.isArray(formData.labels) ? formData.labels : formData.labels?.trim() || "",
     })
 
     setIsUpdating(true)
@@ -162,7 +161,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
         priority: formData.priority,
         assignedTo: formData.assignedTo,
         dueDate: formData.dueDate || null,
-        labels: Array.isArray(formData.labels) ? formData.labels : (formData.labels?.trim() || ""),
+        labels: Array.isArray(formData.labels) ? formData.labels : formData.labels?.trim() || "",
       })
       console.log("handleUpdate - response:", response)
       if (response.success) {
@@ -623,38 +622,43 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                             onChange={async (e) => {
                               const file = e.target.files?.[0]
                               if (!file) return
-                              
+
                               console.log("Uploading attachment:", file.name, file.size, file.type)
                               console.log("Project ID:", projectId)
                               console.log("Task ID:", formData._id)
-                              
+
                               try {
                                 const formDataAttach = new FormData()
                                 formDataAttach.append("file", file)
-                                
+
                                 const response = await apiService.uploadAttachment(
                                   projectId,
                                   formData._id,
                                   formDataAttach
                                 )
-                                
+
                                 console.log("Upload response:", response)
-                                
+
                                 if (response.success) {
-                                  let imageUrl = response.data?.url || response.data?.data?.url || response.data
-                                  
+                                  let imageUrl =
+                                    response.data?.url || response.data?.data?.url || response.data
+
                                   // Ensure ImageKit URL has proper format
-                                  if (imageUrl && imageUrl.includes('ik.imagekit.io')) {
+                                  if (imageUrl && imageUrl.includes("ik.imagekit.io")) {
                                     // Add cache-busting parameter
-                                    imageUrl = imageUrl + (imageUrl.includes('?') ? '&' : '?') + 't=' + Date.now()
+                                    imageUrl =
+                                      imageUrl +
+                                      (imageUrl.includes("?") ? "&" : "?") +
+                                      "t=" +
+                                      Date.now()
                                   }
-                                  
+
                                   const newAttachment = {
                                     filename: file.name,
                                     url: imageUrl,
                                   }
                                   console.log("New attachment:", newAttachment)
-                                  
+
                                   const updatedAttachments = [
                                     ...(formData.attachments || []),
                                     newAttachment,
@@ -665,13 +669,15 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                   }))
                                   toast.success("Attachment uploaded: " + file.name)
                                 } else {
-                                  toast.error("Upload failed: " + (response.message || "Unknown error"))
+                                  toast.error(
+                                    "Upload failed: " + (response.message || "Unknown error")
+                                  )
                                 }
                               } catch (err) {
                                 console.error("Upload error:", err)
                                 toast.error(err.message || "Failed to upload attachment")
                               }
-                              
+
                               // Reset file input
                               e.target.value = ""
                             }}
@@ -699,21 +705,21 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
   const handleImageError = (index) => {
     const imgUrl = attachments[index].url
     console.error("Failed to load image:", imgUrl)
-    
+
     // Fetch the image to see what's being returned
-    fetch(imgUrl, { method: 'HEAD' })
-      .then(res => {
+    fetch(imgUrl, { method: "HEAD" })
+      .then((res) => {
         console.error(`Image status: ${res.status} ${res.statusText}`)
-        console.error(`Content-Type: ${res.headers.get('content-type')}`)
+        console.error(`Content-Type: ${res.headers.get("content-type")}`)
       })
-      .catch(err => console.error('Fetch error:', err))
-    
+      .catch((err) => console.error("Fetch error:", err))
+
     setImgErrors((prev) => ({ ...prev, [index]: true }))
   }
 
   // Get ImageKit URL - return as-is or with query params preserved
   const getProxyUrl = (url) => {
-    if (!url) return ''
+    if (!url) return ""
     return url
   }
 
@@ -732,7 +738,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
             >
               <img
                 src={proxyUrl}
-                alt={attachment.filename || 'Attachment'}
+                alt={attachment.filename || "Attachment"}
                 className="w-full h-full object-cover"
                 onError={() => handleImageError(i)}
               />
@@ -745,7 +751,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                   title="Download"
                   onClick={(e) => {
                     e.preventDefault()
-                    window.open(proxyUrl, '_blank')
+                    window.open(proxyUrl, "_blank")
                   }}
                 >
                   <FiDownload className="w-4 h-4 text-white" />
@@ -781,8 +787,11 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
             ) : (
               <FiFileText className="w-8 h-8 text-light-text-tertiary" />
             )}
-            <span className="text-xs text-light-text-secondary dark:text-dark-text-secondary text-center truncate w-full" title={attachment.filename}>
-              {attachment.filename || 'Attachment'}
+            <span
+              className="text-xs text-light-text-secondary dark:text-dark-text-secondary text-center truncate w-full"
+              title={attachment.filename}
+            >
+              {attachment.filename || "Attachment"}
             </span>
             {isImage && hasError && (
               <span className="text-[10px] text-accent-warning text-center">
@@ -797,7 +806,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                 className="px-3 py-1.5 text-xs bg-accent-primary text-white rounded-lg hover:bg-accent-primary/80 transition-colors flex items-center gap-1"
               >
                 <FiDownload className="w-3.5 h-3.5" />
-                {isImage && hasError ? 'Open' : 'Download'}
+                {isImage && hasError ? "Open" : "Download"}
               </a>
               <a
                 href={getProxyUrl(attachment.url)}

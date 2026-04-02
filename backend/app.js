@@ -1,62 +1,9 @@
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import express, { urlencoded } from "express"
-
-const app = express()
-const allowedOrigins = [
-  "http://localhost:5173", // For local testing
-  "http://localhost:4000", // For local testing
-  "http://localhost:8080", // For local testing
-  "https://task-management-system-production-3110.up.railway.app"
-]
-
-app.use(express.json());
-
-
-// Add this Spy Middleware:
-app.use((req, res, next) => {
-  console.log(`🕵️ Incoming Request: ${req.method} ${req.url}`);
-  next();
-});
-
-
-
-
-const corsOptions = {
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "X-Requested-With",
-    "Accept",
-    "Origin",
-    "Access-Control-Request-Method",
-    "Access-Control-Request-Headers",
-  ],
-  credentials: true, // Critical for cookies
-  exposedHeaders: ["Set-Cookie"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  optionsSuccessStatus: 200, // For legacy browsers
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true)
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true)
-    } else {
-      console.log("Blocked origin:", origin) // Debug log
-      return callback(new Error("Not allowed by CORS"))
-    }
-  },
-}
-
-// 2. Use these exact options for BOTH preflight and main requests
-app.options("*", cors(corsOptions)) // Handle preflight requests
-app.use(cors(corsOptions)) // Handle all other requests
-// --- End of Fix ---
-
-// Standard middleware
-app.use(express.json())
-app.use(urlencoded({ extended: true }))
-app.use(cookieParser())
+import { errorLogger, httpLogger, requestLogger } from "./src/middlewares/logger.middleware.js"
+import { apiLimiter } from "./src/middlewares/rateLimit.middleware.js"
+import { securityMiddleware } from "./src/middlewares/security.middleware.js"
 
 // Router imports
 import authRouter from "./src/routes/auth.route.js"
@@ -70,12 +17,80 @@ import sprintRouter from "./src/routes/sprint.route.js"
 import subtaskRouter from "./src/routes/subtask.route.js"
 import taskRouter from "./src/routes/task.route.js"
 
-// Route definitions
-if (process.env.NODE_ENV !== "test") {
-  app.use("/api/v1/healthcheck", healthCheck)
+const app = express()
+
+// ============================================
+// CORS Configuration
+// ============================================
+const allowedOrigins = [
+	"http://localhost:5173",
+	"http://localhost:4000",
+	"http://localhost:8080",
+	"https://task-management-system-production-3110.up.railway.app",
+]
+
+const corsOptions = {
+	allowedHeaders: [
+		"Content-Type",
+		"Authorization",
+		"X-Requested-With",
+		"Accept",
+		"Origin",
+		"Access-Control-Request-Method",
+		"Access-Control-Request-Headers",
+	],
+	credentials: true,
+	exposedHeaders: ["Set-Cookie"],
+	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+	optionsSuccessStatus: 200,
+	origin: (origin, callback) => {
+		// Handle null origin (from file://, data: URIs, sandboxed iframes)
+		if (!origin) {
+			if (process.env.NODE_ENV === "development") {
+				return callback(null, true)
+			}
+			return callback(new Error("Null origin not allowed"))
+		}
+
+		if (allowedOrigins.includes(origin)) {
+			return callback(null, true)
+		}
+
+		return callback(new Error("Not allowed by CORS"))
+	},
 }
+
+// ============================================
+// Middleware Chain (Order Matters!)
+// ============================================
+
+// 1. Security headers and protection (first!)
+app.use(...securityMiddleware)
+
+// 2. CORS configuration (before other middleware)
+app.options("*", cors(corsOptions))
+app.use(cors(corsOptions))
+
+// 3. Body parsing middleware (BEFORE logging so req.body is available)
+app.use(express.json({ limit: "10kb" }))
+app.use(urlencoded({ extended: true, limit: "10kb" }))
+app.use(cookieParser())
+
+// 4. Request logging and monitoring (body now available in logs)
+app.use(httpLogger)
+app.use(requestLogger)
+
+// 5. API-wide rate limiting
+app.use("/api", apiLimiter)
+
+// ============================================
+// Route Definitions
+// ============================================
+if (process.env.NODE_ENV !== "test") {
+	app.use("/api/v1/healthcheck", healthCheck)
+}
+
 app.use("/api/v1/auth", authRouter)
-app.use("/api/v1/users", authRouter)
 app.use("/api/v1/projects", projectRouter)
 app.use("/api/v1/tasks", taskRouter)
 app.use("/api/v1/sprints", sprintRouter)
@@ -83,19 +98,38 @@ app.use("/api/v1/notes", noteRouter)
 app.use("/api/v1/members", projectMemberRoute)
 app.use("/api/v1/subtasks", subtaskRouter)
 app.use("/api/v1/dashboard", dashboardRoute)
-app.use("/api/v1/email", emailRouter) // Email testing routes
 
-// Global error handler
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500
-  const message = err.message || "Internal Server Error"
+// Email testing routes (non-production only)
+if (process.env.NODE_ENV !== "production") {
+	app.use("/api/v1/email", emailRouter)
+}
 
-  res.status(statusCode).json({
-    errors: err.errors || [],
-    message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
-    success: false,
-  })
+// ============================================
+// Global Error Handler
+// ============================================
+app.use(errorLogger)
+
+app.use((err, _req, res, _next) => {
+	const statusCode = err.statusCode || 500
+	const message = err.message || "Internal Server Error"
+
+	if (process.env.NODE_ENV === "development") {
+		console.error("Error:", {
+			errors: err.errors,
+			message,
+			name: err.name,
+			stack: err.stack,
+		})
+	}
+
+	res.status(statusCode).json({
+		errors: err.errors || [],
+		message,
+		stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+		success: false,
+		...(err.errorCode && { errorCode: err.errorCode }),
+		...(err.timestamp && { timestamp: err.timestamp }),
+	})
 })
 
 export default app

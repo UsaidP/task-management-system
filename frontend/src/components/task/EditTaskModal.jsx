@@ -62,12 +62,12 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
         status: task.status || "todo",
         priority: task.priority || "medium",
         dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "",
-        assignedTo: task.assignedTo?.map(a => typeof a === "object" ? a._id : a) || [],
+        assignedTo: task.assignedTo?.map((a) => (typeof a === "object" ? a._id : a)) || [],
         labels: task.labels || "",
       })
       setPrevTaskId(task._id)
     }
-    
+
     // Reset form when modal closes
     if (!isOpen) {
       setFormData(initialFormState)
@@ -76,13 +76,13 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
   }, [task, isOpen])
 
   // Helpers for selected option display
-  const selectedPriorityObject = useMemo(() => 
-    priorityOptions.find((p) => p.id === formData.priority),
+  const selectedPriorityObject = useMemo(
+    () => priorityOptions.find((p) => p.id === formData.priority),
     [formData.priority]
   )
-  
-  const selectedStatusObject = useMemo(() => 
-    statusOptions.find((s) => s.id === formData.status),
+
+  const selectedStatusObject = useMemo(
+    () => statusOptions.find((s) => s.id === formData.status),
     [formData.status]
   )
 
@@ -127,9 +127,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
   // Submit handler - update on button click
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
-    
+
     if (!task?._id) {
       toast.error("Task ID is missing")
       return
@@ -137,7 +137,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
 
     // Extract projectId - handle both object and string cases
     const projectId = typeof task.project === "object" ? task.project._id : task.project
-    
+
     if (!projectId) {
       toast.error("Project ID is missing")
       return

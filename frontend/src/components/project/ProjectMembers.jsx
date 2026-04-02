@@ -7,34 +7,34 @@ import Modal from "../Modal"
 
 /** @param {{ user?: unknown }} member */
 const getMemberUserId = (member) => {
-	const u = member?.user
-	if (u == null) return ""
-	if (typeof u === "object" && u !== null && "_id" in u) return String(u._id)
-	return String(u)
+  const u = member?.user
+  if (u == null) return ""
+  if (typeof u === "object" && u !== null && "_id" in u) return String(u._id)
+  return String(u)
 }
 
 /** @param {{ user?: unknown }} member */
 const getAvatarSrc = (member) => {
-	const u = member?.user
-	if (!u || typeof u !== "object") {
-		const id = getMemberUserId(member)
-		return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
-	}
-	const a = u.avatar
-	if (typeof a === "string") return a
-	if (a && typeof a === "object" && "url" in a && typeof a.url === "string") return a.url
-	const id = u._id != null ? String(u._id) : ""
-	return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
+  const u = member?.user
+  if (!u || typeof u !== "object") {
+    const id = getMemberUserId(member)
+    return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
+  }
+  const a = u.avatar
+  if (typeof a === "string") return a
+  if (a && typeof a === "object" && "url" in a && typeof a.url === "string") return a.url
+  const id = u._id != null ? String(u._id) : ""
+  return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
 }
 
 /** @param {{ user?: unknown }} member */
 const getAvatarAlt = (member) => {
-	const u = member?.user
-	if (u && typeof u === "object") {
-		const name = [u.fullname, u.username, u.email].find(Boolean)
-		if (typeof name === "string") return name
-	}
-	return "Member"
+  const u = member?.user
+  if (u && typeof u === "object") {
+    const name = [u.fullname, u.username, u.email].find(Boolean)
+    if (typeof name === "string") return name
+  }
+  return "Member"
 }
 
 const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => {

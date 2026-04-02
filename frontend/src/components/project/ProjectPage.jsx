@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import {
   FiAlertCircle,
+  FiCalendar,
   FiCheckCircle,
   FiChevronDown,
   FiChevronLeft,
@@ -450,7 +451,10 @@ const ProjectPage = () => {
         <tbody className="divide-y divide-light-border dark:divide-dark-border">
           {filteredTasks.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-4 py-12 text-center text-light-text-tertiary dark:text-dark-text-tertiary">
+              <td
+                colSpan={5}
+                className="px-4 py-12 text-center text-light-text-tertiary dark:text-dark-text-tertiary"
+              >
                 No tasks found
               </td>
             </tr>
@@ -501,7 +505,9 @@ const ProjectPage = () => {
                           </div>
                         ))
                       ) : (
-                        <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">Unassigned</span>
+                        <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                          Unassigned
+                        </span>
                       )}
                     </div>
                   </td>
@@ -511,7 +517,9 @@ const ProjectPage = () => {
                         {dayjs(task.dueDate).format("MMM DD, YYYY")}
                       </span>
                     ) : (
-                      <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
+                      <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                        —
+                      </span>
                     )}
                   </td>
                 </tr>
@@ -558,30 +566,33 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => setTimelineZoom("day")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "day"
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+                timelineZoom === "day"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                }`}
+              }`}
             >
               Day
             </button>
             <button
               type="button"
               onClick={() => setTimelineZoom("week")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "week"
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+                timelineZoom === "week"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                }`}
+              }`}
             >
               Week
             </button>
             <button
               type="button"
               onClick={() => setTimelineZoom("month")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${timelineZoom === "month"
+              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+                timelineZoom === "month"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                }`}
+              }`}
             >
               Month
             </button>
@@ -608,7 +619,9 @@ const ProjectPage = () => {
             </button>
           </div>
           <div className="flex-1" />
-          <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">{filteredTasks.length} tasks</span>
+          <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+            {filteredTasks.length} tasks
+          </span>
         </div>
         <div className="flex-1 overflow-auto">
           <div className="flex min-h-full">
@@ -635,7 +648,9 @@ const ProjectPage = () => {
                     key={i}
                     className="flex-1 min-w-[30px] px-1 py-2 border-r border-light-border dark:border-dark-border text-center"
                   >
-                    <div className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">{col.label}</div>
+                    <div className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                      {col.label}
+                    </div>
                     <div className="text-[9px] text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
                       {col.sublabel}
                     </div>
@@ -724,7 +739,9 @@ const ProjectPage = () => {
             Today
           </button>
           <div className="flex-1" />
-          <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">{filteredTasks.length} tasks</span>
+          <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+            {filteredTasks.length} tasks
+          </span>
         </div>
         <div className="flex-1 overflow-auto p-4">
           <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg border border-light-border dark:border-dark-border overflow-hidden">
@@ -753,14 +770,18 @@ const ProjectPage = () => {
                 return (
                   <div
                     key={item.day}
-                    className={`min-h-[100px] p-2 border-b border-r border-light-border dark:border-dark-border ${isToday
+                    className={`min-h-[100px] p-2 border-b border-r border-light-border dark:border-dark-border ${
+                      isToday
                         ? "bg-accent-primary/10"
                         : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                      }`}
+                    }`}
                   >
                     <div
-                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${isToday ? "bg-accent-primary text-white" : "text-light-text-tertiary dark:text-dark-text-tertiary"
-                        }`}
+                      className={`flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-medium mb-1 ${
+                        isToday
+                          ? "bg-accent-primary text-white"
+                          : "text-light-text-tertiary dark:text-dark-text-tertiary"
+                      }`}
                     >
                       {item.day}
                     </div>
@@ -771,12 +792,13 @@ const ProjectPage = () => {
                           initial={{ opacity: 0, y: -3 }}
                           animate={{ opacity: 1, y: 0 }}
                           onClick={() => openEditModal(task)}
-                          className={`text-[10px] p-1 rounded truncate cursor-pointer ${task.priority === "urgent" || task.priority === "high"
+                          className={`text-[10px] p-1 rounded truncate cursor-pointer ${
+                            task.priority === "urgent" || task.priority === "high"
                               ? "bg-[#C44A4A22] text-[#C44A4A]"
                               : task.priority === "medium"
                                 ? "bg-[#D4A54822] text-[#D4A548]"
                                 : "bg-[#6888A022] text-[#6888A0]"
-                            }`}
+                          }`}
                         >
                           {task.title}
                         </motion.div>
@@ -825,36 +847,43 @@ const ProjectPage = () => {
     }
 
     return (
-      <div className="flex-1 overflow-x-auto p-5">
-        <div className="flex gap-[14px] min-w-max">
+      <div className="flex-1 overflow-x-auto p-4 sm:p-6">
+        <div className="flex gap-4 min-w-max">
           {Object.entries(filteredColumns).map(([status, column]) => (
             <div
               key={status}
-              className={`w-[270px] flex-shrink-0 flex flex-col gap-2 transition-all duration-200 ${dragOverColumn === status
-                  ? "outline-2 outline outline-accent-primary outline-offset-[-2px]"
+              className={`w-72 flex-shrink-0 flex flex-col gap-3 transition-all duration-200 ${
+                dragOverColumn === status
+                  ? "ring-2 ring-accent-primary ring-offset-2 ring-offset-light-bg-primary dark:ring-offset-dark-bg-primary rounded-lg"
                   : ""
-                }`}
+              }`}
               onDragOver={(e) => handleDragOver(e, status)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, status)}
             >
-              <div className="flex items-center gap-2 px-1 py-1">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: column.color }} />
-                <span className="text-[13px] font-bold text-light-text-primary dark:text-dark-text-primary flex-1">
+              {/* Column Header */}
+              <div className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg border border-light-border dark:border-dark-border">
+                <span
+                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: column.color }}
+                />
+                <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1 truncate">
                   {column.title}
                 </span>
-                <span className="w-[18px] h-[18px] flex items-center justify-center rounded bg-light-border dark:bg-dark-border text-[10px] font-bold text-light-text-tertiary dark:text-dark-text-tertiary">
+                <span className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border/50 dark:bg-dark-border/50 text-xs font-bold text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0">
                   {column.tasks.length}
                 </span>
               </div>
-              <div className="flex flex-col gap-2 overflow-y-auto flex-1">
+
+              {/* Column Content */}
+              <div className="flex flex-col gap-2 min-h-[100px]">
                 {column.tasks.map((task) => renderTaskCard(task))}
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="flex items-center justify-center gap-1.5 py-1.75 rounded border border-dashed border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary transition-all w-full"
+                  className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-light-border dark:border-dark-border text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-primary/50 transition-all w-full text-sm font-medium"
                 >
-                  <FiPlus className="w-3 h-3" />
+                  <FiPlus className="w-4 h-4" />
                   Add Task
                 </button>
               </div>
@@ -1109,7 +1138,9 @@ const ProjectPage = () => {
         </div>
         <div className="flex flex-col gap-3">
           {recentTasks.length === 0 ? (
-            <p className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">No recent activity</p>
+            <p className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+              No recent activity
+            </p>
           ) : (
             recentTasks.map((task) => {
               const member = members.find((m) => m.user?._id === task.createdBy)
@@ -1183,7 +1214,9 @@ const ProjectPage = () => {
         </div>
         <div className="flex gap-4">
           {memberStats.length === 0 ? (
-            <p className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">No team members</p>
+            <p className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+              No team members
+            </p>
           ) : (
             memberStats.slice(0, 5).map((member, idx) => (
               <div
@@ -1332,136 +1365,162 @@ const ProjectPage = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.3 }}
       className="h-full flex flex-col bg-light-bg-primary dark:bg-dark-bg-primary"
     >
-      <header className="flex items-center justify-between px-5 h-[52px] flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
-        <div className="flex items-center gap-2 flex-1">
+      {/* Header */}
+      <header className="flex items-center justify-between px-4 sm:px-6 h-[56px] flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           {loading ? (
             <Skeleton className="h-5 w-32" />
           ) : (
             <>
-              <h1 className="text-[15px] font-bold text-light-text-primary dark:text-dark-text-primary">
+              <h1 className="text-base sm:text-lg font-bold text-light-text-primary dark:text-dark-text-primary truncate">
                 {project?.name}
               </h1>
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-accent-success text-white">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-accent-success text-white flex-shrink-0">
                 Active
               </span>
               <button
                 type="button"
                 onClick={() => setIsStarred(!isStarred)}
-                className="text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary bg-none border-none cursor-pointer text-2xl leading-none"
+                className="text-yellow-500 hover:text-yellow-600 bg-none border-none cursor-pointer text-lg leading-none flex-shrink-0 transition-colors"
+                aria-label={isStarred ? "Unstar project" : "Star project"}
               >
                 {isStarred ? "★" : "☆"}
               </button>
             </>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          {/* Team Members Avatar Stack */}
+          <div className="hidden sm:flex items-center" title={`${members.length} members`}>
             <div className="flex -space-x-2">
-              {members.slice(0, 3).map((m, idx) => (
+              {members.slice(0, 4).map((m, idx) => (
                 <div
                   key={m.user?._id || idx}
-                  className="w-6 h-6 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-[10px] text-white font-bold"
+                  className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-[10px] text-white font-bold"
                 >
                   {m.user?.fullname?.slice(0, 2).toUpperCase() || "U"}
                 </div>
               ))}
-              {members.length > 3 && (
-                <div className="w-6 h-6 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
-                  +{members.length - 3}
+              {members.length > 4 && (
+                <div className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-[9px] text-light-text-tertiary dark:text-dark-text-tertiary font-medium">
+                  +{members.length - 4}
                 </div>
               )}
             </div>
           </div>
+
+          {/* Add Task Button */}
           <button
             type="button"
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded text-[12px] font-semibold bg-accent-primary text-white hover:bg-accent-primary-dark transition-all border-none cursor-pointer"
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-accent-primary text-white hover:bg-accent-primary-dark transition-all border-none cursor-pointer shadow-sm hover:shadow-md"
           >
-            ＋ Add Task
+            <FiPlus className="w-4 h-4" />
+            <span className="hidden sm:inline">Add Task</span>
           </button>
+
+          {/* Members Button */}
           <button
             type="button"
             onClick={() => setIsMembersModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded text-[12px] font-semibold bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all cursor-pointer"
+            className="hidden md:flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all cursor-pointer"
           >
             <FiUsers className="w-4 h-4" />
-            Members
+            <span className="hidden lg:inline">Members</span>
           </button>
         </div>
       </header>
 
-      <div className="flex items-center gap-0.5 px-5 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border h-10 flex-shrink-0">
-        <button
-          type="button"
-          onClick={() => setActiveTab("board")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors flex items-center gap-1.5 ${activeTab === "board"
-              ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-              : "border-transparent text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
-        >
-          <FiCircle className="w-4 h-4" />
-          Board
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("list")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "list"
-              ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-              : "border-transparent text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
-        >
-          List
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("timeline")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "timeline"
-              ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-              : "border-transparent text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
-        >
-          Timeline
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("calendar")}
-          className={`px-3 h-full text-[12px] font-medium border-b-2 transition-colors ${activeTab === "calendar"
-              ? "border-accent-primary text-light-text-primary dark:text-dark-text-primary"
-              : "border-transparent text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
-        >
-          Calendar
-        </button>
-        <div className="flex-1" />
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <FiSearch className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
+      {/* View Tabs & Filter Bar */}
+      <div className="flex flex-col gap-3 px-4 sm:px-6 py-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
+        {/* Top Row: View Tabs */}
+        <div className="flex items-center justify-between gap-4">
+          {/* View Tabs */}
+          <div className="flex items-center gap-1 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg p-1">
+            <button
+              type="button"
+              onClick={() => setActiveTab("board")}
+              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
+                activeTab === "board"
+                  ? "bg-accent-primary text-white shadow-sm"
+                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              }`}
+            >
+              <FiCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">Board</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("list")}
+              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
+                activeTab === "list"
+                  ? "bg-accent-primary text-white shadow-sm"
+                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              }`}
+            >
+              <FiCheckCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">List</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("timeline")}
+              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
+                activeTab === "timeline"
+                  ? "bg-accent-primary text-white shadow-sm"
+                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              }`}
+            >
+              <FiClock className="w-4 h-4" />
+              <span className="hidden sm:inline">Timeline</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("calendar")}
+              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
+                activeTab === "calendar"
+                  ? "bg-accent-primary text-white shadow-sm"
+                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              }`}
+            >
+              <FiCalendar className="w-4 h-4" />
+              <span className="hidden sm:inline">Calendar</span>
+            </button>
+          </div>
+
+          {/* Search */}
+          <div className="relative flex-shrink-0">
+            <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
             <input
               type="text"
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-3 py-1.5 h-8 w-[180px] text-[12px] bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary dark:focus:border-accent-primary-light focus:outline-none focus:ring-1 focus:ring-accent-primary/30 dark:focus:ring-accent-primary-light/30"
+              className="w-40 sm:w-56 lg:w-64 pl-9 pr-3 py-2 h-9 text-sm bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all"
             />
           </div>
+        </div>
+
+        {/* Bottom Row: Filters */}
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             type="button"
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 h-8 text-[12px] font-medium rounded border transition-all appearance-none ${statusFilter || priorityFilter || assigneeFilter || dateFilter
+            className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${
+              statusFilter || priorityFilter || assigneeFilter || dateFilter
                 ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm"
                 : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"
-              }`}
+            }`}
           >
             <FiFilter className="w-4 h-4" />
-            Filters
+            <span>Filters</span>
           </button>
 
           {/* Status Filter */}
           <Listbox value={statusFilter} onChange={setStatusFilter}>
-            <div className="relative min-w-[140px]">
-              <ListboxButton className="input-field w-full text-left flex items-center justify-between h-8 px-3 text-[12px] font-medium">
+            <div className="relative min-w-[150px] sm:min-w-[170px]">
+              <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
                 <span className="truncate capitalize">
                   {statusFilter ? statusFilter.replace("-", " ") : "All Status"}
                 </span>
@@ -1544,8 +1603,8 @@ const ProjectPage = () => {
 
           {/* Priority Filter */}
           <Listbox value={priorityFilter} onChange={setPriorityFilter}>
-            <div className="relative min-w-[130px]">
-              <ListboxButton className="input-field w-full text-left flex items-center justify-between h-8 px-3 text-[12px] font-medium">
+            <div className="relative min-w-[150px] sm:min-w-[170px]">
+              <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
                 <span className="truncate capitalize">{priorityFilter || "All Priority"}</span>
                 <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
               </ListboxButton>
@@ -1587,8 +1646,8 @@ const ProjectPage = () => {
 
           {/* Assignee Filter */}
           <Listbox value={assigneeFilter} onChange={setAssigneeFilter}>
-            <div className="relative min-w-[160px]">
-              <ListboxButton className="input-field w-full text-left flex items-center justify-between h-8 px-3 text-[12px] font-medium">
+            <div className="relative min-w-[170px] sm:min-w-[190px]">
+              <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
                 <span className="truncate">{assigneeFilter || "All Assignees"}</span>
                 <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
               </ListboxButton>
@@ -1630,8 +1689,8 @@ const ProjectPage = () => {
 
           {/* Date Filter */}
           <Listbox value={dateFilter} onChange={setDateFilter}>
-            <div className="relative min-w-[140px]">
-              <ListboxButton className="input-field w-full text-left flex items-center justify-between h-8 px-3 text-[12px] font-medium">
+            <div className="relative min-w-[150px] sm:min-w-[170px]">
+              <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
                 <span className="truncate">
                   {dateFilter ? dateFilter.replace("due-", "Due ").replace("_", " ") : "Any Date"}
                 </span>
@@ -1732,15 +1791,15 @@ const ProjectPage = () => {
 
       <main className="flex-1 overflow-hidden flex flex-col min-h-0">
         {loading ? (
-          <div className="flex-1 flex gap-[14px] p-5 overflow-x-auto">
+          <div className="flex-1 flex gap-4 p-4 sm:p-6 overflow-x-auto">
             {["todo", "in-progress", "under-review", "completed"].map((col) => (
               <div
                 key={col}
-                className="w-[270px] flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg p-4"
+                className="w-72 flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg p-4"
               >
                 <div className="flex items-center gap-2 mb-4 px-1">
-                  <div className="w-2 h-2 rounded-full bg-light-text-tertiary dark:bg-dark-text-tertiary" />
-                  <span className="text-[13px] font-bold text-light-text-primary dark:text-dark-text-primary flex-1">
+                  <div className="w-2.5 h-2.5 rounded-full bg-light-text-tertiary dark:bg-dark-text-tertiary" />
+                  <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1">
                     {col === "in-progress"
                       ? "In Progress"
                       : col === "under-review"
@@ -1749,7 +1808,7 @@ const ProjectPage = () => {
                           ? "Completed"
                           : "To Do"}
                   </span>
-                  <div className="w-5 h-5 flex items-center justify-center rounded bg-light-border dark:bg-dark-border text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <div className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border dark:bg-dark-border text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                     {col === "todo"
                       ? 5
                       : col === "in-progress"
@@ -1772,37 +1831,47 @@ const ProjectPage = () => {
       </main>
 
       <footer className="flex-shrink-0 border-t border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
-        <div className="flex items-center gap-3 px-5 py-2 text-[11px] border-b border-light-border dark:border-dark-border">
+        <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-2.5 text-xs flex-wrap">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#8B8178]" />
-            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">To Do:&nbsp;</span>
+            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+              To Do:&nbsp;
+            </span>
             <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
               {counts.todo}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#C4654A]" />
-            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">In Progress:&nbsp;</span>
+            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+              In Progress:&nbsp;
+            </span>
             <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
               {counts.inProgress}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#D4A548]" />
-            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Under Review:&nbsp;</span>
+            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+              Under Review:&nbsp;
+            </span>
             <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
               {counts.underReview}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#7A9A6D]" />
-            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Completed:&nbsp;</span>
+            <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+              Completed:&nbsp;
+            </span>
             <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
               {counts.completed}
             </span>
           </div>
           <div className="flex-1" />
-          <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Progress: {completedPercent}%</span>
+          <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+            Progress: {completedPercent}%
+          </span>
           <div className="w-28 h-1 bg-light-bg-hover dark:bg-dark-bg-hover rounded-full overflow-hidden">
             <div
               className="h-full bg-accent-primary rounded-full transition-all"

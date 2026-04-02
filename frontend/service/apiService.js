@@ -86,7 +86,7 @@ class ApiService {
         }
 
         // --- 🚀 START: Token Refresh Interceptor Logic ---
-        if (response.status === 401 && endpoint !== "/users/refresh-token") {
+        if (response.status === 401 && endpoint !== "/auth/refresh-token") {
 
           if (this.isRefreshing) {
             // If already refreshing, queue this request
@@ -164,7 +164,7 @@ class ApiService {
 
   // --- Auth Methods ---
   async signup(username, fullname, password, email, role, avatar) {
-    return await this.customFetch("/users/register", {
+    return await this.customFetch("/auth/register", {
       method: "POST",
       body: JSON.stringify({
         username,
@@ -178,72 +178,72 @@ class ApiService {
   }
 
   async login(identifier, password) {
-    return await this.customFetch("/users/login", {
+    return await this.customFetch("/auth/login", {
       method: "POST",
       body: JSON.stringify({ identifier, password }),
     });
   }
 
   async getUserProfile() {
-    return await this.customFetch("/users/me", {
+    return await this.customFetch("/auth/me", {
       method: "GET",
     });
   }
 
   async updateProfile(profileData) {
-    return await this.customFetch("/users/update-profile", {
+    return await this.customFetch("/auth/update-profile", {
       method: "PUT",
       body: JSON.stringify(profileData),
     });
   }
 
   async deleteAccount() {
-    return await this.customFetch("/users/delete-account", {
+    return await this.customFetch("/auth/delete-account", {
       method: "DELETE",
     });
   }
 
   async logout() {
-    return await this.customFetch("/users/logout", {
+    return await this.customFetch("/auth/logout", {
       method: "POST",
     });
   }
 
   async forgetPassword(email) {
-    return await this.customFetch("/users/forget-password", {
+    return await this.customFetch("/auth/forget-password", {
       method: "POST",
       body: JSON.stringify({ email }),
     });
   }
 
   async resetPassword(password, token) {
-    return await this.customFetch(`/users/reset-password/${token}`, {
+    return await this.customFetch(`/auth/reset-password/${token}`, {
       method: "POST",
       body: JSON.stringify({ password }),
     });
   }
 
   async verifyEmail(token) {
-    return await this.customFetch(`/users/verify/${token}`, {
+    return await this.customFetch(`/auth/verify/${token}`, {
       method: "POST",
       body: JSON.stringify({ token }),
     });
   }
   async resendVerifyEmail(email) {
-    return await this.customFetch("/users/resend-verify-email", {
+    return await this.customFetch("/auth/resend-verify-email", {
       method: "POST",
       body: JSON.stringify({ email }),
     });
   }
 
   async refreshSession() {
-    return await this.customFetch("/users/refresh-token", {
+    return await this.customFetch("/auth/refresh-token", {
       method: "POST",
     });
   }
 
   async updateAvatar(formData) {
-    return await this.customFetch("/users/update-avatar", {
+    return await this.customFetch("/auth/update-avatar", {
       method: "PUT",
       body: formData, // FormData is handled by customFetch
     });

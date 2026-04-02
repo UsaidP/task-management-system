@@ -218,10 +218,11 @@ const KanbanBoard = ({
                 <button
                   type="button"
                   onClick={onCreateTask}
-                  className="btn-primary w-full md:w-auto px-4 py-2 flex gap-2"
+                  className="btn-primary w-full md:w-auto px-4 py-2 flex items-center justify-center gap-2 whitespace-nowrap"
                 >
-                  <FiPlus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
-                  New Task
+                  <FiPlus className="w-4 h-4" />
+                  <span className="hidden sm:inline">New Task</span>
+                  <span className="sm:hidden">Add</span>
                 </button>
               )}
             </div>
