@@ -5,7 +5,7 @@ import ApiError from "./api-error.js"
 import { ApiResponse } from "./api-response.js"
 
 // -----------------------------------------------------------------------------
-// 1. Initialize Singletons (Runs ONCE when the server starts)
+// 1. Initialize Mailgen once
 // -----------------------------------------------------------------------------
 
 // Initialize Mailgen once
@@ -19,37 +19,47 @@ const mailGenerator = new Mailgen({
   theme: "cerberus",
 })
 
-// Parse port properly to fix strict equality bug
-const mailPort = parseInt(process.env.MAIL_PORT, 10) || 587
+// -----------------------------------------------------------------------------
+// 2. Lazy SMTP Transporter (initialized on first use, after dotenv loads)
+// -----------------------------------------------------------------------------
 
-// Initialize SMTP Transporter once with Connection Pooling & Limits
-const transporter = nodemailer.createTransport({
-  pool: true,
-  maxConnections: 5,
-  maxMessages: 100,
-  host: process.env.MAIL_HOST,
-  port: mailPort,
-  secure: mailPort === 465, // Fix: strict equality now compares numbers
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: process.env.NODE_ENV === "production",
-  },
-})
-
-// Verify SMTP connection on startup (defensively gated for hot-reloads)
+let transporter = null
 let smtpVerified = false
-if (process.env.NODE_ENV !== "test" && !smtpVerified) {
-  transporter.verify((error) => {
-    smtpVerified = true
-    if (error) {
-      console.warn("⚠️ SMTP Connection Error (Emails will not send):", error.message)
-    } else {
-      console.log("📧 SMTP Server Ready")
-    }
+
+function getTransporter() {
+  if (transporter) return transporter
+
+  const mailPort = parseInt(process.env.MAIL_PORT, 10) || 587
+
+  transporter = nodemailer.createTransport({
+    pool: true,
+    maxConnections: 5,
+    maxMessages: 100,
+    host: process.env.MAIL_HOST,
+    port: mailPort,
+    secure: mailPort === 465,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+    tls: {
+      rejectUnauthorized: process.env.NODE_ENV === "production",
+    },
   })
+
+  // Verify SMTP connection on first use
+  if (process.env.NODE_ENV !== "test" && !smtpVerified) {
+    transporter.verify((error) => {
+      smtpVerified = true
+      if (error) {
+        console.warn("⚠️ SMTP Connection Error (Emails will not send):", error.message)
+      } else {
+        console.log("📧 SMTP Server Ready")
+      }
+    })
+  }
+
+  return transporter
 }
 
 // -----------------------------------------------------------------------------
@@ -101,7 +111,7 @@ const sendMail = async (options) => {
   }
 
   try {
-    const info = await transporter.sendMail(mailOptions)
+    const info = await getTransporter().sendMail(mailOptions)
     console.log("✅ Email sent successfully:", {
       messageId: info.messageId,
       to: options.email,

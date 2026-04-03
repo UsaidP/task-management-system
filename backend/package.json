@@ -37,8 +37,8 @@
   "scripts": {
     "format": "biome check --write",
     "format:check": "",
-    "start": "nodemon --exec 'node --env-file=../.env' index.js",
-    "start:prod": "node --env-file=../.env index.js",
+    "start": "nodemon index.js",
+    "start:prod": "node index.js",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "type": "module",
