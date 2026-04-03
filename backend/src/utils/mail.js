@@ -1,10 +1,63 @@
+import nodemailer from "nodemailer"
 import Mailgen from "mailgen"
+import validator from "validator"
 import ApiError from "./api-error.js"
 import { ApiResponse } from "./api-response.js"
 
+// -----------------------------------------------------------------------------
+// 1. Initialize Singletons (Runs ONCE when the server starts)
+// -----------------------------------------------------------------------------
+
+// Initialize Mailgen once
+const mailGenerator = new Mailgen({
+  product: {
+    copyright: `Copyright © ${new Date().getFullYear()} TaskFlow. All rights reserved.`,
+    link: process.env.BASE_URL || "https://taskflow.com",
+    logo: process.env.EMAIL_LOGO_URL || "https://placehold.co/200x50/2563EB/FFFFFF?text=TaskFlow",
+    name: "TaskFlow",
+  },
+  theme: "cerberus",
+})
+
+// Parse port properly to fix strict equality bug
+const mailPort = parseInt(process.env.MAIL_PORT, 10) || 587
+
+// Initialize SMTP Transporter once with Connection Pooling & Limits
+const transporter = nodemailer.createTransport({
+  pool: true,
+  maxConnections: 5,
+  maxMessages: 100,
+  host: process.env.MAIL_HOST,
+  port: mailPort,
+  secure: mailPort === 465, // Fix: strict equality now compares numbers
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: process.env.NODE_ENV === "production",
+  },
+})
+
+// Verify SMTP connection on startup (defensively gated for hot-reloads)
+let smtpVerified = false
+if (process.env.NODE_ENV !== "test" && !smtpVerified) {
+  transporter.verify((error) => {
+    smtpVerified = true
+    if (error) {
+      console.warn("⚠️ SMTP Connection Error (Emails will not send):", error.message)
+    } else {
+      console.log("📧 SMTP Server Ready")
+    }
+  })
+}
+
+// -----------------------------------------------------------------------------
+// 2. Main Email Function
+// -----------------------------------------------------------------------------
+
 /**
- * Sends an email using Brevo (Sendinblue) SMTP.
- * Works with any SMTP provider (Brevo, Resend, SendGrid, AWS SES, etc.)
+ * Sends an email using the configured SMTP provider.
  *
  * @param {object} options - Options for sending email
  * @param {string} options.email - Recipient email address
@@ -15,12 +68,11 @@ import { ApiResponse } from "./api-response.js"
  * @throws {ApiError} If email fails to send
  */
 const sendMail = async (options) => {
-  // Validate email first
-  if (!options.email || !options.email.includes("@")) {
+  // Fix: Strict email validation to prevent header injection
+  if (!options.email || !validator.isEmail(options.email)) {
     throw new ApiError(400, "Invalid recipient email address")
   }
 
-  // Validate required fields
   if (!options.subject) {
     throw new ApiError(400, "Email subject is required")
   }
@@ -29,80 +81,48 @@ const sendMail = async (options) => {
     throw new ApiError(400, "Email content is required")
   }
 
-  // Initialize Mailgen with TaskFlow branding
-  const mailGenerator = new Mailgen({
-    product: {
-      copyright: `Copyright © ${new Date().getFullYear()} TaskFlow. All rights reserved.`,
-      link: process.env.BASE_URL || "https://taskflow.com",
-      logo: process.env.EMAIL_LOGO_URL || "https://placehold.co/200x50/2563EB/FFFFFF?text=TaskFlow",
-      name: "TaskFlow",
-    },
-    theme: "cerberus", // Professional email theme
-  })
+  // Fix: Sanitize subject line to prevent newline header injection
+  const safeSubject = options.subject.replace(/[\r\n]/g, " ")
 
-  // Generate email content (HTML + plain text)
+  // Generate email content
   const emailPlainText = mailGenerator.generatePlaintext(options.mailgenContent)
   const emailHTML = mailGenerator.generate(options.mailgenContent)
 
-  // Create SMTP transporter
-  const transporter = await import("nodemailer").then((m) =>
-    m.default.createTransport({
-      auth: {
-        pass: process.env.MAIL_PASSWORD,
-        user: process.env.MAIL_USERNAME,
-      },
-      host: process.env.MAIL_HOST,
-      port: parseInt(process.env.MAIL_PORT, 10) || 587,
-      secure: process.env.MAIL_PORT === "465", // true for 465, false for other ports
-      tls: {
-        rejectUnauthorized: process.env.NODE_ENV === "production", // Allow self-signed in dev
-      },
-    }),
-  )
-
   const mailOptions = {
-    from: `"TaskFlow 👻" <${process.env.EMAIL_FROM || "noreply@taskflow.com"}>`,
-    // Add headers for better deliverability
+    from: `"TaskFlow" <${process.env.MAIL_FROM || "noreply@taskflow.com"}>`,
+    to: options.email,
+    subject: safeSubject,
+    text: emailPlainText,
+    html: emailHTML,
     headers: {
       "X-Mailer": "TaskFlow",
       "X-Priority": "3",
     },
-    html: emailHTML,
-    subject: options.subject,
-    text: emailPlainText,
-    to: options.email,
   }
 
   try {
     const info = await transporter.sendMail(mailOptions)
     console.log("✅ Email sent successfully:", {
       messageId: info.messageId,
-      subject: options.subject,
       to: options.email,
     })
     return new ApiResponse(200, "Email sent successfully")
   } catch (err) {
-    console.error("❌ Email sending failed:", {
-      error: err.message,
-      subject: options.subject,
-      to: options.email,
-    })
-    throw new ApiError(500, `Failed to send email: ${err.message}`)
+    // Fix: Log internal error details, but expose a generic message to the client
+    console.error("❌ SMTP error detail:", err.message)
+    throw new ApiError(500, "Failed to send email. Please try again later.")
   }
 }
 
-/**
- * Generates email content for email verification using Mailgen.
- *
- * @param {string} username - User's name to include in email
- * @param {string} verificationUrl - URL for email verification
- * @returns {Object} Mailgen content object
- */
+// -----------------------------------------------------------------------------
+// 3. Email Templates
+// -----------------------------------------------------------------------------
+
 const emailVerificationMailGenContent = (username, verificationUrl) => ({
   body: {
     action: {
       button: {
-        color: "#2563EB", // TaskFlow blue
+        color: "#2563EB",
         link: verificationUrl,
         text: "Verify Email",
       },
@@ -120,13 +140,6 @@ const emailVerificationMailGenContent = (username, verificationUrl) => ({
   },
 })
 
-/**
- * Generates email content for resending verification email.
- *
- * @param {string} username - User's name
- * @param {string} verificationUrl - Verification URL
- * @returns {Object} Mailgen content object
- */
 const reEmailVerificationMailGenContent = (username, verificationUrl) => ({
   body: {
     action: {
@@ -143,18 +156,11 @@ const reEmailVerificationMailGenContent = (username, verificationUrl) => ({
   },
 })
 
-/**
- * Generates email content for password reset.
- *
- * @param {string} username - User's name
- * @param {string} passwordResetUrl - Password reset URL
- * @returns {Object} Mailgen content object
- */
 const forgotPasswordMailgenContent = (username, passwordResetUrl) => ({
   body: {
     action: {
       button: {
-        color: "#DC2626", // Red for important action
+        color: "#DC2626",
         link: passwordResetUrl,
         text: "Reset Password",
       },
@@ -170,15 +176,6 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => ({
   },
 })
 
-/**
- * Generates email content for task assignment notification.
- *
- * @param {string} username - User's name
- * @param {string} taskTitle - Title of assigned task
- * @param {string} taskUrl - URL to view the task
- * @param {string} assignedBy - Name of person who assigned the task
- * @returns {Object} Mailgen content object
- */
 const taskAssignmentMailgenContent = (username, taskTitle, taskUrl, assignedBy) => ({
   body: {
     action: {
@@ -193,36 +190,17 @@ const taskAssignmentMailgenContent = (username, taskTitle, taskUrl, assignedBy) 
     name: username,
     outro: "Good luck with the task! Let us know if you need any help.",
     table: {
-      columns: {
-        customWidth: {
-          Status: "40%",
-          Task: "60%",
-        },
-      },
-      data: [
-        {
-          Status: "Pending",
-          Task: taskTitle,
-        },
-      ],
+      columns: { customWidth: { Status: "40%", Task: "60%" } },
+      data: [{ Status: "Pending", Task: taskTitle }],
     },
   },
 })
 
-/**
- * Generates email content for task due soon reminder.
- *
- * @param {string} username - User's name
- * @param {string} taskTitle - Task title
- * @param {string} dueDate - Due date string
- * @param {string} taskUrl - Task URL
- * @returns {Object} Mailgen content object
- */
 const taskDueSoonMailgenContent = (username, taskTitle, dueDate, taskUrl) => ({
   body: {
     action: {
       button: {
-        color: "#F59E0B", // Amber for urgency
+        color: "#F59E0B",
         link: taskUrl,
         text: "View Task",
       },
@@ -232,14 +210,42 @@ const taskDueSoonMailgenContent = (username, taskTitle, dueDate, taskUrl) => ({
     name: username,
     outro: "Don't forget to mark the task as complete when you're done!",
     table: {
+      data: [{ "Due Date": dueDate, Status: "In Progress", Task: taskTitle }],
+    },
+  },
+})
+
+// New Template: Project Invitation
+const projectInvitationMailgenContent = (
+  inviteeName,
+  inviterName,
+  projectName,
+  role,
+  inviteUrl,
+  expiresInHours = 48
+) => ({
+  body: {
+    name: inviteeName,
+    intro: `${inviterName} has invited you to collaborate on <strong>${projectName}</strong> on TaskFlow.`,
+    table: {
       data: [
-        {
-          "Due Date": dueDate,
-          Status: "In Progress",
-          Task: taskTitle,
-        },
+        { "": "Project", " ": projectName },
+        { "": "Your Role", " ": role },
+        { "": "Invited By", " ": inviterName },
       ],
     },
+    action: {
+      instructions: `Accept your invitation below. This link expires in ${expiresInHours} hours:`,
+      button: {
+        color: "#2563EB",
+        text: "Accept Invitation",
+        link: inviteUrl,
+      },
+    },
+    outro: [
+      `If you don't have a TaskFlow account yet, you'll be prompted to create one.`,
+      "If you weren't expecting this invitation, you can safely ignore this email.",
+    ],
   },
 })
 
@@ -250,4 +256,5 @@ export {
   forgotPasswordMailgenContent,
   taskAssignmentMailgenContent,
   taskDueSoonMailgenContent,
+  projectInvitationMailgenContent,
 }
