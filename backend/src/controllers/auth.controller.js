@@ -55,15 +55,21 @@ export const registerUser = asyncHandler(async (req, res) => {
   user.emailVerificationExpiry = tokenExpiry
   await user.save({ validateBeforeSave: false })
 
-  // Send verification email
+  // Send verification email (non-blocking - don't fail registration if email fails)
   const verificationUrl = `${process.env.CORS_ORIGIN}/verify/${unHashedToken}`
   const mailgenContent = emailVerificationMailGenContent(user.username, verificationUrl)
 
-  await sendMail({
-    email: user.email,
-    mailgenContent,
-    subject: "Verify Your Email Address",
-  })
+  try {
+    await sendMail({
+      email: user.email,
+      mailgenContent,
+      subject: "Verify Your Email Address",
+    })
+  } catch (emailError) {
+    console.warn("⚠️ Verification email failed to send:", emailError.message)
+    // Continue with registration even if email fails
+    // User can request verification email resend later
+  }
 
   // Omit sensitive data from the final response
   const createdUser = await User.findById(user._id).select("-password -emailVerificationToken")

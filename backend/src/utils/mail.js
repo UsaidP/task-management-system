@@ -89,7 +89,7 @@ const sendMail = async (options) => {
   const emailHTML = mailGenerator.generate(options.mailgenContent)
 
   const mailOptions = {
-    from: `"TaskFlow" <${process.env.MAIL_FROM || "noreply@taskflow.com"}>`,
+    from: `"TaskFlow" <${process.env.EMAIL_FROM || process.env.MAIL_FROM || "noreply@taskflow.com"}>`,
     to: options.email,
     subject: safeSubject,
     text: emailPlainText,
