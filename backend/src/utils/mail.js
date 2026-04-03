@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer"
+import { Resend } from "resend"
 import Mailgen from "mailgen"
 import validator from "validator"
 import ApiError from "./api-error.js"
@@ -8,7 +9,6 @@ import { ApiResponse } from "./api-response.js"
 // 1. Initialize Mailgen once
 // -----------------------------------------------------------------------------
 
-// Initialize Mailgen once
 const mailGenerator = new Mailgen({
   product: {
     copyright: `Copyright © ${new Date().getFullYear()} TaskFlow. All rights reserved.`,
@@ -20,47 +20,79 @@ const mailGenerator = new Mailgen({
 })
 
 // -----------------------------------------------------------------------------
-// 2. Lazy SMTP Transporter (initialized on first use, after dotenv loads)
+// 2. Email Provider Setup (Resend for production, SMTP for local dev)
 // -----------------------------------------------------------------------------
 
 let transporter = null
-let smtpVerified = false
+let resendClient = null
+let emailProvider = null // "resend" or "smtp"
+let providerInitialized = false
 
-function getTransporter() {
-  if (transporter) return transporter
+function initEmailProvider() {
+  if (providerInitialized) return emailProvider
 
-  const mailPort = parseInt(process.env.MAIL_PORT, 10) || 587
+  // Prefer Resend if API key is available (works on Railway)
+  if (process.env.RESEND_API_KEY) {
+    resendClient = new Resend(process.env.RESEND_API_KEY)
+    emailProvider = "resend"
+    console.log("📧 Email provider: Resend API")
+  } else {
+    // Fall back to SMTP for local development
+    const mailPort = parseInt(process.env.MAIL_PORT, 10) || 587
 
-  transporter = nodemailer.createTransport({
-    pool: true,
-    maxConnections: 5,
-    maxMessages: 100,
-    host: process.env.MAIL_HOST,
-    port: mailPort,
-    secure: mailPort === 465,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
-    },
-    tls: {
-      rejectUnauthorized: process.env.NODE_ENV === "production",
-    },
-  })
-
-  // Verify SMTP connection on first use
-  if (process.env.NODE_ENV !== "test" && !smtpVerified) {
-    smtpVerified = true
-    console.log("🔌 Verifying SMTP connection...")
-    transporter.verify((error) => {
-      if (error) {
-        console.error("❌ SMTP Connection Failed (Emails will not send):", error.message)
-      } else {
-        console.log("✅ SMTP Connected — Emails are ready to send")
-      }
+    transporter = nodemailer.createTransport({
+      pool: true,
+      maxConnections: 5,
+      maxMessages: 100,
+      host: process.env.MAIL_HOST,
+      port: mailPort,
+      secure: mailPort === 465,
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: process.env.NODE_ENV === "production",
+      },
     })
+    emailProvider = "smtp"
+    console.log("📧 Email provider: SMTP")
   }
 
+  // Verify connection on first init
+  if (process.env.NODE_ENV !== "test" && !providerInitialized) {
+    providerInitialized = true
+    if (emailProvider === "smtp") {
+      console.log("🔌 Verifying SMTP connection...")
+      transporter.verify((error) => {
+        if (error) {
+          console.error("❌ SMTP Connection Failed (Emails will not send):", error.message)
+        } else {
+          console.log("✅ SMTP Connected — Emails are ready to send")
+        }
+      })
+    } else {
+      console.log("✅ Resend API initialized — Emails are ready to send")
+    }
+  }
+
+  return emailProvider
+}
+
+function getTransporter() {
+  initEmailProvider()
+  if (!transporter) {
+    throw new Error("SMTP transporter not initialized. Check MAIL_HOST and MAIL_PORT env vars.")
+  }
   return transporter
+}
+
+function getResendClient() {
+  initEmailProvider()
+  if (!resendClient) {
+    throw new Error("Resend client not initialized. Check RESEND_API_KEY env var.")
+  }
+  return resendClient
 }
 
 // -----------------------------------------------------------------------------
@@ -112,15 +144,53 @@ const sendMail = async (options) => {
   }
 
   try {
-    const info = await getTransporter().sendMail(mailOptions)
-    console.log("✅ Email sent successfully:", {
-      messageId: info.messageId,
-      to: options.email,
-    })
+    initEmailProvider()
+
+    if (emailProvider === "resend") {
+      // Send via Resend API
+      const fromAddress = process.env.RESEND_FROM || process.env.EMAIL_FROM || process.env.MAIL_FROM || "onboarding@resend.dev"
+      const { data, error } = await getResendClient().emails.send({
+        from: `TaskFlow <${fromAddress}>`,
+        to: [options.email],
+        subject: safeSubject,
+        text: emailPlainText,
+        html: emailHTML,
+      })
+
+      if (error) {
+        console.error("❌ Resend API error:", error.message)
+        throw new ApiError(500, "Failed to send email. Please try again later.")
+      }
+
+      console.log("✅ Email sent via Resend:", {
+        emailId: data?.id,
+        to: options.email,
+      })
+    } else {
+      // Send via SMTP
+      const mailOptions = {
+        from: `"TaskFlow" <${process.env.EMAIL_FROM || process.env.MAIL_FROM || "noreply@taskflow.com"}>`,
+        to: options.email,
+        subject: safeSubject,
+        text: emailPlainText,
+        html: emailHTML,
+        headers: {
+          "X-Mailer": "TaskFlow",
+          "X-Priority": "3",
+        },
+      }
+
+      const info = await getTransporter().sendMail(mailOptions)
+      console.log("✅ Email sent via SMTP:", {
+        messageId: info.messageId,
+        to: options.email,
+      })
+    }
+
     return new ApiResponse(200, "Email sent successfully")
   } catch (err) {
-    // Fix: Log internal error details, but expose a generic message to the client
-    console.error("❌ SMTP error detail:", err.message)
+    if (err instanceof ApiError) throw err
+    console.error("❌ Email send error:", err.message)
     throw new ApiError(500, "Failed to send email. Please try again later.")
   }
 }
