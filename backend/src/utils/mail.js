@@ -49,12 +49,13 @@ function getTransporter() {
 
   // Verify SMTP connection on first use
   if (process.env.NODE_ENV !== "test" && !smtpVerified) {
+    smtpVerified = true
+    console.log("🔌 Verifying SMTP connection...")
     transporter.verify((error) => {
-      smtpVerified = true
       if (error) {
-        console.warn("⚠️ SMTP Connection Error (Emails will not send):", error.message)
+        console.error("❌ SMTP Connection Failed (Emails will not send):", error.message)
       } else {
-        console.log("📧 SMTP Server Ready")
+        console.log("✅ SMTP Connected — Emails are ready to send")
       }
     })
   }
