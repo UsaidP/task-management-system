@@ -88,7 +88,7 @@ export const Signup = () => {
       const { username, fullname, email, password } = formData
       const response = await signup(username, fullname, password, email, "member")
       if (response.success) {
-        navigate("/confirm", { state: { email: formData.email } })
+        navigate("/login", { state: { message: "Account created! Please log in to continue." } })
       }
     } catch (err) {
       const errorMessage = err.data?.message || "Signup failed. Please try again."

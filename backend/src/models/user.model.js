@@ -11,11 +11,17 @@ const userSchema = new Schema(
   {
     avatar: {
       default: {
-        url: `https://placehold.co/400`,
+        url: "https://placehold.co/400",
       },
       type: {
-        localpath: String,
-        url: String,
+        localpath: {
+          default: null,
+          type: String,
+        },
+        url: {
+          default: "https://placehold.co/400",
+          type: String,
+        },
       },
     },
     bio: {

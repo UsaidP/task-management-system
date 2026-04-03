@@ -9,14 +9,31 @@ import { ApiResponse } from "./api-response.js"
 // 1. Initialize Mailgen once
 // -----------------------------------------------------------------------------
 
+// Initialize Mailgen once with TaskFlow branding
 const mailGenerator = new Mailgen({
   product: {
     copyright: `Copyright © ${new Date().getFullYear()} TaskFlow. All rights reserved.`,
     link: process.env.BASE_URL || "https://taskflow.com",
-    logo: process.env.EMAIL_LOGO_URL || "https://placehold.co/200x50/2563EB/FFFFFF?text=TaskFlow",
+    logo: process.env.EMAIL_LOGO_URL || "https://placehold.co/200x50/C4654A/FAF6F1?text=TaskFlow",
     name: "TaskFlow",
   },
   theme: "cerberus",
+  // Custom theme colors matching TaskFlow palette
+  themeConfig: {
+    primaryColor: "#C4654A", // Terracotta
+    secondaryColor: "#5C4B3A", // Earth brown
+    backgroundColor: "#FAF6F1", // Linen
+    contentFont: "DM Sans, system-ui, -apple-system, sans-serif",
+    titleFont: "Lora, Georgia, serif",
+    contentCell: {
+      backgroundColor: "#FAF6F1",
+      contentColor: "#2C2420", // Espresso
+    },
+    bodyCell: {
+      backgroundColor: "#FAF6F1",
+      contentColor: "#2C2420",
+    },
+  },
 })
 
 // -----------------------------------------------------------------------------
@@ -203,21 +220,21 @@ const emailVerificationMailGenContent = (username, verificationUrl) => ({
   body: {
     action: {
       button: {
-        color: "#2563EB",
+        color: "#C4654A", // Terracotta — TaskFlow primary accent
         link: verificationUrl,
-        text: "Verify Email",
+        text: "Verify Your Email",
       },
-      instructions: "Click the button below to verify your email:",
+      instructions: "Click the button below to verify your email and get started:",
     },
+    greeting: `Welcome to TaskFlow, ${username}!`,
     intro: [
-      "Welcome to TaskFlow! We're excited to have you on board.",
-      "To get started, please verify your email address by clicking the button below:",
+      "We're excited to have you on board. To unlock all features and get started, please verify your email address:",
     ],
-    name: username,
     outro: [
-      "Need help? Just reply to this email - we'd love to help you get started.",
+      "Need help? Just reply to this email — we'd love to help you get started.",
       "If you didn't create this account, you can safely ignore this email.",
     ],
+    signature: false,
   },
 })
 
@@ -225,15 +242,18 @@ const reEmailVerificationMailGenContent = (username, verificationUrl) => ({
   body: {
     action: {
       button: {
-        color: "#2563EB",
+        color: "#C4654A", // Terracotta
         link: verificationUrl,
-        text: "Verify Email",
+        text: "Verify Your Email",
       },
-      instructions: "Click below to verify your email:",
+      instructions: "Click below to verify your email and unlock all features:",
     },
-    intro: "We noticed your email is still unverified. Please verify it to unlock all features:",
-    name: username,
-    outro: "This verification link will expire in 24 hours.",
+    greeting: `Hey ${username},`,
+    intro: [
+      "We noticed your email is still unverified. Verify it to access all TaskFlow features:",
+    ],
+    outro: ["This verification link will expire in 24 hours."],
+    signature: false,
   },
 })
 
@@ -241,19 +261,19 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => ({
   body: {
     action: {
       button: {
-        color: "#DC2626",
+        color: "#C44A4A", // Warm red — urgent action
         link: passwordResetUrl,
-        text: "Reset Password",
+        text: "Reset Your Password",
       },
       instructions: "Click the button below to reset your password:",
     },
-    intro: "We received a request to reset your TaskFlow password.",
-    name: username,
+    greeting: `Hey ${username},`,
+    intro: ["We received a request to reset your TaskFlow password."],
     outro: [
       "This link will expire in 1 hour for security reasons.",
-      "If you didn't request this, you can safely ignore this email - your password will remain unchanged.",
-      "For security, never share your password with anyone.",
+      "If you didn't request this, you can safely ignore this email — your password will remain unchanged.",
     ],
+    signature: false,
   },
 })
 
@@ -261,19 +281,20 @@ const taskAssignmentMailgenContent = (username, taskTitle, taskUrl, assignedBy) 
   body: {
     action: {
       button: {
-        color: "#2563EB",
+        color: "#C4654A", // Terracotta
         link: taskUrl,
         text: "View Task",
       },
       instructions: "Click below to view the task details:",
     },
-    intro: `You've been assigned a new task by ${assignedBy}:`,
-    name: username,
-    outro: "Good luck with the task! Let us know if you need any help.",
+    greeting: `Hey ${username},`,
+    intro: [`You've been assigned a new task by ${assignedBy}:`],
+    outro: ["Good luck with the task! Let us know if you need any help."],
     table: {
       columns: { customWidth: { Status: "40%", Task: "60%" } },
       data: [{ Status: "Pending", Task: taskTitle }],
     },
+    signature: false,
   },
 })
 
@@ -281,18 +302,19 @@ const taskDueSoonMailgenContent = (username, taskTitle, dueDate, taskUrl) => ({
   body: {
     action: {
       button: {
-        color: "#F59E0B",
+        color: "#D4A548", // Ochre — warning/attention
         link: taskUrl,
         text: "View Task",
       },
       instructions: "Click below to view and complete the task:",
     },
-    intro: "This is a friendly reminder that a task is due soon:",
-    name: username,
-    outro: "Don't forget to mark the task as complete when you're done!",
+    greeting: `Hey ${username},`,
+    intro: ["This is a friendly reminder that a task is due soon:"],
+    outro: ["Don't forget to mark the task as complete when you're done!"],
     table: {
       data: [{ "Due Date": dueDate, Status: "In Progress", Task: taskTitle }],
     },
+    signature: false,
   },
 })
 
@@ -306,8 +328,8 @@ const projectInvitationMailgenContent = (
   expiresInHours = 48
 ) => ({
   body: {
-    name: inviteeName,
-    intro: `${inviterName} has invited you to collaborate on <strong>${projectName}</strong> on TaskFlow.`,
+    greeting: `Hey ${inviteeName},`,
+    intro: [`${inviterName} has invited you to collaborate on **${projectName}** on TaskFlow.`],
     table: {
       data: [
         { "": "Project", " ": projectName },
@@ -318,7 +340,7 @@ const projectInvitationMailgenContent = (
     action: {
       instructions: `Accept your invitation below. This link expires in ${expiresInHours} hours:`,
       button: {
-        color: "#2563EB",
+        color: "#C4654A", // Terracotta
         text: "Accept Invitation",
         link: inviteUrl,
       },
@@ -327,6 +349,7 @@ const projectInvitationMailgenContent = (
       `If you don't have a TaskFlow account yet, you'll be prompted to create one.`,
       "If you weren't expecting this invitation, you can safely ignore this email.",
     ],
+    signature: false,
   },
 })
 

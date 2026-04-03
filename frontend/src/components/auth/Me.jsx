@@ -189,6 +189,14 @@ const Me = () => {
       })
     : "N/A"
 
+  // Capitalize first letter of display name for avatar fallback
+  const avatarInitial = displayName.trim().charAt(0).toUpperCase()
+
+  // Cache-busting for avatar image to prevent stale browser cache
+  const avatarSrc = user?.avatar?.url
+    ? `${user.avatar.url}?t=${Date.now()}`
+    : null
+
   const editProfileHandler = () => setIsEditModalOpen(true)
 
   const handleFileChange = async (event) => {
@@ -223,6 +231,9 @@ const Me = () => {
       } catch (err) {
         toast.error("Failed to upload avatar. Please try again.", { id: toastId })
         console.error("Avatar upload error:", err)
+      } finally {
+        // Reset file input so same file can be re-selected
+        event.target.value = ""
       }
     }
   }
@@ -383,27 +394,16 @@ const Me = () => {
                   htmlFor="profile"
                   className="block w-32 h-32 rounded-2xl cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow"
                 >
-                  <div className="w-full h-full bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-5xl font-bold text-white relative">
-                    {user?.avatar?.url ? (
-                      <>
-                        <img
-                          alt="Avatar"
-                          className="w-full h-full object-cover"
-                          src={user.avatar.url}
-                          onError={(e) => {
-                            e.target.style.display = "none"
-                            e.target.nextSibling.style.display = "flex"
-                          }}
-                        />
-                        <span
-                          className="absolute inset-0 w-full h-full flex items-center justify-center"
-                          style={{ display: "none" }}
-                        >
-                          {displayName.charAt(0).toUpperCase()}
-                        </span>
-                      </>
+                  <div className="w-full h-full bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-5xl font-bold text-white relative overflow-hidden">
+                    {user?.avatar?.url && user.avatar.url !== "https://placehold.co/400" ? (
+                      <img
+                        alt="Avatar"
+                        className="w-full h-full object-cover"
+                        src={avatarSrc}
+                        key={avatarSrc}
+                      />
                     ) : (
-                      <span>{displayName.charAt(0).toUpperCase()}</span>
+                      <span>{avatarInitial}</span>
                     )}
                   </div>
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

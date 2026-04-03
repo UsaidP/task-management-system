@@ -461,17 +461,17 @@ export const updateUserAvatar = asyncHandler(async (req, res) => {
       folder: "avatars/",
     })
 
-    const user = await User.findById(req.user._id)
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: { "avatar.url": result.url } },
+      { new: true, runValidators: true }
+    ).select("-password")
+
     if (!user) {
       throw new ApiError(404, "User not found")
     }
 
-    user.avatar.url = result.url
-    await user.save({ validateBeforeSave: false })
-
-    const updatedUser = await User.findById(req.user._id).select("-password")
-
-    return res.status(200).json(new ApiResponse(200, updatedUser, "Avatar updated successfully"))
+    return res.status(200).json(new ApiResponse(200, user, "Avatar updated successfully"))
   } catch (error) {
     console.error("ImageKit Upload Error:", error)
     throw new ApiError(500, "Failed to upload avatar due to a server error.")

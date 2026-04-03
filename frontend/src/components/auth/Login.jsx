@@ -1,12 +1,14 @@
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
 export const Login = () => {
   const { login } = useAuth()
+  const location = useLocation()
+  const successMessage = location.state?.message
 
   const [formData, setFormData] = useState({
     identifier: "",
@@ -15,6 +17,14 @@ export const Login = () => {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [shownSuccess, setShownSuccess] = useState(false)
+
+  useEffect(() => {
+    if (successMessage && !shownSuccess) {
+      toast.success(successMessage)
+      setShownSuccess(true)
+    }
+  }, [successMessage, shownSuccess])
 
   const handleChange = (e) => {
     const { name, value } = e.target
