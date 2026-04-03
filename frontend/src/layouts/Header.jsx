@@ -2,8 +2,8 @@ import { AnimatePresence, motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
 import { FiChevronDown, FiLogOut, FiMenu, FiSettings, FiUser } from "react-icons/fi"
 import { NavLink, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/customHook.js"
-import { useSidebar } from "../context/SidebarContext.jsx"
+import { useAuth } from "../contexts/customHook.js"
+import { useSidebar } from "../contexts/SidebarContext.jsx"
 
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)

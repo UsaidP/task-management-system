@@ -25,6 +25,24 @@
     @apply text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors duration-fast;
   }
 
+  a[class*="btn-"] {
+    @apply no-underline;
+    transition: all 150ms ease-out;
+  }
+
+  a[class*="btn-"]:hover {
+    @apply no-underline;
+  }
+
+  a[class*="btn-"] {
+    @apply no-underline;
+    transition: all 150ms ease-out;
+  }
+
+  a[class*="btn-"]:hover {
+    @apply no-underline;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -48,23 +66,39 @@
   /* ── Buttons ─────────────────────────────── */
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-primary hover:bg-accent-primary-dark dark:bg-accent-primary-light dark:text-dark-text-inverse dark:hover:bg-accent-primary shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-primary hover:bg-accent-primary-dark hover:text-light-text-inverse dark:bg-accent-primary-light dark:text-dark-text-inverse dark:hover:bg-accent-primary dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary hover:bg-light-bg-hover dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-hover border-2 border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-primary hover:text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary hover:bg-light-bg-hover dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary border-2 border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger-light dark:text-dark-text-inverse dark:hover:bg-accent-danger shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-danger hover:bg-accent-danger-dark hover:text-light-text-inverse dark:bg-accent-danger-light dark:text-dark-text-inverse dark:hover:bg-accent-danger dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-secondary hover:text-light-text-secondary dark:text-dark-text-secondary dark:hover:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast cursor-pointer focus-visible-ring;
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-warning hover:bg-accent-warning-dark dark:bg-accent-warning-light dark:text-dark-text-inverse dark:hover:bg-accent-warning shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-warning hover:bg-accent-warning-dark hover:text-light-text-inverse dark:bg-accent-warning-light dark:text-dark-text-inverse dark:hover:bg-accent-warning dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-primary hover:text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary hover:bg-light-bg-hover dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary border-2 border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-danger hover:bg-accent-danger-dark hover:text-light-text-inverse dark:bg-accent-danger-light dark:text-dark-text-inverse dark:hover:bg-accent-danger dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-secondary hover:text-light-text-secondary dark:text-dark-text-secondary dark:hover:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast cursor-pointer focus-visible-ring;
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-warning hover:bg-accent-warning-dark hover:text-light-text-inverse dark:bg-accent-warning-light dark:text-dark-text-inverse dark:hover:bg-accent-warning dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
   }
 
   /* ── Forms ────────────────────────────────── */

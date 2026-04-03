@@ -23,41 +23,42 @@ const app = express()
 // CORS Configuration
 // ============================================
 const allowedOrigins = [
-	"http://localhost:5173",
-	"http://localhost:4000",
-	"http://localhost:8080",
-	"https://task-management-system-production-3110.up.railway.app",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:4000",
+  "http://localhost:8080",
+  "https://task-management-system-production-3110.up.railway.app",
 ]
 
 const corsOptions = {
-	allowedHeaders: [
-		"Content-Type",
-		"Authorization",
-		"X-Requested-With",
-		"Accept",
-		"Origin",
-		"Access-Control-Request-Method",
-		"Access-Control-Request-Headers",
-	],
-	credentials: true,
-	exposedHeaders: ["Set-Cookie"],
-	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-	optionsSuccessStatus: 200,
-	origin: (origin, callback) => {
-		// Handle null origin (from file://, data: URIs, sandboxed iframes)
-		if (!origin) {
-			if (process.env.NODE_ENV === "development") {
-				return callback(null, true)
-			}
-			return callback(new Error("Null origin not allowed"))
-		}
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+    "Access-Control-Request-Method",
+    "Access-Control-Request-Headers",
+  ],
+  credentials: true,
+  exposedHeaders: ["Set-Cookie"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  optionsSuccessStatus: 200,
+  origin: (origin, callback) => {
+    // Handle null origin (from file://, data: URIs, sandboxed iframes)
+    if (!origin) {
+      if (process.env.NODE_ENV === "development") {
+        return callback(null, true)
+      }
+      return callback(new Error("Null origin not allowed"))
+    }
 
-		if (allowedOrigins.includes(origin)) {
-			return callback(null, true)
-		}
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
 
-		return callback(new Error("Not allowed by CORS"))
-	},
+    return callback(new Error("Not allowed by CORS"))
+  },
 }
 
 // ============================================
@@ -87,7 +88,7 @@ app.use("/api", apiLimiter)
 // Route Definitions
 // ============================================
 if (process.env.NODE_ENV !== "test") {
-	app.use("/api/v1/healthcheck", healthCheck)
+  app.use("/api/v1/healthcheck", healthCheck)
 }
 
 app.use("/api/v1/auth", authRouter)
@@ -101,7 +102,7 @@ app.use("/api/v1/dashboard", dashboardRoute)
 
 // Email testing routes (non-production only)
 if (process.env.NODE_ENV !== "production") {
-	app.use("/api/v1/email", emailRouter)
+  app.use("/api/v1/email", emailRouter)
 }
 
 // ============================================
@@ -110,26 +111,26 @@ if (process.env.NODE_ENV !== "production") {
 app.use(errorLogger)
 
 app.use((err, _req, res, _next) => {
-	const statusCode = err.statusCode || 500
-	const message = err.message || "Internal Server Error"
+  const statusCode = err.statusCode || 500
+  const message = err.message || "Internal Server Error"
 
-	if (process.env.NODE_ENV === "development") {
-		console.error("Error:", {
-			errors: err.errors,
-			message,
-			name: err.name,
-			stack: err.stack,
-		})
-	}
+  if (process.env.NODE_ENV === "development") {
+    console.error("Error:", {
+      errors: err.errors,
+      message,
+      name: err.name,
+      stack: err.stack,
+    })
+  }
 
-	res.status(statusCode).json({
-		errors: err.errors || [],
-		message,
-		stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
-		success: false,
-		...(err.errorCode && { errorCode: err.errorCode }),
-		...(err.timestamp && { timestamp: err.timestamp }),
-	})
+  res.status(statusCode).json({
+    errors: err.errors || [],
+    message,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    success: false,
+    ...(err.errorCode && { errorCode: err.errorCode }),
+    ...(err.timestamp && { timestamp: err.timestamp }),
+  })
 })
 
 export default app

@@ -17,7 +17,7 @@ import {
   FiSearch,
 } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 import { EmptyState } from "../ErrorStates.jsx"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import CreateTaskModal from "./CreateTaskModal"

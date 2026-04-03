@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { FiCheckCircle, FiLock } from "react-icons/fi"
 import { Link, useParams } from "react-router-dom"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 
 export const Reset = () => {
   const [password, setPassword] = useState("")

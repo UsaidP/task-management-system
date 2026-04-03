@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { FiArrowLeft, FiMail } from "react-icons/fi"
 import { Link } from "react-router-dom"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 
 export const Forget = () => {
   const [email, setEmail] = useState("")

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { FiMoreVertical, FiPlus } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 import CompleteSprintDialog from "./CompleteSprintDialog.jsx"
 import CreateSprintDialog from "./CreateSprintDialog.jsx"
 

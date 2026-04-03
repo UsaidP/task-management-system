@@ -21,7 +21,7 @@ import {
   statsData,
   teamTypes,
   testimonialData,
-} from "./landing-page/landingPageComponent.js"
+} from "../components/landing-page/landingPageComponent.js"
 
 // Icon map — all SVG, no emoji
 const ICON_MAP = {

@@ -3,8 +3,8 @@ import { motion } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
 import { FiCalendar, FiChevronLeft, FiChevronRight } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
-import { useAuth } from "../context/customHook.js"
-import { useFilter } from "../context/FilterContext.jsx"
+import { useAuth } from "../../contexts/customHook.js"
+import { useFilter } from "../../contexts/FilterContext.jsx"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
 const getStatusColor = (status) => {

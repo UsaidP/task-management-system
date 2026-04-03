@@ -17,7 +17,7 @@ import {
   FiX,
 } from "react-icons/fi"
 import apiService from "../../../service/apiService"
-import { useAuth } from "../context/customHook"
+import { useAuth } from "../../contexts/customHook"
 import SubtaskView from "./SubtaskView"
 
 const priorityOptions = [

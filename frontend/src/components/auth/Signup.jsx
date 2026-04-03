@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { FiArrowRight, FiCheck, FiEye, FiEyeOff, FiLock, FiMail, FiUser } from "react-icons/fi"
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 
 const PasswordStrengthIndicator = ({ password }) => {
   const getStrength = (password) => {

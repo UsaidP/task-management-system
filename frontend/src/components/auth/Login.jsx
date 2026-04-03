@@ -3,7 +3,7 @@ import { useState } from "react"
 import toast from "react-hot-toast"
 import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi"
 import { Link } from "react-router-dom"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 
 export const Login = () => {
   const { login } = useAuth()

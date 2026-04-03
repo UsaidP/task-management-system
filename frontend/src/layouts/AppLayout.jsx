@@ -1,6 +1,6 @@
 import { Toaster } from "react-hot-toast"
 import { Outlet } from "react-router-dom"
-import Layout from "../Layout"
+import Layout from "../components/Layout"
 
 const AppLayout = () => {
   return (

@@ -22,7 +22,7 @@ import {
 } from "react-icons/fi"
 import { useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 import Modal from "../Modal"
 import Skeleton from "../Skeleton"
 import CreateTaskModal from "../task/CreateTaskModal"

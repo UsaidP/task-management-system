@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { useAuth } from "./context/customHook"
+import { useAuth } from "../contexts/customHook.js"
 
 /**
  * A component to protect routes that should only be accessible to guests (unauthenticated users).

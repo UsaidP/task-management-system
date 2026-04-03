@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { FiMail } from "react-icons/fi"
 import { Link, useLocation } from "react-router-dom"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 
 export const ConfirmEmail = () => {
   const location = useLocation()

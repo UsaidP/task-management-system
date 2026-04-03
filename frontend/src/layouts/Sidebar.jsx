@@ -16,13 +16,13 @@ import {
   FiX,
 } from "react-icons/fi"
 import { NavLink, useNavigate } from "react-router-dom"
-import { useMediaQuery } from "../../../hooks/useMediaQuery"
-import apiService from "../../../service/apiService"
-import { useAuth } from "../context/customHook"
-import { useFilter } from "../context/FilterContext"
-import { useSidebar } from "../context/SidebarContext"
-import { EmptyState, NetworkError } from "../ErrorStates"
-import CreateProjectModal from "../project/CreateProjectModal"
+import { useMediaQuery } from "../../hooks/useMediaQuery.js"
+import apiService from "../../service/apiService.js"
+import { useAuth } from "../contexts/customHook.js"
+import { useFilter } from "../contexts/FilterContext.jsx"
+import { useSidebar } from "../contexts/SidebarContext.jsx"
+import { EmptyState, NetworkError } from "../components/ErrorStates.jsx"
+import CreateProjectModal from "../components/project/CreateProjectModal.jsx"
 
 const Sidebar = () => {
   const [projects, setProjects] = useState([])
@@ -147,21 +147,21 @@ const Sidebar = () => {
   }
 
   const NavItem = ({ to, icon: Icon, label }) => {
+    const getClassName = ({ isActive }) => {
+      const base = "flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group relative"
+      const active = "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light border-l-4 border-accent-primary"
+      const inactive = "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border-l-4 border-transparent"
+      const collapsed = "justify-center px-0 w-12 mx-auto"
+
+      return `${base} ${isActive ? active : inactive} ${isCollapsed ? collapsed : ""}`
+    }
+
     return (
       <NavLink
         to={to}
         onClick={handleMobileNavClick}
         title={isCollapsed ? label : ""}
-        className={({ isActive }) =>
-          `flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group relative
-           ${
-             isActive
-               ? "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light border-l-4 border-accent-primary"
-               : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border-l-4 border-transparent"
-           }
-           ${isCollapsed ? "justify-center px-0 w-12 mx-auto" : ""}
-        `
-        }
+        className={getClassName}
       >
         <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
           <Icon
@@ -293,7 +293,7 @@ const Sidebar = () => {
         // Force fully open on mobile if triggered; on desktop use width transitions
         animate={isDesktop ? "open" : isSidebarOpen ? "open" : "closed"}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className={`fixed top-0 left-0 h-screen bg-light-bg-primary dark:bg-dark-bg-secondary 
+        className={`fixed top-0 left-0 h-screen bg-light-bg-primary dark:bg-dark-bg-secondary
                    border-r border-light-border dark:border-dark-border z-50 flex flex-col pt-4
                    transition-all duration-300 ease-in-out
                    ${isDesktop ? (isCollapsed ? "w-20" : "w-72") : "w-72"}`}

@@ -14,14 +14,13 @@ import {
   FiUsers,
 } from "react-icons/fi"
 import { Link } from "react-router-dom"
+import { useAuth } from "../contexts/customHook.js"
 import apiService from "../../service/apiService.js"
-
+import { EmptyState, NetworkError, ServerError } from "../components/ErrorStates.jsx"
 import CreateProjectModal from "../components/project/CreateProjectModal.jsx"
 import ProjectCardSkeleton from "../components/project/ProjectCardSkeleton.jsx"
-import { useAuth } from "./context/customHook.js"
-import { EmptyState, NetworkError, ServerError } from "./ErrorStates.jsx"
-import { Skeleton, SkeletonCard, SkeletonCircle, SkeletonText } from "./Skeleton.jsx"
-import TaskDetailPanel from "./task/TaskDetailPanel.jsx"
+import { Skeleton, SkeletonCard, SkeletonCircle, SkeletonText } from "../components/Skeleton.jsx"
+import TaskDetailPanel from "../components/task/TaskDetailPanel.jsx"
 
 const OverviewSkeleton = () => (
   <motion.div

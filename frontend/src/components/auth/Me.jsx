@@ -33,7 +33,7 @@ import {
   FiX,
 } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
-import { useAuth } from "../context/customHook.js"
+import { useAuth } from "../../contexts/customHook.js"
 import EditProfileModal from "./EditProfileModal.jsx"
 
 const InfoItem = ({ icon: Icon, label, value, href }) => {

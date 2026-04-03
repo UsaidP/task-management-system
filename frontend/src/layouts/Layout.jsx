@@ -1,6 +1,6 @@
 import { useSidebar } from "../contexts/SidebarContext.jsx"
-import Header from "../layouts/Header.jsx"
-import Sidebar from "../layouts/Sidebar.jsx"
+import Header from "./Header.jsx"
+import Sidebar from "./Sidebar.jsx"
 
 const Layout = ({ children }) => {
   const { isCollapsed } = useSidebar()
