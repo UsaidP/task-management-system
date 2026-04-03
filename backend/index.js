@@ -1,15 +1,16 @@
 import dotenv from "dotenv"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import app from "./app.js"
-import connectDB from "./src/db/dbConnect.js"
 
 // Get directory name for ES modules
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Load .env from project root (one level up from backend/)
+// Load .env from project root (one level up from backend/) - MUST be first!
 dotenv.config({ path: path.resolve(__dirname, "../.env") })
+
+import app from "./app.js"
+import connectDB from "./src/db/dbConnect.js"
 
 if (process.env.NODE_ENV !== "test") {
   const PORT = process.env.PORT || 4000
