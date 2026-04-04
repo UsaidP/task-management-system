@@ -6,7 +6,23 @@ node_modules/
 copilot-instruction.md
 gst-file-manifest.json
 ide
+get-shit-done
+.github
+.planning
+.opencode
+design-system
+e2e
+agents
+skills
+copilot-instruction.md
+gst-file-manifest.json
+ide
+.cursor
+.cursorignore
+.cursorrules
+.cursorignore
 
+.agents/
 # Playwright
 /test-results/
 /playwright-report/
@@ -54,3 +70,5 @@ build/
 Thumbs.db
 *.swp
 *.swo
+
+*.md
