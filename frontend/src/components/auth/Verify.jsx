@@ -42,7 +42,7 @@ export const Verify = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary">
+    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,7 +82,8 @@ export const Verify = () => {
                 type="button"
                 onClick={handleRedirect}
                 disabled={isRedirecting}
-                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200"
+                aria-busy={isRedirecting}
+                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
               >
                 {isRedirecting ? (
                   <div className="flex items-center justify-center">
@@ -123,7 +124,8 @@ export const Verify = () => {
                 type="button"
                 onClick={handleRedirect}
                 disabled={isRedirecting}
-                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200"
+                aria-busy={isRedirecting}
+                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
               >
                 {isRedirecting ? (
                   <div className="flex items-center justify-center">

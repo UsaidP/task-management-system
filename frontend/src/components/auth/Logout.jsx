@@ -30,10 +30,14 @@ const Logout = () => {
   }
   return (
     <>
-      <button onClick={logoutHandler} disabled={loading}>
+      <button
+        onClick={logoutHandler}
+        disabled={loading}
+        className="btn-secondary px-4 py-2 text-sm font-medium"
+      >
         {loading ? "Logging out..." : "Logout"}
       </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="text-sm text-accent-danger mt-2">{error}</p>}
     </>
   )
 }

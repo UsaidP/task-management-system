@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import { useState } from "react"
-import { FiCheckCircle, FiLock } from "react-icons/fi"
+import { FiCheckCircle, FiEye, FiEyeOff, FiLock } from "react-icons/fi"
 import { Link, useParams } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -9,6 +9,7 @@ export const Reset = () => {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const { reset_password } = useAuth()
   const { token } = useParams()
 
@@ -62,7 +63,7 @@ export const Reset = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary">
+    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
       <div className="w-full max-w-md auth-card space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -70,7 +71,7 @@ export const Reset = () => {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <Link to="/" className="inline-block flex justify-center mb-4">
+          <Link to="/" aria-label="TaskFlow Home" className="inline-block flex justify-center mb-4">
             <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-2 shadow-sm">
               <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
             </div>
@@ -96,14 +97,23 @@ export const Reset = () => {
               <div className="relative">
                 <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   id="password"
                   placeholder="••••••••"
+                  autoComplete="new-password"
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="input-field pl-12 w-full"
+                  className="input-field pl-12 pr-12 w-full"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                </button>
               </div>
             </div>
 
@@ -117,7 +127,8 @@ export const Reset = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200"
+                aria-busy={loading}
+                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">

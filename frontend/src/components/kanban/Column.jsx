@@ -20,8 +20,10 @@ const Column = ({ children, status, onDrop, taskCount }) => {
   return (
     <div
       ref={drop}
+      role="region"
+      aria-label={`${status.replace("-", " ")} tasks`}
       className={`w-full md:w-[280px] xl:w-[320px] flex-shrink-0 rounded-xl transition-colors duration-300 ${
-        isOver ? "bg-accent-blue/10" : ""
+        isOver ? "bg-accent-info/10" : ""
       }`}
     >
       {children}

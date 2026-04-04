@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
         const freshUserData = response.data
         setUser(freshUserData)
         localStorage.setItem("user", JSON.stringify(freshUserData))
-      } catch (error) {
+      } catch (_error) {
         // If the session token is invalid, clear the user state.
         setUser(null)
         localStorage.removeItem("user")
@@ -51,15 +51,14 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    // --- THE FIX ---
     // Only verify the session if a user was found in localStorage on startup.
-    // If there's no user, we don't need to make an API call; just finish loading.
-    if (user) {
+    if (getInitialUser()) {
       verifyUserSession()
     } else {
       setLoading(false)
     }
-  }, []) // The `user` in the condition refers to the initial state, so an empty dependency array is correct.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Run once on mount — login/logout set user directly
 
   // Memoized login function.
   const login = useCallback(async (identifier, password) => {
@@ -105,7 +104,6 @@ export const AuthProvider = ({ children }) => {
   const resendVerifyEmail = useCallback(async (email) => {
     try {
       const response = await apiService.resendVerifyEmail(email)
-      console.log(response)
       return response
     } catch (error) {
       console.error("❌ Resend verify email error:", error)
@@ -121,7 +119,7 @@ export const AuthProvider = ({ children }) => {
     })
   }, [])
 
-  const updatePassword = useCallback((newPassword) => {
+  const _updatePassword = useCallback((newPassword) => {
     setUser((currentUser) => {
       const updatedUser = { ...currentUser, password: newPassword }
       localStorage.setItem("user", JSON.stringify(updatedUser))
@@ -129,10 +127,8 @@ export const AuthProvider = ({ children }) => {
     })
   }, [])
   const forgetPassword = useCallback(async (email) => {
-    console.log("here in forget password")
     try {
       const response = await apiService.forgetPassword(email)
-      console.log(response)
       return response
     } catch (error) {
       console.error("❌ Forget password error:", error)
@@ -156,6 +152,7 @@ export const AuthProvider = ({ children }) => {
       signup,
       resendVerifyEmail,
       updateUser,
+      forgetPassword,
     }
   }, [
     user,

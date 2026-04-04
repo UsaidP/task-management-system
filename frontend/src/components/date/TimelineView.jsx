@@ -1,31 +1,14 @@
 import dayjs from "dayjs"
+import weekOfYear from "dayjs/plugin/weekOfYear"
 import { motion } from "framer-motion"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FiCalendar, FiChevronLeft, FiChevronRight } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
-const getStatusColor = (status) => {
-  const colors = {
-    todo: "bg-task-status-todo",
-    "in-progress": "bg-task-status-progress",
-    "under-review": "bg-task-status-review",
-    completed: "bg-task-status-done",
-  }
-  return colors[status] || colors.todo
-}
-
-const getPriorityColor = (priority) => {
-  const colors = {
-    low: "border-l-task-priority-low",
-    medium: "border-l-task-priority-medium",
-    high: "border-l-task-priority-high",
-    urgent: "border-l-task-priority-urgent",
-  }
-  return colors[priority] || colors.medium
-}
+dayjs.extend(weekOfYear)
 
 const getDateColumns = (zoom, currentDate) => {
   if (zoom === "day") {
@@ -89,6 +72,20 @@ const getTaskPosition = (task, columns) => {
   }
 }
 
+const statusBgMap = {
+  todo: "bg-task-status-todo/20 dark:bg-task-status-todo/25",
+  "in-progress": "bg-task-status-progress/20 dark:bg-task-status-progress/25",
+  "under-review": "bg-task-status-review/20 dark:bg-task-status-review/25",
+  completed: "bg-task-status-done/20 dark:bg-task-status-done/25",
+}
+
+const priorityBorderMap = {
+  low: "border-l-task-priority-low",
+  medium: "border-l-task-priority-medium",
+  high: "border-l-task-priority-high",
+  urgent: "border-l-task-priority-urgent",
+}
+
 const TimelineView = () => {
   const { user } = useAuth()
   const { projectFilter, sprintFilter } = useFilter()
@@ -99,11 +96,7 @@ const TimelineView = () => {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [groupBy, setGroupBy] = useState("project")
 
-  useEffect(() => {
-    fetchTasks()
-  }, [user])
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true)
     try {
       const response = await apiService.getAllTaskOfUser()
@@ -115,7 +108,12 @@ const TimelineView = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchTasks()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const filteredTasks = useMemo(() => {
     let result = tasks
@@ -206,14 +204,14 @@ const TimelineView = () => {
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Group By Toggle */}
-          <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1 focus-within:ring-2 focus-within:ring-accent-primary/30">
             <button
               type="button"
               onClick={() => setGroupBy("project")}
-              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
                 groupBy === "project"
                   ? "bg-accent-primary text-white"
-                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
               }`}
             >
               <span className="hidden sm:inline">Project</span>
@@ -222,10 +220,10 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => setGroupBy("sprint")}
-              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
                 groupBy === "sprint"
                   ? "bg-accent-primary text-white"
-                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
               }`}
             >
               <span className="hidden sm:inline">Sprint</span>
@@ -234,14 +232,14 @@ const TimelineView = () => {
           </div>
 
           {/* Zoom Controls */}
-          <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1 focus-within:ring-2 focus-within:ring-accent-primary/30">
             <button
               type="button"
               onClick={() => setZoom("day")}
-              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
                 zoom === "day"
                   ? "bg-accent-primary text-white"
-                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
               }`}
             >
               Day
@@ -249,10 +247,10 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => setZoom("week")}
-              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
                 zoom === "week"
                   ? "bg-accent-primary text-white"
-                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
               }`}
             >
               Week
@@ -260,10 +258,10 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => setZoom("month")}
-              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
                 zoom === "month"
                   ? "bg-accent-primary text-white"
-                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover"
+                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
               }`}
             >
               Month
@@ -275,9 +273,13 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => navigateDate(-1)}
-              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+              aria-label="Previous period"
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
             >
-              <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary" />
+              <FiChevronLeft
+                className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary"
+                aria-hidden="true"
+              />
             </button>
             <span className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[120px] sm:min-w-[180px] text-center">
               {getDateLabel()}
@@ -285,9 +287,13 @@ const TimelineView = () => {
             <button
               type="button"
               onClick={() => navigateDate(1)}
-              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+              aria-label="Next period"
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
             >
-              <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary" />
+              <FiChevronRight
+                className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary"
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
@@ -309,10 +315,10 @@ const TimelineView = () => {
                     todayColumnIndex === i ? "bg-accent-primary/10 dark:bg-accent-primary/15" : ""
                   }`}
                 >
-                  <div className="text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <div className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                     {col.label}
                   </div>
-                  <div className="text-[9px] sm:text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
+                  <div className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
                     {col.sublabel}
                   </div>
                 </div>
@@ -329,7 +335,7 @@ const TimelineView = () => {
                 <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-xs sm:text-sm">
                   {groupName}
                 </h3>
-                <p className="text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                <p className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
                   {groupTasks.length} tasks
                 </p>
               </div>
@@ -349,6 +355,9 @@ const TimelineView = () => {
                   const position = getTaskPosition(task, columns)
                   if (!position) return null
 
+                  const statusBg = statusBgMap[task.status] || statusBgMap.todo
+                  const priorityBorder = priorityBorderMap[task.priority] || priorityBorderMap.low
+
                   return (
                     <motion.div
                       key={task._id}
@@ -356,18 +365,23 @@ const TimelineView = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: idx * 0.05 }}
                       onClick={() => setSelectedTask(task)}
-                      className={`absolute top-2 bottom-2 rounded-lg cursor-pointer hover:opacity-90 transition-opacity border-l-4 ${getStatusColor(task.status)} ${getPriorityColor(task.priority)} bg-opacity-20`}
-                      style={{
-                        left: `${position.left}%`,
-                        width: `${position.width}%`,
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault()
+                          setSelectedTask(task)
+                        }
                       }}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`${task.title} - ${task.status}${task.dueDate ? `, due ${dayjs(task.dueDate).format("MMM DD")}` : ""}`}
+                      className={`absolute top-2 bottom-2 rounded-xl cursor-pointer hover:opacity-90 transition-opacity border-l-[3px] ${statusBg} ${priorityBorder} focus:outline-none focus:ring-2 focus:ring-accent-primary/30`}
                     >
                       <div className="p-1.5 sm:p-2 overflow-hidden">
-                        <p className="text-[10px] sm:text-xs font-medium text-white truncate">
+                        <p className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
                           {task.title}
                         </p>
                         {position.width > 15 && (
-                          <p className="text-[9px] sm:text-[10px] text-white/70 truncate">
+                          <p className="text-xs sm:text-sm text-light-text-secondary/70 dark:text-dark-text-secondary/70 truncate">
                             {task.dueDate ? dayjs(task.dueDate).format("MMM DD") : ""}
                           </p>
                         )}
@@ -384,7 +398,10 @@ const TimelineView = () => {
         {filteredTasks.length === 0 && (
           <div className="flex-1 flex items-center justify-center py-16">
             <div className="text-center">
-              <FiCalendar className="w-16 h-16 mx-auto mb-4 text-light-text-tertiary opacity-30" />
+              <FiCalendar
+                className="w-16 h-16 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-30"
+                aria-hidden="true"
+              />
               <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
                 No tasks yet
               </h3>

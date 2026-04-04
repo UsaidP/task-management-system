@@ -1,8 +1,7 @@
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import { FiLayout, FiPlus } from "react-icons/fi"
-import { useAuth } from "../contexts/customHook.js"
+import { useCallback, useEffect, useState } from "react"
+import { FiPlus } from "react-icons/fi"
 import apiService from "../../service/apiService.js"
+import { useAuth } from "../contexts/customHook.js"
 import { NetworkError, ServerError } from "./ErrorStates.jsx"
 import KanbanBoard from "./kanban/KanbanBoard.jsx"
 import { Skeleton, SkeletonCircle, SkeletonText } from "./Skeleton.jsx"
@@ -57,7 +56,7 @@ const Board = () => {
     user?.role === "OWNER" ||
     user?.role === "PROJECT_ADMIN"
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -83,13 +82,13 @@ const Board = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (user) {
       fetchTasks()
     }
-  }, [user])
+  }, [user, fetchTasks])
 
   if (error) {
     if (error.name === "NetworkError") return <NetworkError onRetry={fetchTasks} />
@@ -97,7 +96,7 @@ const Board = () => {
   }
 
   return (
-    <div className="h-full flex flex-col pt-0" style={{ boxShadow: "0px 0px 1px 0.1px #000000" }}>
+    <div className="h-full flex flex-col pt-0 shadow-sm">
       {/* Board Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary">
         <div>
@@ -109,7 +108,13 @@ const Board = () => {
           </p>
         </div>
         {canAddTask && (
-          <button type="button" className="btn-primary flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setIsEditModalOpen(true)
+            }}
+            className="btn-primary flex items-center gap-2"
+          >
             <FiPlus className="w-4 h-4" />
             Add Task
           </button>
@@ -143,7 +148,7 @@ const Board = () => {
           }}
           task={taskToEdit}
           members={[{ user: user }]} // Pass user mapping for globals
-          onTaskUpdated={(updatedTask) => {
+          onTaskUpdated={(_updatedTask) => {
             fetchTasks()
           }}
         />

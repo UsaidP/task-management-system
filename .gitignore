@@ -1,13 +1,8 @@
 node_modules/
 .env
 .agent
-.agents
 .kiro
 .github
-.planning
-agents
-get-shit-done
-skills
 copilot-instruction.md
 gst-file-manifest.json
 ide
@@ -24,7 +19,6 @@ tests
 .planning
 .opencode
 design-system
-get-shit-done
 e2e
 
 # Additional unnecessary files

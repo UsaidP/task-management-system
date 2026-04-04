@@ -110,11 +110,7 @@ const createTask = asyncHandler(async (req, res, _next) => {
   // Populate subtasks before sending the response
   const populatedTask = await Task.findById(task._id).populate("subtasks")
 
-  return res.status(201).json({
-    message: "Task created successfully",
-    success: true,
-    task: populatedTask,
-  })
+  return res.status(201).json(new ApiResponse(201, populatedTask, "Task created successfully"))
 })
 
 const getTasks = asyncHandler(async (req, res, _next) => {
@@ -127,8 +123,7 @@ const getTasks = asyncHandler(async (req, res, _next) => {
     })
   }
 
-  const tasks = await Task.find({ project: projectId }).populate("assignedTo", "name email")
-  console.log(`tasks: ${tasks}`)
+  const tasks = await Task.find({ project: projectId }).populate("assignedTo", "fullname email avatar")
   if (!tasks) {
     throw new ApiError(404, "Tasks not found")
   }
@@ -138,13 +133,11 @@ const getTasks = asyncHandler(async (req, res, _next) => {
 
 const getAllTasks = asyncHandler(async (req, res, _next) => {
   const userID = String(req.user._id)
-  console.log(`userID: ${userID}`)
   if (!userID) {
     throw new ApiError(401, "Login to view tasks")
   }
 
-  const tasks = await Task.find({ assignedTo: userID }).populate("assignedTo", "name email")
-  console.log(`tasks: ${JSON.stringify(tasks)}`)
+  const tasks = await Task.find({ assignedTo: userID }).populate("assignedTo", "fullname email avatar")
 
   // Return empty array instead of 404 when user has no tasks
   return res.status(200).json(new ApiResponse(200, tasks || [], "Tasks fetched successfully"))
@@ -154,7 +147,7 @@ const getTaskById = asyncHandler(async (req, res, _next) => {
   if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
     throw new ApiError(400, "Invalid task ID")
   }
-  const task = await Task.findById(taskId).populate("assignedTo", "name email")
+  const task = await Task.findById(taskId).populate("assignedTo", "fullname email avatar")
   if (!task) {
     throw new ApiError(404, "Task not found")
   }

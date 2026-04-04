@@ -1,8 +1,8 @@
 const statusColors = {
-  todo: { dot: "bg-slate-400" },
-  "in-progress": { dot: "bg-accent-primary" },
-  "under-review": { dot: "bg-accent-warning" },
-  completed: { dot: "bg-accent-success" },
+  todo: { dot: "bg-task-status-todo" },
+  "in-progress": { dot: "bg-task-status-progress" },
+  "under-review": { dot: "bg-task-status-review" },
+  completed: { dot: "bg-task-status-done" },
 }
 
 export { statusColors }
@@ -23,7 +23,7 @@ const ColumnHeader = ({
   return (
     <div className={`flex items-center justify-between mb-3 ${className}`}>
       <div className="flex items-center gap-2">
-        <div className={`w-2.5 h-2.5 rounded-full ${colors.dot}`} />
+        <div className={`w-2.5 h-2.5 rounded-full ${colors.dot}`} aria-hidden="true" />
         <div>
           <h2 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wide">
             {title}

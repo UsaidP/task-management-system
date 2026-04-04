@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useMemo, useState } from "react"
-import { FiCalendar, FiChevronLeft, FiChevronRight, FiClock, FiPlus } from "react-icons/fi"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { FiCalendar, FiChevronLeft, FiChevronRight, FiPlus } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
@@ -15,7 +15,7 @@ const priorityStyles = {
   low: "bg-task-priority-low/20 text-task-priority-low",
 }
 
-const statusBorder = {
+const statusBorderClasses = {
   todo: "border-l-4 border-l-task-status-todo",
   "in-progress": "border-l-4 border-l-task-status-progress",
   "under-review": "border-l-4 border-l-task-status-review",
@@ -35,15 +35,10 @@ const CalendarView = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [viewMode, setViewMode] = useState("month")
   const [hoveredDay, setHoveredDay] = useState(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-
-  const handleMouseMove = (e) => {
-    setMousePos({ x: e.clientX, y: e.clientY })
-  }
 
   const today = dayjs()
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!user) return
     setIsLoading(true)
     try {
@@ -56,11 +51,12 @@ const CalendarView = () => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [user])
 
   useEffect(() => {
     fetchData()
-  }, [user])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const filteredTasks = useMemo(() => {
     let result = tasks
@@ -87,7 +83,7 @@ const CalendarView = () => {
   }
 
   const handleTaskCreated = (newTask) => {
-    setTasks([...tasks, newTask])
+    setTasks((prev) => [...prev, newTask])
   }
 
   const getTasksForDay = (day) => {
@@ -101,9 +97,17 @@ const CalendarView = () => {
     })
   }
 
+  const getWeekTasks = (dayOffset) => {
+    const date = currentDate.startOf("week").add(dayOffset, "day")
+    return filteredTasks.filter((task) => {
+      const taskDate = dayjs(task.dueDate)
+      return taskDate.isSame(date, "day")
+    })
+  }
+
   const getProjectName = (task) => {
-    if (task.project && typeof task.project === "object") return task.project.name || "Unknown"
-    return "Unknown"
+    if (typeof task.project === "object") return task.project?.name || "Personal"
+    return "Personal"
   }
 
   const calendarDays = useMemo(() => {
@@ -138,11 +142,11 @@ const CalendarView = () => {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <div className="flex rounded-lg border border-light-border dark:border-dark-border overflow-hidden">
+          <div className="flex rounded-lg border border-light-border dark:border-dark-border overflow-hidden focus-within:ring-2 focus-within:ring-accent-primary/30">
             <button
               type="button"
               onClick={() => setViewMode("month")}
-              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 text-sm font-medium transition-colors focus:outline-none focus:bg-accent-primary/20 ${
                 viewMode === "month"
                   ? "bg-accent-primary text-white"
                   : "bg-light-bg-secondary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
@@ -153,7 +157,7 @@ const CalendarView = () => {
             <button
               type="button"
               onClick={() => setViewMode("week")}
-              className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 text-sm font-medium transition-colors focus:outline-none focus:bg-accent-primary/20 ${
                 viewMode === "week"
                   ? "bg-accent-primary text-white"
                   : "bg-light-bg-secondary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
@@ -167,16 +171,17 @@ const CalendarView = () => {
               <button
                 type="button"
                 onClick={() => setCurrentDate(dayjs())}
-                className="btn-secondary text-sm px-3 py-1.5"
+                className="btn-secondary text-sm px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 Today
               </button>
               <button
                 type="button"
                 onClick={() => setCurrentDate(currentDate.add(-1, "month"))}
-                className="btn-ghost p-1.5"
+                aria-label="Previous month"
+                className="btn-ghost p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiChevronLeft className="w-5 h-5" />
+                <FiChevronLeft className="w-5 h-5" aria-hidden="true" />
               </button>
               <span className="text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[160px] sm:min-w-[180px] text-center">
                 {currentDate.format("MMMM YYYY")}
@@ -184,9 +189,10 @@ const CalendarView = () => {
               <button
                 type="button"
                 onClick={() => setCurrentDate(currentDate.add(1, "month"))}
-                className="btn-ghost p-1.5"
+                aria-label="Next month"
+                className="btn-ghost p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiChevronRight className="w-5 h-5" />
+                <FiChevronRight className="w-5 h-5" aria-hidden="true" />
               </button>
             </>
           )}
@@ -195,16 +201,17 @@ const CalendarView = () => {
               <button
                 type="button"
                 onClick={() => setCurrentDate(dayjs())}
-                className="btn-secondary text-sm px-3 py-1.5"
+                className="btn-secondary text-sm px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 Today
               </button>
               <button
                 type="button"
                 onClick={() => setCurrentDate(currentDate.add(-1, "week"))}
-                className="btn-ghost p-1.5"
+                aria-label="Previous week"
+                className="btn-ghost p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiChevronLeft className="w-5 h-5" />
+                <FiChevronLeft className="w-5 h-5" aria-hidden="true" />
               </button>
               <span className="text-sm sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[140px] sm:min-w-[250px] text-center">
                 {currentDate.startOf("week").format("MMM D")} -{" "}
@@ -213,9 +220,10 @@ const CalendarView = () => {
               <button
                 type="button"
                 onClick={() => setCurrentDate(currentDate.add(1, "week"))}
-                className="btn-ghost p-1.5"
+                aria-label="Next week"
+                className="btn-ghost p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiChevronRight className="w-5 h-5" />
+                <FiChevronRight className="w-5 h-5" aria-hidden="true" />
               </button>
             </>
           )}
@@ -225,9 +233,9 @@ const CalendarView = () => {
               setSelectedDate(dayjs())
               setIsModalOpen(true)
             }}
-            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-accent-primary text-white text-sm sm:text-base font-medium hover:bg-accent-primary/90 transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-accent-primary text-white text-sm sm:text-base font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
           >
-            <FiPlus className="w-4 h-4" />
+            <FiPlus className="w-4 h-4" aria-hidden="true" />
             <span className="hidden sm:inline">Add Task</span>
             <span className="sm:hidden">Add</span>
           </button>
@@ -250,11 +258,7 @@ const CalendarView = () => {
                   const date = currentDate.startOf("week").add(dayIndex, "day")
                   const dayNum = date.date()
                   const isToday = date.isSame(today, "day")
-
-                  const dayTasks = filteredTasks.filter((task) => {
-                    const taskDate = dayjs(task.dueDate)
-                    return taskDate.isSame(date, "day")
-                  })
+                  const dayTasks = getWeekTasks(dayIndex)
 
                   return (
                     <div
@@ -263,6 +267,16 @@ const CalendarView = () => {
                         setSelectedDate(date)
                         setIsModalOpen(true)
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault()
+                          setSelectedDate(date)
+                          setIsModalOpen(true)
+                        }
+                      }}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`View tasks for ${date.format("MMMM D, YYYY")}`}
                       className={`min-h-[200px] sm:min-h-[300px] p-2 border-b border-r border-light-border dark:border-dark-border cursor-pointer transition-colors last:border-r-0 ${
                         isToday
                           ? "bg-accent-primary/10 dark:bg-accent-primary/20"
@@ -285,16 +299,25 @@ const CalendarView = () => {
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             onClick={(e) => handleTaskClick(e, task)}
-                            className={`text-xs p-1.5 sm:p-2 rounded cursor-pointer transition-all hover:scale-[1.02] ${
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault()
+                                handleTaskClick(e, task)
+                              }
+                            }}
+                            tabIndex={0}
+                            role="button"
+                            aria-label={`Task: ${task.title}`}
+                            className={`text-xs p-1.5 sm:p-2 rounded-lg cursor-pointer transition-all hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
                               priorityStyles[task.priority] ||
                               "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
-                            } ${statusBorder[task.status] || ""}`}
+                            } ${statusBorderClasses[task.status] || ""}`}
                           >
                             <div className="font-semibold truncate text-[10px] sm:text-xs">
                               {task.title}
                             </div>
                             <div className="text-[9px] sm:text-[10px] mt-0.5 opacity-75 truncate">
-                              {task.status?.replace("-", " ")}
+                              {getProjectName(task)}
                             </div>
                           </motion.div>
                         ))}
@@ -330,7 +353,6 @@ const CalendarView = () => {
                     currentDate.year() === today.year()
 
                   const dayTasks = getTasksForDay(item.day)
-                  const isHovered = hoveredDay === item.day
 
                   return (
                     <div
@@ -338,8 +360,16 @@ const CalendarView = () => {
                       onClick={() => handleDayClick(item.day)}
                       onMouseEnter={() => setHoveredDay(item.day)}
                       onMouseLeave={() => setHoveredDay(null)}
-                      onMouseMove={handleMouseMove}
-                      className={`min-h-[100px] sm:min-h-[120px] p-1.5 sm:p-2 border-b border-r border-light-border dark:border-dark-border cursor-pointer transition-colors last:border-r-0 ${
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault()
+                          handleDayClick(item.day)
+                        }
+                      }}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`View tasks for ${currentDate.date(item.day).format("MMMM D, YYYY")}`}
+                      className={`relative min-h-[100px] sm:min-h-[120px] p-1.5 sm:p-2 border-b border-r border-light-border dark:border-dark-border cursor-pointer transition-colors last:border-r-0 ${
                         isToday
                           ? "bg-accent-primary/10 dark:bg-accent-primary/20"
                           : "hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/30"
@@ -355,71 +385,85 @@ const CalendarView = () => {
                         {item.day}
                       </div>
                       <div className="space-y-0.5 sm:space-y-1">
-                        {dayTasks.slice(0, 2).map((task) => (
+                        {dayTasks.slice(0, 3).map((task) => (
                           <motion.div
                             key={task._id}
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
                             onClick={(e) => handleTaskClick(e, task)}
-                            className={`text-[9px] sm:text-xs p-1 rounded truncate cursor-pointer transition-all hover:scale-[1.02] ${
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault()
+                                handleTaskClick(e, task)
+                              }
+                            }}
+                            tabIndex={0}
+                            role="button"
+                            aria-label={`Task: ${task.title}`}
+                            className={`text-[9px] sm:text-xs p-1 rounded-lg truncate cursor-pointer transition-all hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
                               priorityStyles[task.priority] ||
                               "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
-                            } ${statusBorder[task.status] || ""}`}
+                            } ${statusBorderClasses[task.status] || ""}`}
                           >
                             <div className="font-medium truncate">{task.title}</div>
                           </motion.div>
                         ))}
-                        {dayTasks.length > 2 && (
+                        {dayTasks.length > 3 && (
                           <div className="text-[9px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
-                            +{dayTasks.length - 2} more
+                            +{dayTasks.length - 3} more
                           </div>
                         )}
                       </div>
+
+                      {/* Hover Tooltip - positioned absolutely relative to cell */}
+                      <AnimatePresence>
+                        {hoveredDay === item.day && dayTasks.length > 0 && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 4 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-40 p-3 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-lg shadow-lg border border-light-border dark:border-dark-border w-56 max-h-64 overflow-y-auto pointer-events-auto"
+                          >
+                            <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2 text-xs">
+                              {currentDate.date(item.day).format("MMM D")}
+                            </h3>
+                            <div className="space-y-1.5">
+                              {dayTasks.map((task) => (
+                                <button
+                                  key={task._id}
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setSelectedTask(task)
+                                    setHoveredDay(null)
+                                  }}
+                                  className={`p-1.5 rounded cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 w-full text-left ${
+                                    priorityStyles[task.priority] || ""
+                                  }`}
+                                >
+                                  <div className="font-medium text-xs text-light-text-primary dark:text-dark-text-primary truncate">
+                                    {task.title}
+                                  </div>
+                                  <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                                    <span className="capitalize">
+                                      {task.status?.replace("-", " ")}
+                                    </span>
+                                    <span>·</span>
+                                    <span>{getProjectName(task)}</span>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   )
                 })}
               </div>
             </div>
           )}
-
-          {/* Hover Tooltip */}
-          <AnimatePresence>
-            {hoveredDay && getTasksForDay(hoveredDay).length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="fixed z-50 mt-2 p-3 sm:p-4 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-lg shadow-lg border border-light-border dark:border-dark-border w-64 max-h-80 overflow-y-auto"
-                style={{
-                  top: `${Math.min(mousePos.y + 16, window.innerHeight - 200)}px`,
-                  left: `${Math.min(mousePos.x + 16, window.innerWidth - 280)}px`,
-                }}
-              >
-                <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-2 text-sm">
-                  Tasks for {currentDate.date(hoveredDay).format("MMM D")}
-                </h3>
-                <div className="space-y-2">
-                  {getTasksForDay(hoveredDay).map((task) => (
-                    <div
-                      key={task._id}
-                      onClick={() => {
-                        setSelectedTask(task)
-                        setHoveredDay(null)
-                      }}
-                      className="p-2 bg-light-bg-hover dark:bg-dark-bg-hover rounded cursor-pointer hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary"
-                    >
-                      <div className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary truncate">
-                        {task.title}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-                        <span className="capitalize">{task.status?.replace("-", " ")}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {isLoading && (
             <div className="flex items-center justify-center py-12">
@@ -430,7 +474,10 @@ const CalendarView = () => {
           {!isLoading && filteredTasks.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 px-4">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-light-bg-secondary dark:bg-dark-bg-secondary flex items-center justify-center mb-4">
-                <FiCalendar className="w-8 h-8 sm:w-10 sm:h-10 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                <FiCalendar
+                  className="w-8 h-8 sm:w-10 sm:h-10 text-light-text-tertiary dark:text-dark-text-tertiary"
+                  aria-hidden="true"
+                />
               </div>
               <div className="text-center">
                 <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary">

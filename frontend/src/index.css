@@ -13,25 +13,20 @@
     @apply bg-light-bg-primary text-light-text-secondary dark:bg-dark-bg-primary dark:text-dark-text-secondary font-sans antialiased transition-colors duration-fast;
   }
 
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     @apply text-light-text-primary dark:text-dark-text-primary font-serif font-semibold;
   }
 
-  h4, h5, h6 {
+  h4,
+  h5,
+  h6 {
     @apply text-light-text-primary dark:text-dark-text-primary font-sans font-semibold;
   }
 
   a {
     @apply text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors duration-fast;
-  }
-
-  a[class*="btn-"] {
-    @apply no-underline;
-    transition: all 150ms ease-out;
-  }
-
-  a[class*="btn-"]:hover {
-    @apply no-underline;
   }
 
   a[class*="btn-"] {
@@ -49,7 +44,10 @@
 
   /* Respect reduced motion preference */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+
+    *,
+    *::before,
+    *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -66,15 +64,64 @@
   /* ── Buttons ─────────────────────────────── */
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-primary hover:bg-accent-primary-dark hover:text-light-text-inverse dark:bg-accent-primary-light dark:text-dark-text-inverse dark:hover:bg-accent-primary dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    background-color: #C4654A;
+    color: #FAF6F1;
+  }
+
+  .btn-primary:hover {
+    background-color: #A8503A;
+    color: #FAF6F1;
+  }
+
+  .dark .btn-primary {
+    background-color: #D4856A;
+    color: #1A1614;
+  }
+
+  .dark .btn-primary:hover {
+    background-color: #C4654A;
+    color: #1A1614;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-primary hover:text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary hover:bg-light-bg-hover dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary border-2 border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    background-color: #FFFFFF !important;
+    color: #2C2420 !important;
+    border: 2px solid #C9BAA8;
+  }
+
+  .btn-secondary:hover {
+    background-color: #F5EDE3 !important;
+    color: #2C2420 !important;
+  }
+
+  .dark .btn-secondary {
+    background-color: #FFFFFF !important;
+    color: #1A1614 !important;
+    border-color: #3D3530;
+  }
+
+  .dark .btn-secondary:hover {
+    background-color: #E8E8E8 !important;
+    color: #1A1614 !important;
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-danger hover:bg-accent-danger-dark hover:text-light-text-inverse dark:bg-accent-danger-light dark:text-dark-text-inverse dark:hover:bg-accent-danger dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    background-color: #C44A4A;
+  }
+
+  .btn-danger:hover {
+    background-color: #A83030;
+  }
+
+  .dark .btn-danger {
+    background-color: #D46A6A;
+  }
+
+  .dark .btn-danger:hover {
+    background-color: #C44A4A;
   }
 
   .btn-ghost {
@@ -82,23 +129,12 @@
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-warning hover:bg-accent-warning-dark hover:text-light-text-inverse dark:bg-accent-warning-light dark:text-dark-text-inverse dark:hover:bg-accent-warning dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+    background-color: #D4A548;
   }
 
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-primary hover:text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary hover:bg-light-bg-hover dark:bg-dark-bg-secondary dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary border-2 border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
-  }
-
-  .btn-danger {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-danger hover:bg-accent-danger-dark hover:text-light-text-inverse dark:bg-accent-danger-light dark:text-dark-text-inverse dark:hover:bg-accent-danger dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
-  }
-
-  .btn-ghost {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-secondary hover:text-light-text-secondary dark:text-dark-text-secondary dark:hover:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast cursor-pointer focus-visible-ring;
-  }
-
-  .btn-accent {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse bg-accent-warning hover:bg-accent-warning-dark hover:text-light-text-inverse dark:bg-accent-warning-light dark:text-dark-text-inverse dark:hover:bg-accent-warning dark:hover:text-dark-text-inverse shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
+  .btn-accent:hover {
+    background-color: #B88A30;
   }
 
   /* ── Forms ────────────────────────────────── */
@@ -155,13 +191,13 @@
     opacity: 0.12;
   }
 
-  .auth-bg > * {
+  .auth-bg>* {
     position: relative;
     z-index: 1;
   }
 
   .auth-card {
-    @apply bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl p-8 shadow-lg dark:shadow-dark-lg;
+    @apply bg-light-bg-primary dark:bg-dark-bg-primary border-2 border-light-border dark:border-dark-border rounded-2xl p-8 shadow-lg dark:shadow-dark-lg;
   }
 
   /* ── Modals ───────────────────────────────── */
@@ -358,6 +394,20 @@
 
   .delete-task-btn:hover .delete-icon {
     @apply text-accent-danger dark:text-accent-danger-light;
+  }
+
+  /* ── Filter Dropdown (Kanban) ─────────────── */
+
+  .filter-dropdown {
+    @apply w-36 h-10 flex items-center justify-center gap-2 border border-light-border dark:border-dark-border rounded-xl overflow-hidden bg-light-bg-primary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 cursor-pointer;
+  }
+
+  .filter-dropdown-options {
+    @apply p-2 bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg max-h-60 overflow-auto z-50;
+  }
+
+  .filter-dropdown-item {
+    @apply px-3 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer border-b last:border-b-0;
   }
 }
 

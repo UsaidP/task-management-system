@@ -1,6 +1,6 @@
-import { Dialog, Listbox, Transition } from "@headlessui/react"
+import { Dialog, Transition } from "@headlessui/react"
 import { Fragment, useState } from "react"
-import { FiArrowRight, FiCheck, FiChevronDown, FiX } from "react-icons/fi"
+import { FiArrowRight } from "react-icons/fi"
 
 const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
   const [moveOption, setMoveOption] = useState("backlog")
@@ -31,7 +31,7 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/50" />
+          <div className="fixed inset-0 bg-utility-overlay" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -56,14 +56,14 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
                   </p>
 
                   <div className="space-y-3">
-                    <label className="flex items-center gap-3 p-3 rounded-lg border border-light-border dark:border-dark-border cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover">
+                    <label className="flex items-center gap-3 p-3 rounded-xl border border-light-border dark:border-dark-border cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
                       <input
                         type="radio"
                         name="moveOption"
                         value="backlog"
                         checked={moveOption === "backlog"}
                         onChange={(e) => setMoveOption(e.target.value)}
-                        className="w-4 h-4 text-accent-primary"
+                        className="w-4 h-4 text-accent-primary focus:ring-accent-primary/20"
                       />
                       <div>
                         <div className="font-medium text-light-text-primary dark:text-dark-text-primary">
@@ -75,14 +75,14 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
                       </div>
                     </label>
 
-                    <label className="flex items-center gap-3 p-3 rounded-lg border border-light-border dark:border-dark-border cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover">
+                    <label className="flex items-center gap-3 p-3 rounded-xl border border-light-border dark:border-dark-border cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
                       <input
                         type="radio"
                         name="moveOption"
                         value="next"
                         checked={moveOption === "next"}
                         onChange={(e) => setMoveOption(e.target.value)}
-                        className="w-4 h-4 text-accent-primary"
+                        className="w-4 h-4 text-accent-primary focus:ring-accent-primary/20"
                       />
                       <div>
                         <div className="font-medium text-light-text-primary dark:text-dark-text-primary">
@@ -100,7 +100,7 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                    className="px-4 py-2 rounded-xl border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                   >
                     Cancel
                   </button>
@@ -108,7 +108,7 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
                     type="button"
                     onClick={handleComplete}
                     disabled={loading}
-                    className="px-4 py-2 rounded-lg bg-accent-success text-white font-medium hover:bg-accent-success/90 disabled:opacity-50 flex items-center gap-2"
+                    className="px-4 py-2 rounded-xl bg-accent-success text-white font-medium hover:bg-accent-success/90 disabled:opacity-50 flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-success/20"
                   >
                     {loading ? "Completing..." : "Complete Sprint"}
                     <FiArrowRight className="w-4 h-4" />

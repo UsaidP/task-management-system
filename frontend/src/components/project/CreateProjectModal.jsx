@@ -4,13 +4,12 @@ import toast from "react-hot-toast"
 import apiService from "../../../service/apiService.js"
 
 const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
-  const [showError, setShowError] = useState(false)
-  const id = useId()
+  const [_showError, _setShowError] = useState(false)
+  const _id = useId()
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  console.log("ID" + id)
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -58,64 +57,60 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="w-full max-w-lg p-8 bg-white rounded-lg shadow-xl dark:bg-gray-800"
+            className="w-full max-w-lg p-8 bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-2xl shadow-xl dark:shadow-dark-lg"
           >
-            <h2 className="mb-6 text-2xl font-bold text-center text-gray-900 dark:text-white">
+            <h2 className="mb-6 text-2xl font-bold text-center text-light-text-primary dark:text-dark-text-primary">
               Create New Project
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
                 >
                   Project Name
                 </label>
                 <input
                   type="text"
-                  id={id}
+                  id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="input-field"
                 />
               </div>
               <div>
                 <label
                   htmlFor="description"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
                 >
                   Description
                 </label>
                 <textarea
-                  id={id}
+                  id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows="4"
                   required
-                  className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="input-field"
                 />
               </div>
-              {error && <p className="text-sm text-red-600">{error}</p>}
+              {error && <p className="text-sm text-accent-danger">{error}</p>}
               <div className="flex items-center justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
-                >
+                <button type="button" onClick={onClose} className="btn-secondary text-sm">
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-4 py-2 text-sm font-medium text-white btn-primary rounded-md hovbtn-primary-hover disabled:opacity-50"
+                  className="btn-primary text-sm disabled:opacity-50"
                 >
                   {loading ? "Creating..." : "Create Project"}
                 </button>

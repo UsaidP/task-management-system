@@ -6,7 +6,6 @@ import {
   FiGithub,
   FiGlobe,
   FiLinkedin,
-  FiMail,
   FiMapPin,
   FiPhone,
   FiUser,
@@ -61,7 +60,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
       } else {
         toast.error(response.message || "Failed to update profile")
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to update profile")
     } finally {
       setLoading(false)
@@ -136,6 +135,8 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          role="dialog"
+          aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
           variants={backdropVariants}
           initial="hidden"
@@ -154,10 +155,12 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                 Edit Your Profile
               </h2>
               <button
+                type="button"
                 onClick={onClose}
-                className="text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+                aria-label="Close modal"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiX size={24} />
+                <FiX size={24} aria-hidden="true" />
               </button>
             </div>
 
@@ -193,6 +196,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                 <textarea
                   name="bio"
                   id="bio"
+                  aria-label="Bio"
                   value={formData.bio}
                   onChange={handleChange}
                   rows={3}
@@ -230,13 +234,14 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                  className="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
+                  aria-busy={loading}
                   className="px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50"
                 >
                   {loading ? "Saving..." : "Save Changes"}

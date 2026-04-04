@@ -61,7 +61,6 @@ class ApiService {
    */
   async customFetch(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
-    console.log(url);
     const headers = { ...this.defaultHeader, ...options.headers };
 
     if (options.body instanceof FormData) {

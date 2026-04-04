@@ -2,43 +2,53 @@
 
 import { styled } from "@mui/material/styles"
 import { PickersDay } from "@mui/x-date-pickers/PickersDay"
-import * as React from "react"
 
 // Styled PickersDay component to apply custom colors
 const CustomPickersDay = styled(PickersDay, {
   shouldForwardProp: (prop) => prop !== "isSelected" && prop !== "isHovered",
 })(({ theme, isSelected, isHovered, day }) => ({
-  borderRadius: 0,
+  borderRadius: theme.shape.borderRadius || "0.5rem",
+  transition: "background-color 150ms ease-out",
   ...(isSelected && {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
     "&:hover, &:focus": {
-      backgroundColor: theme.palette.primary.dark, // Darker on hover for selected
+      backgroundColor: theme.palette.primary.dark,
+    },
+    "&:focus-visible": {
+      outline: `2px solid ${theme.palette.primary.main}`,
+      outlineOffset: "2px",
     },
   }),
   ...(!isSelected &&
     isHovered && {
-      // Only apply hover effect if not already selected
       backgroundColor: theme.palette.primary.light,
       "&:hover, &:focus": {
         backgroundColor: theme.palette.primary.light,
       },
       ...theme.applyStyles("dark", {
-        // Dark mode specific hover
         backgroundColor: theme.palette.primary.dark,
         "&:hover, &:focus": {
           backgroundColor: theme.palette.primary.dark,
         },
       }),
     }),
+  ...(!isSelected &&
+    !isHovered && {
+      "&:hover": {
+        backgroundColor: theme.palette.action.hover,
+      },
+      "&:focus-visible": {
+        outline: `2px solid ${theme.palette.primary.main}`,
+        outlineOffset: "2px",
+      },
+    }),
   // Apply rounded corners for start/end of the week for visual consistency
   ...(day.day() === 0 && {
-    // Sunday
     borderTopLeftRadius: "50%",
     borderBottomLeftRadius: "50%",
   }),
   ...(day.day() === 6 && {
-    // Saturday
     borderTopRightRadius: "50%",
     borderBottomRightRadius: "50%",
   }),

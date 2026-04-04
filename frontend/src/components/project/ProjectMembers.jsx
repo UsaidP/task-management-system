@@ -1,5 +1,5 @@
 import { Listbox } from "@headlessui/react" // 1. Import Listbox
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { FiUserPlus, FiX } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
@@ -117,7 +117,10 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
           {/* 3. Replaced <select> with Headless UI <Listbox> */}
           <Listbox value={role} onChange={setRole}>
             <div className="relative">
-              <Listbox.Button className="input-field w-full sm:w-40 text-left">
+              <Listbox.Button
+                aria-label="Select role"
+                className="input-field w-full sm:w-40 text-left"
+              >
                 <span className="block truncate">{selectedRoleObject?.name}</span>
                 {/* You can add a chevron icon here if you want */}
               </Listbox.Button>
@@ -151,15 +154,15 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
             type="submit"
             className="btn-primary flex items-center justify-center gap-2 px-4 py-2 font-semibold rounded-lg transition-colors"
           >
-            <FiUserPlus />
+            <FiUserPlus aria-hidden="true" />
             Add
           </button>
         </form>
 
-        {error && <p className="text-rose-red text-sm text-center mb-4">{error}</p>}
+        {error && <p className="text-accent-danger text-sm text-center mb-4">{error}</p>}
 
         {/* Members List */}
-        <ul className="space-y-2 max-h-80 overflow-y-auto pr-2">
+        <ul className="space-y-2 max-h-80 overflow-y-auto pr-2" aria-label="Project members list">
           {members.map((member) => {
             const rowKey = getMemberUserId(member) || member._id
             return (
@@ -171,6 +174,8 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                   <img
                     src={getAvatarSrc(member)}
                     alt={getAvatarAlt(member)}
+                    loading="lazy"
+                    decoding="async"
                     className="mr-3 h-9 w-9 flex-shrink-0 rounded-full object-cover"
                   />
                   <div className="min-w-0">
@@ -187,10 +192,10 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                 <button
                   type="button"
                   onClick={() => handleRemoveMember(getMemberUserId(member))}
-                  className="flex-shrink-0 rounded-full p-1 text-light-text-secondary transition-colors hover:bg-rose-red/10 hover:text-rose-red dark:text-dark-text-secondary"
+                  className="flex-shrink-0 rounded-full p-1 text-light-text-secondary transition-colors hover:bg-accent-danger/10 hover:text-accent-danger dark:text-dark-text-secondary"
                   aria-label={`Remove ${getAvatarAlt(member)}`}
                 >
-                  <FiX size={20} />
+                  <FiX size={20} aria-hidden="true" />
                 </button>
               </li>
             )

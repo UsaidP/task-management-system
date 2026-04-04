@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "framer-motion"
-import React, { useState } from "react"
 
 // --- DEPENDENCIES START ---
 
@@ -14,7 +13,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 p-2 text-slate-700 transition-colors hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
+      className="relative flex h-10 w-10 items-center justify-center rounded-full bg-light-bg-hover dark:bg-dark-bg-hover p-2 text-light-text-secondary dark:text-dark-text-secondary transition-colors hover:bg-light-border dark:hover:bg-dark-border hover:text-light-text-primary dark:hover:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
       aria-label="Toggle theme"
     >
       <AnimatePresence mode="wait" initial={false}>

@@ -1,29 +1,25 @@
-import React from "react"
-import { Icon } from "./Icon" // Adjust path as needed
-import { featureData } from "./landingPageComponent.js" // Adjust path as needed
+import { Icon } from "./Icons"
+import { featureData } from "./landingPageComponent.js"
 
-/**
- * A component that displays the list of features
- * by mapping over featureData and using the dynamic Icon component.
- */
 export const FeaturesSection = () => {
   return (
-    <section className="features-container">
+    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 py-8 max-w-6xl mx-auto">
       {featureData.map((feature) => (
-        <div key={feature.title} className="feature-card">
-          {/*
-           * This is the fix:
-           * We pass the 'feature.icon' string (e.g., "FiTrello")
-           * to the 'name' prop of the <Icon> component.
-           */}
-          <Icon name={feature.icon} className="feature-icon" size={28} />
-
-          <h3 className="feature-title">{feature.title}</h3>
-          <p className="feature-description">{feature.description}</p>
+        <div
+          key={feature.title}
+          className="card p-6 flex flex-col items-start gap-3 hover:scale-[1.02] transition-transform duration-fast"
+        >
+          <div className="p-3 rounded-xl bg-accent-primary/10 text-accent-primary">
+            <Icon name={feature.icon} size={24} />
+          </div>
+          <h3 className="text-lg font-serif font-semibold text-light-text-primary dark:text-dark-text-primary">
+            {feature.title}
+          </h3>
+          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
+            {feature.description}
+          </p>
         </div>
       ))}
     </section>
   )
 }
-
-// You would then import and use <FeaturesSection /> in your main page.

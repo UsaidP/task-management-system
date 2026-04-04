@@ -19,7 +19,6 @@ import {
   FiGlobe,
   FiLinkedin,
   FiLock,
-  FiLogOut,
   FiMail,
   FiMapPin,
   FiMoon,
@@ -70,7 +69,7 @@ const InfoItem = ({ icon: Icon, label, value, href }) => {
 const StatCard = ({ icon: Icon, label, value, color, subtext }) => (
   <motion.div
     whileHover={{ y: -2, scale: 1.02 }}
-    className="group relative overflow-hidden bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border p-5 transition-all duration-200 hover:shadow-md dark:hover:shadow-dark-md"
+    className="group relative overflow-hidden bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border p-5 transition-shadow duration-200 hover:shadow-md dark:hover:shadow-dark-md"
   >
     <div
       className={`absolute top-0 right-0 w-20 h-20 ${color} opacity-10 rounded-bl-full transition-opacity group-hover:opacity-20`}
@@ -193,9 +192,7 @@ const Me = () => {
   const avatarInitial = displayName.trim().charAt(0).toUpperCase()
 
   // Cache-busting for avatar image to prevent stale browser cache
-  const avatarSrc = user?.avatar?.url
-    ? `${user.avatar.url}?t=${Date.now()}`
-    : null
+  const avatarSrc = user?.avatar?.url ? `${user.avatar.url}?t=${Date.now()}` : null
 
   const editProfileHandler = () => setIsEditModalOpen(true)
 
@@ -267,7 +264,7 @@ const Me = () => {
       await apiService.deleteAccount()
       toast.success("Account deleted successfully")
       await logout()
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to delete account")
     } finally {
       setDeleting(false)
@@ -382,32 +379,37 @@ const Me = () => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="relative overflow-hidden bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border p-6 md:p-8"
+            className="relative overflow-hidden backdrop-blur-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border p-6 md:p-8"
           >
             {/* Decorative Element */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-accent-primary/5 to-accent-success/5 rounded-bl-full" />
 
             <div className="relative flex flex-col md:flex-row items-center gap-6">
               {/* Avatar */}
-              <motion.div whileHover={{ scale: 1.05 }} className="relative group">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="relative group ring-4 ring-accent-primary/20 dark:ring-accent-primary/30 rounded-full"
+              >
                 <label
                   htmlFor="profile"
                   className="block w-32 h-32 rounded-2xl cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow"
                 >
-                  <div className="w-full h-full bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-5xl font-bold text-white relative overflow-hidden">
+                  <div className="w-full h-full bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-5xl font-bold text-light-text-inverse relative overflow-hidden">
                     {user?.avatar?.url && user.avatar.url !== "https://placehold.co/400" ? (
                       <img
                         alt="Avatar"
                         className="w-full h-full object-cover"
                         src={avatarSrc}
                         key={avatarSrc}
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <span>{avatarInitial}</span>
                     )}
                   </div>
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">Change</span>
+                  <div className="absolute inset-0 bg-utility-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span className="text-light-text-inverse text-sm font-medium">Change</span>
                   </div>
                 </label>
                 <input
@@ -463,7 +465,7 @@ const Me = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={editProfileHandler}
-                  className="p-3 rounded-xl bg-accent-primary text-white hover:bg-accent-primary-dark transition-colors shadow-md"
+                  className="p-3 rounded-xl bg-accent-primary text-light-text-inverse hover:bg-accent-primary-dark transition-colors shadow-md"
                 >
                   <FiEdit className="w-5 h-5" />
                 </motion.button>
@@ -525,7 +527,7 @@ const Me = () => {
                     <div className="p-2 rounded-lg bg-accent-primary/10">
                       <FiUser className="w-5 h-5 text-accent-primary" />
                     </div>
-                    <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
+                    <h3 className="text-lg font-serif font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Profile Information
                     </h3>
                   </div>
@@ -578,7 +580,7 @@ const Me = () => {
                     <div className="p-2 rounded-lg bg-accent-success/10">
                       <FiActivity className="w-5 h-5 text-accent-success" />
                     </div>
-                    <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
+                    <h3 className="text-lg font-serif font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Recent Activity
                     </h3>
                   </div>
@@ -685,7 +687,7 @@ const Me = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setShowDeleteConfirm(true)}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-accent-danger text-accent-danger font-semibold hover:bg-accent-danger hover:text-white transition-all duration-200"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-accent-danger text-accent-danger font-semibold hover:bg-accent-danger hover:text-light-text-inverse transition-all duration-200"
                     >
                       <FiTrash2 className="w-4 h-4" />
                       Delete
@@ -704,7 +706,7 @@ const Me = () => {
             className="text-center py-6 border-t border-light-border dark:border-dark-border"
           >
             <p className="text-light-text-tertiary dark:text-dark-text-tertiary text-sm font-medium">
-              TaskFlow v1.0.0
+              Taskly v1.0.0
             </p>
             <p className="text-light-text-tertiary dark:text-dark-text-tertiary text-xs mt-1">
               Work that feels human
@@ -725,7 +727,7 @@ const Me = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
           onClick={() => setShowPersonalInfo(false)}
         >
           <motion.div
@@ -751,14 +753,14 @@ const Me = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsEditModalOpen(true)}
-                  className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                  className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus-visible-ring"
                   title="Edit Profile"
                 >
                   <FiEdit className="w-5 h-5 text-accent-primary" />
                 </button>
                 <button
                   onClick={() => setShowPersonalInfo(false)}
-                  className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                  className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus-visible-ring"
                 >
                   <FiX className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
                 </button>
@@ -767,12 +769,14 @@ const Me = () => {
 
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-2xl font-bold text-white flex-shrink-0">
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-2xl font-bold text-light-text-inverse flex-shrink-0">
                   {user?.avatar?.url ? (
                     <img
                       src={user.avatar.url}
                       alt="Avatar"
                       className="w-full h-full object-cover rounded-xl"
+                      loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     user?.fullname?.charAt(0).toUpperCase() || "?"
@@ -885,7 +889,7 @@ const Me = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
           onClick={() => setActiveSetting(null)}
         >
           <motion.div
@@ -910,7 +914,7 @@ const Me = () => {
               </div>
               <button
                 onClick={() => setActiveSetting(null)}
-                className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus-visible-ring"
               >
                 <FiX className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
               </button>
@@ -929,7 +933,7 @@ const Me = () => {
                       </p>
                     </div>
                     <div className="w-12 h-6 bg-accent-primary rounded-full relative cursor-pointer">
-                      <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow" />
+                      <div className="absolute right-1 top-1 w-4 h-4 bg-light-text-inverse rounded-full shadow" />
                     </div>
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
@@ -942,7 +946,7 @@ const Me = () => {
                       </p>
                     </div>
                     <div className="w-12 h-6 bg-light-border dark:bg-dark-border rounded-full relative cursor-pointer">
-                      <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow" />
+                      <div className="absolute left-1 top-1 w-4 h-4 bg-light-text-inverse rounded-full shadow" />
                     </div>
                   </div>
                 </>
@@ -954,19 +958,31 @@ const Me = () => {
                     Choose your preferred theme
                   </p>
                   <div className="grid grid-cols-3 gap-3">
-                    <button className="p-4 rounded-xl border-2 border-accent-primary bg-light-bg-primary dark:bg-dark-bg-primary">
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange("light")}
+                      className={`p-4 rounded-xl border-2 ${selectedTheme === "light" ? "border-accent-primary bg-light-bg-primary dark:bg-dark-bg-primary" : "border-light-border dark:border-dark-border"} focus-visible-ring`}
+                    >
                       <div className="w-full h-12 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary mb-2" />
                       <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
                         Light
                       </p>
                     </button>
-                    <button className="p-4 rounded-xl border border-light-border dark:border-dark-border bg-dark-bg-primary">
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange("dark")}
+                      className={`p-4 rounded-xl border-2 ${selectedTheme === "dark" ? "border-accent-primary bg-dark-bg-primary" : "border-light-border dark:border-dark-border"} focus-visible-ring`}
+                    >
                       <div className="w-full h-12 rounded-lg bg-dark-bg-tertiary mb-2" />
                       <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
                         Dark
                       </p>
                     </button>
-                    <button className="p-4 rounded-xl border border-light-border dark:border-dark-border">
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange("system")}
+                      className={`p-4 rounded-xl border-2 ${selectedTheme === "system" ? "border-accent-primary" : "border-light-border dark:border-dark-border"} focus-visible-ring`}
+                    >
                       <div className="w-full h-12 rounded-lg bg-gradient-to-r from-light-bg-secondary to-dark-bg-tertiary mb-2" />
                       <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
                         System
@@ -986,7 +1002,7 @@ const Me = () => {
                       Last changed 30 days ago
                     </p>
                   </div>
-                  <button className="w-full p-4 rounded-xl border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors text-left">
+                  <button className="w-full p-4 rounded-xl card-interactive text-left">
                     <p className="font-medium text-light-text-primary dark:text-dark-text-primary">
                       Change Password
                     </p>
@@ -994,7 +1010,7 @@ const Me = () => {
                       Update your password
                     </p>
                   </button>
-                  <button className="w-full p-4 rounded-xl border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors text-left">
+                  <button className="w-full p-4 rounded-xl card-interactive text-left">
                     <p className="font-medium text-light-text-primary dark:text-dark-text-primary">
                       Two-Factor Authentication
                     </p>
@@ -1006,32 +1022,30 @@ const Me = () => {
               )}
 
               {activeSetting.title === "Preferences" && (
-                <>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">
-                        Language
-                      </label>
-                      <select className="w-full p-3 rounded-xl bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none">
-                        <option>English (US)</option>
-                        <option>Spanish</option>
-                        <option>French</option>
-                        <option>German</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">
-                        Timezone
-                      </label>
-                      <select className="w-full p-3 rounded-xl bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none">
-                        <option>UTC-5 (Eastern Time)</option>
-                        <option>UTC-8 (Pacific Time)</option>
-                        <option>UTC+0 (London)</option>
-                        <option>UTC+1 (Berlin)</option>
-                      </select>
-                    </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">
+                      Language
+                    </label>
+                    <select className="input-field">
+                      <option>English (US)</option>
+                      <option>Spanish</option>
+                      <option>French</option>
+                      <option>German</option>
+                    </select>
                   </div>
-                </>
+                  <div>
+                    <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">
+                      Timezone
+                    </label>
+                    <select className="input-field">
+                      <option>UTC-5 (Eastern Time)</option>
+                      <option>UTC-8 (Pacific Time)</option>
+                      <option>UTC+0 (London)</option>
+                      <option>UTC+1 (Berlin)</option>
+                    </select>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -1041,13 +1055,13 @@ const Me = () => {
                   toast.success(`${activeSetting.title} settings saved!`)
                   setActiveSetting(null)
                 }}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-accent-primary text-white font-semibold hover:bg-accent-primary-dark transition-colors"
+                className="btn-primary flex-1 px-4 py-2.5 rounded-lg"
               >
                 Save Changes
               </button>
               <button
                 onClick={() => setActiveSetting(null)}
-                className="px-4 py-2.5 rounded-xl border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover font-medium transition-colors"
+                className="btn-ghost flex-1 px-4 py-2.5 rounded-lg"
               >
                 Cancel
               </button>
@@ -1061,20 +1075,20 @@ const Me = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
           onClick={() => setShowDeleteConfirm(false)}
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-accent-danger p-6 max-w-sm w-full mx-4 shadow-2xl"
+            className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-accent-danger p-6 max-w-sm w-full mx-4 shadow-xl dark:shadow-dark-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 rounded-xl bg-accent-danger/10">
                 <FiAlertTriangle className="w-6 h-6 text-accent-danger" />
               </div>
-              <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
+              <h3 className="text-lg font-serif font-semibold text-light-text-primary dark:text-dark-text-primary">
                 Delete Account?
               </h3>
             </div>
@@ -1085,14 +1099,14 @@ const Me = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="flex-1 px-4 py-2.5 rounded-xl border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover font-medium transition-colors"
+                className="flex-1 px-4 py-2.5 rounded-lg border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover text-light-text-primary dark:text-dark-text-primary transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteAccount}
                 disabled={deleting}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-accent-danger text-white font-semibold hover:bg-accent-danger-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="btn-danger flex-1 px-4 py-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {deleting ? "Deleting..." : "Delete Account"}
               </button>

@@ -2,6 +2,7 @@ import { motion } from "framer-motion"
 import { useRef } from "react"
 import { useDrag, useDrop } from "react-dnd"
 import { FiCalendar, FiMessageSquare, FiPaperclip } from "react-icons/fi"
+import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
 
 const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
   const ref = useRef(null)
@@ -61,14 +62,13 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
         return `${base} priority-medium`
     }
   }
-  console.log(`Task :${JSON.stringify(task)}`)
   // Mock data for new fields
-  const category = task.labels || "Dev"
-  const comments = task.comments || 0
-  const attachments = task.attachments || 0
+  const _category = task.labels || "Dev"
+  const _comments = task.comments?.length || 0
+  const _attachments = task.attachments?.length || 0
   const completedSubtasks = task.completedSubtasks || 0
-  const totalSubtasks = task.totalSubtasks || 1
-  const assignees = task.assignees || []
+  const totalSubtasks = task.totalSubtasks || 0
+  const assignees = task.assignedTo || []
 
   const progress = totalSubtasks > 0 ? (completedSubtasks / totalSubtasks) * 100 : 0
 
@@ -83,7 +83,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -2, zIndex: 10 }}
-      className={`w-full p-4 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:border-accent-primary/50 dark:hover:border-accent-primary/50 transition-all cursor-pointer relative z-0 hover:z-20 ${isDragging ? "opacity-50 shadow-lg rotate-2 z-50" : "opacity-100"}`}
+      className={`task-card w-full p-4 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:border-accent-primary/50 dark:hover:border-accent-primary/50 transition-colors cursor-pointer relative z-0 hover:z-20 ${isDragging ? "opacity-50 shadow-lg rotate-2 z-50" : "opacity-100 shadow-sm"}`}
     >
       <header className="flex justify-between items-start mb-3">
         <span className="tag tag-project">{task.project?.name || "Personal"}</span>
@@ -137,21 +137,22 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
           </div>
           <div className="flex items-center gap-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
             <FiPaperclip className="w-3 h-3" />
-            <span>{(task.attachments && task.attachments.length) || 0}</span>
+            <span>{task.attachments?.length || 0}</span>
           </div>
         </div>
         <div className="flex items-center">
           <div className="flex -space-x-1">
             {assignees.length > 0 &&
               assignees.slice(0, 3).map((assignee) => {
-                const user = membersMap[assignee._id]
+                const assigneeId = typeof assignee === "object" ? assignee._id : assignee
+                const user = membersMap?.[assigneeId]
                 if (!user) return null
                 return (
                   <div
                     key={user._id}
                     className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-tertiary bg-cover bg-center"
                     style={{
-                      backgroundImage: `url(${user.avatar?.url || `https://i.pravatar.cc/150?u=${user._id}`})`,
+                      backgroundImage: `url(${getOptimizedAvatarUrl(user.avatar?.url, 50) || `https://i.pravatar.cc/150?u=${user._id}`})`,
                     }}
                     title={user.fullname}
                   />

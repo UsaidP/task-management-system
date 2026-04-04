@@ -1,26 +1,23 @@
 import dayjs from "dayjs"
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { motion, useReducedMotion } from "framer-motion"
+import { useCallback, useEffect, useState } from "react"
 import {
   FiActivity,
   FiAlertCircle,
-  FiArrowRight,
   FiCalendar,
   FiCheckSquare,
   FiClipboard,
   FiClock,
   FiEye,
   FiPlus,
-  FiUsers,
 } from "react-icons/fi"
 import { Link } from "react-router-dom"
-import { useAuth } from "../contexts/customHook.js"
 import apiService from "../../service/apiService.js"
 import { EmptyState, NetworkError, ServerError } from "../components/ErrorStates.jsx"
 import CreateProjectModal from "../components/project/CreateProjectModal.jsx"
-import ProjectCardSkeleton from "../components/project/ProjectCardSkeleton.jsx"
-import { Skeleton, SkeletonCard, SkeletonCircle, SkeletonText } from "../components/Skeleton.jsx"
+import { SkeletonCard, SkeletonCircle, SkeletonText } from "../components/Skeleton.jsx"
 import TaskDetailPanel from "../components/task/TaskDetailPanel.jsx"
+import { useAuth } from "../contexts/customHook.js"
 
 const OverviewSkeleton = () => (
   <motion.div
@@ -80,7 +77,7 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6, delay }}
-    className="card group p-6"
+    className="card group p-6 active:bg-light-bg-tertiary dark:active:bg-dark-bg-hover"
   >
     <div className="mb-4 flex items-center justify-between">
       <div
@@ -99,9 +96,11 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
 )
 
 const RecentActivityItem = ({ task, onClick }) => (
-  <div
+  <button
+    type="button"
     onClick={() => onClick(task)}
-    className="flex items-start gap-4 p-4 border-b border-light-border dark:border-dark-border last:border-0 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-colors rounded-xl cursor-pointer"
+    aria-label={`View task: ${task.title}`}
+    className="flex items-start gap-4 p-4 border-b border-light-border dark:border-dark-border last:border-0 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary active:bg-light-bg-tertiary dark:active:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg-primary transition-colors rounded-xl cursor-pointer w-full text-left"
   >
     <div className="mt-1 w-2 h-2 rounded-full flex-shrink-0 bg-accent-primary" />
     <div className="flex-1">
@@ -112,7 +111,7 @@ const RecentActivityItem = ({ task, onClick }) => (
         {task.description}
       </p>
       <div className="flex gap-2">
-        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-tertiary dark:text-dark-text-tertiary">
+        <span className="text-xs uppercase font-bold px-2 py-0.5 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-tertiary dark:text-dark-text-tertiary">
           {task.status.replace("-", " ")}
         </span>
       </div>
@@ -122,15 +121,17 @@ const RecentActivityItem = ({ task, onClick }) => (
         ? dayjs(task.updatedAt).fromNow()
         : dayjs(task.updatedAt).format("MMM D")}
     </div>
-  </div>
+  </button>
 )
 
 const UpcomingTaskItem = ({ task, onClick }) => {
   const isUrgent = dayjs(task.dueDate).diff(dayjs(), "day") <= 1
   return (
-    <div
+    <button
+      type="button"
       onClick={() => onClick(task)}
-      className={`flex items-center justify-between p-4 rounded-xl border ${isUrgent ? "border-accent-danger/30 bg-accent-danger/5" : "border-light-border dark:border-dark-border"} mb-3 cursor-pointer hover:shadow-sm transition-shadow`}
+      aria-label={`View task: ${task.title}, due ${dayjs(task.dueDate).format("MMM D")}`}
+      className={`flex items-center justify-between w-full p-4 rounded-xl border ${isUrgent ? "border-accent-danger/30 bg-accent-danger/5" : "border-light-border dark:border-dark-border"} mb-3 hover:shadow-sm active:shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg-primary transition-shadow cursor-pointer text-left`}
     >
       <div className="flex items-center gap-3">
         <div
@@ -152,13 +153,14 @@ const UpcomingTaskItem = ({ task, onClick }) => {
       >
         {dayjs(task.dueDate).format("MMM D")}
       </div>
-    </div>
+    </button>
   )
 }
 
 const Overview = () => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
+  const reduceMotion = useReducedMotion()
   const [stats, setStats] = useState({
     totalTasks: 0,
     todo: 0,
@@ -172,7 +174,7 @@ const Overview = () => {
   const [isCreateProjectModalOpen, setCreateProjectModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -213,12 +215,13 @@ const Overview = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (user) {
       fetchDashboardData()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   const getGreeting = () => {
@@ -244,7 +247,7 @@ const Overview = () => {
       {/* Header Section */}
       {user ? (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={reduceMotion ? {} : { opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="flex flex-col md:flex-row md:items-center justify-between gap-4"
@@ -262,7 +265,11 @@ const Overview = () => {
               <FiCalendar className="mr-2" />
               {dayjs().format("dddd, MMMM D, YYYY")}
             </div>
-            <button onClick={() => setCreateProjectModalOpen(true)} className="btn-primary">
+            <button
+              type="button"
+              onClick={() => setCreateProjectModalOpen(true)}
+              className="btn-primary"
+            >
               <FiPlus className="mr-2" />
               New Project
             </button>
@@ -309,7 +316,7 @@ const Overview = () => {
         <div className="lg:col-span-2 space-y-8">
           {/* Upcoming Due Dates */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={reduceMotion ? {} : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             className="card"
@@ -321,6 +328,7 @@ const Overview = () => {
               </h2>
               <Link
                 to="/my-tasks"
+                aria-label="View all tasks"
                 className="text-sm font-medium text-accent-primary hover:text-accent-primary-dark"
               >
                 View All
@@ -349,7 +357,7 @@ const Overview = () => {
 
           {/* Current Sprint Progress Mock */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={reduceMotion ? {} : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             className="card"
@@ -380,7 +388,14 @@ const Overview = () => {
                   <p className="text-sm font-bold text-accent-danger">4 Days</p>
                 </div>
               </div>
-              <div className="w-full h-3 bg-light-border dark:bg-dark-border rounded-full overflow-hidden">
+              <div
+                className="w-full h-3 bg-light-border dark:bg-dark-border rounded-full overflow-hidden"
+                role="progressbar"
+                aria-valuenow={68}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label="Sprint completion progress"
+              >
                 <div className="h-full bg-accent-warning" style={{ width: "68%" }} />
               </div>
             </div>
@@ -390,7 +405,7 @@ const Overview = () => {
         {/* Right Column: Recent Activity */}
         <div className="lg:col-span-1">
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={reduceMotion ? {} : { opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
             className="card h-full"
@@ -431,7 +446,11 @@ const Overview = () => {
               </div>
             )}
 
-            <button className="w-full mt-6 py-3 border border-light-border dark:border-dark-border rounded-xl font-semibold text-sm text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+            <button
+              type="button"
+              aria-label="View full activity log"
+              className="w-full mt-6 py-3 border border-light-border dark:border-dark-border rounded-xl font-semibold text-sm text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+            >
               View Activity Log
             </button>
           </motion.div>
@@ -454,7 +473,7 @@ const Overview = () => {
           }}
           task={selectedTask}
           members={[{ user: user }]}
-          onTaskUpdated={(updatedTask) => {
+          onTaskUpdated={(_updatedTask) => {
             fetchDashboardData()
           }}
         />

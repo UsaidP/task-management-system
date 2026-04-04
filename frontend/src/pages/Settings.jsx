@@ -30,7 +30,7 @@ const SettingsSection = ({ icon, title, description, children }) => (
         {icon}
       </div>
       <div className="flex-1">
-        <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
+        <h2 className="text-xl font-serif font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
           {title}
         </h2>
         {description && (
@@ -61,7 +61,10 @@ const SettingItem = ({ label, description, children }) => (
 )
 
 const ToggleSwitch = ({ checked, onChange, id }) => (
-  <label className="relative inline-block cursor-pointer" htmlFor={id}>
+  <label
+    className="relative inline-block cursor-pointer focus-within:ring-2 focus-within:ring-accent-primary/20 rounded-full"
+    htmlFor={id}
+  >
     <input
       type="checkbox"
       id={id}
@@ -73,7 +76,7 @@ const ToggleSwitch = ({ checked, onChange, id }) => (
       className={`flex items-center w-12 h-6 rounded-full p-1 transition-colors duration-300 ${checked ? "bg-accent-primary dark:bg-accent-primary-light" : "bg-light-bg-hover dark:bg-dark-bg-hover"}`}
     >
       <div
-        className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-300 ${checked ? "transform translate-x-6" : ""}`}
+        className={`w-4 h-4 bg-light-text-inverse dark:bg-dark-text-inverse rounded-full shadow-sm transition-transform duration-300 ${checked ? "transform translate-x-6" : ""}`}
       />
     </div>
   </label>
@@ -152,9 +155,10 @@ const Settings = () => {
             </p>
           </div>
           <motion.button
+            type="button"
             whileHover={{ scale: 1.02, translateY: -2 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto bg-accent-primary hover:bg-accent-primary-dark dark:bg-accent-primary-light dark:hover:bg-accent-primary text-white border-none rounded-xl font-semibold shadow-md hover:shadow-lg dark:shadow-dark-md transition-all duration-200"
+            className="btn-primary flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
             onClick={handleSaveSettings}
           >
             <FiIcons.FiCheck />
@@ -178,7 +182,8 @@ const Settings = () => {
             <SettingItem label="Theme" description="Choose between light and dark mode">
               <div className="flex gap-2 w-full sm:w-auto bg-light-bg-secondary dark:bg-dark-bg-tertiary p-1.5 rounded-xl">
                 <button
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  type="button"
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
                     theme === "light"
                       ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
                       : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
@@ -189,7 +194,8 @@ const Settings = () => {
                   <span>Light</span>
                 </button>
                 <button
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  type="button"
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
                     theme === "dark"
                       ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
                       : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
@@ -340,9 +346,10 @@ const Settings = () => {
           >
             <SettingItem label="Password">
               <motion.button
+                type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-light-bg-secondary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border border-light-border dark:border-dark-border rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto"
+                className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 <FiIcons.FiLock />
                 Change Password
@@ -350,9 +357,10 @@ const Settings = () => {
             </SettingItem>
             <SettingItem label="Two-Factor Authentication">
               <motion.button
+                type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-light-bg-secondary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border border-light-border dark:border-dark-border rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto"
+                className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 <FiIcons.FiShield />
                 Enable 2FA
@@ -360,9 +368,10 @@ const Settings = () => {
             </SettingItem>
             <SettingItem label="Export Data">
               <motion.button
+                type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-light-bg-secondary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border border-light-border dark:border-dark-border rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto"
+                className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 <FiIcons.FiDownload />
                 Export
@@ -387,9 +396,10 @@ const Settings = () => {
                   </span>
                 </div>
                 <motion.button
+                  type="button"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex flex-shrink-0 items-center justify-center gap-2 px-5 py-2.5 bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger dark:hover:bg-accent-danger text-white rounded-xl text-sm font-semibold shadow-sm dark:shadow-dark-sm transition-all duration-200 w-full sm:w-auto"
+                  className="flex flex-shrink-0 items-center justify-center gap-2 px-5 py-2.5 bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger dark:hover:bg-accent-danger-dark text-white rounded-xl text-sm font-semibold shadow-sm dark:shadow-dark-sm transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
                 >
                   <FiIcons.FiTrash2 />
                   Delete Account
@@ -405,7 +415,7 @@ const Settings = () => {
         <motion.div
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 px-6 py-4 bg-accent-success dark:bg-accent-success-dark text-white rounded-xl font-medium shadow-lg z-50"
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 px-6 py-4 bg-accent-success dark:bg-accent-success-dark text-white rounded-xl font-medium backdrop-blur-md shadow-xl dark:shadow-dark-lg z-50"
         >
           <FiIcons.FiCheckCircle className="text-xl flex-shrink-0" />
           <span>Settings saved successfully!</span>

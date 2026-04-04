@@ -1,19 +1,15 @@
 import { Listbox } from "@headlessui/react"
 import dayjs from "dayjs"
-import { AnimatePresence, motion } from "framer-motion"
-import { Fragment, useEffect, useMemo, useState } from "react"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { Fragment, useCallback, useEffect, useId, useMemo, useState } from "react"
 import {
-  FiAlertCircle,
   FiArrowDown,
   FiArrowUp,
   FiCalendar,
-  FiCheck,
   FiChevronDown,
-  FiClock,
   FiFilter,
   FiFolder,
   FiList,
-  FiPlus,
   FiSearch,
 } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
@@ -68,10 +64,12 @@ const SPRINTS = [
 
 export const MyTasks = () => {
   const { user } = useAuth()
+  const filterPanelId = useId()
   const [tasks, setTasks] = useState([])
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [_error, setError] = useState(null)
+  const reduceMotion = useReducedMotion()
 
   // Filters
   const [search, setSearch] = useState("")
@@ -87,7 +85,7 @@ export const MyTasks = () => {
   const [selectedTask, setSelectedTask] = useState(null)
   const [createModalOpen, setCreateModalOpen] = useState(false)
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -108,12 +106,13 @@ export const MyTasks = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (user) {
       fetchData()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   // Apply filtering and sorting
@@ -124,9 +123,7 @@ export const MyTasks = () => {
     if (search) {
       const query = search.toLowerCase()
       result = result.filter(
-        (t) =>
-          t.title.toLowerCase().includes(query) ||
-          (t.description && t.description.toLowerCase().includes(query))
+        (t) => t.title.toLowerCase().includes(query) || t.description?.toLowerCase().includes(query)
       )
     }
 
@@ -138,7 +135,8 @@ export const MyTasks = () => {
 
     // Sorting
     result.sort((a, b) => {
-      let valA, valB
+      let valA
+      let valB
 
       if (sortField === "dueDate") {
         valA = a.dueDate ? new Date(a.dueDate).getTime() : 9999999999999 // Put no due date at the end
@@ -213,7 +211,7 @@ export const MyTasks = () => {
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ boxShadow: "0px 0px 1px 0.1px #000000" }}>
+    <div className="h-full flex flex-col shadow-sm">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4 items-center p-6 bg-light-bg-primary dark:bg-dark-bg-primary shrink-0">
         <div>
           <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
@@ -224,6 +222,7 @@ export const MyTasks = () => {
           </p>
         </div>
         <button
+          type="button"
           className="btn-primary whitespace-nowrap flex items-center gap-2"
           onClick={() => setCreateModalOpen(true)}
         >
@@ -251,17 +250,20 @@ export const MyTasks = () => {
           <input
             type="text"
             placeholder="Search tasks..."
+            aria-label="Search tasks"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-10 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary"
+            className="w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-10 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary min-h-[44px]"
           />
         </div>
 
         <div className="w-full md:w-auto flex gap-3">
           <button
             type="button"
+            aria-expanded={showFilters}
+            aria-controls={filterPanelId}
             onClick={() => setShowFilters(!showFilters)}
-            className="w-full md:w-auto px-4 py-2 rounded-lg flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+            className="w-full md:w-auto px-4 py-2 rounded-lg flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
           >
             <FiFilter className="w-4 h-4" />
             <span>Filters</span>
@@ -273,14 +275,18 @@ export const MyTasks = () => {
       <AnimatePresence>
         {showFilters && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
+            id={filterPanelId}
+            initial={reduceMotion ? {} : { height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            exit={reduceMotion ? {} : { height: 0, opacity: 0 }}
             className="flex flex-wrap gap-3 pb-3"
           >
             <Listbox value={statusFilter} onChange={setStatusFilter}>
               <div className="relative">
-                <Listbox.Button className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+                <Listbox.Button
+                  aria-label="Filter by status"
+                  className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+                >
                   <span className="text-light-text-primary dark:text-dark-text-primary">
                     {statusFilter === "all" ? "All Status" : statusFilter.replace("-", " ")}
                   </span>
@@ -304,7 +310,10 @@ export const MyTasks = () => {
 
             <Listbox value={priorityFilter} onChange={setPriorityFilter}>
               <div className="relative">
-                <Listbox.Button className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+                <Listbox.Button
+                  aria-label="Filter by priority"
+                  className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+                >
                   <span className="text-light-text-primary dark:text-dark-text-primary">
                     {priorityFilter === "all" ? "All Priority" : priorityFilter}
                   </span>
@@ -328,7 +337,10 @@ export const MyTasks = () => {
 
             <Listbox value={projectFilter} onChange={setProjectFilter}>
               <div className="relative">
-                <Listbox.Button className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[150px] max-w-[180px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+                <Listbox.Button
+                  aria-label="Filter by project"
+                  className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[150px] max-w-[180px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+                >
                   <span className="text-light-text-primary dark:text-dark-text-primary truncate block">
                     {projectFilter === "all"
                       ? "All Projects"
@@ -363,7 +375,10 @@ export const MyTasks = () => {
 
             <Listbox value={sprintFilter} onChange={setSprintFilter}>
               <div className="relative">
-                <Listbox.Button className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+                <Listbox.Button
+                  aria-label="Filter by sprint"
+                  className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+                >
                   <span className="text-light-text-primary dark:text-dark-text-primary">
                     {sprintFilter === "all"
                       ? "All Sprints"
@@ -409,21 +424,25 @@ export const MyTasks = () => {
           <div className="w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors">
             Status
           </div>
-          <div
+          <button
+            type="button"
+            aria-label="Sort by priority"
             onClick={() => toggleSort("priority")}
-            className="w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none"
+            className="w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none bg-transparent border-none p-0 font-inherit text-inherit"
           >
             Priority <SortIcon field="priority" />
-          </div>
+          </button>
           <div className="w-48 hidden md:flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none">
             Project
           </div>
-          <div
+          <button
+            type="button"
+            aria-label="Sort by due date"
             onClick={() => toggleSort("dueDate")}
-            className="w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none"
+            className="w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none bg-transparent border-none p-0 font-inherit text-inherit"
           >
             Due Date <SortIcon field="dueDate" />
-          </div>
+          </button>
         </div>
 
         {/* List Content */}
@@ -438,19 +457,40 @@ export const MyTasks = () => {
               ))}
             </div>
           ) : filteredAndSortedTasks.length === 0 ? (
-            <div className="h-full flex items-center justify-center p-12">
+            <div className="h-full flex flex-col items-center justify-center p-12">
               <EmptyState message="No tasks match your current filters." />
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("")
+                  setStatusFilter("all")
+                  setPriorityFilter("all")
+                  setProjectFilter("all")
+                  setSprintFilter("all")
+                }}
+                className="mt-4 px-4 py-2 text-sm font-medium text-accent-primary hover:text-accent-primary-dark border border-accent-primary rounded-lg hover:bg-accent-primary/5 transition-colors"
+              >
+                Clear all filters
+              </button>
             </div>
           ) : (
             <AnimatePresence>
               {filteredAndSortedTasks.map((task) => (
-                <motion.div
+                <motion.button
                   key={task._id}
-                  initial={{ opacity: 0 }}
+                  initial={reduceMotion ? {} : { opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex border-b border-light-border dark:border-dark-border last:border-0 p-4 hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover transition-colors items-center cursor-pointer group"
+                  exit={reduceMotion ? {} : { opacity: 0 }}
+                  type="button"
+                  aria-label={`View task: ${task.title}`}
+                  className="flex w-full border-b border-light-border dark:border-dark-border last:border-0 p-4 hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover active:bg-light-bg-hover/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-inset transition-colors items-center cursor-pointer group text-left"
                   onClick={() => setSelectedTask(task)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      setSelectedTask(task)
+                    }
+                  }}
                 >
                   <div className="flex-1 min-w-[300px] flex items-center gap-3">
                     <FiList className="text-light-text-tertiary dark:text-dark-text-tertiary group-hover:text-accent-primary transition-colors" />
@@ -488,7 +528,7 @@ export const MyTasks = () => {
                       </span>
                     )}
                   </div>
-                </motion.div>
+                </motion.button>
               ))}
             </AnimatePresence>
           )}
@@ -504,7 +544,7 @@ export const MyTasks = () => {
           }}
           task={selectedTask}
           members={[{ user: user }]}
-          onTaskUpdated={(updatedTask) => {
+          onTaskUpdated={(_updatedTask) => {
             fetchData()
           }}
         />
@@ -513,7 +553,7 @@ export const MyTasks = () => {
       <CreateTaskModal
         isOpen={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
-        onTaskCreated={(newTask) => {
+        onTaskCreated={(_newTask) => {
           setCreateModalOpen(false)
           fetchData()
         }}

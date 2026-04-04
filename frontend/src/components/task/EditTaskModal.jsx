@@ -47,15 +47,18 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
   // Map members to selection options - memoized
   const assigneeOptions = useMemo(() => {
     if (!members || members.length === 0) return []
-    return members.map((member) => ({
-      id: member._id || member.user?._id,
-      name: member.user?.fullname || member.fullname || member.email || "Unknown",
-    }))
+    return members.map((member) => {
+      const u = typeof member.user === "object" && member.user !== null ? member.user : member
+      return {
+        id: u?._id || member?._id || "",
+        name: u?.fullname || member?.fullname || u?.email || member?.email || "Unknown",
+      }
+    })
   }, [members])
 
   // Populate the form when a task is provided - only when task ID changes
   useEffect(() => {
-    if (task && task._id && task._id !== prevTaskId) {
+    if (task?._id && task._id !== prevTaskId) {
       setFormData({
         title: task.title || "",
         description: task.description || "",
@@ -73,7 +76,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
       setFormData(initialFormState)
       setPrevTaskId(null)
     }
-  }, [task, isOpen])
+  }, [task, isOpen, prevTaskId])
 
   // Helpers for selected option display
   const selectedPriorityObject = useMemo(
@@ -221,20 +224,20 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate capitalize">{selectedStatusObject?.name}</span>
-                  <FiChevronDown className="w-4 h-4 text-slate-700" />
+                  <FiChevronDown className="w-4 h-4 text-light-text-secondary" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {statusOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-primary dark:text-dark-text-primary" : "text-light-text-secondary dark:text-dark-text-secondary"}`
+                        `cursor-pointer select-none relative py-2 px-4 transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
                       }
                     >
                       {({ selected }) => (
                         <span
-                          className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
+                          className={`block truncate text-light-text-primary dark:text-dark-text-primary ${selected ? "font-semibold" : "font-normal"}`}
                         >
                           {option.name}
                         </span>
@@ -256,20 +259,20 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate capitalize">{selectedPriorityObject?.name}</span>
-                  <FiChevronDown className="w-4 h-4 text-slate-700" />
+                  <FiChevronDown className="w-4 h-4 text-light-text-secondary" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {priorityOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-primary dark:text-dark-text-primary" : "text-light-text-secondary dark:text-dark-text-secondary"}`
+                        `cursor-pointer select-none relative py-2 px-4 transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
                       }
                     >
                       {({ selected }) => (
                         <span
-                          className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
+                          className={`block truncate text-light-text-primary dark:text-dark-text-primary capitalize ${selected ? "font-semibold" : "font-normal"}`}
                         >
                           {option.name}
                         </span>
@@ -292,21 +295,21 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate">{getAssigneeButtonText()}</span>
-                  <FiChevronDown className="w-4 h-4 text-slate-700" />
+                  <FiChevronDown className="w-4 h-4 text-light-text-secondary" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {assigneeOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
+                        `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
                       }
                     >
                       {({ selected }) => (
                         <>
                           <span
-                            className={`block truncate ${selected ? "font-semibold" : "font-normal"} text-light-text-secondary dark:text-dark-text-secondary`}
+                            className={`block truncate text-light-text-primary dark:text-dark-text-primary ${selected ? "font-semibold" : "font-normal"}`}
                           >
                             {option.name}
                           </span>
@@ -325,7 +328,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           </div>
 
           {/* Due Date */}
-          <div className="md:col-span-2">
+          <div>
             <label htmlFor={ids.dueDate} className="input-label">
               Due Date
             </label>
@@ -340,7 +343,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           </div>
 
           {/* Labels */}
-          <div className="md:col-span-2">
+          <div>
             <label htmlFor={ids.labels} className="input-label">
               Labels
             </label>
@@ -351,13 +354,13 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               value={formData.labels}
               onChange={handleChange}
               className="input-field"
-              placeholder="e.g. frontend, bug, docs" // Added placeholder for clarity
+              placeholder="e.g. frontend, bug, docs"
             />
           </div>
         </div>
 
         {/* Subtasks */}
-        <div className="md:col-span-2">
+        <div>
           <SubtaskView taskId={task._id} />
         </div>
 

@@ -36,7 +36,7 @@ export const Forget = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary">
+    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
       <div className="w-full max-w-md auth-card space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -44,7 +44,7 @@ export const Forget = () => {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <Link to="/" className="inline-block flex justify-center mb-4">
+          <Link to="/" aria-label="TaskFlow Home" className="inline-block flex justify-center mb-4">
             <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-2 shadow-sm">
               <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
             </div>
@@ -97,7 +97,8 @@ export const Forget = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200"
+                aria-busy={loading}
+                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">

@@ -41,9 +41,9 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
 
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+      <div className="fixed inset-0 bg-utility-overlay backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-md rounded-2xl bg-light-bg-primary dark:bg-dark-bg-tertiary p-6 shadow-xl border border-light-border dark:border-dark-border">
+        <DialogPanel className="w-full max-w-md rounded-xl bg-light-bg-primary dark:bg-dark-bg-tertiary p-6 shadow-xl border border-light-border dark:border-dark-border">
           <div className="flex items-center justify-between mb-4">
             <DialogTitle className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
               Create New Sprint
@@ -51,7 +51,8 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
             <button
               type="button"
               onClick={onClose}
-              className="p-1 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+              aria-label="Close dialog"
+              className="p-1 rounded-xl hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
             >
               <FiX className="w-5 h-5" />
             </button>
@@ -59,15 +60,19 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1">
+              <label
+                htmlFor="sprint-name"
+                className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1"
+              >
                 Sprint Name *
               </label>
               <input
+                id="sprint-name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="e.g., Sprint 1"
-                className="w-full px-4 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:border-accent-primary"
+                className="w-full px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors"
                 required
               />
             </div>
@@ -81,39 +86,47 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                 onChange={(e) => setFormData((prev) => ({ ...prev, goal: e.target.value }))}
                 placeholder="What do you want to achieve this sprint?"
                 rows={3}
-                className="w-full px-4 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:border-accent-primary resize-none"
+                className="w-full px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary resize-none transition-colors"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1">
+                <label
+                  htmlFor="start-date"
+                  className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1"
+                >
                   Start Date *
                 </label>
                 <div className="relative">
                   <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
                   <input
+                    id="start-date"
                     type="date"
                     value={formData.startDate}
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, startDate: e.target.value }))
                     }
-                    className="w-full pl-10 px-4 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:border-accent-primary"
+                    className="w-full pl-10 px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1">
+                <label
+                  htmlFor="end-date"
+                  className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1"
+                >
                   End Date *
                 </label>
                 <div className="relative">
                   <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
                   <input
+                    id="end-date"
                     type="date"
                     value={formData.endDate}
                     onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
-                    className="w-full pl-10 px-4 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:border-accent-primary"
+                    className="w-full pl-10 px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors"
                     required
                   />
                 </div>
@@ -124,14 +137,14 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                className="flex-1 px-4 py-2 rounded-xl border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 rounded-xl bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 {loading ? "Creating..." : "Create Sprint"}
               </button>

@@ -143,7 +143,7 @@ const KanbanBoard = ({
           }
         } else {
           // --- CASE 2: MOVING TO A DIFFERENT COLUMN ---
-          const newSourceTasks = sourceTasks.filter((t, idx) => idx !== taskIndex)
+          const newSourceTasks = sourceTasks.filter((_t, idx) => idx !== taskIndex)
           const destTasks = currentColumns[newStatus]?.tasks || [] // Handle case where dest column might be new
           const newDestTasks = [...destTasks]
           newDestTasks.splice(destinationIndex, 0, {
@@ -169,7 +169,7 @@ const KanbanBoard = ({
       try {
         await apiService.updateTask(targetProjectId, taskId, { status: newStatus })
         toast.success("Task moved successfully!")
-      } catch (error) {
+      } catch (_error) {
         toast.error("Failed to move task. Reverting.")
         // On failure, revert to the original state
         if (originalColumnsForRollback) {
@@ -191,16 +191,20 @@ const KanbanBoard = ({
     <div className="flex h-full flex-col relative">
       {/* Fixed Filter Section */}
       <div className="pb-4 px-1 md:px-4">
-        <div className="rounded-xl p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border">
+        <div className="rounded-xl p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border shadow-sm">
           <div className="flex flex-col md:flex-row items-center gap-3 mb-3">
             <div className="w-full md:flex-1 relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
+              <FiSearch
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5"
+                aria-hidden="true"
+              />
               <input
                 type="text"
                 placeholder="Search tasks..."
+                aria-label="Search kanban tasks"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-10 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary"
+                className="w-full bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl px-4 py-2 pl-10 text-sm focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary transition-colors"
               />
             </div>
 
@@ -208,9 +212,10 @@ const KanbanBoard = ({
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className={`w-full md:w-auto px-4 py-2 rounded-lg flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors ${showFilters || hasActiveFilters ? "border-accent-primary text-accent-primary" : ""}`}
+                aria-expanded={showFilters}
+                className={`w-full md:w-auto px-4 py-2 rounded-xl flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 ${showFilters || hasActiveFilters ? "border-accent-primary text-accent-primary" : ""}`}
               >
-                <FiFilter className="w-4 h-4" />
+                <FiFilter className="w-4 h-4" aria-hidden="true" />
                 <span>Filters</span>
               </button>
 
@@ -218,9 +223,9 @@ const KanbanBoard = ({
                 <button
                   type="button"
                   onClick={onCreateTask}
-                  className="btn-primary w-full md:w-auto px-4 py-2 flex items-center justify-center gap-2 whitespace-nowrap"
+                  className="btn-primary w-full md:w-auto px-4 py-2 flex items-center justify-center gap-2 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                 >
-                  <FiPlus className="w-4 h-4" />
+                  <FiPlus className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden sm:inline">New Task</span>
                   <span className="sm:hidden">Add</span>
                 </button>
@@ -245,25 +250,27 @@ const KanbanBoard = ({
                     </label>
                     <Listbox value={filterPriority} onChange={setFilterPriority}>
                       <Listbox.Button
+                        id="priority"
                         onClick={() => setIsPriorityMenuOpen(!isPriorityMenuOpen)}
-                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-utility-divider-dark rounded-md overflow-hidden"
+                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-light-border dark:border-dark-border rounded-xl overflow-hidden bg-light-bg-primary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                       >
                         <span className="truncate capitalize">
                           {selectedPriorityObject?.name || "Priority"}
                         </span>
                         <FiChevronDown
-                          className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
+                          className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary
                              transition-transform duration-200 ${
                                isPriorityMenuOpen ? "rotate-180" : ""
                              }`}
+                          aria-hidden="true"
                         />
                       </Listbox.Button>
-                      <Listbox.Options className="absolute top-full mt-2 w-full filter-dropdown-options p-2 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-sm cursor-pointer shadow-lg max-h-60 overflow-auto z-50">
+                      <Listbox.Options className="absolute top-full mt-2 w-full filter-dropdown-options p-2 bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl cursor-pointer shadow-lg max-h-60 overflow-auto z-50">
                         {priorityOptions.map((option) => (
                           <Listbox.Option key={option.id} value={option.id} as={Fragment}>
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item px-3 py-1.5 rounded-sm transition-colors duration-150 cursor-pointer border-b-1 last:border-b-0 ${
+                                className={`filter-dropdown-item px-3 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer border-b last:border-b-0 ${
                                   active
                                     ? "bg-accent-primary text-white"
                                     : "text-light-text-secondary dark:text-dark-text-secondary"
@@ -291,26 +298,28 @@ const KanbanBoard = ({
                     </label>
                     <Listbox value={filterAssignee} onChange={setFilterAssignee}>
                       <Listbox.Button
+                        id="assignee"
                         onClick={() => setIsAssigneeMenuOpen(!isAssigneeMenuOpen)}
-                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-utility-divider-dark rounded-md overflow-hidden"
+                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-light-border dark:border-dark-border rounded-xl overflow-hidden bg-light-bg-primary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                       >
                         <span className="truncate">
                           {selectedAssigneeObject?.name || "Assignee"}
                         </span>
                         <FiChevronDown
-                          className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary 
+                          className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary
                              transition-transform duration-200 ${
                                isAssigneeMenuOpen ? "rotate-180" : ""
                              }`}
+                          aria-hidden="true"
                         />
                       </Listbox.Button>
                       {/* --- FIX 3: Copied styling from Priority dropdown for consistency --- */}
-                      <Listbox.Options className="absolute top-full mt-2 min-w-[10rem] filter-dropdown-options p-2 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-sm shadow-lg focus:outline-none max-h-60 overflow-auto z-50">
+                      <Listbox.Options className="absolute top-full mt-2 min-w-[10rem] filter-dropdown-options p-2 bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg focus:outline-none max-h-60 overflow-auto z-50">
                         {assigneeOptions.map((option) => (
                           <Listbox.Option key={option.id} value={option.id} as={Fragment}>
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item px-2 py-1.5 rounded-sm transition-colors duration-150 cursor-pointer ${
+                                className={`filter-dropdown-item px-3 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer border-b last:border-b-0 ${
                                   active
                                     ? "bg-accent-primary text-white"
                                     : "text-light-text-secondary dark:text-dark-text-secondary"
@@ -335,7 +344,7 @@ const KanbanBoard = ({
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="btn-ghost text-sm text-error hover:bg-error/10"
+                      className="btn-ghost text-sm text-accent-danger hover:bg-accent-danger/10 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
                     >
                       Clear All
                     </button>
@@ -396,7 +405,7 @@ const KanbanBoard = ({
                           ) : (
                             <motion.div
                               layout
-                              className="flex items-center justify-center text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center h-32 p-4 border-2 border-dashed border-light-border dark:border-dark-border rounded-lg"
+                              className="flex items-center justify-center text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center h-32 p-4 border-2 border-dashed border-light-border dark:border-dark-border rounded-xl"
                             >
                               {hasActiveFilters
                                 ? "No tasks match your filters."

@@ -148,7 +148,7 @@ export const Home = () => {
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-accent-primary flex items-center justify-center flex-shrink-0">
               <span className="font-serif font-bold text-white text-sm leading-none">T</span>
             </div>
-            <span className="font-serif font-bold text-base sm:text-lg text-light-text-primary dark:text-dark-text-primary hidden xs:block">
+            <span className="font-serif font-bold text-base sm:text-lg text-light-text-primary dark:text-dark-text-primary hidden sm:block">
               TaskFlow
             </span>
           </div>
@@ -399,7 +399,7 @@ export const Home = () => {
           <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
             <a
               href="mailto:hello@taskly.app"
-              className="hover:text-accent-primary transition-colors duration-200"
+              className="hover:text-accent-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/20 rounded"
             >
               hello@taskly.app
             </a>

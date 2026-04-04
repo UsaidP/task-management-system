@@ -8,23 +8,24 @@ const SubtaskView = ({ taskId }) => {
   const [loading, setLoading] = useState(true)
   const [newSubtask, setNewSubtask] = useState("")
 
-  useEffect(() => {
-    if (taskId) {
-      fetchSubtasks()
-    }
-  }, [taskId])
-
   const fetchSubtasks = async () => {
     try {
       setLoading(true)
       const response = await apiService.getSubTasksForTask(taskId)
       setSubtasks(response.data || [])
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to fetch subtasks")
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (taskId) {
+      fetchSubtasks()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskId])
 
   const handleAddSubtask = async (e) => {
     e.preventDefault()
@@ -36,7 +37,7 @@ const SubtaskView = ({ taskId }) => {
       setSubtasks((prev) => [...prev, response.data])
       setNewSubtask("")
       toast.success("Subtask added!")
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to add subtask")
     }
   }
@@ -45,7 +46,7 @@ const SubtaskView = ({ taskId }) => {
     try {
       const response = await apiService.updateSubTask(subtaskId, { isCompleted: !currentStatus })
       setSubtasks((prev) => prev.map((sub) => (sub._id === subtaskId ? response.data : sub)))
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to update subtask")
     }
   }
@@ -55,7 +56,7 @@ const SubtaskView = ({ taskId }) => {
       await apiService.deleteSubTask(subtaskId)
       setSubtasks((prev) => prev.filter((sub) => sub._id !== subtaskId))
       toast.success("Subtask deleted!")
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to delete subtask")
     }
   }
@@ -99,7 +100,11 @@ const SubtaskView = ({ taskId }) => {
 
       {/* Add Subtask Form */}
       <form onSubmit={handleAddSubtask} className="flex gap-2">
+        <label htmlFor="subtask-input" className="sr-only">
+          Add a subtask
+        </label>
         <input
+          id="subtask-input"
           type="text"
           value={newSubtask}
           onChange={(e) => setNewSubtask(e.target.value)}
@@ -109,6 +114,7 @@ const SubtaskView = ({ taskId }) => {
         <button
           type="submit"
           disabled={!newSubtask.trim()}
+          aria-label="Add subtask"
           className="btn-primary px-4 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FiPlus className="w-5 h-5" />
@@ -157,6 +163,7 @@ const SubtaskView = ({ taskId }) => {
               <button
                 type="button"
                 onClick={() => handleDeleteSubtask(subtask._id)}
+                aria-label={`Delete subtask: ${subtask.title}`}
                 className="p-2 text-light-text-tertiary hover:text-error hover:bg-error/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
               >
                 <FiTrash2 className="w-4 h-4" />

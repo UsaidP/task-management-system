@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Disallow auth routes
+Disallow: /login
+Disallow: /signup
+Disallow: /reset-password
+Disallow: /verify
+
+# Disallow API routes
+Disallow: /api/
+
+# Disallow settings
+Disallow: /setting
+
+# Sitemap (add when you have one)
+# Sitemap: http://localhost:5173/sitemap.xml

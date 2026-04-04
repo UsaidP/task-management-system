@@ -143,7 +143,8 @@ const ProjectPage = () => {
 
   useEffect(() => {
     fetchProjectData()
-  }, [fetchProjectData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId])
 
   const handleTaskCreated = (newTask) => {
     if (!newTask || !newTask.status || !columns[newTask.status]) return
@@ -263,7 +264,7 @@ const ProjectPage = () => {
     try {
       await apiService.updateTask(projectId, draggedTask._id, { status: targetColumnId })
       toast.success("Task moved successfully!")
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to move task")
       // Revert on error
       fetchProjectData()
@@ -381,7 +382,7 @@ const ProjectPage = () => {
     return days
   }, [calendarDate])
 
-  const getPriorityClass = (priority) => {
+  const _getPriorityClass = (priority) => {
     switch (priority?.toLowerCase()) {
       case "urgent":
       case "high":
@@ -431,19 +432,19 @@ const ProjectPage = () => {
       <table className="w-full">
         <thead className="sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border z-10">
           <tr>
-            <th className="px-4 py-3 text-left text-[12px] font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
               Task
             </th>
-            <th className="px-4 py-3 text-left text-[12px] font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
               Status
             </th>
-            <th className="px-4 py-3 text-left text-[12px] font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
               Priority
             </th>
-            <th className="px-4 py-3 text-left text-[12px] font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
               Assignees
             </th>
-            <th className="px-4 py-3 text-left text-[12px] font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
               Due Date
             </th>
           </tr>
@@ -469,26 +470,24 @@ const ProjectPage = () => {
                 >
                   <td className="px-4 py-3">
                     <div>
-                      <p className="text-[13px] font-medium text-light-text-primary dark:text-dark-text-primary">
+                      <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                         {task.title}
                       </p>
                       {task.description && (
-                        <p className="text-[11px] text-light-text-secondary dark:text-dark-text-secondary mt-0.5 line-clamp-1">
+                        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-0.5 line-clamp-1">
                           {task.description}
                         </p>
                       )}
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span
-                      className={`text-[11px] font-medium px-2 py-1 rounded-full ${status.style}`}
-                    >
+                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${status.style}`}>
                       {status.label}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`text-[11px] font-medium px-2 py-1 rounded-full ${getPriorityBadge(task.priority)}`}
+                      className={`text-xs font-medium px-2 py-1 rounded-full ${getPriorityBadge(task.priority)}`}
                     >
                       {task.priority || "Medium"}
                     </span>
@@ -499,13 +498,13 @@ const ProjectPage = () => {
                         task.assignedTo.slice(0, 3).map((a, i) => (
                           <div
                             key={i}
-                            className="w-6 h-6 rounded-full bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-[10px] text-white font-bold -ml-1 first:ml-0"
+                            className="w-6 h-6 rounded-full bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-xs text-white font-bold -ml-1 first:ml-0"
                           >
                             {typeof a === "object" ? a.fullname?.slice(0, 2).toUpperCase() : "U"}
                           </div>
                         ))
                       ) : (
-                        <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                           Unassigned
                         </span>
                       )}
@@ -513,11 +512,11 @@ const ProjectPage = () => {
                   </td>
                   <td className="px-4 py-3">
                     {task.dueDate ? (
-                      <span className="text-[12px] text-light-text-secondary dark:text-dark-text-secondary">
+                      <span className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
                         {dayjs(task.dueDate).format("MMM DD, YYYY")}
                       </span>
                     ) : (
-                      <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                      <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                         —
                       </span>
                     )}
@@ -566,7 +565,7 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => setTimelineZoom("day")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+              className={`px-3 py-1.5 text-xs rounded transition-colors ${
                 timelineZoom === "day"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
@@ -577,7 +576,7 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => setTimelineZoom("week")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+              className={`px-3 py-1.5 text-xs rounded transition-colors ${
                 timelineZoom === "week"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
@@ -588,7 +587,7 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => setTimelineZoom("month")}
-              className={`px-3 py-1.5 text-[12px] rounded transition-colors ${
+              className={`px-3 py-1.5 text-xs rounded transition-colors ${
                 timelineZoom === "month"
                   ? "bg-accent-primary text-white"
                   : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
@@ -601,11 +600,12 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => setTimelineDate(timelineDate.add(-1, timelineZoom))}
+              aria-label="Previous period"
               className="p-1.5 rounded hover:bg-light-border dark:hover:bg-dark-border transition-colors"
             >
               <FiChevronLeft className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
             </button>
-            <span className="text-[13px] font-medium text-light-text-primary dark:text-dark-text-primary min-w-[140px] text-center">
+            <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[140px] text-center">
               {timelineZoom === "month"
                 ? timelineDate.format("MMMM YYYY")
                 : timelineDate.format("MMM YYYY")}
@@ -613,20 +613,21 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => setTimelineDate(timelineDate.add(1, timelineZoom))}
+              aria-label="Next period"
               className="p-1.5 rounded hover:bg-light-border dark:hover:bg-dark-border transition-colors"
             >
               <FiChevronRight className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
             </button>
           </div>
           <div className="flex-1" />
-          <span className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+          <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
             {filteredTasks.length} tasks
           </span>
         </div>
         <div className="flex-1 overflow-auto">
           <div className="flex min-h-full">
             <div className="w-40 flex-shrink-0 border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
-              <div className="px-3 py-2 text-[11px] font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
+              <div className="px-3 py-2 text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
                 Task
               </div>
               {filteredTasks.map((task) => (
@@ -635,7 +636,7 @@ const ProjectPage = () => {
                   onClick={() => openEditModal(task)}
                   className="px-3 py-2.5 border-b border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer"
                 >
-                  <p className="text-[12px] font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                  <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary truncate">
                     {task.title}
                   </p>
                 </div>
@@ -648,17 +649,17 @@ const ProjectPage = () => {
                     key={i}
                     className="flex-1 min-w-[30px] px-1 py-2 border-r border-light-border dark:border-dark-border text-center"
                   >
-                    <div className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                       {col.label}
                     </div>
-                    <div className="text-[9px] text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
+                    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
                       {col.sublabel}
                     </div>
                   </div>
                 ))}
               </div>
               <div className="relative">
-                {filteredTasks.map((task, idx) => {
+                {filteredTasks.map((task, _idx) => {
                   const position = getTaskPosition(task)
                   if (!position) return null
                   return (
@@ -676,14 +677,14 @@ const ProjectPage = () => {
                       }}
                     >
                       <div className="p-1 overflow-hidden">
-                        <p className="text-[10px] font-medium text-white truncate">{task.title}</p>
+                        <p className="text-xs font-medium text-white truncate">{task.title}</p>
                       </div>
                     </motion.div>
                   )
                 })}
               </div>
               {filteredTasks.length === 0 && (
-                <div className="flex items-center justify-center h-32 text-light-text-tertiary dark:text-dark-text-tertiary text-[13px]">
+                <div className="flex items-center justify-center h-32 text-light-text-tertiary dark:text-dark-text-tertiary text-sm">
                   No tasks found
                 </div>
               )}
@@ -752,7 +753,7 @@ const ProjectPage = () => {
         {/* Calendar Grid */}
         <div className="flex-1 overflow-auto p-3 sm:p-4">
           <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg border border-light-border dark:border-dark-border overflow-hidden overflow-x-auto">
-            <div className="grid grid-cols-7 text-center text-[10px] sm:text-[11px] font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border min-w-[700px]">
+            <div className="grid grid-cols-7 text-center text-xs sm:text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border min-w-[700px]">
               {weekDays.map((day) => (
                 <div
                   key={day}
@@ -787,7 +788,7 @@ const ProjectPage = () => {
                     }`}
                   >
                     <div
-                      className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-[10px] sm:text-[11px] font-medium mb-1 ${
+                      className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-xs sm:text-xs font-medium mb-1 ${
                         isToday
                           ? "bg-accent-primary text-white"
                           : "text-light-text-tertiary dark:text-dark-text-tertiary"
@@ -802,13 +803,13 @@ const ProjectPage = () => {
                           initial={{ opacity: 0, y: -3 }}
                           animate={{ opacity: 1, y: 0 }}
                           onClick={() => openEditModal(task)}
-                          className="text-[9px] sm:text-xs p-1 rounded truncate cursor-pointer bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:opacity-80 transition-opacity"
+                          className="text-xs sm:text-xs p-1 rounded truncate cursor-pointer bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:opacity-80 transition-opacity"
                         >
                           <div className="font-medium truncate">{task.title}</div>
                         </motion.div>
                       ))}
                       {dayTasks.length > 2 && (
-                        <div className="text-[9px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
+                        <div className="text-xs sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
                           +{dayTasks.length - 2} more
                         </div>
                       )}
@@ -994,6 +995,8 @@ const ProjectPage = () => {
           src={src}
           alt={alt}
           className={`${size} rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary object-cover`}
+          loading="lazy"
+          decoding="async"
           onError={() => setHasError(true)}
         />
       )
@@ -1018,18 +1021,18 @@ const ProjectPage = () => {
       >
         {/* Header: Title + Priority */}
         <div className="flex justify-between items-start gap-2 mb-2.5">
-          <h4 className="text-[13px] font-semibold text-light-text-primary dark:text-dark-text-primary line-clamp-2 leading-snug flex-1">
+          <h4 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary line-clamp-2 leading-snug flex-1">
             {task.title}
           </h4>
           {!isCompleted && (
             <span
-              className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${currentPriority.bg} ${currentPriority.text} uppercase tracking-wide flex-shrink-0`}
+              className={`text-xs font-bold px-2 py-0.5 rounded-full ${currentPriority.bg} ${currentPriority.text} uppercase tracking-wide flex-shrink-0`}
             >
               {task.priority || "Medium"}
             </span>
           )}
           {isCompleted && task.completedAt && (
-            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#7A9A6D22] text-[#7A9A6D] flex items-center gap-1 flex-shrink-0">
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#7A9A6D22] text-[#7A9A6D] flex items-center gap-1 flex-shrink-0">
               <FiCheckCircle className="w-3 h-3" />
               Done
             </span>
@@ -1038,7 +1041,7 @@ const ProjectPage = () => {
 
         {/* Task Description */}
         {task.description && (
-          <p className="text-[11px] text-light-text-secondary dark:text-dark-text-secondary line-clamp-2 mb-3 leading-relaxed">
+          <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary line-clamp-2 mb-3 leading-relaxed">
             {task.description}
           </p>
         )}
@@ -1047,10 +1050,10 @@ const ProjectPage = () => {
         {totalSubtasks > 0 && !isCompleted && (
           <div className="mb-3">
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[10px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide">
+              <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide">
                 Progress
               </span>
-              <span className="text-[10px] font-bold text-light-text-primary dark:text-dark-text-primary">
+              <span className="text-xs font-bold text-light-text-primary dark:text-dark-text-primary">
                 {progress}%
               </span>
             </div>
@@ -1072,7 +1075,7 @@ const ProjectPage = () => {
           <div className="flex items-center gap-1">
             {task.dueDate && (
               <span
-                className={`flex items-center gap-1 text-[10px] font-medium ${dayjs(task.dueDate).isBefore(dayjs()) && !isCompleted ? "text-accent-danger" : "text-light-text-tertiary dark:text-dark-text-tertiary"}`}
+                className={`flex items-center gap-1 text-xs font-medium ${dayjs(task.dueDate).isBefore(dayjs()) && !isCompleted ? "text-accent-danger" : "text-light-text-tertiary dark:text-dark-text-tertiary"}`}
               >
                 <FiClock className="w-3 h-3" />
                 {formatDate(task.dueDate)}
@@ -1083,7 +1086,7 @@ const ProjectPage = () => {
           <div className="flex items-center gap-2">
             {/* Comments Count */}
             {(task.comments?.length || 0) > 0 && (
-              <span className="flex items-center gap-1 text-[10px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
+              <span className="flex items-center gap-1 text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
                 <FiAlertCircle className="w-3 h-3" />
                 {task.comments.length}
               </span>
@@ -1091,7 +1094,7 @@ const ProjectPage = () => {
 
             {/* Subtask Count */}
             {totalSubtasks > 0 && !isCompleted && (
-              <span className="flex items-center gap-1 text-[10px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
+              <span className="flex items-center gap-1 text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
                 <FiCheckCircle className="w-3 h-3" />
                 {completedSubtasks}/{totalSubtasks}
               </span>
@@ -1133,16 +1136,16 @@ const ProjectPage = () => {
     return (
       <div className="flex-1 max-w-[340px] border-r border-light-border dark:border-dark-border pr-5">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[13px] font-bold text-light-text-primary dark:text-dark-text-primary">
+          <h3 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
             Recent Activity
           </h3>
-          <span className="text-[12px] text-accent-primary dark:text-accent-primary-light cursor-pointer font-medium">
+          <span className="text-xs text-accent-primary dark:text-accent-primary-light cursor-pointer font-medium">
             View All
           </span>
         </div>
         <div className="flex flex-col gap-3">
           {recentTasks.length === 0 ? (
-            <p className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+            <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
               No recent activity
             </p>
           ) : (
@@ -1161,18 +1164,18 @@ const ProjectPage = () => {
               return (
                 <div key={task._id} className="flex gap-2.5 items-start">
                   <div
-                    className={`w-7 h-7 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-[11px] text-white font-bold flex-shrink-0`}
+                    className={`w-7 h-7 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-xs text-white font-bold flex-shrink-0`}
                   >
                     {initials}
                   </div>
                   <div className="flex-1">
-                    <p className="text-[12px] text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
+                    <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
                       {task.status === "completed" ? "Completed" : "Updated"} task{" "}
                       <span className="text-accent-primary dark:text-accent-primary-light">
                         {task.title}
                       </span>
                     </p>
-                    <p className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
+                    <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
                       {dayjs(task.updatedAt).fromNow()}
                     </p>
                   </div>
@@ -1212,13 +1215,13 @@ const ProjectPage = () => {
     return (
       <div className="flex-1 max-w-sm border-r border-light-border dark:border-dark-border px-5">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[13px] font-bold text-light-text-primary dark:text-dark-text-primary">
+          <h3 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
             Team Performance
           </h3>
         </div>
         <div className="flex gap-4">
           {memberStats.length === 0 ? (
-            <p className="text-[12px] text-light-text-tertiary dark:text-dark-text-tertiary">
+            <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
               No team members
             </p>
           ) : (
@@ -1228,14 +1231,14 @@ const ProjectPage = () => {
                 className="flex flex-col items-center gap-1.5 min-w-[70px]"
               >
                 <div
-                  className={`w-9 h-9 rounded-full bg-gradient-to-br ${colors[idx % colors.length]} flex items-center justify-center text-[13px] text-white font-bold`}
+                  className={`w-9 h-9 rounded-full bg-gradient-to-br ${colors[idx % colors.length]} flex items-center justify-center text-sm text-white font-bold`}
                 >
                   {member.user?.fullname?.slice(0, 2).toUpperCase() || "U"}
                 </div>
-                <span className="text-[11px] font-semibold text-light-text-secondary dark:text-dark-text-secondary text-center truncate max-w-16">
+                <span className="text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary text-center truncate max-w-16">
                   {member.user?.fullname?.split(" ")[0] || "User"}
                 </span>
-                <span className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                   {member.taskCount || 0} tasks
                 </span>
                 <div
@@ -1306,31 +1309,31 @@ const ProjectPage = () => {
     return (
       <div className="flex-1.5 pl-5">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[13px] font-bold text-light-text-primary dark:text-dark-text-primary">
+          <h3 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
             Project Timeline
           </h3>
           <div className="flex gap-1">
             <button
               type="button"
-              className="px-2.5 py-1 text-[11px] rounded border border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors"
+              className="px-2.5 py-1 text-xs rounded border border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors"
             >
               Week
             </button>
             <button
               type="button"
-              className="px-2.5 py-1 text-[11px] rounded bg-light-border dark:bg-dark-border text-light-text-primary dark:text-dark-text-primary border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+              className="px-2.5 py-1 text-xs rounded bg-light-border dark:bg-dark-border text-light-text-primary dark:text-dark-text-primary border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
             >
               Month
             </button>
             <button
               type="button"
-              className="px-2.5 py-1 text-[11px] rounded border border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors"
+              className="px-2.5 py-1 text-xs rounded border border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors"
             >
               Quarter
             </button>
           </div>
         </div>
-        <div className="flex gap-0 mb-1.5 text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
+        <div className="flex gap-0 mb-1.5 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
           <div className="flex-1 text-center">{today.subtract(1, "month").format("MMM YYYY")}</div>
           <div className="flex-1 text-center">{today.format("MMM YYYY")}</div>
           <div className="flex-1 text-center">{today.add(1, "month").format("MMM YYYY")}</div>
@@ -1339,7 +1342,7 @@ const ProjectPage = () => {
         <div className="flex flex-col gap-1.5">
           {statusWithPercent.map((phase) => (
             <div key={phase.label} className="flex items-center gap-2.5">
-              <span className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary w-20 flex-shrink-0">
+              <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary w-20 flex-shrink-0">
                 {phase.label}
               </span>
               <div className="flex-1 h-2.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded relative overflow-visible">
@@ -1352,7 +1355,7 @@ const ProjectPage = () => {
                       backgroundColor: phase.color,
                     }}
                   >
-                    <span className="text-[9px] font-semibold text-white/80 whitespace-nowrap">
+                    <span className="text-xs font-semibold text-white/80 whitespace-nowrap">
                       {phase.text}
                     </span>
                   </div>
@@ -1403,13 +1406,13 @@ const ProjectPage = () => {
               {members.slice(0, 4).map((m, idx) => (
                 <div
                   key={m.user?._id || idx}
-                  className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-[10px] text-white font-bold"
+                  className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-xs text-white font-bold"
                 >
                   {m.user?.fullname?.slice(0, 2).toUpperCase() || "U"}
                 </div>
               ))}
               {members.length > 4 && (
-                <div className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-[9px] text-light-text-tertiary dark:text-dark-text-tertiary font-medium">
+                <div className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-xs text-light-text-tertiary dark:text-dark-text-tertiary font-medium">
                   +{members.length - 4}
                 </div>
               )}

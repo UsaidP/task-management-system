@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 
 const AddSubtask = ({ onAddSubtask }) => {
   const [title, setTitle] = useState("")
@@ -27,15 +27,11 @@ const AddSubtask = ({ onAddSubtask }) => {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        onKeyPress={handleKeyPress} // FIX 3: Added onKeyPress
+        onKeyDown={handleKeyPress}
         placeholder="Add a new subtask"
-        className="flex-grow p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100"
+        className="flex-grow p-2 border border-light-border dark:border-dark-border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary dark:bg-dark-bg-secondary dark:text-dark-text-primary transition-all duration-fast"
       />
-      <button
-        type="button" // FIX 2: Changed type to "button"
-        onClick={handleAddNewSubtask} // FIX 2: Added onClick handler
-        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
-      >
+      <button type="button" onClick={handleAddNewSubtask} className="btn-primary px-4 py-2 text-sm">
         Add
       </button>
     </div>

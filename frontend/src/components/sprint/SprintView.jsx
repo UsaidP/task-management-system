@@ -1,134 +1,18 @@
-import { useCallback, useEffect, useState } from "react"
-import { FiMoreVertical, FiPlus } from "react-icons/fi"
-import apiService from "../../../service/apiService.js"
-import { useAuth } from "../../contexts/customHook.js"
+import { useState } from "react"
+import { FiPlus } from "react-icons/fi"
+import useSprint from "../../hooks/useSprint.js"
 import CompleteSprintDialog from "./CompleteSprintDialog.jsx"
 import CreateSprintDialog from "./CreateSprintDialog.jsx"
+import SprintBoard from "./SprintBoard.jsx"
 
-const useSprint = (projectId) => {
-  const { user } = useAuth()
-  const [sprints, setSprints] = useState([])
-  const [currentSprint, setCurrentSprint] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-
-  const fetchSprints = async () => {
-    if (!projectId) return
-    setLoading(true)
-    setError(null)
-    try {
-      const response = await apiService.getSprintsByProject(projectId)
-      if (response.success) {
-        setSprints(response.data || [])
-        const activeSprint = response.data?.find((s) => s.status === "active")
-        setCurrentSprint(activeSprint || null)
-      }
-    } catch (err) {
-      setError(err)
-      console.error("Failed to fetch sprints:", err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const createSprint = async (sprintData) => {
-    const response = await apiService.createSprint({
-      ...sprintData,
-      projectId,
-    })
-    if (response.success) {
-      setSprints((prev) => [...prev, response.data])
-      return response.data
-    }
-    throw new Error(response.message)
-  }
-
-  const startSprint = async (sprintId) => {
-    const response = await apiService.startSprint(sprintId, projectId)
-    if (response.success) {
-      setSprints((prev) =>
-        prev.map((s) => {
-          if (s.status === "active") {
-            return { ...s, status: "completed" }
-          }
-          if (s._id === sprintId) {
-            return { ...s, status: "active" }
-          }
-          return s
-        })
-      )
-      setCurrentSprint(response.data)
-      return response.data
-    }
-    throw new Error(response.message)
-  }
-
-  const completeSprint = async (sprintId, moveTasksTo) => {
-    const response = await apiService.completeSprint(sprintId, moveTasksTo)
-    if (response.success) {
-      setSprints((prev) =>
-        prev.map((s) => (s._id === sprintId ? { ...s, status: "completed" } : s))
-      )
-      setCurrentSprint(null)
-      return response.data
-    }
-    throw new Error(response.message)
-  }
-
-  const deleteSprint = async (sprintId) => {
-    const response = await apiService.deleteSprint(sprintId)
-    if (response.success) {
-      setSprints((prev) => prev.filter((s) => s._id !== sprintId))
-      if (currentSprint?._id === sprintId) {
-        setCurrentSprint(null)
-      }
-    }
-    throw new Error(response.message)
-  }
-
-  useEffect(() => {
-    fetchSprints()
-  }, [projectId])
-
-  return {
-    sprints,
-    currentSprint,
-    loading,
-    error,
-    fetchSprints,
-    createSprint,
-    startSprint,
-    completeSprint,
-    deleteSprint,
-    setCurrentSprint,
-  }
-}
-
-const SprintView = ({ projectId, onCreateSprint, onBacklogClick }) => {
-  const {
-    sprints,
-    currentSprint,
-    loading,
-    createSprint,
-    startSprint,
-    completeSprint,
-    setCurrentSprint,
-  } = useSprint(projectId)
+const SprintView = ({ projectId }) => {
+  const { sprints, currentSprint, completeSprint, setCurrentSprint, setSprints } =
+    useSprint(projectId)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
   const [sprintToComplete, setSprintToComplete] = useState(null)
-  const [view, setView] = useState("board") // "board" or "list"
 
   const availableSprints = sprints.filter((s) => s.status !== "completed")
-  const activeSprint = sprints.find((s) => s.status === "active")
-
-  const handleStartSprint = async (sprintId) => {
-    try {
-      await startSprint(sprintId)
-    } catch (err) {
-      console.error("Failed to start sprint:", err)
-    }
-  }
 
   const handleCompleteSprint = async (sprintId, moveTasksTo) => {
     try {
@@ -140,33 +24,16 @@ const SprintView = ({ projectId, onCreateSprint, onBacklogClick }) => {
     }
   }
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-accent-success"
-      case "completed":
-        return "bg-slate-400"
-      default:
-        return "bg-light-text-tertiary"
-    }
-  }
-
   return (
-    <div className="h-full flex flex-col" style={{ boxShadow: "0px 0px 1px 0.1px #000000" }}>
+    <div className="h-full flex flex-col shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary shrink-0">
         <div className="flex items-center gap-4">
-          <button
-            onClick={onBacklogClick}
-            className="text-sm text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-primary"
-          >
-            ← Backlog
-          </button>
           <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
             Sprint Board
           </h2>
           {currentSprint && (
-            <span className="px-3 py-1 rounded-full text-xs font-medium bg-accent-success/20 text-accent-success">
+            <span className="px-3 py-1 rounded-xl text-xs font-medium bg-accent-success/10 text-accent-success">
               {currentSprint.name} (Active)
             </span>
           )}
@@ -174,12 +41,13 @@ const SprintView = ({ projectId, onCreateSprint, onBacklogClick }) => {
 
         <div className="flex items-center gap-3">
           <select
+            aria-label="Select sprint"
             value={currentSprint?._id || ""}
             onChange={(e) => {
               const sprint = sprints.find((s) => s._id === e.target.value)
               setCurrentSprint(sprint || null)
             }}
-            className="px-3 py-1.5 rounded-lg text-sm bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border"
+            className="px-3 py-1.5 rounded-xl text-sm bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-colors"
           >
             <option value="">Select Sprint</option>
             {availableSprints.map((sprint) => (
@@ -191,21 +59,23 @@ const SprintView = ({ projectId, onCreateSprint, onBacklogClick }) => {
 
           {currentSprint && currentSprint.status !== "completed" && (
             <button
+              type="button"
               onClick={() => {
                 setSprintToComplete(currentSprint)
                 setShowCompleteDialog(true)
               }}
-              className="px-3 py-1.5 rounded-lg text-sm border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+              className="px-3 py-1.5 rounded-xl text-sm border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
             >
               Complete Sprint
             </button>
           )}
 
           <button
+            type="button"
             onClick={() => setShowCreateDialog(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary/90"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
           >
-            <FiPlus className="w-4 h-4" />
+            <FiPlus className="w-4 h-4" aria-hidden="true" />
             New Sprint
           </button>
         </div>
@@ -234,38 +104,21 @@ const SprintView = ({ projectId, onCreateSprint, onBacklogClick }) => {
       )}
 
       {/* Board */}
-      <div className="flex-1 overflow-x-auto p-4">
-        {currentSprint ? (
-          <div className="flex gap-4 h-full">
-            {["todo", "in-progress", "under-review", "completed"].map((status) => (
-              <div key={status} className="w-[300px] flex-shrink-0">
-                <div className={`p-3 rounded-t-lg ${getStatusColor(currentSprint?.status)}`}>
-                  <h4 className="font-semibold text-white text-sm uppercase">
-                    {status.replace("-", " ")}
-                  </h4>
-                </div>
-                <div className="p-3 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-b-lg min-h-[200px] border border-t-0 border-light-border dark:border-dark-border">
-                  <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center py-8">
-                    Tasks for {status.replace("-", " ")} will appear here
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full text-light-text-tertiary dark:text-dark-text-tertiary">
-            <p className="text-lg mb-2">No active sprint selected</p>
-            <p className="text-sm">Select a sprint above or create a new one</p>
-          </div>
-        )}
-      </div>
+      {currentSprint ? (
+        <SprintBoard sprintId={currentSprint._id} projectId={projectId} />
+      ) : (
+        <div className="flex-1 flex flex-col items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary">
+          <p className="text-lg mb-2">No active sprint selected</p>
+          <p className="text-sm">Select a sprint above or create a new one</p>
+        </div>
+      )}
 
       {/* Create Sprint Dialog */}
       <CreateSprintDialog
         isOpen={showCreateDialog}
         onClose={() => setShowCreateDialog(false)}
-        onSubmit={async (data) => {
-          await createSprint(data)
+        onSprintCreated={(data) => {
+          setSprints((prev) => [data, ...prev])
           setShowCreateDialog(false)
         }}
         projectId={projectId}
@@ -286,4 +139,3 @@ const SprintView = ({ projectId, onCreateSprint, onBacklogClick }) => {
 }
 
 export default SprintView
-export { useSprint }

@@ -8,14 +8,61 @@ import {
 } from "@tanstack/react-table"
 import dayjs from "dayjs"
 import { motion } from "framer-motion"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { FiArrowDown, FiArrowUp, FiGrid } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
-import { useAuth } from "../../contexts/customHook.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
+import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
+import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
 const columnHelper = createColumnHelper()
+
+const TableSkeleton = () => (
+  <div className="h-full flex flex-col">
+    <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary">
+      <div>
+        <SkeletonText width="w-32" height="h-8" className="mb-2" />
+        <SkeletonText width="w-48" height="h-4" />
+      </div>
+      <div className="flex gap-3">
+        {[1, 2, 3, 4].map((i) => (
+          <Skeleton key={i} className="w-32 h-10 rounded-lg" />
+        ))}
+      </div>
+    </div>
+    <div className="flex-1 overflow-auto">
+      <div className="w-full">
+        <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30">
+          {["Title", "Status", "Priority", "Assignees", "Project", "Sprint", "Due Date"].map(
+            (h, i) => (
+              <div
+                key={h}
+                className={`px-4 py-3 ${i === 0 ? "flex-1" : "w-32"} ${i === 3 ? "w-24" : ""} ${i === 4 ? "w-36" : ""}`}
+              >
+                <SkeletonText width={i === 0 ? "w-20" : "w-16"} height="h-4" />
+              </div>
+            )
+          )}
+        </div>
+        {Array.from({ length: 10 }).map((_, row) => (
+          <div
+            key={row}
+            className="flex items-center gap-4 px-4 py-3 border-b border-light-border dark:border-dark-border"
+          >
+            <SkeletonText width="w-48" height="h-4" className="flex-1" />
+            <Skeleton className="w-16 h-6 rounded-full" />
+            <SkeletonText width="w-12" height="h-4" />
+            <SkeletonCircle size="w-6 h-6" />
+            <SkeletonText width="w-24" height="h-4" />
+            <SkeletonText width="w-16" height="h-4" />
+            <SkeletonText width="w-20" height="h-4" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)
 
 const STATUS_ORDER = { todo: 0, "in-progress": 1, "under-review": 2, completed: 3 }
 const PRIORITY_ORDER = { low: 0, medium: 1, high: 2, urgent: 3 }
@@ -63,15 +110,18 @@ const AssigneeAvatars = ({ assignees }) => {
   }
   return (
     <div className="flex items-center">
-      {assignees.slice(0, 3).map((assignee, i) => {
+      {assignees.slice(0, 3).map((assignee) => {
         const u = typeof assignee === "object" ? assignee : null
         const fallback = `https://i.pravatar.cc/150?u=${assignee._id || assignee}`
+        const name = u?.fullname || u?.username || "assignee"
         return (
           <img
-            key={i}
-            src={u?.avatar?.url || fallback}
-            alt="assignee"
+            key={u?._id || assignee}
+            src={getOptimizedAvatarUrl(u?.avatar?.url, 50) || fallback}
+            alt={name}
             className="w-6 h-6 rounded-full border-2 border-white dark:border-dark-bg-secondary -ml-1 first:ml-0"
+            loading="lazy"
+            decoding="async"
           />
         )
       })}
@@ -104,14 +154,14 @@ const columns = [
     cell: (info) => <StatusBadge status={info.getValue()} />,
     sortingFn: (rowA, rowB) =>
       STATUS_ORDER[rowA.original.status] - STATUS_ORDER[rowB.original.status],
-    filterFn: (row, columnId, filterValue) => row.original.status === filterValue,
+    filterFn: (row, _columnId, filterValue) => row.original.status === filterValue,
   }),
   columnHelper.accessor("priority", {
     header: "Priority",
     cell: (info) => <PriorityBadge priority={info.getValue()} />,
     sortingFn: (rowA, rowB) =>
       PRIORITY_ORDER[rowA.original.priority] - PRIORITY_ORDER[rowB.original.priority],
-    filterFn: (row, columnId, filterValue) => row.original.priority === filterValue,
+    filterFn: (row, _columnId, filterValue) => row.original.priority === filterValue,
   }),
   columnHelper.accessor((row) => row.assignedTo, {
     id: "assignee",
@@ -130,7 +180,7 @@ const columns = [
         </span>
       ),
       sortingFn: "alphanumeric",
-      filterFn: (row, columnId, filterValue) => {
+      filterFn: (row, _columnId, filterValue) => {
         const name =
           typeof row.original.project === "object" ? row.original.project?.name : "Personal"
         return name === filterValue
@@ -146,7 +196,7 @@ const columns = [
       </span>
     ),
     sortingFn: "alphanumeric",
-    filterFn: (row, columnId, filterValue) => {
+    filterFn: (row, _columnId, filterValue) => {
       const name = row.original.sprint?.name || "Backlog"
       return name === filterValue
     },
@@ -188,7 +238,6 @@ const SortIcon = ({ column }) => {
 }
 
 const TableView = () => {
-  const { user } = useAuth()
   const { projectFilter, sprintFilter } = useFilter()
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
@@ -197,11 +246,7 @@ const TableView = () => {
   const [columnFilters, setColumnFilters] = useState([])
   const [globalFilter, setGlobalFilter] = useState("")
 
-  useEffect(() => {
-    fetchTasks()
-  }, [user])
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true)
     try {
       const response = await apiService.getAllTaskOfUser()
@@ -213,7 +258,12 @@ const TableView = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchTasks()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const tableData = useMemo(() => {
     let result = tasks
@@ -303,7 +353,7 @@ const TableView = () => {
                   : prev.filter((f) => f.id !== "status")
               )
             }}
-            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary"
+            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary"
           >
             <option value="">All Status</option>
             <option value="todo">To Do</option>
@@ -322,7 +372,7 @@ const TableView = () => {
                   : prev.filter((f) => f.id !== "priority")
               )
             }}
-            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary"
+            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary"
           >
             <option value="">All Priority</option>
             <option value="low">Low</option>
@@ -341,7 +391,7 @@ const TableView = () => {
                   : prev.filter((f) => f.id !== "project")
               )
             }}
-            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary"
+            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary"
           >
             <option value="">All Projects</option>
             {projectNames.map((p) => (
@@ -361,7 +411,7 @@ const TableView = () => {
                   : prev.filter((f) => f.id !== "sprint")
               )
             }}
-            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary"
+            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary"
           >
             <option value="">All Sprints</option>
             {sprintNames.map((s) => (
@@ -375,7 +425,7 @@ const TableView = () => {
             <button
               type="button"
               onClick={clearAllFilters}
-              className="text-sm text-accent-primary hover:underline"
+              className="text-sm text-accent-primary hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
             >
               Clear filters
             </button>
@@ -393,8 +443,18 @@ const TableView = () => {
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        header.column.getToggleSortingHandler()?.(e)
+                      }
+                    }}
+                    tabIndex={header.column.getCanSort() ? 0 : undefined}
+                    role={header.column.getCanSort() ? "button" : undefined}
                     className={`px-4 py-3 text-left text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary ${
-                      header.column.getCanSort() ? "cursor-pointer hover:bg-light-bg-hover" : ""
+                      header.column.getCanSort()
+                        ? "cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
+                        : ""
                     }`}
                   >
                     <div className="flex items-center">
@@ -413,7 +473,15 @@ const TableView = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 onClick={() => setSelectedTask(row.original)}
-                className="hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    setSelectedTask(row.original)
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                className="hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-inset"
               >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="px-4 py-3">

@@ -24,26 +24,30 @@ const priorityOptions = [
   {
     id: "low",
     name: "Low",
-    color: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
-    dot: "bg-blue-500",
+    bg: "bg-task-priority-low/15",
+    text: "text-light-text-primary dark:text-dark-text-primary",
+    dot: "bg-task-priority-low",
   },
   {
     id: "medium",
     name: "Medium",
-    color: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
-    dot: "bg-amber-500",
+    bg: "bg-task-priority-medium/15",
+    text: "text-light-text-primary dark:text-dark-text-primary",
+    dot: "bg-task-priority-medium",
   },
   {
     id: "high",
     name: "High",
-    color: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300",
-    dot: "bg-orange-500",
+    bg: "bg-task-priority-high/15",
+    text: "text-light-text-primary dark:text-dark-text-primary",
+    dot: "bg-task-priority-high",
   },
   {
     id: "urgent",
     name: "Urgent",
-    color: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300",
-    dot: "bg-red-500",
+    bg: "bg-task-priority-urgent/15",
+    text: "text-light-text-primary dark:text-dark-text-primary",
+    dot: "bg-task-priority-urgent",
   },
 ]
 
@@ -51,22 +55,26 @@ const statusOptions = [
   {
     id: "todo",
     name: "To Do",
-    bg: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+    bg: "bg-task-status-todo/15",
+    text: "text-light-text-primary dark:text-dark-text-primary",
   },
   {
     id: "in-progress",
     name: "In Progress",
-    bg: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+    bg: "bg-task-status-progress/15",
+    text: "text-light-text-primary dark:text-dark-text-primary",
   },
   {
     id: "under-review",
     name: "In Review",
-    bg: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+    bg: "bg-task-status-review/15",
+    text: "text-light-text-primary dark:text-dark-text-primary",
   },
   {
     id: "completed",
     name: "Done",
-    bg: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+    bg: "bg-task-status-done/15",
+    text: "text-light-text-primary dark:text-dark-text-primary",
   },
 ]
 
@@ -83,11 +91,11 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
   const assigneeOptions = useMemo(() => {
     if (!members || members.length === 0) return []
     return members.map((member) => {
-      const u = member.user || member
+      const u = typeof member.user === "object" && member.user !== null ? member.user : member
       return {
-        id: u._id,
-        name: u.fullname || u.email || "Unknown",
-        avatar: u.avatar?.url || `https://i.pravatar.cc/150?u=${u._id}`,
+        id: u?._id || member?._id || "",
+        name: u?.fullname || member?.fullname || u?.email || member?.email || "Unknown",
+        avatar: u?.avatar?.url || `https://i.pravatar.cc/150?u=${u?._id || member?._id}`,
       }
     })
   }, [members])
@@ -131,25 +139,11 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
   }
 
   const handleUpdate = async () => {
-    console.log("=== handleUpdate CLICKED ===")
-    console.log("projectId:", projectId)
-    console.log("formData._id:", formData?._id)
-
     if (!projectId || !formData?._id) {
       console.error("handleUpdate - Missing IDs:", { projectId, taskId: formData?._id })
       toast.error("Missing task or project ID")
       return
     }
-
-    console.log("handleUpdate - payload:", {
-      title: formData.title?.trim(),
-      description: formData.description?.trim() || "",
-      status: formData.status,
-      priority: formData.priority,
-      assignedTo: formData.assignedTo,
-      dueDate: formData.dueDate || null,
-      labels: Array.isArray(formData.labels) ? formData.labels : formData.labels?.trim() || "",
-    })
 
     setIsUpdating(true)
     const toastId = toast.loading("Updating task...")
@@ -163,7 +157,6 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
         dueDate: formData.dueDate || null,
         labels: Array.isArray(formData.labels) ? formData.labels : formData.labels?.trim() || "",
       })
-      console.log("handleUpdate - response:", response)
       if (response.success) {
         onTaskUpdated(response.data || formData)
         toast.success("Task updated!", { id: toastId })
@@ -257,17 +250,17 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 >
                   <div className="relative">
                     <ListboxButton
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all hover:opacity-80 border border-transparent hover:border-light-border dark:hover:border-dark-border ${statusOptions.find((s) => s.id === formData.status)?.bg || "bg-light-bg-secondary dark:bg-dark-bg-tertiary"}`}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all hover:opacity-80 border border-transparent hover:border-light-border dark:hover:border-dark-border ${statusOptions.find((s) => s.id === formData.status)?.bg || "bg-light-bg-secondary dark:bg-dark-bg-tertiary"} ${statusOptions.find((s) => s.id === formData.status)?.text || "text-light-text-primary dark:text-dark-text-primary"}`}
                     >
                       {statusOptions.find((o) => o.id === formData.status)?.name || "Status"}
                     </ListboxButton>
-                    <ListboxOptions className="absolute left-0 mt-1 w-36 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+                    <ListboxOptions className="absolute left-0 mt-1 w-36 bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
                       {statusOptions.map((option) => (
                         <ListboxOption
                           key={option.id}
                           value={option.id}
                           className={({ active }) =>
-                            `px-4 py-2 text-sm cursor-pointer transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
+                            `px-4 py-2 text-sm cursor-pointer transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-primary dark:text-dark-text-primary" : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
                           }
                         >
                           {option.name}
@@ -284,23 +277,26 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 >
                   <div className="relative">
                     <ListboxButton
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all border border-transparent hover:border-light-border dark:hover:border-dark-border ${priorityOptions.find((p) => p.id === formData.priority)?.color || "bg-slate-100 text-slate-700"}`}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all border border-transparent hover:border-light-border dark:hover:border-dark-border ${priorityOptions.find((p) => p.id === formData.priority)?.bg || "bg-light-bg-secondary dark:bg-dark-bg-tertiary"} ${priorityOptions.find((p) => p.id === formData.priority)?.text || "text-light-text-primary dark:text-dark-text-primary"}`}
                     >
                       <span className="text-xs font-semibold uppercase tracking-wider">
                         {priorityOptions.find((p) => p.id === formData.priority)?.name ||
                           "Priority"}
                       </span>
                     </ListboxButton>
-                    <ListboxOptions className="absolute left-0 mt-1 w-40 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+                    <ListboxOptions className="absolute left-0 mt-1 w-40 bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
                       {priorityOptions.map((option) => (
                         <ListboxOption
                           key={option.id}
                           value={option.id}
                           className={({ active }) =>
-                            `px-4 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
+                            `px-4 py-2 text-sm cursor-pointer flex items-center gap-2 transition-colors text-light-text-secondary dark:text-dark-text-secondary ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
                           }
                         >
-                          <div className={`w-2.5 h-2.5 rounded-full ${option.dot}`} />
+                          <div
+                            aria-hidden="true"
+                            className={`w-2.5 h-2.5 rounded-full ${option.dot}`}
+                          />
                           <span className="text-xs font-semibold uppercase tracking-wider">
                             {option.name}
                           </span>
@@ -318,11 +314,14 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   disabled={isUpdating}
                   className="btn-primary py-1.5 px-3 text-sm flex items-center gap-1.5"
                 >
-                  <FiSave className="w-3.5 h-3.5" />
+                  <FiSave aria-hidden="true" className="w-3.5 h-3.5" />
                   {isUpdating ? "Saving..." : "Update"}
                 </button>
                 <button
+                  type="button"
+                  aria-label="Delete task"
                   onClick={async () => {
+                    // TODO: Replace window.confirm() with a proper accessible confirmation dialog
                     const confirm = window.confirm("Delete this task?")
                     if (confirm) {
                       await apiService.deleteTask(projectId, formData._id)
@@ -331,15 +330,17 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       // Ideally trigger a refresh in the parent view.
                     }
                   }}
-                  className="p-2 text-light-text-tertiary hover:text-error hover:bg-error/10 rounded-lg transition-colors"
+                  className="min-h-[44px] min-w-[44px] p-2 text-light-text-tertiary hover:text-accent-danger hover:bg-accent-danger/10 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
-                  <FiTrash2 className="w-4 h-4" />
+                  <FiTrash2 aria-hidden="true" className="w-4 h-4" />
                 </button>
                 <button
+                  type="button"
+                  aria-label="Close panel"
                   onClick={onClose}
-                  className="p-2 text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-colors"
+                  className="min-h-[44px] min-w-[44px] p-2 text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
-                  <FiX className="w-5 h-5" />
+                  <FiX aria-hidden="true" className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -353,12 +354,14 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     type="text"
                     value={formData.title}
                     onChange={(e) => handleFieldChange("title", e.target.value)}
+                    aria-label="Task title"
                     className="w-full text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-4 py-3 mb-3 placeholder:text-light-text-tertiary transition-colors"
                     placeholder="Task Title"
                   />
                   <textarea
                     value={formData.description}
                     onChange={(e) => handleFieldChange("description", e.target.value)}
+                    aria-label="Task description"
                     className="w-full text-sm text-light-text-secondary dark:text-dark-text-secondary bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-4 py-3 resize-none min-h-[100px] placeholder:text-light-text-tertiary selection:bg-accent-primary/20 transition-colors"
                     placeholder="Add a description..."
                   />
@@ -368,7 +371,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 <div className="grid grid-cols-[120px_1fr] gap-y-4 text-sm items-center">
                   {/* Assignees */}
                   <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
-                    <FiUser className="w-4 h-4" /> Assignees
+                    <FiUser aria-hidden="true" className="w-4 h-4" /> Assignees
                   </div>
                   <div>
                     <Listbox
@@ -393,14 +396,16 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                     src={opt.avatar}
                                     alt={opt.name}
                                     title={opt.name}
-                                    className="w-6 h-6 rounded-full border-2 border-white dark:border-dark-bg-secondary ring-2 ring-accent-primary/20"
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-secondary ring-2 ring-accent-primary/20"
                                   />
                                 )
                               })}
                             </div>
                           )}
                         </ListboxButton>
-                        <ListboxOptions className="absolute left-0 mt-1 w-64 max-h-48 overflow-y-auto bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1">
+                        <ListboxOptions className="absolute left-0 mt-1 w-64 max-h-48 overflow-y-auto bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1">
                           {assigneeOptions.map((option) => {
                             const selected = assignedToIds.includes(option.id)
                             return (
@@ -408,18 +413,25 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                 key={option.id}
                                 value={option.id}
                                 className={({ active }) =>
-                                  `flex items-center gap-3 px-4 py-2 text-sm cursor-pointer transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
+                                  `flex items-center gap-3 px-4 py-2 text-sm cursor-pointer transition-colors text-light-text-secondary dark:text-dark-text-secondary ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
                                 }
                               >
                                 <div className="flex-1 flex items-center gap-2 text-light-text-secondary dark:text-dark-text-secondary">
                                   <img
                                     src={option.avatar}
                                     alt=""
+                                    loading="lazy"
+                                    decoding="async"
                                     className="w-5 h-5 rounded-full"
                                   />
                                   <span className="truncate">{option.name}</span>
                                 </div>
-                                {selected && <FiCheck className="text-accent-primary w-4 h-4" />}
+                                {selected && (
+                                  <FiCheck
+                                    aria-hidden="true"
+                                    className="text-accent-primary w-4 h-4"
+                                  />
+                                )}
                               </ListboxOption>
                             )
                           })}
@@ -430,7 +442,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
 
                   {/* Due Date */}
                   <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
-                    <FiCalendar className="w-4 h-4" /> Due Date
+                    <FiCalendar aria-hidden="true" className="w-4 h-4" /> Due Date
                   </div>
                   <div>
                     <input
@@ -443,7 +455,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
 
                   {/* Priority */}
                   <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
-                    <FiTag className="w-4 h-4" /> Priority
+                    <FiTag aria-hidden="true" className="w-4 h-4" /> Priority
                   </div>
                   <div>
                     <Listbox
@@ -453,23 +465,23 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       <div className="relative inline-block w-full">
                         <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary px-3 py-2 rounded-xl transition-colors w-full text-left">
                           <span
-                            className={`px-2.5 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider ${priorityOptions.find((p) => p.id === formData.priority)?.color || "bg-slate-100 text-slate-700"}`}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider ${priorityOptions.find((p) => p.id === formData.priority)?.bg || "bg-light-bg-hover dark:bg-dark-bg-hover"} ${priorityOptions.find((p) => p.id === formData.priority)?.text || "text-light-text-primary dark:text-dark-text-primary"}`}
                           >
                             {priorityOptions.find((p) => p.id === formData.priority)?.name ||
                               "Set Priority"}
                           </span>
                         </ListboxButton>
-                        <ListboxOptions className="absolute left-0 mt-1 w-40 bg-white dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+                        <ListboxOptions className="absolute left-0 mt-1 w-40 bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
                           {priorityOptions.map((option) => (
                             <ListboxOption
                               key={option.id}
                               value={option.id}
                               className={({ active }) =>
-                                `flex items-center gap-2 px-4 py-2 text-sm cursor-pointer transition-colors ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : "text-light-text-secondary dark:text-dark-text-secondary"}`
+                                `flex items-center gap-2 px-4 py-2 text-sm cursor-pointer transition-colors text-light-text-secondary dark:text-dark-text-secondary ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
                               }
                             >
                               <span
-                                className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${option.color}`}
+                                className={`px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider ${option.color}`}
                               >
                                 {option.name}
                               </span>
@@ -484,28 +496,41 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 {/* Tabs for Subtasks / Comments */}
                 <div className="border-t border-light-border dark:border-dark-border pt-6 mt-6 !mb-0" />
 
-                <div className="flex border-b border-light-border dark:border-dark-border">
+                <div
+                  className="flex border-b border-light-border dark:border-dark-border"
+                  role="tablist"
+                  aria-label="Task details sections"
+                >
                   <button
+                    type="button"
                     onClick={() => setActiveTab("subtasks")}
-                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 ${activeTab === "subtasks" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
+                    role="tab"
+                    aria-selected={activeTab === "subtasks"}
+                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 min-h-[44px] ${activeTab === "subtasks" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
                   >
                     Subtasks
                   </button>
                   <button
+                    type="button"
                     onClick={() => setActiveTab("comments")}
-                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 ${activeTab === "comments" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
+                    role="tab"
+                    aria-selected={activeTab === "comments"}
+                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 min-h-[44px] ${activeTab === "comments" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
                   >
                     Activity{" "}
-                    <span className="text-[10px] bg-light-bg-hover dark:bg-dark-bg-hover px-1.5 py-0.5 rounded-full text-light-text-secondary">
+                    <span className="text-xs bg-light-bg-hover dark:bg-dark-bg-hover px-1.5 py-0.5 rounded-full text-light-text-secondary">
                       {formData.comments?.length || 0}
                     </span>
                   </button>
                   <button
+                    type="button"
                     onClick={() => setActiveTab("attachments")}
-                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 ${activeTab === "attachments" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
+                    role="tab"
+                    aria-selected={activeTab === "attachments"}
+                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 min-h-[44px] ${activeTab === "attachments" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
                   >
                     Attachments{" "}
-                    <span className="text-[10px] bg-light-bg-hover dark:bg-dark-bg-hover px-1.5 py-0.5 rounded-full text-light-text-secondary">
+                    <span className="text-xs bg-light-bg-hover dark:bg-dark-bg-hover px-1.5 py-0.5 rounded-full text-light-text-secondary">
                       {formData.attachments?.length || 0}
                     </span>
                   </button>
@@ -529,6 +554,8 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                               <img
                                 src={author.avatar}
                                 alt=""
+                                loading="lazy"
+                                decoding="async"
                                 className="w-8 h-8 rounded-full flex-shrink-0"
                               />
                               <div className="flex-1">
@@ -539,10 +566,11 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                   {isCommentOwner(comment) && (
                                     <button
                                       type="button"
+                                      aria-label={`Delete comment by ${author.name}`}
                                       onClick={() => handleDeleteComment(comment._id)}
-                                      className="opacity-0 group-hover:opacity-100 p-1 text-light-text-tertiary hover:text-error transition-opacity"
+                                      className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center text-light-text-tertiary hover:text-accent-danger transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
                                     >
-                                      <FiTrash2 className="w-3 h-3" />
+                                      <FiTrash2 aria-hidden="true" className="w-3 h-3" />
                                     </button>
                                   )}
                                 </div>
@@ -565,10 +593,12 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                         <textarea
                           value={newComment}
                           onChange={(e) => setNewComment(e.target.value)}
+                          aria-label="Write a comment"
                           placeholder="Write a comment..."
                           className="w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent-primary resize-none min-h-[80px]"
                         />
                         <button
+                          type="button"
                           onClick={handleAddComment}
                           disabled={!newComment.trim() || isSubmitting}
                           className="absolute right-3 bottom-5 btn-primary py-1.5 px-3 text-xs"
@@ -599,7 +629,10 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                           />
                         ) : (
                           <div className="text-center py-8">
-                            <FiFileText className="w-12 h-12 mx-auto mb-2 text-light-text-tertiary opacity-50" />
+                            <FiFileText
+                              aria-hidden="true"
+                              className="w-12 h-12 mx-auto mb-2 text-light-text-tertiary opacity-50"
+                            />
                             <p className="text-sm text-light-text-tertiary">No attachments yet.</p>
                             <p className="text-xs text-light-text-tertiary mt-1">
                               Upload files to attach to this task
@@ -610,8 +643,8 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
 
                       {/* Upload Button */}
                       <div className="border-t border-light-border dark:border-dark-border pt-4">
-                        <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-light-border dark:border-dark-border rounded-xl cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
-                          <FiPlus className="w-5 h-5 text-light-text-tertiary" />
+                        <label className="flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] border-2 border-dashed border-light-border dark:border-dark-border rounded-xl cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+                          <FiPlus aria-hidden="true" className="w-5 h-5 text-light-text-tertiary" />
                           <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                             Add Attachment
                           </span>
@@ -623,10 +656,6 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                               const file = e.target.files?.[0]
                               if (!file) return
 
-                              console.log("Uploading attachment:", file.name, file.size, file.type)
-                              console.log("Project ID:", projectId)
-                              console.log("Task ID:", formData._id)
-
                               try {
                                 const formDataAttach = new FormData()
                                 formDataAttach.append("file", file)
@@ -637,14 +666,12 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                   formDataAttach
                                 )
 
-                                console.log("Upload response:", response)
-
                                 if (response.success) {
                                   let imageUrl =
                                     response.data?.url || response.data?.data?.url || response.data
 
                                   // Ensure ImageKit URL has proper format
-                                  if (imageUrl && imageUrl.includes("ik.imagekit.io")) {
+                                  if (imageUrl?.includes("ik.imagekit.io")) {
                                     // Add cache-busting parameter
                                     imageUrl =
                                       imageUrl +
@@ -657,7 +684,6 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                     filename: file.name,
                                     url: imageUrl,
                                   }
-                                  console.log("New attachment:", newAttachment)
 
                                   const updatedAttachments = [
                                     ...(formData.attachments || []),
@@ -667,10 +693,10 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                     ...prev,
                                     attachments: updatedAttachments,
                                   }))
-                                  toast.success("Attachment uploaded: " + file.name)
+                                  toast.success(`Attachment uploaded: ${file.name}`)
                                 } else {
                                   toast.error(
-                                    "Upload failed: " + (response.message || "Unknown error")
+                                    `Upload failed: ${response.message || "Unknown error"}`
                                   )
                                 }
                               } catch (err) {
@@ -742,22 +768,24 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                 className="w-full h-full object-cover"
                 onError={() => handleImageError(i)}
               />
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+              <div className="absolute inset-0 bg-dark-bg-primary/50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <a
                   href={proxyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 bg-white/20 rounded-full hover:bg-white/30"
+                  aria-label={`Download ${attachment.filename || "attachment"}`}
+                  className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-primary/20 rounded-full hover:bg-light-bg-primary/30 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                   title="Download"
                   onClick={(e) => {
                     e.preventDefault()
                     window.open(proxyUrl, "_blank")
                   }}
                 >
-                  <FiDownload className="w-4 h-4 text-white" />
+                  <FiDownload aria-hidden="true" className="w-4 h-4 text-light-text-primary" />
                 </a>
                 <button
                   type="button"
+                  aria-label={`Delete attachment ${attachment.filename || ""}`}
                   onClick={() => {
                     try {
                       apiService.deleteAttachment(projectId, taskId, i)
@@ -767,10 +795,10 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                       toast.error("Failed to remove attachment")
                     }
                   }}
-                  className="p-2 bg-white/20 rounded-full hover:bg-red-500"
+                  className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-primary/20 rounded-full hover:bg-accent-danger/50 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                   title="Delete"
                 >
-                  <FiTrash2 className="w-4 h-4 text-white" />
+                  <FiTrash2 aria-hidden="true" className="w-4 h-4 text-light-text-primary" />
                 </button>
               </div>
             </div>
@@ -783,9 +811,9 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
             className="flex flex-col items-center gap-2 p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border hover:border-accent-primary transition-colors group relative"
           >
             {isImage && hasError ? (
-              <FiAlertCircle className="w-8 h-8 text-accent-warning" />
+              <FiAlertCircle aria-hidden="true" className="w-8 h-8 text-accent-info" />
             ) : (
-              <FiFileText className="w-8 h-8 text-light-text-tertiary" />
+              <FiFileText aria-hidden="true" className="w-8 h-8 text-light-text-tertiary" />
             )}
             <span
               className="text-xs text-light-text-secondary dark:text-dark-text-secondary text-center truncate w-full"
@@ -794,31 +822,32 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
               {attachment.filename || "Attachment"}
             </span>
             {isImage && hasError && (
-              <span className="text-[10px] text-accent-warning text-center">
-                Image not accessible
-              </span>
+              <span className="text-xs text-accent-info text-center">Image not accessible</span>
             )}
             <div className="flex gap-2 mt-2">
               <a
                 href={getProxyUrl(attachment.url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-1.5 text-xs bg-accent-primary text-white rounded-lg hover:bg-accent-primary/80 transition-colors flex items-center gap-1"
+                aria-label={`Download ${attachment.filename || "attachment"}`}
+                className="min-h-[44px] px-3 py-1.5 text-xs bg-accent-primary text-white rounded-lg hover:bg-accent-primary/80 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiDownload className="w-3.5 h-3.5" />
+                <FiDownload aria-hidden="true" className="w-3.5 h-3.5" />
                 {isImage && hasError ? "Open" : "Download"}
               </a>
               <a
                 href={getProxyUrl(attachment.url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3 py-1.5 text-xs bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-secondary dark:text-dark-text-secondary rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors"
+                aria-label={`Preview ${attachment.filename || "attachment"}`}
+                className="min-h-[44px] px-3 py-1.5 text-xs bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-secondary dark:text-dark-text-secondary rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 Preview
               </a>
             </div>
             <button
               type="button"
+              aria-label={`Delete attachment ${attachment.filename || ""}`}
               onClick={() => {
                 try {
                   apiService.deleteAttachment(projectId, taskId, i)
@@ -828,10 +857,10 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                   toast.error("Failed to remove attachment")
                 }
               }}
-              className="absolute top-2 right-2 p-1.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg opacity-0 group-hover:opacity-100 hover:bg-error/20"
+              className="absolute top-2 right-2 p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-accent-danger/20 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               title="Delete"
             >
-              <FiTrash2 className="w-3.5 h-3.5 text-error" />
+              <FiTrash2 aria-hidden="true" className="w-3.5 h-3.5 text-accent-danger" />
             </button>
           </div>
         )

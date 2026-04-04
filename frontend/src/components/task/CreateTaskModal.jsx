@@ -1,9 +1,7 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
-// --- FIX: Corrected typo 'useState }m' to 'useState }' ---
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
-// Import FiCheck for the multi-select UI
-import { FiCheck, FiChevronDown, FiTrash2 } from "react-icons/fi" // Added FiTrash2 for remove button
+import { FiCheck, FiChevronDown, FiTrash2 } from "react-icons/fi"
 import apiService from "../../../service/apiService"
 import Modal from "../Modal"
 
@@ -22,23 +20,37 @@ const statusOptions = [
   { id: "completed", name: "Completed" },
 ]
 
-const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members }) => {
-  // console.log(`Members: ${JSON.stringify(members)}`)
-  // console.log(`Project Members: ${JSON.stringify(projectId)}`)
-  const initialFormState = {
+const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, selectedDate }) => {
+  const getInitialFormState = () => ({
     title: "",
     description: "",
-    status: "todo", // Default status
-    priority: "medium", // Default priority
+    status: "todo",
+    priority: "medium",
     assignedTo: [],
-    dueDate: "",
+    dueDate: selectedDate ? selectedDate.format("YYYY-MM-DD") : "",
     labels: "",
-  }
+  })
 
-  const [formData, setFormData] = useState(initialFormState)
+  const [formData, setFormData] = useState(getInitialFormState)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [newSubtaskTitle, setNewSubtaskTitle] = useState("")
   const [subtasks, setSubtasks] = useState([])
+
+  // Reset form when modal opens with a new selectedDate
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        title: "",
+        description: "",
+        status: "todo",
+        priority: "medium",
+        assignedTo: [],
+        dueDate: selectedDate ? selectedDate.format("YYYY-MM-DD") : "",
+        labels: "",
+      })
+      setSubtasks([])
+    }
+  }, [isOpen, selectedDate])
 
   const assigneeOptions = useMemo(() => {
     if (!members || !Array.isArray(members)) return []
@@ -89,11 +101,6 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
   const handleRemoveSubtask = (id) => {
     setSubtasks((prev) => prev.filter((sub) => sub.id !== id))
   }
-  const handleAssigneeChange = (e) => {
-    const { name, value } = e.target
-    console.log(`Name: ${name}, Value: ${value}`)
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -104,15 +111,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
         subtasks: subtasks.map((sub) => ({ title: sub.title })), // Send only titles to backend
       }
       const response = await apiService.createTask(projectId, taskDataWithSubtasks)
-      console.log(`Create Task Response: ${JSON.stringify(response)}`)
 
-      // --- FIX: Added if/else block to handle response.success ---
       if (response.success) {
-        onTaskCreated(response.task)
+        onTaskCreated(response.data)
         toast.success("Task created!", { id: toastId })
         onClose()
-        setFormData(initialFormState)
-        setSubtasks([]) // Reset subtasks after successful creation
+        setFormData(getInitialFormState())
+        setSubtasks([])
       } else {
         toast.error(response.message || "Failed to create task", {
           id: toastId,
@@ -136,7 +141,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
           </label>
           <input
             type="text"
-            id="title" // --- FIX: Added id for label association ---
+            id="title"
             name="title"
             value={formData.title}
             onChange={handleChange}
@@ -151,7 +156,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
             Description
           </label>
           <textarea
-            id="description" // --- FIX: Added id for label association ---
+            id="description"
             name="description"
             value={formData.description}
             onChange={handleChange}
@@ -171,15 +176,15 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate capitalize">{selectedStatusObject?.name}</span>
-                  <FiChevronDown className="w-4 h-4 text-slate-700" />
+                  <FiChevronDown className="w-4 h-4 text-light-text-secondary" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {statusOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-slate-700 hover:bg-light-bg-hover"}`
+                        `cursor-pointer select-none relative py-2 px-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
                       }
                     >
                       {({ selected }) => (
@@ -206,15 +211,15 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate capitalize">{selectedPriorityObject?.name}</span>
-                  <FiChevronDown className="w-4 h-4 text-slate-700" />
+                  <FiChevronDown className="w-4 h-4 text-light-text-secondary" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {priorityOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 px-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-slate-700 hover:bg-light-bg-hover"}`
+                        `cursor-pointer select-none relative py-2 px-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
                       }
                     >
                       {({ selected }) => (
@@ -242,15 +247,15 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               <div className="relative">
                 <ListboxButton className="input-field w-full text-left flex items-center justify-between">
                   <span className="truncate">{getAssigneeButtonText()}</span>
-                  <FiChevronDown className="w-4 h-4 text-slate-700" />
+                  <FiChevronDown className="w-4 h-4 text-light-text-secondary" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-md shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {assigneeOptions.map((option) => (
                     <ListboxOption
                       key={option.id}
                       value={option.id}
                       className={({ active }) =>
-                        `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-slate-700 hover:bg-light-bg-hover"}`
+                        `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
                       }
                     >
                       {({ selected }) => (
@@ -275,13 +280,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
           </div>
 
           {/* Due Date */}
-          <div className="md:col-span-2">
+          <div>
             <label htmlFor="dueDate" className="input-label">
               Due Date
             </label>
             <input
               type="date"
-              id="dueDate" // --- FIX: Added id for label association ---
+              id="dueDate"
               name="dueDate"
               value={formData.dueDate}
               onChange={handleChange}
@@ -290,41 +295,39 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
           </div>
 
           {/* Labels */}
-          <div className="md:col-span-2">
+          <div>
             <label htmlFor="labels" className="input-label">
               Labels
             </label>
             <input
               type="text"
-              id="labels" // --- FIX: Added id for label association ---
+              id="labels"
               name="labels"
               value={formData.labels}
               onChange={handleChange}
               className="input-field"
-              placeholder="e.g. frontend, bug, docs" // --- FIX: Added placeholder ---
+              placeholder="e.g. frontend, bug, docs"
             />
-            {/* --- FIX: Styled helper text --- */}
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-light-text-tertiary mt-1">
               Separate labels with a space (e.g., frontend backend api)
             </p>
           </div>
         </div>
 
         {/* Subtasks Input and List */}
-        <div className="md:col-span-2 space-y-3">
-          {/* --- FIX: Linked label to input --- */}
+        <div className="space-y-3">
           <label htmlFor="newSubtaskTitle" className="input-label">
             Subtasks
           </label>
           <div className="flex gap-2">
             <input
               type="text"
-              id="newSubtaskTitle" // --- FIX: Added id ---
+              id="newSubtaskTitle"
               value={newSubtaskTitle}
               onChange={(e) => setNewSubtaskTitle(e.target.value)}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  e.preventDefault() // Prevent form submission
+                  e.preventDefault()
                   handleAddSubtask()
                 }
               }}
@@ -340,14 +343,16 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members })
               {subtasks.map((sub) => (
                 <li
                   key={sub.id}
-                  className="flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm"
+                  className="flex items-center justify-between p-2 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg shadow-sm"
                 >
-                  <span className="text-gray-800 dark:text-gray-200 break-all">{sub.title}</span>
+                  <span className="text-light-text-primary dark:text-dark-text-primary break-all">
+                    {sub.title}
+                  </span>
                   <button
                     type="button"
                     onClick={() => handleRemoveSubtask(sub.id)}
                     aria-label={`Remove subtask: ${sub.title}`}
-                    className="text-red-500 hover:text-red-700 dark:hover:text-red-400 ml-2 p-1 rounded-full hover:bg-red-100 dark:hover:bg-red-900"
+                    className="text-accent-danger hover:text-accent-danger/80 dark:hover:text-accent-danger/80 ml-2 p-1 rounded-full hover:bg-accent-danger/10 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
                   >
                     <FiTrash2 className="w-4 h-4" />
                   </button>
