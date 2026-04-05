@@ -8,6 +8,65 @@ import { asyncHandler } from "../utils/async-handler.js"
 import { hasHigherOrEqualRole, ROLE_PERMISSIONS, UserRoleEnum } from "../utils/constants.js"
 
 // ─────────────────────────────────────────────────────────────────────────────
+// In-Memory LRU Cache for Project Permissions
+// ─────────────────────────────────────────────────────────────────────────────
+class PermissionCache {
+	constructor(maxSize = 500, ttlMs = 5 * 60 * 1000) {
+		this.cache = new Map()
+		this.maxSize = maxSize
+		this.ttlMs = ttlMs
+	}
+
+	_getKey(userId, projectId) {
+		return `${userId}:${projectId}`
+	}
+
+	get(userId, projectId) {
+		const key = this._getKey(userId, projectId)
+		const entry = this.cache.get(key)
+		if (!entry) return null
+		if (Date.now() > entry.expiresAt) {
+			this.cache.delete(key)
+			return null
+		}
+		// Move to end (most recently used)
+		this.cache.delete(key)
+		this.cache.set(key, entry)
+		return entry.data
+	}
+
+	set(userId, projectId, data) {
+		const key = this._getKey(userId, projectId)
+		// Evict oldest entry if at capacity
+		if (this.cache.size >= this.maxSize) {
+			const oldestKey = this.cache.keys().next().value
+			this.cache.delete(oldestKey)
+		}
+		this.cache.set(key, {
+			data,
+			expiresAt: Date.now() + this.ttlMs,
+		})
+	}
+
+	invalidate(userId, projectId) {
+		const key = this._getKey(userId, projectId)
+		this.cache.delete(key)
+	}
+
+	// Invalidate all entries for a user (useful on logout/delete)
+	invalidateUser(userId) {
+		for (const key of this.cache.keys()) {
+			if (key.startsWith(`${userId}:`)) {
+				this.cache.delete(key)
+			}
+		}
+	}
+}
+
+// Singleton cache instance (5 min TTL, 500 entries)
+const permissionCache = new PermissionCache()
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 1. Verify JWT & Attach User
 // ─────────────────────────────────────────────────────────────────────────────
 export const protect = asyncHandler(async (req, _res, next) => {
@@ -61,6 +120,19 @@ export const validateProjectPermission = (...allowedRoles) => {
 			return next()
 		}
 
+		// Check cache first
+		const cached = permissionCache.get(req.user._id.toString(), projectId)
+		if (cached) {
+			req.user.projectRole = cached.role
+			req.user.membershipId = cached.membershipId
+			req.user.hasPermission = (permission) => {
+				const permissions = ROLE_PERMISSIONS[cached.role] || []
+				return permissions.includes(permission)
+			}
+			return next()
+		}
+
+		// Cache miss - query database
 		const membership = await ProjectMember.findOne({
 			isActive: true,
 			project: new mongoose.Types.ObjectId(projectId),
@@ -85,6 +157,12 @@ export const validateProjectPermission = (...allowedRoles) => {
 				`Access denied. Required: ${allowedRoles.join(" or ")}. Your role: ${userRole}.`,
 			)
 		}
+
+		// Cache the result
+		permissionCache.set(req.user._id.toString(), projectId, {
+			membershipId: membership._id.toString(),
+			role: userRole,
+		})
 
 		req.user.projectRole = userRole
 		req.user.membershipId = membership._id
@@ -151,3 +229,8 @@ export const validateRoleHierarchy = (minimumRole) => {
 		next()
 	})
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Export cache for invalidation in controllers (e.g., on member removal)
+// ─────────────────────────────────────────────────────────────────────────────
+export { permissionCache }

@@ -40,6 +40,8 @@ class ApiService {
     // State for handling token refresh
     this.isRefreshing = false;
     this.failedQueue = [];
+    this.refreshAttempts = 0;
+    this.MAX_REFRESH_ATTEMPTS = 3;
   }
 
   /**
@@ -87,6 +89,12 @@ class ApiService {
         // --- 🚀 START: Token Refresh Interceptor Logic ---
         if (response.status === 401 && endpoint !== "/auth/refresh-token") {
 
+          // Prevent infinite refresh loops
+          if (this.refreshAttempts >= this.MAX_REFRESH_ATTEMPTS) {
+            this.refreshAttempts = 0
+            throw new ApiError("Session expired. Please log in again.", 401);
+          }
+
           if (this.isRefreshing) {
             // If already refreshing, queue this request
             return new Promise((resolve, reject) => {
@@ -104,6 +112,7 @@ class ApiService {
 
           // This is the first 401, start refreshing
           this.isRefreshing = true;
+          this.refreshAttempts += 1;
 
           try {
             // 1. Attempt to get a new access token
@@ -111,6 +120,7 @@ class ApiService {
 
             // 2. Success: Process the queue and resolve them
             this.processQueue(null);
+            this.refreshAttempts = 0; // Reset on success
 
             // 3. Retry the original request
             const retryResponse = await fetch(url, config);
@@ -122,11 +132,14 @@ class ApiService {
           } catch (refreshError) {
             // 4. Refresh Failed: This is a hard logout.
             this.processQueue(refreshError);
+            this.refreshAttempts = 0;
 
-            // TODO: You should trigger a global logout state here
-            // e.g., (if using a state manager) store.dispatch(logoutUser());
-            // e.g., (simple) window.location.href = '/login';
             console.error("Session refresh failed. User must log in again.");
+
+            // Redirect to login if not already there
+            if (typeof window !== "undefined" && !window.location.pathname.includes("/login")) {
+              window.location.href = "/login?session=expired";
+            }
 
             throw new ApiError("Session expired. Please log in again.", 401);
           } finally {
@@ -265,6 +278,13 @@ class ApiService {
   async getProjectById(projectId) {
     return await this.customFetch(`/projects/get-project-by-id/${projectId}`, {
       method: "GET",
+    });
+  }
+
+  async updateProject(projectId, projectData) {
+    return await this.customFetch(`/projects/update/${projectId}`, {
+      method: "PUT",
+      body: JSON.stringify(projectData),
     });
   }
 

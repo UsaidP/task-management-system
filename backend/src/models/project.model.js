@@ -12,6 +12,10 @@ const projectSchema = new Schema(
 			trim: true,
 			type: String,
 		},
+		isActive: {
+			default: true,
+			type: Boolean,
+		},
 		name: {
 			required: true,
 			trim: true,

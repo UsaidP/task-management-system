@@ -1,3 +1,4 @@
+import { Listbox } from "@headlessui/react"
 import {
   createColumnHelper,
   flexRender,
@@ -8,8 +9,8 @@ import {
 } from "@tanstack/react-table"
 import dayjs from "dayjs"
 import { motion } from "framer-motion"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { FiArrowDown, FiArrowUp, FiGrid } from "react-icons/fi"
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react"
+import { FiArrowDown, FiArrowUp, FiChevronDown, FiGrid } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
 import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
@@ -316,22 +317,13 @@ const TableView = () => {
   }, [tasks])
 
   if (loading) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-accent-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">
-            Loading table...
-          </p>
-        </div>
-      </div>
-    )
+    return <TableSkeleton />
   }
 
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary gap-3">
         <div>
           <h1 className="text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
             Table
@@ -342,90 +334,177 @@ const TableView = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-3">
-          <select
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
+          <Listbox
             value={columnFilters.find((f) => f.id === "status")?.value || ""}
-            onChange={(e) => {
-              const val = e.target.value
+            onChange={(val) => {
               setColumnFilters((prev) =>
                 val
                   ? [...prev.filter((f) => f.id !== "status"), { id: "status", value: val }]
                   : prev.filter((f) => f.id !== "status")
               )
             }}
-            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary"
           >
-            <option value="">All Status</option>
-            <option value="todo">To Do</option>
-            <option value="in-progress">In Progress</option>
-            <option value="under-review">In Review</option>
-            <option value="completed">Completed</option>
-          </select>
+            <div className="relative">
+              <Listbox.Button
+                aria-label="Filter by status"
+                className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
+              >
+                <span className="text-light-text-primary dark:text-dark-text-primary truncate">
+                  {columnFilters.find((f) => f.id === "status")?.value
+                    ? statusLabels[columnFilters.find((f) => f.id === "status")?.value] ||
+                      columnFilters.find((f) => f.id === "status")?.value
+                    : "All Status"}
+                </span>
+                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+              </Listbox.Button>
+              <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+                {Object.entries(statusLabels).map(([key, label]) => (
+                  <Listbox.Option key={key} value={key} as={Fragment}>
+                    {({ active }) => (
+                      <li
+                        className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                      >
+                        {label}
+                      </li>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
 
-          <select
+          <Listbox
             value={columnFilters.find((f) => f.id === "priority")?.value || ""}
-            onChange={(e) => {
-              const val = e.target.value
+            onChange={(val) => {
               setColumnFilters((prev) =>
                 val
                   ? [...prev.filter((f) => f.id !== "priority"), { id: "priority", value: val }]
                   : prev.filter((f) => f.id !== "priority")
               )
             }}
-            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary"
           >
-            <option value="">All Priority</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="urgent">Urgent</option>
-          </select>
+            <div className="relative">
+              <Listbox.Button
+                aria-label="Filter by priority"
+                className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
+              >
+                <span className="text-light-text-primary dark:text-dark-text-primary truncate">
+                  {columnFilters.find((f) => f.id === "priority")?.value || "All Priority"}
+                </span>
+                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+              </Listbox.Button>
+              <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+                {["", "low", "medium", "high", "urgent"].map((priority) => (
+                  <Listbox.Option key={priority} value={priority} as={Fragment}>
+                    {({ active }) => (
+                      <li
+                        className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                      >
+                        {priority === "" ? "All Priority" : priority}
+                      </li>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
 
-          <select
+          <Listbox
             value={columnFilters.find((f) => f.id === "project")?.value || ""}
-            onChange={(e) => {
-              const val = e.target.value
+            onChange={(val) => {
               setColumnFilters((prev) =>
                 val
                   ? [...prev.filter((f) => f.id !== "project"), { id: "project", value: val }]
                   : prev.filter((f) => f.id !== "project")
               )
             }}
-            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary"
           >
-            <option value="">All Projects</option>
-            {projectNames.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
+            <div className="relative">
+              <Listbox.Button
+                aria-label="Filter by project"
+                className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8 max-w-[180px]"
+              >
+                <span className="text-light-text-primary dark:text-dark-text-primary truncate block">
+                  {columnFilters.find((f) => f.id === "project")?.value || "All Projects"}
+                </span>
+                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+              </Listbox.Button>
+              <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden max-h-60 overflow-auto">
+                <Listbox.Option value="" as={Fragment}>
+                  {({ active }) => (
+                    <li
+                      className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                    >
+                      All Projects
+                    </li>
+                  )}
+                </Listbox.Option>
+                {projectNames.map((p) => (
+                  <Listbox.Option key={p} value={p} as={Fragment}>
+                    {({ active }) => (
+                      <li
+                        className={`px-3 py-2 cursor-pointer text-sm truncate ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                      >
+                        {p}
+                      </li>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
 
-          <select
+          <Listbox
             value={columnFilters.find((f) => f.id === "sprint")?.value || ""}
-            onChange={(e) => {
-              const val = e.target.value
+            onChange={(val) => {
               setColumnFilters((prev) =>
                 val
                   ? [...prev.filter((f) => f.id !== "sprint"), { id: "sprint", value: val }]
                   : prev.filter((f) => f.id !== "sprint")
               )
             }}
-            className="px-3 py-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border text-sm text-light-text-primary dark:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary"
           >
-            <option value="">All Sprints</option>
-            {sprintNames.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            <div className="relative">
+              <Listbox.Button
+                aria-label="Filter by sprint"
+                className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
+              >
+                <span className="text-light-text-primary dark:text-dark-text-primary truncate">
+                  {columnFilters.find((f) => f.id === "sprint")?.value || "All Sprints"}
+                </span>
+                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+              </Listbox.Button>
+              <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+                <Listbox.Option value="" as={Fragment}>
+                  {({ active }) => (
+                    <li
+                      className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                    >
+                      All Sprints
+                    </li>
+                  )}
+                </Listbox.Option>
+                {sprintNames.map((s) => (
+                  <Listbox.Option key={s} value={s} as={Fragment}>
+                    {({ active }) => (
+                      <li
+                        className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                      >
+                        {s}
+                      </li>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
 
           {hasActiveFilters && (
             <button
               type="button"
               onClick={clearAllFilters}
-              className="text-sm text-accent-primary hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
+              className="text-sm text-accent-primary hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded min-h-[44px] px-3"
             >
               Clear filters
             </button>
@@ -435,73 +514,94 @@ const TableView = () => {
 
       {/* Table */}
       <div className="flex-1 overflow-auto custom-scrollbar">
-        <table className="w-full">
-          <thead className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    onClick={header.column.getToggleSortingHandler()}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault()
-                        header.column.getToggleSortingHandler()?.(e)
+        <div className="min-w-full inline-block">
+          <table className="w-full">
+            <thead className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      onClick={header.column.getToggleSortingHandler()}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault()
+                          header.column.getToggleSortingHandler()?.(e)
+                        }
+                      }}
+                      tabIndex={header.column.getCanSort() ? 0 : undefined}
+                      role={header.column.getCanSort() ? "button" : undefined}
+                      aria-sort={
+                        header.column.getIsSorted()
+                          ? header.column.getIsSorted() === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : undefined
                       }
-                    }}
-                    tabIndex={header.column.getCanSort() ? 0 : undefined}
-                    role={header.column.getCanSort() ? "button" : undefined}
-                    className={`px-4 py-3 text-left text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary ${
-                      header.column.getCanSort()
-                        ? "cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex items-center">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getCanSort() && <SortIcon column={header.column} />}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody className="divide-y divide-light-border dark:divide-dark-border">
-            {table.getRowModel().rows.map((row) => (
-              <motion.tr
-                key={row.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                onClick={() => setSelectedTask(row.original)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault()
-                    setSelectedTask(row.original)
-                  }
-                }}
-                tabIndex={0}
-                role="button"
-                className="hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-inset"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-3">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </motion.tr>
-            ))}
-          </tbody>
-        </table>
+                      className={`px-4 py-3 text-left text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary whitespace-nowrap ${
+                        header.column.getCanSort()
+                          ? "cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
+                          : ""
+                      }`}
+                    >
+                      <div className="flex items-center gap-1">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {header.column.getCanSort() && <SortIcon column={header.column} />}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody className="divide-y divide-light-border dark:divide-dark-border">
+              {table.getRowModel().rows.map((row) => (
+                <motion.tr
+                  key={row.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  onClick={() => setSelectedTask(row.original)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      setSelectedTask(row.original)
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View task: ${row.original.title}`}
+                  className="hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-inset"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id} className="px-4 py-3 whitespace-nowrap">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {table.getRowModel().rows.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <FiGrid className="w-16 h-16 text-light-text-tertiary opacity-30 mb-4" />
-            <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary">
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-4">
+              <FiGrid className="w-8 h-8 text-light-text-tertiary opacity-40" aria-hidden="true" />
+            </div>
+            <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
               No tasks found
             </p>
             <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
               {hasActiveFilters ? "Try adjusting your filters" : "Create tasks to see them here"}
             </p>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={clearAllFilters}
+                className="mt-4 px-4 py-2 text-sm font-medium text-accent-primary hover:text-accent-primary-dark border border-accent-primary rounded-lg hover:bg-accent-primary/5 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 min-h-[44px]"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         )}
       </div>

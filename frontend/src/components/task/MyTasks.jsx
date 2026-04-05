@@ -21,34 +21,34 @@ import TaskDetailPanel from "./TaskDetailPanel.jsx"
 
 const MyTasksSkeleton = () => (
   <div className="h-full flex flex-col">
-    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 items-center p-6 bg-light-bg-primary dark:bg-dark-bg-primary shrink-0">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 p-4 sm:p-6 bg-light-bg-primary dark:bg-dark-bg-primary shrink-0">
       <div>
-        <SkeletonText width="w-40" height="h-8" className="mb-2" />
-        <SkeletonText width="w-64" height="h-4" />
+        <SkeletonText width="w-32 sm:w-40" height="h-7 sm:h-8" className="mb-1 sm:mb-2" />
+        <SkeletonText width="w-48 sm:w-64" height="h-4" />
       </div>
-      <Skeleton className="w-28 h-10 rounded-lg" />
+      <Skeleton className="w-full sm:w-28 h-10 rounded-lg" />
     </div>
-    <div className="p-6 pt-0 flex gap-5 items-center">
-      <Skeleton className="w-full md:flex-1 h-10 rounded-lg" />
-      <Skeleton className="w-24 h-10 rounded-lg" />
+    <div className="px-4 sm:px-6 pt-0 flex flex-col sm:flex-row gap-3 sm:gap-5 items-stretch sm:items-center">
+      <Skeleton className="w-full sm:flex-1 h-10 rounded-lg" />
+      <Skeleton className="w-full sm:w-24 h-10 rounded-lg" />
     </div>
-    <div className="flex-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border shadow-sm overflow-hidden flex flex-col">
-      <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30 p-4 gap-4">
-        <SkeletonText width="flex-1 min-w-[300px]" />
-        <SkeletonText width="w-32" />
-        <SkeletonText width="w-32" />
-        <SkeletonText width="w-48" className="hidden md:block" />
-        <SkeletonText width="w-32" />
+    <div className="flex-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border shadow-sm overflow-hidden flex flex-col mx-4 sm:mx-6 mb-4 sm:mb-6">
+      <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30 p-3 sm:p-4 gap-2 sm:gap-4 min-w-[640px]">
+        <SkeletonText width="flex-1 min-w-[200px]" />
+        <Skeleton className="w-28 sm:w-32 h-4 rounded" />
+        <Skeleton className="w-24 sm:w-32 h-4 rounded" />
+        <Skeleton className="w-36 sm:w-48 h-4 rounded hidden md:block" />
+        <Skeleton className="w-24 sm:w-32 h-4 rounded" />
       </div>
-      <div className="p-4 space-y-3">
+      <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
         {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-          <div key={i} className="flex items-center gap-3 p-4">
-            <SkeletonCircle size="w-2 h-2" className="!rounded-full" />
-            <SkeletonText width={`w-${32 + (i % 4) * 16}`} className="flex-1 min-w-[300px]" />
-            <Skeleton className="w-20 h-6 rounded-full" />
-            <Skeleton className="w-16 h-4 rounded" />
-            <Skeleton className="w-28 h-4 rounded hidden md:block" />
-            <Skeleton className="w-20 h-4 rounded" />
+          <div key={i} className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 min-w-[640px]">
+            <SkeletonCircle size="w-4 h-4" className="!rounded-full shrink-0" />
+            <SkeletonText width={`w-${32 + (i % 4) * 16}`} className="flex-1 min-w-[200px]" />
+            <Skeleton className="w-20 h-6 rounded-full shrink-0" />
+            <Skeleton className="w-16 h-4 rounded shrink-0" />
+            <Skeleton className="w-28 h-4 rounded hidden md:block shrink-0" />
+            <Skeleton className="w-20 h-4 rounded shrink-0" />
           </div>
         ))}
       </div>
@@ -61,6 +61,15 @@ const SPRINTS = [
   { id: "none", name: "Backlog (No Sprint)" },
   { id: "sprint-4", name: "Sprint 4 (Active)" },
 ]
+
+const SortIcon = ({ field, activeField, direction }) => {
+  if (activeField !== field) return <div className="w-4 h-4" />
+  return direction === "asc" ? (
+    <FiArrowUp className="w-4 h-4" />
+  ) : (
+    <FiArrowDown className="w-4 h-4" />
+  )
+}
 
 export const MyTasks = () => {
   const { user } = useAuth()
@@ -197,33 +206,25 @@ export const MyTasks = () => {
     }
   }
 
-  const SortIcon = ({ field }) => {
-    if (sortField !== field) return <div className="w-4 h-4" />
-    return sortDirection === "asc" ? (
-      <FiArrowUp className="w-4 h-4" />
-    ) : (
-      <FiArrowDown className="w-4 h-4" />
-    )
-  }
-
   if (loading) {
     return <MyTasksSkeleton />
   }
 
   return (
     <div className="h-full flex flex-col shadow-sm">
-      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 items-center p-6 bg-light-bg-primary dark:bg-dark-bg-primary shrink-0">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 p-4 sm:p-6 bg-light-bg-primary dark:bg-dark-bg-primary shrink-0">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-1 sm:mb-2">
             My Tasks
           </h1>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary">
             Track and manage all your assigned work across projects.
           </p>
         </div>
         <button
           type="button"
-          className="btn-primary whitespace-nowrap flex items-center gap-2"
+          className="btn-primary whitespace-nowrap flex items-center gap-2 w-full sm:w-auto justify-center"
           onClick={() => setCreateModalOpen(true)}
         >
           <svg
@@ -233,19 +234,19 @@ export const MyTasks = () => {
             viewBox="0 0 24 24"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="w-4 h-4"
+            className="w-4 h-4 shrink-0"
             xmlns="http://www.w3.org/2000/svg"
           >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>{" "}
-          Add Task
+          <span>Add Task</span>
         </button>
       </div>
 
       {/* Toolbar */}
-      <div className="p-6 pt-0 flex gap-5 items-center">
-        <div className="w-full md:flex-1 relative">
+      <div className="px-4 sm:px-6 pt-0 flex flex-col sm:flex-row gap-3 sm:gap-5 items-stretch sm:items-center">
+        <div className="w-full sm:flex-1 relative">
           <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
           <input
             type="text"
@@ -257,15 +258,15 @@ export const MyTasks = () => {
           />
         </div>
 
-        <div className="w-full md:w-auto flex gap-3">
+        <div className="w-full sm:w-auto flex gap-3">
           <button
             type="button"
             aria-expanded={showFilters}
             aria-controls={filterPanelId}
             onClick={() => setShowFilters(!showFilters)}
-            className="w-full md:w-auto px-4 py-2 rounded-lg flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+            className="w-full sm:w-auto px-4 py-2 rounded-lg flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
           >
-            <FiFilter className="w-4 h-4" />
+            <FiFilter className="w-4 h-4 shrink-0" />
             <span>Filters</span>
           </button>
         </div>
@@ -279,7 +280,7 @@ export const MyTasks = () => {
             initial={reduceMotion ? {} : { height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={reduceMotion ? {} : { height: 0, opacity: 0 }}
-            className="flex flex-wrap gap-3 pb-3"
+            className="px-4 sm:px-6 flex flex-wrap gap-2 sm:gap-3 pb-3"
           >
             <Listbox value={statusFilter} onChange={setStatusFilter}>
               <div className="relative">
@@ -415,40 +416,44 @@ export const MyTasks = () => {
       </AnimatePresence>
 
       {/* Custom Task List Table */}
-      <div className="flex-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border shadow-sm overflow-hidden flex flex-col">
-        {/* Header Header */}
-        <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30 p-4 font-semibold text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-          <div className="flex-1 min-w-[300px] flex items-center gap-2 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors">
-            Title
+      <div className="flex-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border shadow-sm overflow-hidden flex flex-col mx-4 sm:mx-6 mb-4 sm:mb-6">
+        {/* Table Header */}
+        <div className="overflow-x-auto">
+          <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30 p-3 sm:p-4 font-semibold text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary min-w-[640px]">
+            <div className="flex-1 min-w-[200px] flex items-center gap-2 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors">
+              Title
+            </div>
+            <div className="w-28 sm:w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors">
+              Status
+            </div>
+            <button
+              type="button"
+              aria-label="Sort by priority"
+              onClick={() => toggleSort("priority")}
+              className="w-24 sm:w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none bg-transparent border-none p-0 font-inherit text-inherit"
+            >
+              Priority{" "}
+              <SortIcon field="priority" activeField={sortField} direction={sortDirection} />
+            </button>
+            <div className="w-36 sm:w-48 hidden md:flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none">
+              Project
+            </div>
+            <button
+              type="button"
+              aria-label="Sort by due date"
+              onClick={() => toggleSort("dueDate")}
+              className="w-24 sm:w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none bg-transparent border-none p-0 font-inherit text-inherit"
+            >
+              Due Date{" "}
+              <SortIcon field="dueDate" activeField={sortField} direction={sortDirection} />
+            </button>
           </div>
-          <div className="w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors">
-            Status
-          </div>
-          <button
-            type="button"
-            aria-label="Sort by priority"
-            onClick={() => toggleSort("priority")}
-            className="w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none bg-transparent border-none p-0 font-inherit text-inherit"
-          >
-            Priority <SortIcon field="priority" />
-          </button>
-          <div className="w-48 hidden md:flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none">
-            Project
-          </div>
-          <button
-            type="button"
-            aria-label="Sort by due date"
-            onClick={() => toggleSort("dueDate")}
-            className="w-32 flex items-center justify-start gap-1 cursor-pointer hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors select-none bg-transparent border-none p-0 font-inherit text-inherit"
-          >
-            Due Date <SortIcon field="dueDate" />
-          </button>
         </div>
 
         {/* List Content */}
         <div className="flex-1 overflow-y-auto">
           {loading ? (
-            <div className="p-4 space-y-4">
+            <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div
                   key={i}
@@ -457,7 +462,7 @@ export const MyTasks = () => {
               ))}
             </div>
           ) : filteredAndSortedTasks.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center p-12">
+            <div className="h-full flex flex-col items-center justify-center p-8 sm:p-12">
               <EmptyState message="No tasks match your current filters." />
               <button
                 type="button"
@@ -483,7 +488,7 @@ export const MyTasks = () => {
                   exit={reduceMotion ? {} : { opacity: 0 }}
                   type="button"
                   aria-label={`View task: ${task.title}`}
-                  className="flex w-full border-b border-light-border dark:border-dark-border last:border-0 p-4 hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover active:bg-light-bg-hover/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-inset transition-colors items-center cursor-pointer group text-left"
+                  className="flex w-full border-b border-light-border dark:border-dark-border last:border-0 p-3 sm:p-4 hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover active:bg-light-bg-hover/50 focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-inset transition-colors items-center cursor-pointer group text-left min-w-[640px]"
                   onClick={() => setSelectedTask(task)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -492,38 +497,38 @@ export const MyTasks = () => {
                     }
                   }}
                 >
-                  <div className="flex-1 min-w-[300px] flex items-center gap-3">
-                    <FiList className="text-light-text-tertiary dark:text-dark-text-tertiary group-hover:text-accent-primary transition-colors" />
-                    <div>
-                      <p className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm line-clamp-1">
+                  <div className="flex-1 min-w-[200px] flex items-center gap-2 sm:gap-3">
+                    <FiList className="text-light-text-tertiary dark:text-dark-text-tertiary group-hover:text-accent-primary transition-colors shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm line-clamp-1 truncate">
                         {task.title}
                       </p>
                     </div>
                   </div>
-                  <div className="w-32 flex items-center">
+                  <div className="w-28 sm:w-32 flex items-center shrink-0">
                     <span className={getStatusBadgeClass(task.status)}>
                       {task.status.replace("-", " ")}
                     </span>
                   </div>
-                  <div className="w-32 flex items-center">
+                  <div className="w-24 sm:w-32 flex items-center shrink-0">
                     <span className={getPriorityBadgeClass(task.priority)}>{task.priority}</span>
                   </div>
-                  <div className="w-48 hidden md:flex items-center gap-2">
+                  <div className="w-36 sm:w-48 hidden md:flex items-center gap-2 shrink-0">
                     <span className="tag tag-project truncate max-w-full">
-                      <FiFolder className="inline mr-1" />
+                      <FiFolder className="inline mr-1 shrink-0" />
                       {task.project?.name || "Personal"}
                     </span>
                   </div>
-                  <div className="w-32 flex items-center text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                  <div className="w-24 sm:w-32 flex items-center text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary shrink-0">
                     {task.dueDate ? (
                       <span
                         className={`flex items-center gap-1.5 ${dayjs(task.dueDate).isBefore(dayjs(), "day") && task.status !== "completed" ? "text-accent-danger" : ""}`}
                       >
-                        <FiCalendar className="w-4 h-4" />
-                        {dayjs(task.dueDate).format("MMM D")}
+                        <FiCalendar className="w-4 h-4 shrink-0" />
+                        <span className="truncate">{dayjs(task.dueDate).format("MMM D")}</span>
                       </span>
                     ) : (
-                      <span className="text-light-text-tertiary dark:text-dark-text-tertiary ml-6">
+                      <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
                         —
                       </span>
                     )}

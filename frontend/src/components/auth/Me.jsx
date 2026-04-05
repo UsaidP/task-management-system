@@ -386,15 +386,12 @@ const Me = () => {
 
             <div className="relative flex flex-col md:flex-row items-center gap-6">
               {/* Avatar */}
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="relative group ring-4 ring-accent-primary/20 dark:ring-accent-primary/30 rounded-full"
-              >
+              <motion.div whileHover={{ scale: 1.05 }} className="relative group">
                 <label
                   htmlFor="profile"
-                  className="block w-32 h-32 rounded-2xl cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow"
+                  className="block w-32 h-32 cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow"
                 >
-                  <div className="w-full h-full bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-5xl font-bold text-light-text-inverse relative overflow-hidden">
+                  <div className="w-full h-full rounded-2xl flex items-center justify-center text-5xl font-bold text-light-text-primary dark:text-dark-text-primary relative overflow-hidden bg-transparent">
                     {user?.avatar?.url && user.avatar.url !== "https://placehold.co/400" ? (
                       <img
                         alt="Avatar"
@@ -405,7 +402,9 @@ const Me = () => {
                         decoding="async"
                       />
                     ) : (
-                      <span>{avatarInitial}</span>
+                      <span className="w-full h-full flex items-center justify-center rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
+                        {avatarInitial}
+                      </span>
                     )}
                   </div>
                   <div className="absolute inset-0 bg-utility-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

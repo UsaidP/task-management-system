@@ -33,6 +33,9 @@ const blacklistedTokenSchema = new mongoose.Schema(
 // when the document is created or updated.
 blacklistedTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
 
+// Index for finding blacklisted tokens by user (used in auth middleware)
+blacklistedTokenSchema.index({ user: 1 })
+
 // The model also has an index on the expiresAt field. This index is used to remove blacklisted
 // tokens that have expired from the database. The expireAfterSeconds option is set to 0, which
 // means that the documents will be removed from the database as soon as they expire.

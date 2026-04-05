@@ -104,9 +104,9 @@ const RecentActivityItem = ({ task, onClick }) => (
   >
     <div className="mt-1 w-2 h-2 rounded-full flex-shrink-0 bg-accent-primary" />
     <div className="flex-1">
-      <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm mb-1">
+      <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm mb-1">
         {task.title}
-      </h4>
+      </h3>
       <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mb-2 line-clamp-1">
         {task.description}
       </p>
@@ -140,9 +140,9 @@ const UpcomingTaskItem = ({ task, onClick }) => {
           <FiCalendar className="w-4 h-4" />
         </div>
         <div>
-          <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
+          <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
             {task.title}
-          </h4>
+          </h3>
           <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
             {task.project?.name || "Personal"}
           </p>

@@ -107,7 +107,7 @@ export const Signup = () => {
 
   return (
     <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
-      <div className="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6">
+      <div className="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border border-light-border dark:border-dark-border">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

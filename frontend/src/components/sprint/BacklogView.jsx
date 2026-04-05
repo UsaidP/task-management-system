@@ -1,10 +1,11 @@
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { useCallback, useEffect, useState } from "react"
 import { FiCalendar, FiCheckCircle, FiPlus } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
 const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
+  const reduceMotion = useReducedMotion()
   const [backlogTasks, setBacklogTasks] = useState([])
   const [sprints, setSprints] = useState([])
   const [loading, setLoading] = useState(true)
@@ -37,15 +38,6 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
 
   const handleTaskClick = (task) => {
     setSelectedTask(task)
-  }
-
-  const _handleRemoveFromSprint = async (taskId) => {
-    try {
-      await apiService.removeTaskFromSprint(taskId)
-      setBacklogTasks((prev) => prev.filter((t) => t._id !== taskId))
-    } catch (err) {
-      console.error("Failed to remove task from sprint:", err)
-    }
   }
 
   const handleAssignToSprint = async (taskId, sprintId) => {
@@ -87,11 +79,11 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-4">
-        {[1, 2, 3].map((i) => (
+      <div className="p-6 space-y-3">
+        {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="h-20 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg animate-pulse"
+            className="h-24 bg-light-bg-hover dark:bg-dark-bg-hover rounded-xl animate-pulse"
           />
         ))}
       </div>
@@ -101,42 +93,49 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
   return (
     <div className="h-full flex flex-col shadow-sm">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border">
+      <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary">
         <div>
           <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
             Backlog
           </h2>
           <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-            {backlogTasks.length} tasks not in any sprint
+            {backlogTasks.length} {backlogTasks.length === 1 ? "task" : "tasks"} not in any sprint
           </p>
         </div>
         <button
           type="button"
           onClick={onCreateSprint}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-offset-2 dark:focus:ring-offset-dark-bg-primary min-h-[44px]"
+          aria-label="Create new sprint"
         >
           <FiPlus className="w-4 h-4" aria-hidden="true" />
-          New Sprint
+          <span className="hidden sm:inline">New Sprint</span>
         </button>
       </div>
 
       {/* Task List */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4 bg-light-bg-secondary dark:bg-dark-bg-secondary">
         {backlogTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-light-text-tertiary dark:text-dark-text-tertiary">
-            <FiCheckCircle className="w-12 h-12 mb-4 opacity-50" aria-hidden="true" />
-            <p>No tasks in backlog</p>
+          <div className="flex flex-col items-center justify-center h-full text-light-text-tertiary dark:text-dark-text-tertiary py-16">
+            <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-4">
+              <FiCheckCircle className="w-8 h-8 opacity-40" aria-hidden="true" />
+            </div>
+            <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+              Backlog is empty
+            </p>
             <p className="text-sm">All tasks are assigned to sprints</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3 max-w-4xl mx-auto">
             <AnimatePresence>
               {backlogTasks.map((task) => (
                 <motion.div
                   key={task._id}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
+                  layout={reduceMotion ? false : true}
+                  initial={reduceMotion ? {} : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? {} : { opacity: 0, scale: 0.98 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.15 }}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -145,22 +144,23 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                       handleTaskClick(task)
                     }
                   }}
-                  className="task-card p-4 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:border-accent-primary/50 transition-colors cursor-pointer shadow-sm"
+                  className="task-card p-4 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-tertiary hover:border-accent-primary/40 dark:hover:border-accent-primary/40 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md group"
                   onClick={() => handleTaskClick(task)}
+                  aria-label={`Task: ${task.title}`}
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <span className={`${getStatusClass(task.status)}`}>
                           {task.status?.replace("-", " ")}
                         </span>
                         <span
-                          className={`px-2 py-0.5 rounded-lg text-xs font-medium ${getPriorityClass(task.priority)} bg-light-bg-hover dark:bg-dark-bg-hover`}
+                          className={`px-2 py-0.5 rounded-md text-xs font-medium ${getPriorityClass(task.priority)} bg-light-bg-hover dark:bg-dark-bg-hover`}
                         >
                           {task.priority}
                         </span>
                       </div>
-                      <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
+                      <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 group-hover:text-accent-primary transition-colors duration-200">
                         {task.title}
                       </h3>
                       {task.description && (
@@ -168,7 +168,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                           {task.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-4 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                      <div className="flex items-center gap-4 text-xs text-light-text-tertiary dark:text-dark-text-tertiary flex-wrap">
                         {task.dueDate && (
                           <span className="flex items-center gap-1">
                             <FiCalendar className="w-3 h-3" aria-hidden="true" />
@@ -188,7 +188,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                             handleAssignToSprint(task._id, e.target.value)
                           }
                         }}
-                        className="px-3 py-1.5 rounded-xl text-sm bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-colors"
+                        className="px-3 py-2 rounded-lg text-sm bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary transition-colors duration-200 min-h-[44px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
                         defaultValue=""
                       >
                         <option value="">Add to Sprint...</option>
@@ -196,7 +196,12 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                           .filter((s) => s.status !== "completed")
                           .map((sprint) => (
                             <option key={sprint._id} value={sprint._id}>
-                              {sprint.name} {sprint.status === "active" ? "(Active)" : ""}
+                              {sprint.name}{" "}
+                              {sprint.status === "active"
+                                ? "(Active)"
+                                : sprint.status === "planned"
+                                  ? "(Planned)"
+                                  : ""}
                             </option>
                           ))}
                       </select>

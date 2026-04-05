@@ -20,6 +20,7 @@ import validator from "../middlewares/validator.middleware.js"
 import { asyncHandler } from "../utils/async-handler.js"
 import {
 	userForgotPasswordValidator,
+	userLoginValidator,
 	userRegistrationValidator,
 	userResetPasswordValidator,
 } from "../validators/auth.validator.js"
@@ -39,7 +40,7 @@ router.route("/register").post(
 router.route("/verify/:token").post(asyncHandler(verifyUser))
 router.route("/resend-verify-email").post(asyncHandler(resendVerifyEmail))
 
-router.route("/login").post(validator, asyncHandler(loginUser))
+router.route("/login").post(userLoginValidator(), validator, asyncHandler(loginUser))
 
 router.route("/logout").post(protect, asyncHandler(logoutUser))
 
@@ -62,14 +63,5 @@ router.put("/update-avatar", protect, upload.single("avatars"), asyncHandler(upd
 router.put("/update-profile", protect, asyncHandler(updateProfile))
 
 router.delete("/delete-account", protect, asyncHandler(deleteUserAccount))
-
-// In your auth routes
-router.get("/debug-cookies", (req, res) => {
-	res.json({
-		cookies: req.cookies,
-		headers: req.headers,
-		origin: req.headers.origin,
-	})
-})
 
 export default router

@@ -1,5 +1,6 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import dayjs from "dayjs"
+import quarterOfYear from "dayjs/plugin/quarterOfYear"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { motion } from "framer-motion"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
@@ -31,6 +32,7 @@ import TaskDetailPanel from "../task/TaskDetailPanel"
 import ProjectMembers from "./ProjectMembers"
 
 dayjs.extend(relativeTime)
+dayjs.extend(quarterOfYear)
 
 const deepCopy = (obj) => {
   if (obj === null || typeof obj !== "object") {
@@ -86,7 +88,6 @@ const ProjectPage = () => {
   const [members, setMembers] = useState([])
   const [columns, setColumns] = useState(initialColumns)
   const [activeTab, setActiveTab] = useState("board")
-  const [isStarred, setIsStarred] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("")
   const [priorityFilter, setPriorityFilter] = useState("")
@@ -214,64 +215,72 @@ const ProjectPage = () => {
   }
 
   // Drag and Drop Handlers
-  const handleDragStart = (e, task) => {
+  const handleDragStart = useCallback((e, task) => {
     setDraggedTask(task)
     e.dataTransfer.effectAllowed = "move"
-    setTimeout(() => {
-      e.target.style.opacity = "0.4"
-    }, 0)
-  }
+    // Use requestAnimationFrame for smoother visual feedback
+    requestAnimationFrame(() => {
+      if (e.currentTarget) {
+        e.currentTarget.style.opacity = "0.4"
+      }
+    })
+  }, [])
 
-  const handleDragEnd = (e) => {
-    e.target.style.opacity = ""
+  const handleDragEnd = useCallback((e) => {
+    if (e.currentTarget) {
+      e.currentTarget.style.opacity = "1"
+    }
     setDraggedTask(null)
     setDragOverColumn(null)
-  }
+  }, [])
 
-  const handleDragOver = (e, columnId) => {
+  const handleDragOver = useCallback((e, columnId) => {
     e.preventDefault()
     e.dataTransfer.dropEffect = "move"
-    if (dragOverColumn !== columnId) {
-      setDragOverColumn(columnId)
-    }
-  }
+    // Use functional update to avoid stale closure issues
+    setDragOverColumn((prev) => (prev !== columnId ? columnId : prev))
+  }, [])
 
-  const handleDragLeave = () => {
+  const handleDragLeave = useCallback(() => {
     setDragOverColumn(null)
-  }
+  }, [])
 
-  const handleDrop = async (e, targetColumnId) => {
-    e.preventDefault()
-    setDragOverColumn(null)
+  const handleDrop = useCallback(
+    async (e, targetColumnId) => {
+      e.preventDefault()
+      setDragOverColumn(null)
 
-    if (!draggedTask) return
+      // Get the dragged task from the dataTransfer or state
+      if (!draggedTask) return
 
-    const sourceColumnId = draggedTask.status
-    if (sourceColumnId === targetColumnId) return
+      const sourceColumnId = draggedTask.status
+      if (sourceColumnId === targetColumnId) return
 
-    // Optimistic UI update
-    setColumns((prev) => {
-      const newCols = { ...prev }
-      const sourceTasks = newCols[sourceColumnId].tasks.filter((t) => t._id !== draggedTask._id)
-      const updatedTask = { ...draggedTask, status: targetColumnId }
-      const targetTasks = [...newCols[targetColumnId].tasks, updatedTask]
-      newCols[sourceColumnId] = { ...newCols[sourceColumnId], tasks: sourceTasks }
-      newCols[targetColumnId] = { ...newCols[targetColumnId], tasks: targetTasks }
-      return newCols
-    })
+      // Optimistic UI update
+      setColumns((prev) => {
+        const newCols = { ...prev }
+        const sourceTasks = newCols[sourceColumnId].tasks.filter((t) => t._id !== draggedTask._id)
+        const updatedTask = { ...draggedTask, status: targetColumnId }
+        const targetTasks = [...newCols[targetColumnId].tasks, updatedTask]
+        newCols[sourceColumnId] = { ...newCols[sourceColumnId], tasks: sourceTasks }
+        newCols[targetColumnId] = { ...newCols[targetColumnId], tasks: targetTasks }
+        return newCols
+      })
 
-    // Update task status on server
-    try {
-      await apiService.updateTask(projectId, draggedTask._id, { status: targetColumnId })
-      toast.success("Task moved successfully!")
-    } catch (_err) {
-      toast.error("Failed to move task")
-      // Revert on error
-      fetchProjectData()
-    }
+      // Update task status on server
+      try {
+        await apiService.updateTask(projectId, draggedTask._id, { status: targetColumnId })
+        toast.success("Task moved successfully!")
+      } catch (_err) {
+        toast.error("Failed to move task")
+        // Revert on error
+        fetchProjectData()
+      }
 
-    setDraggedTask(null)
-  }
+      setDraggedTask(null)
+    },
+    [draggedTask, projectId, fetchProjectData]
+  )
 
   const getTaskCounts = () => {
     return {
@@ -352,11 +361,27 @@ const ProjectPage = () => {
 
   // Timeline view columns
   const timelineColumns = useMemo(() => {
+    if (timelineZoom === "week") {
+      const startOfWeek = timelineDate.startOf("week")
+      return Array.from({ length: 7 }, (_, i) => {
+        const d = startOfWeek.add(i, "day")
+        return { label: d.format("DD"), sublabel: d.format("ddd"), date: d }
+      })
+    }
     if (timelineZoom === "month") {
       const startOfMonth = timelineDate.startOf("month")
       const daysInMonth = timelineDate.daysInMonth()
       return Array.from({ length: daysInMonth }, (_, i) => {
         const d = startOfMonth.add(i, "day")
+        return { label: d.format("DD"), sublabel: d.format("ddd"), date: d }
+      })
+    }
+    if (timelineZoom === "quarter") {
+      const startOfQuarter = timelineDate.startOf("quarter")
+      const endOfQuarter = timelineDate.endOf("quarter")
+      const daysInQuarter = endOfQuarter.diff(startOfQuarter, "day") + 1
+      return Array.from({ length: daysInQuarter }, (_, i) => {
+        const d = startOfQuarter.add(i, "day")
         return { label: d.format("DD"), sublabel: d.format("ddd"), date: d }
       })
     }
@@ -428,23 +453,23 @@ const ProjectPage = () => {
   }
 
   const renderListView = () => (
-    <div className="flex-1 overflow-auto">
-      <table className="w-full">
-        <thead className="sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border z-10">
+    <div className="flex-1 overflow-auto custom-scrollbar p-4 sm:p-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+      <table className="w-full border border-light-border dark:border-dark-border rounded-lg overflow-hidden shadow-md dark:shadow-dark-md bg-light-bg-primary dark:bg-dark-bg-primary ">
+        <thead className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-primary border-b border-light-border dark:border-dark-border z-10">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
               Task
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
               Status
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
               Priority
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
               Assignees
             </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
               Due Date
             </th>
           </tr>
@@ -495,14 +520,46 @@ const ProjectPage = () => {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
                       {task.assignedTo?.length > 0 ? (
-                        task.assignedTo.slice(0, 3).map((a, i) => (
-                          <div
-                            key={i}
-                            className="w-6 h-6 rounded-full bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-xs text-white font-bold -ml-1 first:ml-0"
-                          >
-                            {typeof a === "object" ? a.fullname?.slice(0, 2).toUpperCase() : "U"}
-                          </div>
-                        ))
+                        task.assignedTo.slice(0, 3).map((a, i) => {
+                          const userId = typeof a === "object" ? a._id || a.user?._id : a
+                          // Look up avatar from members
+                          const member = members.find((m) => (m.user?._id || m.user) === userId)
+                          const userObj = member?.user || member
+                          const avatarUrl = userObj?.avatar?.url
+                          const initials = (userObj?.fullname || "U").slice(0, 2).toUpperCase()
+                          return (
+                            <div
+                              key={i}
+                              className="w-6 h-6 rounded-full overflow-hidden border-2 border-light-bg-primary dark:border-dark-bg-secondary -ml-1 first:ml-0 flex-shrink-0"
+                            >
+                              {avatarUrl ? (
+                                <img
+                                  src={avatarUrl}
+                                  alt={userObj?.fullname || "User"}
+                                  className="w-full h-full object-cover"
+                                  loading="lazy"
+                                  decoding="async"
+                                  onError={(e) => {
+                                    e.target.style.display = "none"
+                                    e.target.parentElement.classList.add(
+                                      "bg-gradient-to-br",
+                                      "from-accent-primary",
+                                      "to-accent-info",
+                                      "flex",
+                                      "items-center",
+                                      "justify-center"
+                                    )
+                                    e.target.parentElement.innerHTML = `<span class="text-[10px] text-white font-bold">${initials}</span>`
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-[10px] text-white font-bold">
+                                  {initials}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })
                       ) : (
                         <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                           Unassigned
@@ -559,135 +616,157 @@ const ProjectPage = () => {
     }
 
     return (
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex items-center gap-3 p-3 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary shrink-0">
-          <div className="flex items-center gap-1 bg-light-bg-tertiary dark:bg-dark-bg-secondary rounded-lg p-1">
-            <button
-              type="button"
-              onClick={() => setTimelineZoom("day")}
-              className={`px-3 py-1.5 text-xs rounded transition-colors ${
-                timelineZoom === "day"
-                  ? "bg-accent-primary text-white"
-                  : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-              }`}
-            >
-              Day
-            </button>
-            <button
-              type="button"
-              onClick={() => setTimelineZoom("week")}
-              className={`px-3 py-1.5 text-xs rounded transition-colors ${
-                timelineZoom === "week"
-                  ? "bg-accent-primary text-white"
-                  : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-              }`}
-            >
-              Week
-            </button>
-            <button
-              type="button"
-              onClick={() => setTimelineZoom("month")}
-              className={`px-3 py-1.5 text-xs rounded transition-colors ${
-                timelineZoom === "month"
-                  ? "bg-accent-primary text-white"
-                  : "text-light-text-tertiary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-              }`}
-            >
-              Month
-            </button>
+      <div className="flex-1 flex flex-col overflow-hidden bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+        {/* Timeline Toolbar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary shrink-0">
+          <div>
+            <h2 className="text-lg sm:text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
+              Timeline
+            </h2>
+            <p className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+              {filteredTasks.length} tasks
+            </p>
           </div>
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setTimelineDate(timelineDate.add(-1, timelineZoom))}
-              aria-label="Previous period"
-              className="p-1.5 rounded hover:bg-light-border dark:hover:bg-dark-border transition-colors"
-            >
-              <FiChevronLeft className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
-            </button>
-            <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[140px] text-center">
-              {timelineZoom === "month"
-                ? timelineDate.format("MMMM YYYY")
-                : timelineDate.format("MMM YYYY")}
-            </span>
-            <button
-              type="button"
-              onClick={() => setTimelineDate(timelineDate.add(1, timelineZoom))}
-              aria-label="Next period"
-              className="p-1.5 rounded hover:bg-light-border dark:hover:bg-dark-border transition-colors"
-            >
-              <FiChevronRight className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
-            </button>
-          </div>
-          <div className="flex-1" />
-          <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-            {filteredTasks.length} tasks
-          </span>
-        </div>
-        <div className="flex-1 overflow-auto">
-          <div className="flex min-h-full">
-            <div className="w-40 flex-shrink-0 border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
-              <div className="px-3 py-2 text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
-                Task
-              </div>
-              {filteredTasks.map((task) => (
-                <div
-                  key={task._id}
-                  onClick={() => openEditModal(task)}
-                  className="px-3 py-2.5 border-b border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer"
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-lg p-1">
+              {["day", "week", "month", "quarter"].map((zoom) => (
+                <button
+                  key={zoom}
+                  type="button"
+                  onClick={() => setTimelineZoom(zoom)}
+                  className={`px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors capitalize min-h-[36px] ${
+                    timelineZoom === zoom
+                      ? "bg-accent-primary text-white shadow-sm"
+                      : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                  }`}
                 >
-                  <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary truncate">
-                    {task.title}
-                  </p>
-                </div>
+                  {zoom}
+                </button>
               ))}
             </div>
-            <div className="flex-1 relative">
-              <div className="flex sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
-                {timelineColumns.map((col, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 min-w-[30px] px-1 py-2 border-r border-light-border dark:border-dark-border text-center"
-                  >
-                    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-                      {col.label}
-                    </div>
-                    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
-                      {col.sublabel}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="relative">
-                {filteredTasks.map((task, _idx) => {
-                  const position = getTaskPosition(task)
-                  if (!position) return null
-                  return (
-                    <motion.div
-                      key={task._id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      onClick={() => openEditModal(task)}
-                      className="absolute top-1 bottom-1 rounded cursor-pointer hover:opacity-80 transition-opacity"
-                      style={{
-                        left: `${position.left}%`,
-                        width: `${position.width}%`,
-                        backgroundColor: getStatusColor(task.status),
-                        opacity: 0.8,
-                      }}
-                    >
-                      <div className="p-1 overflow-hidden">
-                        <p className="text-xs font-medium text-white truncate">{task.title}</p>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-              </div>
-              {filteredTasks.length === 0 && (
-                <div className="flex items-center justify-center h-32 text-light-text-tertiary dark:text-dark-text-tertiary text-sm">
-                  No tasks found
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setTimelineDate(timelineDate.add(-1, timelineZoom))}
+                aria-label="Previous period"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+              >
+                <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+              </button>
+              <span className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[120px] sm:min-w-[160px] text-center px-2">
+                {timelineZoom === "month"
+                  ? timelineDate.format("MMMM YYYY")
+                  : timelineZoom === "quarter"
+                    ? `Q${timelineDate.quarter()} ${timelineDate.format("YYYY")}`
+                    : timelineDate.format("MMM YYYY")}
+              </span>
+              <button
+                type="button"
+                onClick={() => setTimelineDate(timelineDate.add(1, timelineZoom))}
+                aria-label="Next period"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+              >
+                <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Timeline Content */}
+        <div className="flex-1 overflow-auto p-3 sm:p-4">
+          <div className="bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border overflow-hidden">
+            <div className="flex min-h-full">
+              {/* Task List Sidebar */}
+              <div className="w-40 sm:w-48 flex-shrink-0 border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary">
+                <div className="px-3 py-2 text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
+                  Task
                 </div>
-              )}
+                {filteredTasks.length === 0 ? (
+                  <div className="p-4 text-center">
+                    <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                      No tasks
+                    </p>
+                  </div>
+                ) : (
+                  filteredTasks.map((task) => (
+                    <div
+                      key={task._id}
+                      onClick={() => openEditModal(task)}
+                      className="px-3 py-2.5 border-b border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors"
+                    >
+                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                        {task.title}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Timeline Grid */}
+              <div className="flex-1 relative">
+                {/* Date Header */}
+                <div className="flex sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
+                  {timelineColumns.map((col, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 min-w-[30px] sm:min-w-[40px] px-1 py-2 border-r border-light-border dark:border-dark-border text-center"
+                    >
+                      <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                        {col.label}
+                      </div>
+                      <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
+                        {col.sublabel}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Task Bars */}
+                <div className="relative">
+                  {filteredTasks.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-16 px-4">
+                      <div className="w-12 h-12 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-3">
+                        <FiCalendar
+                          className="w-6 h-6 text-light-text-tertiary opacity-40"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                        No tasks yet
+                      </p>
+                      <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                        Create tasks with due dates to see them here
+                      </p>
+                    </div>
+                  ) : (
+                    filteredTasks.map((task, _idx) => {
+                      const position = getTaskPosition(task)
+                      if (!position) return null
+                      return (
+                        <motion.div
+                          key={task._id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          onClick={() => openEditModal(task)}
+                          className="absolute top-1 bottom-1 rounded-md cursor-pointer hover:opacity-90 transition-opacity border-l-2"
+                          style={{
+                            left: `${position.left}%`,
+                            width: `${position.width}%`,
+                            backgroundColor: `${getStatusColor(task.status)}33`,
+                            borderLeftColor: getStatusColor(task.status),
+                          }}
+                        >
+                          <div className="p-1.5 overflow-hidden">
+                            <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                              {task.title}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -713,51 +792,55 @@ const ProjectPage = () => {
     const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
     return (
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden bg-light-bg-secondary dark:bg-dark-bg-tertiary">
         {/* Calendar Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary shrink-0">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setCalendarDate(calendarDate.add(-1, "month"))}
-              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors"
-            >
-              <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
-            </button>
-            <span className="text-sm sm:text-base font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[140px] sm:min-w-[160px] text-center">
-              {calendarDate.format("MMMM YYYY")}
-            </span>
-            <button
-              type="button"
-              onClick={() => setCalendarDate(calendarDate.add(1, "month"))}
-              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors"
-            >
-              <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
-            </button>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary shrink-0">
+          <div>
+            <h2 className="text-lg sm:text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
+              Calendar
+            </h2>
+            <p className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+              {filteredTasks.length} tasks
+            </p>
           </div>
-
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setCalendarDate(calendarDate.add(-1, "month"))}
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+              >
+                <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+              </button>
+              <span className="text-xs sm:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[120px] sm:min-w-[160px] text-center px-2">
+                {calendarDate.format("MMMM YYYY")}
+              </span>
+              <button
+                type="button"
+                onClick={() => setCalendarDate(calendarDate.add(1, "month"))}
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+              >
+                <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+              </button>
+            </div>
             <button
               type="button"
               onClick={() => setCalendarDate(dayjs())}
-              className="px-3 py-1.5 text-xs sm:text-sm rounded-lg bg-light-border dark:bg-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-border-strong dark:hover:bg-dark-border-strong transition-colors"
+              className="px-3 py-1.5 text-xs sm:text-sm rounded-lg bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px]"
             >
               Today
             </button>
-            <span className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-              {filteredTasks.length} tasks
-            </span>
           </div>
         </div>
 
         {/* Calendar Grid */}
         <div className="flex-1 overflow-auto p-3 sm:p-4">
-          <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg border border-light-border dark:border-dark-border overflow-hidden overflow-x-auto">
-            <div className="grid grid-cols-7 text-center text-xs sm:text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border min-w-[700px]">
+          <div className="bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border overflow-hidden">
+            <div className="grid grid-cols-7 text-center text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border min-w-[700px]">
               {weekDays.map((day) => (
                 <div
                   key={day}
-                  className="py-2 sm:py-3 bg-light-bg-tertiary dark:bg-dark-bg-secondary"
+                  className="py-2 sm:py-3 bg-light-bg-secondary dark:bg-dark-bg-secondary"
                 >
                   {day}
                 </div>
@@ -781,14 +864,14 @@ const ProjectPage = () => {
                 return (
                   <div
                     key={item.day}
-                    className={`min-h-[80px] sm:min-h-[100px] p-1 sm:p-2 border-b border-r border-light-border dark:border-dark-border last:border-r-0 ${
+                    className={`min-h-[80px] sm:min-h-[100px] p-1.5 sm:p-2 border-b border-r border-light-border dark:border-dark-border last:border-r-0 ${
                       isToday
                         ? "bg-accent-primary/10 dark:bg-accent-primary/20"
-                        : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                        : "hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/50"
                     }`}
                   >
                     <div
-                      className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-xs sm:text-xs font-medium mb-1 ${
+                      className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-xs sm:text-xs font-medium mb-1.5 ${
                         isToday
                           ? "bg-accent-primary text-white"
                           : "text-light-text-tertiary dark:text-dark-text-tertiary"
@@ -797,21 +880,29 @@ const ProjectPage = () => {
                       {item.day}
                     </div>
                     <div className="space-y-0.5 sm:space-y-1">
-                      {dayTasks.slice(0, 2).map((task) => (
-                        <motion.div
-                          key={task._id}
-                          initial={{ opacity: 0, y: -3 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          onClick={() => openEditModal(task)}
-                          className="text-xs sm:text-xs p-1 rounded truncate cursor-pointer bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:opacity-80 transition-opacity"
-                        >
-                          <div className="font-medium truncate">{task.title}</div>
-                        </motion.div>
-                      ))}
-                      {dayTasks.length > 2 && (
-                        <div className="text-xs sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
-                          +{dayTasks.length - 2} more
+                      {dayTasks.length === 0 ? (
+                        <div className="text-[10px] text-light-text-tertiary/50 dark:text-dark-text-tertiary/50 pl-0.5">
+                          No tasks
                         </div>
+                      ) : (
+                        <>
+                          {dayTasks.slice(0, 2).map((task) => (
+                            <motion.div
+                              key={task._id}
+                              initial={{ opacity: 0, y: -3 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              onClick={() => openEditModal(task)}
+                              className="text-[10px] sm:text-xs p-1 rounded truncate cursor-pointer bg-light-bg-secondary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                            >
+                              <div className="font-medium truncate">{task.title}</div>
+                            </motion.div>
+                          ))}
+                          {dayTasks.length > 2 && (
+                            <div className="text-[10px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
+                              +{dayTasks.length - 2} more
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -852,7 +943,7 @@ const ProjectPage = () => {
     }
 
     return (
-      <div className="flex-1 overflow-x-auto p-4 sm:p-6">
+      <div className="flex-1 overflow-x-auto p-4 sm:p-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary">
         <div className="flex gap-4 min-w-[288px]">
           {Object.entries(filteredColumns).map(([status, column]) => (
             <div
@@ -867,7 +958,7 @@ const ProjectPage = () => {
               onDrop={(e) => handleDrop(e, status)}
             >
               {/* Column Header */}
-              <div className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg border border-light-border dark:border-dark-border">
+              <div className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border">
                 <span
                   className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                   style={{ backgroundColor: column.color }}
@@ -886,7 +977,7 @@ const ProjectPage = () => {
                 <button
                   type="button"
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-light-border dark:border-dark-border text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-primary/50 transition-all w-full text-sm font-medium"
+                  className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-light-border dark:border-dark-border text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-primary dark:hover:bg-dark-bg-primary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-primary/50 transition-all w-full text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary"
                 >
                   <FiPlus className="w-4 h-4" />
                   Add Task
@@ -1009,7 +1100,7 @@ const ProjectPage = () => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         onClick={() => openEditModal(task)}
-        className="group bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl p-3.5 cursor-pointer hover:border-accent-primary/50 dark:hover:border-accent-primary-light/50 hover:shadow-md dark:hover:shadow-dark-md hover:-translate-y-0.5 transition-all duration-200"
+        className="group bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl p-3.5 cursor-pointer hover:border-accent-primary/50 dark:hover:border-accent-primary-light/50 hover:shadow-md dark:hover:shadow-dark-md hover:-translate-y-0.5 transition-all duration-200"
         style={
           isCompleted
             ? { borderLeft: "4px solid #7A9A6D" }
@@ -1385,17 +1476,44 @@ const ProjectPage = () => {
               <h1 className="text-base sm:text-lg font-bold text-light-text-primary dark:text-dark-text-primary truncate">
                 {project?.name}
               </h1>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-accent-success text-white flex-shrink-0">
-                Active
-              </span>
-              <button
-                type="button"
-                onClick={() => setIsStarred(!isStarred)}
-                className="text-yellow-500 hover:text-yellow-600 bg-none border-none cursor-pointer text-lg leading-none flex-shrink-0 transition-colors"
-                aria-label={isStarred ? "Unstar project" : "Star project"}
+              <span
+                className={`text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${
+                  project?.isActive !== false
+                    ? "bg-accent-success/10 text-accent-success"
+                    : "bg-accent-danger/10 text-accent-danger"
+                }`}
               >
-                {isStarred ? "★" : "☆"}
-              </button>
+                {project?.isActive !== false ? "Active" : "Inactive"}
+              </span>
+              {(userRole === "owner" || userRole === "project_admin") && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const newStatus = project?.isActive === false
+                    try {
+                      await apiService.updateProject(projectId, {
+                        name: project.name,
+                        description: project.description,
+                        isActive: newStatus,
+                      })
+                      setProject((prev) => ({ ...prev, isActive: newStatus }))
+                      toast.success(`Project ${newStatus ? "activated" : "deactivated"}`)
+                    } catch {
+                      toast.error("Failed to update project status")
+                    }
+                  }}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors cursor-pointer ${
+                    project?.isActive !== false
+                      ? "bg-accent-warning/10 text-accent-warning hover:bg-accent-warning/20"
+                      : "bg-accent-success/10 text-accent-success hover:bg-accent-success/20"
+                  }`}
+                  aria-label={
+                    project?.isActive !== false ? "Deactivate project" : "Activate project"
+                  }
+                >
+                  {project?.isActive !== false ? "Deactivate" : "Activate"}
+                </button>
+              )}
             </>
           )}
         </div>
@@ -1852,7 +1970,7 @@ const ProjectPage = () => {
         </div>
       )}
 
-      <main className="flex-1 overflow-auto min-h-0">
+      <main className="flex-1 overflow-auto min-h-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary">
         {loading ? (
           <div className="flex gap-4 p-4 sm:p-6 min-w-max">
             {["todo", "in-progress", "under-review", "completed"].map((col) => (

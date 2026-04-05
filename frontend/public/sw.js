@@ -8,14 +8,22 @@ const RUNTIME_CACHE = 'taskflow-runtime-v1'
 const PRECACHE_RESOURCES = [
   '/',
   '/index.html',
-  '/favicon.svg',
+  '/favicon.png',
 ]
 
 // Install event - precache essential resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_RESOURCES))
+      .then((cache) =>
+        Promise.all(
+          PRECACHE_RESOURCES.map((resource) =>
+            fetch(resource)
+              .then((response) => cache.put(resource, response))
+              .catch((err) => console.warn(`Failed to cache ${resource}:`, err))
+          )
+        )
+      )
       .then(() => self.skipWaiting())
   )
 })

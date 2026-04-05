@@ -396,12 +396,14 @@ const TimelineView = () => {
 
         {/* Empty State */}
         {filteredTasks.length === 0 && (
-          <div className="flex-1 flex items-center justify-center py-16">
+          <div className="flex-1 flex items-center justify-center py-16 px-4">
             <div className="text-center">
-              <FiCalendar
-                className="w-16 h-16 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-30"
-                aria-hidden="true"
-              />
+              <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mx-auto mb-4">
+                <FiCalendar
+                  className="w-8 h-8 text-light-text-tertiary opacity-40"
+                  aria-hidden="true"
+                />
+              </div>
               <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
                 No tasks yet
               </h3>

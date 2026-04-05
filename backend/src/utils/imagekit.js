@@ -1,13 +1,11 @@
 import ImageKit from "imagekit"
-
-// Validate that all required ImageKit environment variables are set.
-
-var imagekit = new ImageKit({
-	privateKey: "private_XJ/0D6KMN9mrDG18tEOPlkBQKb4=",
-	publicKey: "public_J5Hd7eCKkMA9wJj8Smj/TL0Srbk=",
-	urlEndpoint: "https://ik.imagekit.io/ptms",
-})
+import { config } from "../config/env.config.js"
 
 // SDK initialization
+const imagekit = new ImageKit({
+  privateKey: config.imagekit.privateKey,
+  publicKey: config.imagekit.publicKey,
+  urlEndpoint: config.imagekit.urlEndpoint,
+})
 
 export default imagekit

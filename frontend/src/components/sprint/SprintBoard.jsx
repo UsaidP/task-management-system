@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { useCallback, useEffect, useState } from "react"
 import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -7,6 +7,7 @@ import apiService from "../../../service/apiService.js"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
 const TaskCard = ({ task, onTaskClick }) => {
+  const reduceMotion = useReducedMotion()
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "TASK",
     item: { taskId: task._id, currentStatus: task.status },
@@ -47,41 +48,59 @@ const TaskCard = ({ task, onTaskClick }) => {
     <motion.div
       ref={drag}
       layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: isDragging ? 0.5 : 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className={`task-card p-3 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:border-accent-primary/50 transition-colors cursor-pointer shadow-sm ${isDragging ? "opacity-50" : ""}`}
+      initial={reduceMotion ? {} : { opacity: 0, y: 10 }}
+      animate={{ opacity: isDragging ? 0.4 : 1, y: 0 }}
+      exit={reduceMotion ? {} : { opacity: 0, scale: 0.95 }}
+      transition={{ duration: reduceMotion ? 0 : 0.15 }}
+      className={`task-card p-3 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-tertiary hover:border-accent-primary/40 dark:hover:border-accent-primary/40 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md ${
+        isDragging ? "opacity-40 scale-95 ring-2 ring-accent-primary/30" : ""
+      }`}
       onClick={() => onTaskClick(task)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onTaskClick(task)
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Task: ${task.title}, Status: ${task.status}, Priority: ${task.priority}`}
     >
       <div className="flex items-center gap-2 mb-2">
         <span className={`${getStatusClass(task.status)} text-xs`}>
           {task.status?.replace("-", " ")}
         </span>
         <span
-          className={`px-2 py-0.5 rounded-lg text-xs font-medium ${getPriorityClass(task.priority)} bg-light-bg-hover dark:bg-dark-bg-hover`}
+          className={`px-2 py-0.5 rounded-md text-xs font-medium ${getPriorityClass(task.priority)} bg-light-bg-hover dark:bg-dark-bg-hover`}
         >
           {task.priority}
         </span>
       </div>
-      <h4 className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary mb-1">
+      <h4 className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary mb-1 line-clamp-2">
         {task.title}
       </h4>
       {task.description && (
-        <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary line-clamp-2">
+        <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary line-clamp-2 mb-2">
           {task.description}
         </p>
       )}
       {task.assignedTo?.length > 0 && (
-        <div className="flex items-center gap-1 mt-2">
-          {task.assignedTo.slice(0, 3).map((user) => (
+        <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-light-border/50 dark:border-dark-border/50">
+          {task.assignedTo.slice(0, 3).map((user, idx) => (
             <div
-              key={user._id}
-              className="w-6 h-6 rounded-full bg-accent-primary/20 text-accent-primary text-xs flex items-center justify-center font-medium"
+              key={user._id || idx}
+              className="w-6 h-6 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary text-white text-[10px] flex items-center justify-center font-medium ring-2 ring-light-bg-primary dark:ring-dark-bg-tertiary -ml-1 first:ml-0"
               title={user.fullname || user.email}
+              aria-label={user.fullname || user.email}
             >
               {(user.fullname || user.email).charAt(0).toUpperCase()}
             </div>
           ))}
+          {task.assignedTo.length > 3 && (
+            <span className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary ml-1">
+              +{task.assignedTo.length - 3}
+            </span>
+          )}
         </div>
       )}
     </motion.div>
@@ -89,6 +108,7 @@ const TaskCard = ({ task, onTaskClick }) => {
 }
 
 const Column = ({ status, tasks, onTaskClick, onDropTask }) => {
+  const reduceMotion = useReducedMotion()
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "TASK",
     drop: (item) => {
@@ -130,27 +150,41 @@ const Column = ({ status, tasks, onTaskClick, onDropTask }) => {
   return (
     <div
       ref={drop}
-      className={`w-[300px] flex-shrink-0 flex flex-col rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary transition-colors ${isOver ? "border-accent-primary border-dashed" : ""}`}
+      className={`w-[300px] flex-shrink-0 flex flex-col rounded-xl border transition-all duration-200 ${
+        isOver
+          ? "border-accent-primary border-dashed bg-accent-primary/5 dark:bg-accent-primary/10"
+          : "border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+      }`}
+      aria-label={`${config.title} column, ${tasks.length} tasks`}
     >
       {/* Column Header */}
-      <div className={`p-3 rounded-t-xl ${config.bg}`}>
+      <div className={`p-3 rounded-t-xl ${config.bg}/15 dark:${config.bg}/20`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Icon className="w-4 h-4 text-white" />
-            <h4 className="font-semibold text-white text-sm uppercase">{config.title}</h4>
+            <Icon className={`w-4 h-4 ${config.bg.replace("bg-", "text-")}`} />
+            <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
+              {config.title}
+            </h4>
           </div>
-          <span className="px-2 py-0.5 rounded-lg bg-white/20 text-white text-xs font-medium">
+          <span
+            className={`px-2 py-0.5 rounded-md ${config.bg}/20 dark:${config.bg}/30 ${config.bg.replace("bg-", "text-")} text-xs font-semibold`}
+          >
             {tasks.length}
           </span>
         </div>
       </div>
 
       {/* Task List */}
-      <div className="flex-1 p-3 space-y-3 overflow-y-auto min-h-[200px] max-h-[calc(100vh-300px)]">
+      <div
+        className={`flex-1 p-2 space-y-2 overflow-y-auto min-h-[150px] max-h-[calc(100vh-280px)] transition-colors duration-200 ${
+          isOver ? "bg-accent-primary/5" : ""
+        }`}
+      >
         {tasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32 text-light-text-tertiary dark:text-dark-text-tertiary">
-            <p className="text-sm">No tasks</p>
-            <p className="text-xs">Drop tasks here</p>
+            <Icon className="w-8 h-8 mb-2 opacity-30" aria-hidden="true" />
+            <p className="text-xs">No tasks</p>
+            {isOver && <p className="text-[10px] text-accent-primary mt-1">Drop here</p>}
           </div>
         ) : (
           <AnimatePresence>
@@ -213,7 +247,7 @@ const SprintBoard = ({ sprintId, projectId }) => {
 
   if (loading) {
     return (
-      <div className="flex gap-4 p-4">
+      <div className="flex gap-3 p-4 overflow-x-auto">
         {["todo", "in-progress", "under-review", "completed"].map((status) => (
           <div
             key={status}
@@ -228,8 +262,8 @@ const SprintBoard = ({ sprintId, projectId }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="flex-1 overflow-x-auto p-4">
-        <div className="flex gap-4 h-full">
+      <div className="flex-1 overflow-x-auto p-4" role="region" aria-label="Sprint board">
+        <div className="flex gap-3 h-full">
           {columns.map((status) => (
             <Column
               key={status}

@@ -467,26 +467,29 @@ const CalendarView = () => {
 
           {isLoading && (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-primary" />
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-10 h-10 border-3 border-accent-primary border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                  Loading tasks...
+                </p>
+              </div>
             </div>
           )}
 
           {!isLoading && filteredTasks.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 px-4">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-light-bg-secondary dark:bg-dark-bg-secondary flex items-center justify-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-4">
                 <FiCalendar
-                  className="w-8 h-8 sm:w-10 sm:h-10 text-light-text-tertiary dark:text-dark-text-tertiary"
+                  className="w-8 h-8 text-light-text-tertiary opacity-40"
                   aria-hidden="true"
                 />
               </div>
-              <div className="text-center">
-                <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary">
-                  No tasks found
-                </p>
-                <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
-                  Create a task to see it on the calendar
-                </p>
-              </div>
+              <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                No tasks found
+              </p>
+              <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                Create a task to see it on the calendar
+              </p>
             </div>
           )}
         </div>

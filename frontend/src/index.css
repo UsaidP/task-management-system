@@ -197,7 +197,7 @@
   }
 
   .auth-card {
-    @apply bg-light-bg-primary dark:bg-dark-bg-primary border-2 border-light-border dark:border-dark-border rounded-2xl p-8 shadow-lg dark:shadow-dark-lg;
+    @apply bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-2xl p-8 shadow-lg dark:shadow-dark-md;
   }
 
   /* ── Modals ───────────────────────────────── */

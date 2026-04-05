@@ -324,10 +324,15 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     // TODO: Replace window.confirm() with a proper accessible confirmation dialog
                     const confirm = window.confirm("Delete this task?")
                     if (confirm) {
-                      await apiService.deleteTask(projectId, formData._id)
-                      toast.success("Task deleted")
-                      onClose()
-                      // Ideally trigger a refresh in the parent view.
+                      try {
+                        await apiService.deleteTask(projectId, formData._id)
+                        toast.success("Task deleted")
+                        onClose()
+                        // Ideally trigger a refresh in the parent view.
+                      } catch (err) {
+                        console.error("Failed to delete task:", err)
+                        toast.error(err.message || "Failed to delete task")
+                      }
                     }
                   }}
                   className="min-h-[44px] min-w-[44px] p-2 text-light-text-tertiary hover:text-accent-danger hover:bg-accent-danger/10 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"

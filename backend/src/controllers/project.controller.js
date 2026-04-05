@@ -125,7 +125,7 @@ const getProjectById = asyncHandler(async (req, res, next) => {
 // Update a project
 const updateProject = asyncHandler(async (req, res, next) => {
 	const { projectId: id } = req.params
-	const { name, description } = req.body
+	const { name, description, isActive } = req.body
 	if (!id) {
 		throw new ApiError(400, "Create a project first, then update it")
 	}
@@ -133,7 +133,12 @@ const updateProject = asyncHandler(async (req, res, next) => {
 		throw new ApiError(400, "Project name and description are required")
 	}
 
-	const project = await Project.findByIdAndUpdate(id, { description, name }, { new: true })
+	const updateData = { description: description?.trim(), name: name.trim() }
+	if (typeof isActive === "boolean") {
+		updateData.isActive = isActive
+	}
+
+	const project = await Project.findByIdAndUpdate(id, updateData, { new: true })
 	if (!project) {
 		throw new ApiError(404, "Project not found")
 	}

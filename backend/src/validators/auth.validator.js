@@ -25,10 +25,10 @@ const userRegistrationValidator = () => {
 		body("password")
 			.notEmpty()
 			.withMessage("Password is required")
-			.isLength({ min: 3 })
-			.withMessage("Password should be minimum of 3 character")
-			.isLength({ max: 13 })
-			.withMessage("Password should be maximum of 13 character"),
+			.isLength({ min: 8 })
+			.withMessage("Password should be minimum of 8 characters")
+			.isLength({ max: 128 })
+			.withMessage("Password should be maximum of 128 characters"),
 	]
 }
 
@@ -50,7 +50,15 @@ const userForgotPasswordValidator = () => {
 	]
 }
 const userResetPasswordValidator = () => {
-	return [body("password").notEmpty().withMessage("Password is required")]
+	return [
+		body("password")
+			.notEmpty()
+			.withMessage("Password is required")
+			.isLength({ min: 8 })
+			.withMessage("Password should be minimum of 8 characters")
+			.isLength({ max: 128 })
+			.withMessage("Password should be maximum of 128 characters"),
+	]
 }
 
 // Provide the validators to be used in routes

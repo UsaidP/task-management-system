@@ -22,6 +22,32 @@ import { useAuth } from "../contexts/customHook.js"
 import { useFilter } from "../contexts/FilterContext.jsx"
 import { useSidebar } from "../contexts/SidebarContext.jsx"
 
+const NavItem = ({ to, icon: Icon, label, isCollapsed, onClick }) => {
+  const getClassName = ({ isActive }) => {
+    const base =
+      "flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative"
+    const active =
+      "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary/15"
+    const inactive =
+      "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+    const collapsed = "justify-center px-0 w-12 mx-auto"
+
+    return `${base} ${isActive ? active : inactive} ${isCollapsed ? collapsed : ""}`
+  }
+
+  return (
+    <NavLink to={to} onClick={onClick} title={isCollapsed ? label : ""} className={getClassName}>
+      <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
+        <Icon
+          className={`w-5 h-5 flex-shrink-0 transition-colors ${isCollapsed ? "" : "mr-3"}`}
+          aria-hidden="true"
+        />
+      </div>
+      {!isCollapsed && <span className="truncate">{label}</span>}
+    </NavLink>
+  )
+}
+
 const Sidebar = () => {
   const [projects, setProjects] = useState([])
   const [myProjects, setMyProjects] = useState([])
@@ -144,37 +170,6 @@ const Sidebar = () => {
     if (!isDesktop) toggleSidebar()
   }
 
-  const NavItem = ({ to, icon: Icon, label }) => {
-    const getClassName = ({ isActive }) => {
-      const base =
-        "flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group relative"
-      const active =
-        "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light border-l-4 border-accent-primary"
-      const inactive =
-        "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border-l-4 border-transparent"
-      const collapsed = "justify-center px-0 w-12 mx-auto"
-
-      return `${base} ${isActive ? active : inactive} ${isCollapsed ? collapsed : ""}`
-    }
-
-    return (
-      <NavLink
-        to={to}
-        onClick={handleMobileNavClick}
-        title={isCollapsed ? label : ""}
-        className={getClassName}
-      >
-        <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
-          <Icon
-            className={`w-5 h-5 flex-shrink-0 transition-transform ${isCollapsed ? "" : "mr-3"} group-hover:scale-110`}
-            aria-hidden="true"
-          />
-        </div>
-        {!isCollapsed && <span className="truncate">{label}</span>}
-      </NavLink>
-    )
-  }
-
   const renderProjectList = () => {
     if (isLoading)
       return <div className="px-4 py-2 text-xs text-light-text-tertiary">Loading...</div>
@@ -203,67 +198,84 @@ const Sidebar = () => {
     const recent = displayProjects.filter((p) => recentIds.includes(p._id))
     const others = displayProjects.filter((p) => !recentIds.includes(p._id))
 
-    const renderProjectItem = (project, index, _isRecent = false) => (
-      <motion.div
-        key={project._id}
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: index * 0.02 }}
-      >
-        <button
-          onClick={() => handleProjectFilterClick(project._id)}
-          aria-pressed={projectFilter === project._id}
-          title={isCollapsed ? project.name : ""}
-          className={`flex items-center w-full px-4 py-2 mt-1 rounded-lg text-sm transition-colors group
-            ${
-              projectFilter === project._id
-                ? "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary/20"
-                : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover text-light-text-primary dark:hover:text-dark-text-primary"
-            }
-            ${isCollapsed ? "justify-center px-0 w-10 h-10 mx-auto" : ""}
-          `}
+    const renderProjectItem = (project, index, _isRecent = false) => {
+      const isActive = projectFilter === project._id
+      return (
+        <motion.div
+          key={project._id}
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.02 }}
         >
-          <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
-            <span
-              className={`w-2 h-2 rounded-full bg-accent-primary group-hover:scale-125 transition-transform ${isCollapsed ? "" : "mr-3"}`}
-            />
-          </div>
-          {!isCollapsed && <span className="truncate">{project.name}</span>}
-        </button>
-      </motion.div>
-    )
+          <button
+            type="button"
+            onClick={() => handleProjectFilterClick(project._id)}
+            aria-pressed={isActive}
+            title={isCollapsed ? project.name : ""}
+            className={`flex items-center w-full px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group border
+              ${
+                isActive
+                  ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary dark:bg-accent-primary/15 dark:border-accent-primary/40 shadow-sm"
+                  : "bg-light-bg-secondary/50 dark:bg-dark-bg-tertiary/50 border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-light-border dark:hover:border-dark-border"
+              }
+              ${isCollapsed ? "justify-center px-0 w-10 h-10 mx-auto !rounded-lg !p-0" : ""}
+            `}
+          >
+            <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
+              <span
+                className={`w-2 h-2 rounded-full transition-all ${
+                  isActive
+                    ? "bg-accent-primary scale-125"
+                    : "bg-light-text-tertiary dark:bg-dark-text-tertiary group-hover:bg-accent-primary/60"
+                } ${isCollapsed ? "" : "mr-3"}`}
+              />
+            </div>
+            {!isCollapsed && (
+              <span className="truncate font-medium text-light-text-primary dark:text-dark-text-primary">
+                {project.name}
+              </span>
+            )}
+          </button>
+        </motion.div>
+      )
+    }
 
     return (
       <>
-        {/* All Projects */}
+        {/* All Projects toggle */}
         {!isCollapsed && projectFilter && (
           <button
+            type="button"
             onClick={() => handleProjectFilterClick(null)}
-            className="flex items-center w-full px-4 py-2 mt-1 rounded-lg text-sm text-accent-primary hover:bg-accent-primary/10 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
+            className="flex items-center w-full px-3 py-2 mb-2 rounded-xl text-sm font-medium text-accent-primary hover:bg-accent-primary/10 border border-accent-primary/20 hover:border-accent-primary/40 transition-all focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
           >
-            <span className="mr-3 w-2 h-2 rounded-full bg-transparent border border-accent-primary" />
-            <span className="truncate font-medium">All Projects</span>
+            <span className="mr-3 w-2 h-2 rounded-full bg-accent-primary" />
+            <span className="truncate">All Projects</span>
           </button>
         )}
 
         {/* Recent Projects */}
         {!isCollapsed && recent.length > 0 && (
-          <div className="mb-2">
-            <p className="px-4 py-1 text-[10px] font-semibold text-light-text-tertiary uppercase tracking-wider">
+          <div className="mb-3">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest">
               Recent
             </p>
-            {recent.map((project, index) => renderProjectItem(project, index, true))}
+            <div className="space-y-1">
+              {recent.map((project, index) => renderProjectItem(project, index, true))}
+            </div>
           </div>
         )}
 
         {/* All Projects */}
         <div>
           {!isCollapsed && recent.length > 0 && (
-            <p className="px-4 py-1 text-[10px] font-semibold text-light-text-tertiary uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[10px] font-bold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-widest">
               All Projects
             </p>
           )}
-          {others.map((project, index) => renderProjectItem(project, index))}
+          <div className="space-y-1">
+            {others.map((project, index) => renderProjectItem(project, index))}
+          </div>
         </div>
       </>
     )
@@ -418,20 +430,43 @@ const Sidebar = () => {
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
           {/* VIEWS SECTION */}
           <div>
             {!isCollapsed && (
-              <p className="px-5 mb-2 text-xs font-semibold text-light-text-tertiary uppercase tracking-wider">
+              <p className="px-4 mb-3 text-xs font-semibold text-light-text-tertiary uppercase tracking-wider">
                 Views
               </p>
             )}
-            <nav className="space-y-1">
-              <NavItem to="/overview" icon={FiHome} label="Overview" />
-              <NavItem to="/my-tasks" icon={FiCheckSquare} label="My Tasks" />
-              <NavItem to="/timeline" icon={FiClock} label="Timeline" />
-              <NavItem to="/table" icon={FiList} label="Table" />
-              <NavItem to="/calendar" icon={FiCalendar} label="Calendar" />
+            <nav className="space-y-2">
+              <NavItem
+                to="/my-tasks"
+                icon={FiCheckSquare}
+                label="My Tasks"
+                isCollapsed={isCollapsed}
+                onClick={handleMobileNavClick}
+              />
+              <NavItem
+                to="/timeline"
+                icon={FiClock}
+                label="Timeline"
+                isCollapsed={isCollapsed}
+                onClick={handleMobileNavClick}
+              />
+              <NavItem
+                to="/table"
+                icon={FiList}
+                label="Table"
+                isCollapsed={isCollapsed}
+                onClick={handleMobileNavClick}
+              />
+              <NavItem
+                to="/calendar"
+                icon={FiCalendar}
+                label="Calendar"
+                isCollapsed={isCollapsed}
+                onClick={handleMobileNavClick}
+              />
             </nav>
           </div>
 
@@ -487,7 +522,18 @@ const Sidebar = () => {
 
         {/* BOTTOM QUICK ACTIONS (Settings, etc) */}
         <div className="flex-none p-3 border-t border-light-border dark:border-dark-border">
-          <NavItem to="/setting" icon={FiSettings} label="Settings" />
+          {!isCollapsed && (
+            <p className="px-4 mb-2 text-xs font-semibold text-light-text-tertiary uppercase tracking-wider">
+              Tools
+            </p>
+          )}
+          <NavItem
+            to="/setting"
+            icon={FiSettings}
+            label="Settings"
+            isCollapsed={isCollapsed}
+            onClick={handleMobileNavClick}
+          />
         </div>
       </motion.aside>
 

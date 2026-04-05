@@ -20,8 +20,8 @@ export default {
           },
           text: {
             primary: "#2C2420", // Espresso — headings, strong text
-            secondary: "#5C4B3A", // Earth — body text
-            tertiary: "#8B8178", // Warm gray — hints, placeholders
+            secondary: "#4A3C30", // Earth — body text (improved contrast)
+            tertiary: "#6E6358", // Warm gray — hints, placeholders (improved contrast)
             inverse: "#FAF6F1", // Linen — text on dark bg
           },
           border: {

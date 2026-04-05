@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose"
+import ms from "ms"
 
 const refreshTokenSchema = new Schema({
 	deviceInfo: {
@@ -6,7 +7,7 @@ const refreshTokenSchema = new Schema({
 		type: String,
 	},
 	expiresAt: {
-		default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+		default: () => new Date(Date.now() + ms(process.env.REFRESH_TOKEN_EXPIRY || "7d")),
 		required: true,
 		type: Date,
 	},
@@ -45,6 +46,12 @@ const refreshTokenSchema = new Schema({
 
 // TTL Index managed via expiresAt
 refreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+
+// Index for finding refresh tokens by user (used in token refresh and logout)
+refreshTokenSchema.index({ user: 1 })
+
+// Index for finding active sessions by user with status
+refreshTokenSchema.index({ status: 1, user: 1 })
 
 const RefreshToken = mongoose.model("RefreshToken", refreshTokenSchema)
 export default RefreshToken
