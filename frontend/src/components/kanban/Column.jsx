@@ -1,21 +1,24 @@
 import { useDrop } from "react-dnd"
 
 const Column = ({ children, status, onDrop, taskCount }) => {
-  const [{ isOver }, drop] = useDrop(() => ({
-    // BUG FIX: 'accept' must match the 'type' from useDrag (which is "task")
-    accept: "task",
+  const [{ isOver }, drop] = useDrop(
+    () => ({
+      // BUG FIX: 'accept' must match the 'type' from useDrag (which is "task")
+      accept: "task",
 
-    // Pass the destinationIndex (taskCount) for drops on the column
-    // This allows dropping into an empty column or at the end of the list
-    drop: (item, monitor) => {
-      if (monitor.didDrop()) return // Already handled by a nested TaskCard
-      onDrop(item, status, taskCount)
-    },
+      // Pass the destinationIndex (taskCount) for drops on the column
+      // This allows dropping into an empty column or at the end of the list
+      drop: (item, monitor) => {
+        if (monitor.didDrop()) return // Already handled by a nested TaskCard
+        onDrop(item, status, taskCount)
+      },
 
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+      }),
     }),
-  }))
+    [status, onDrop, taskCount]
+  )
 
   return (
     <div

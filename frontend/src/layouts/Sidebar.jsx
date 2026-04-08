@@ -25,11 +25,11 @@ import { useSidebar } from "../contexts/SidebarContext.jsx"
 const NavItem = ({ to, icon: Icon, label, isCollapsed, onClick }) => {
   const getClassName = ({ isActive }) => {
     const base =
-      "flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative"
+      "flex items-center px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group relative"
     const active =
-      "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary/15"
+      "bg-accent-primary/12 text-accent-primary dark:bg-accent-primary/20 shadow-sm ring-1 ring-accent-primary/20"
     const inactive =
-      "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+      "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-accent-primary dark:hover:text-accent-primary"
     const collapsed = "justify-center px-0 w-12 mx-auto"
 
     return `${base} ${isActive ? active : inactive} ${isCollapsed ? collapsed : ""}`
@@ -37,13 +37,24 @@ const NavItem = ({ to, icon: Icon, label, isCollapsed, onClick }) => {
 
   return (
     <NavLink to={to} onClick={onClick} title={isCollapsed ? label : ""} className={getClassName}>
-      <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
-        <Icon
-          className={`w-5 h-5 flex-shrink-0 transition-colors ${isCollapsed ? "" : "mr-3"}`}
-          aria-hidden="true"
-        />
-      </div>
-      {!isCollapsed && <span className="truncate">{label}</span>}
+      {({ isActive }) => (
+        <>
+          {/* Left accent bar */}
+          {!isCollapsed && (
+            <span
+              className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r-full transition-all duration-200 ${isActive ? "h-5 bg-accent-primary" : "h-0 bg-transparent"
+                }`}
+            />
+          )}
+          <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
+            <Icon
+              className={`w-[18px] h-[18px] flex-shrink-0 transition-colors ${isCollapsed ? "" : "mr-3"}`}
+              aria-hidden="true"
+            />
+          </div>
+          {!isCollapsed && <span className="truncate">{label}</span>}
+        </>
+      )}
     </NavLink>
   )
 }
@@ -183,10 +194,10 @@ const Sidebar = () => {
       return (
         !isCollapsed && (
           <div className="px-4 py-3">
-            <div className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center py-4">
+            <div className="py-4 text-sm text-center text-light-text-tertiary dark:text-dark-text-tertiary">
               <FiFolder className="w-8 h-8 mx-auto mb-2 opacity-50" aria-hidden="true" />
               <p>No projects yet</p>
-              <p className="text-xs mt-1">Create your first project to get started</p>
+              <p className="mt-1 text-xs">Create your first project to get started</p>
             </div>
           </div>
         )
@@ -212,26 +223,24 @@ const Sidebar = () => {
             onClick={() => handleProjectFilterClick(project._id)}
             aria-pressed={isActive}
             title={isCollapsed ? project.name : ""}
-            className={`flex items-center w-full px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group border
-              ${
-                isActive
-                  ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary dark:bg-accent-primary/15 dark:border-accent-primary/40 shadow-sm"
-                  : "bg-light-bg-secondary/50 dark:bg-dark-bg-tertiary/50 border-transparent text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-light-border dark:hover:border-dark-border"
+            className={`flex items-center w-full px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 group border
+              ${isActive
+                ? "bg-accent-primary/12 border-accent-primary/30 text-accent-primary dark:bg-accent-primary/20 dark:border-accent-primary/40 shadow-sm"
+                : "border-transparent text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-light-border dark:hover:border-dark-border"
               }
               ${isCollapsed ? "justify-center px-0 w-10 h-10 mx-auto !rounded-lg !p-0" : ""}
             `}
           >
             <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
               <span
-                className={`w-2 h-2 rounded-full transition-all ${
-                  isActive
-                    ? "bg-accent-primary scale-125"
-                    : "bg-light-text-tertiary dark:bg-dark-text-tertiary group-hover:bg-accent-primary/60"
-                } ${isCollapsed ? "" : "mr-3"}`}
+                className={`w-2.5 h-2.5 rounded-full transition-all flex-shrink-0 ${isActive
+                  ? "bg-accent-primary shadow-sm shadow-accent-primary/40 scale-110"
+                  : "bg-light-text-secondary/50 dark:bg-dark-text-secondary/50 group-hover:bg-accent-primary/70"
+                  } ${isCollapsed ? "" : "mr-3"}`}
               />
             </div>
             {!isCollapsed && (
-              <span className="truncate font-medium text-light-text-primary dark:text-dark-text-primary">
+              <span className="font-medium truncate text-light-text-primary dark:text-dark-text-primary">
                 {project.name}
               </span>
             )}
@@ -247,9 +256,9 @@ const Sidebar = () => {
           <button
             type="button"
             onClick={() => handleProjectFilterClick(null)}
-            className="flex items-center w-full px-3 py-2 mb-2 rounded-xl text-sm font-medium text-accent-primary hover:bg-accent-primary/10 border border-accent-primary/20 hover:border-accent-primary/40 transition-all focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+            className="flex items-center w-full px-3 py-2 mb-2 text-sm font-medium transition-all border rounded-xl text-accent-primary hover:bg-accent-primary/10 border-accent-primary/20 hover:border-accent-primary/40 focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
           >
-            <span className="mr-3 w-2 h-2 rounded-full bg-accent-primary" />
+            <span className="w-2 h-2 mr-3 rounded-full bg-accent-primary" />
             <span className="truncate">All Projects</span>
           </button>
         )}
@@ -296,7 +305,7 @@ const Sidebar = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-utility-overlay z-40 lg:hidden"
+            className="fixed inset-0 z-40 bg-utility-overlay lg:hidden"
             onClick={toggleSidebar}
           />
         )}
@@ -313,20 +322,13 @@ const Sidebar = () => {
                    transition-all duration-300 ease-in-out
                    ${isDesktop ? (isCollapsed ? "w-20" : "w-72") : "w-72"}`}
       >
-        <div className="flex-none px-4 pb-4 border-b border-light-border dark:border-dark-border flex items-center justify-between">
-          <div className="flex items-center gap-3 overflow-hidden ml-2">
-            <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center text-white flex-shrink-0">
-              <span className="font-serif font-bold text-xl leading-none">T</span>
-            </div>
-            {!isCollapsed && (
-              <motion.h1
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary truncate"
-              >
-                TaskFlow
-              </motion.h1>
-            )}
+        <div className="flex items-center justify-between flex-none px-4 pb-4 border-b border-light-border dark:border-dark-border">
+          <div className="flex items-center gap-3 ml-2 overflow-hidden">
+            <img
+              src="/logo-light.png"
+              alt="TaskFlow logo"
+              className="h-20 w-40 object-contain flex-shrink-0"
+            />
           </div>
 
           {/* Mobile close button */}
@@ -334,7 +336,7 @@ const Sidebar = () => {
             <button
               onClick={toggleSidebar}
               aria-label="Close sidebar"
-              className="p-2 text-light-text-tertiary hover:text-accent-danger hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
+              className="p-2 transition-colors rounded-lg text-light-text-tertiary hover:text-accent-danger hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
             >
               <FiX className="w-5 h-5" aria-hidden="true" />
             </button>
@@ -368,9 +370,9 @@ const Sidebar = () => {
                 disabled={!projectFilter}
                 aria-expanded={isSprintMenuOpen}
                 aria-haspopup="listbox"
-                className="flex items-center justify-between w-full px-3 py-2 text-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border border-light-border dark:border-dark-border rounded-lg transition-colors group disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
+                className="flex items-center justify-between w-full px-3 py-2 text-sm transition-colors border rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover border-light-border dark:border-dark-border group disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
               >
-                <span className="text-light-text-primary dark:text-dark-text-primary font-medium truncate">
+                <span className="font-medium truncate text-light-text-primary dark:text-dark-text-primary">
                   {!projectFilter
                     ? "Select a project first"
                     : sprintFilter
@@ -387,18 +389,17 @@ const Sidebar = () => {
                 <motion.div
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="absolute top-full left-0 right-0 mt-1 bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg z-50 overflow-hidden"
+                  className="absolute left-0 right-0 z-50 mt-1 overflow-hidden border rounded-lg shadow-lg top-full bg-light-bg-primary dark:bg-dark-bg-secondary border-light-border dark:border-dark-border"
                 >
                   <button
                     onClick={() => {
                       setSprintFilter(null)
                       setIsSprintMenuOpen(false)
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
-                      !sprintFilter
-                        ? "text-accent-primary font-medium bg-accent-primary/5"
-                        : "text-light-text-primary dark:text-dark-text-primary"
-                    }`}
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${!sprintFilter
+                      ? "text-accent-primary font-medium bg-accent-primary/5"
+                      : "text-light-text-primary dark:text-dark-text-primary"
+                      }`}
                   >
                     All Sprints
                   </button>
@@ -414,11 +415,10 @@ const Sidebar = () => {
                           setSprintFilter(sprint._id)
                           setIsSprintMenuOpen(false)
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
-                          sprintFilter === sprint._id
-                            ? "text-accent-primary font-medium bg-accent-primary/5"
-                            : "text-light-text-primary dark:text-dark-text-primary"
-                        }`}
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${sprintFilter === sprint._id
+                          ? "text-accent-primary font-medium bg-accent-primary/5"
+                          : "text-light-text-primary dark:text-dark-text-primary"
+                          }`}
                       >
                         {sprint.name}
                       </button>
@@ -430,15 +430,22 @@ const Sidebar = () => {
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
+        <div className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
           {/* VIEWS SECTION */}
           <div>
             {!isCollapsed && (
-              <p className="px-4 mb-3 text-xs font-semibold text-light-text-tertiary uppercase tracking-wider">
+              <p className="px-3 mb-2 text-[11px] font-bold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-widest">
                 Views
               </p>
             )}
-            <nav className="space-y-2">
+            <nav className="space-y-1">
+              <NavItem
+                to="/overview"
+                icon={FiHome}
+                label="Overview"
+                isCollapsed={isCollapsed}
+                onClick={handleMobileNavClick}
+              />
               <NavItem
                 to="/my-tasks"
                 icon={FiCheckSquare}
@@ -473,11 +480,11 @@ const Sidebar = () => {
           {/* PROJECTS SECTION */}
           <div>
             {!isCollapsed ? (
-              <div className="flex items-center justify-between px-5 mb-2">
-                <p className="text-xs font-semibold text-light-text-tertiary uppercase tracking-wider flex items-center">
+              <div className="flex items-center justify-between px-3 mb-2">
+                <p className="text-[11px] font-bold text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-widest flex items-center gap-1.5">
                   My Projects
-                  {!isLoading && !error && (
-                    <span className="ml-2 bg-light-bg-hover dark:bg-dark-bg-hover px-1.5 rounded-full text-[10px]">
+                  {!isLoading && !error && myProjects.length > 0 && (
+                    <span className="bg-accent-primary/10 text-accent-primary dark:bg-accent-primary/20 px-1.5 py-0.5 rounded-full text-[10px] font-bold">
                       {myProjects.length}
                     </span>
                   )}
@@ -487,14 +494,14 @@ const Sidebar = () => {
                     onClick={() => setIsProjectMenuOpen(!isProjectMenuOpen)}
                     aria-expanded={isProjectMenuOpen}
                     aria-label="Toggle projects list"
-                    className={`p-1 text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-transform transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary ${isProjectMenuOpen ? "" : "-rotate-90"}`}
+                    className={`p-1 text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-accent-primary/20 ${isProjectMenuOpen ? "" : "-rotate-90"}`}
                   >
                     <FiChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => setIsModalOpen(true)}
                     aria-label="Create project"
-                    className="p-1 text-light-text-tertiary hover:text-accent-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
+                    className="p-1 transition-colors rounded-lg text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                     title="Create Project"
                   >
                     <FiPlusSquare className="w-3.5 h-3.5" aria-hidden="true" />
@@ -506,7 +513,7 @@ const Sidebar = () => {
                 <button
                   onClick={() => setIsModalOpen(true)}
                   aria-label="Create project"
-                  className="p-2 text-light-text-tertiary hover:text-accent-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
+                  className="p-2 transition-colors rounded-lg text-light-text-tertiary hover:text-accent-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
                   title="Create Project"
                 >
                   <FiPlusSquare className="w-5 h-5" aria-hidden="true" />
@@ -515,18 +522,13 @@ const Sidebar = () => {
             )}
 
             {(isProjectMenuOpen || isCollapsed) && (
-              <div className="space-y-1 pb-4">{renderProjectList()}</div>
+              <div className="pb-4 space-y-1">{renderProjectList()}</div>
             )}
           </div>
         </div>
 
         {/* BOTTOM QUICK ACTIONS (Settings, etc) */}
         <div className="flex-none p-3 border-t border-light-border dark:border-dark-border">
-          {!isCollapsed && (
-            <p className="px-4 mb-2 text-xs font-semibold text-light-text-tertiary uppercase tracking-wider">
-              Tools
-            </p>
-          )}
           <NavItem
             to="/setting"
             icon={FiSettings}

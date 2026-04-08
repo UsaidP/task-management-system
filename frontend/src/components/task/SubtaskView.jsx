@@ -69,7 +69,7 @@ const SubtaskView = ({ taskId }) => {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-12 bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg animate-pulse"
+            className="h-12 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover animate-pulse"
           />
         ))}
       </div>
@@ -81,7 +81,7 @@ const SubtaskView = ({ taskId }) => {
       {/* Progress Bar */}
       {subtasks.length > 0 && (
         <div className="mb-4">
-          <div className="flex justify-between items-center mb-2">
+          <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
               Progress
             </span>
@@ -89,9 +89,9 @@ const SubtaskView = ({ taskId }) => {
               {completedCount}/{subtasks.length} completed
             </span>
           </div>
-          <div className="w-full bg-light-bg-hover dark:bg-dark-bg-hover rounded-full h-2">
+          <div className="w-full h-2 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover">
             <div
-              className="bg-accent-primary h-2 rounded-full transition-all duration-300"
+              className="h-2 transition-all duration-300 rounded-full bg-accent-primary"
               style={{ width: `${(completedCount / subtasks.length) * 100}%` }}
             />
           </div>
@@ -123,39 +123,36 @@ const SubtaskView = ({ taskId }) => {
 
       {/* Subtasks List */}
       {subtasks.length === 0 ? (
-        <div className="text-center py-8 text-light-text-tertiary dark:text-dark-text-tertiary">
+        <div className="py-8 text-center text-light-text-tertiary dark:text-dark-text-tertiary">
           <p className="text-sm">No subtasks yet</p>
-          <p className="text-xs mt-1">Add subtasks to track progress</p>
+          <p className="mt-1 text-xs">Add subtasks to track progress</p>
         </div>
       ) : (
         <ul className="space-y-2">
           {subtasks.map((subtask) => (
             <li
               key={subtask._id}
-              className="flex items-center justify-between p-3 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border hover:border-accent-primary/30 transition-colors group"
+              className="flex items-center justify-between p-3 transition-colors border bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border-light-border dark:border-dark-border hover:border-accent-primary/30 group"
             >
               <button
                 type="button"
                 onClick={() => handleToggleComplete(subtask._id, subtask.isCompleted)}
-                className={`flex items-center gap-3 flex-1 text-left ${
-                  subtask.isCompleted ? "opacity-60" : ""
-                }`}
+                className={`flex items-center gap-3 flex-1 text-left ${subtask.isCompleted ? "opacity-60" : ""
+                  }`}
               >
                 <div
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                    subtask.isCompleted
-                      ? "bg-accent-primary border-accent-primary"
-                      : "border-light-text-tertiary dark:border-dark-text-tertiary"
-                  }`}
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${subtask.isCompleted
+                    ? "bg-accent-primary border-accent-primary"
+                    : "border-light-text-tertiary dark:border-dark-text-tertiary"
+                    }`}
                 >
                   {subtask.isCompleted && <FiCheck className="w-3 h-3 text-white" />}
                 </div>
                 <span
-                  className={`text-sm font-medium transition-all ${
-                    subtask.isCompleted
-                      ? "text-light-text-tertiary dark:text-dark-text-tertiary line-through"
-                      : "text-light-text-primary dark:text-dark-text-primary"
-                  }`}
+                  className={`text-sm font-medium transition-all ${subtask.isCompleted
+                    ? "text-light-text-tertiary dark:text-dark-text-tertiary line-through"
+                    : "text-light-text-primary dark:text-dark-text-primary"
+                    }`}
                 >
                   {subtask.title}
                 </span>
@@ -164,7 +161,7 @@ const SubtaskView = ({ taskId }) => {
                 type="button"
                 onClick={() => handleDeleteSubtask(subtask._id)}
                 aria-label={`Delete subtask: ${subtask.title}`}
-                className="p-2 text-light-text-tertiary hover:text-error hover:bg-error/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                className="p-2 transition-all rounded-lg opacity-0 text-light-text-tertiary hover:text-error hover:bg-error/10 group-hover:opacity-100"
               >
                 <FiTrash2 className="w-4 h-4" />
               </button>

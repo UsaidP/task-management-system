@@ -6,64 +6,57 @@ import { ApiResponse } from "../utils/api-response.js"
 import { asyncHandler } from "../utils/async-handler.js"
 
 const createNotes = asyncHandler(async (req, res, next) => {
-	// Validate project ID and user authentication
-	// Check if projectId is provided and valid
-	// Check if user is authenticated
-	// Check if project exists
-	// Check if content is provided
-	// Create a new note with the provided content
-	// Return the created note in the response
-	// Handle errors
-
 	const { projectId } = req.params
 	if (!projectId || !mongoose.isValidObjectId(projectId)) {
-		throw new ApiError(401, "provide valid project id")
+		throw new ApiError(400, "Provide valid project id")
 	}
-	if (!req.user) {
-		throw new ApiError(401, "User not authenticated")
-	}
+
 	const project = await Project.findById(projectId)
 	if (!project) {
-		throw new ApiError(404, "Project not found create project first")
+		throw new ApiError(404, "Project not found")
 	}
-	const { content } = req.body
+
+	const { content, title } = req.body
 	if (!content) {
-		throw new ApiError(401, "provide notes")
+		throw new ApiError(400, "Content is required")
 	}
+
 	const note = await ProjectNote.create({
 		content,
-		createdBy: new mongoose.Types.ObjectId(req.user._id),
-		project: new mongoose.Types.ObjectId(project),
+		createdBy: req.user._id,
+		project: project._id,
+		title: title || "Untitled Note",
 	})
+
 	if (!note) {
-		throw new ApiError(401, "note is not created")
+		throw new ApiError(500, "Failed to create note")
 	}
-	res.status(201).json(new ApiResponse(201, note, "Note is created successfully"))
+
+	const populatedNote = await ProjectNote.findById(note._id).populate(
+		"createdBy",
+		"fullname email avatar username",
+	)
+
+	res.status(201).json(new ApiResponse(201, populatedNote, "Note created successfully"))
 	next()
 })
 const getNotes = asyncHandler(async (req, res, next) => {
-	// Validate project ID and user authentication
-
-	// Check if projectId is provided and valid
-	// Check if user is member of the project
-
-	// Fetch all notes for the specified project
-	// Return the notes in the response
-	// Handle errors
-
 	const { projectId } = req.params
 	if (!projectId || !mongoose.isValidObjectId(projectId)) {
-		throw new ApiError(401, "provide valid project id")
+		throw new ApiError(400, "Provide valid project id")
 	}
-	if (!req.user) {
-		throw new ApiError(401, "User not authenticated")
-	}
+
 	const project = await Project.findById(projectId)
 	if (!project) {
-		throw new ApiError(404, "Project not found create project first")
+		throw new ApiError(404, "Project not found")
 	}
-	const notes = await ProjectNote.find({ project }).populate("createdBy", "name")
-	res.status(200).json(new ApiResponse(200, notes, "Notes fetched successfully"))
+
+	const notes = await ProjectNote.find({ project: project._id }).populate(
+		"createdBy",
+		"fullname email avatar username",
+	)
+
+	res.status(200).json(new ApiResponse(200, notes || [], "Notes fetched successfully"))
 	next()
 })
 
@@ -71,15 +64,17 @@ const getNoteById = asyncHandler(async (req, res, next) => {
 	const { noteId } = req.params
 
 	if (!noteId || !mongoose.isValidObjectId(noteId)) {
-		throw new ApiError(401, "provide valid note id")
+		throw new ApiError(400, "Provide valid note id")
 	}
+
 	const note = await ProjectNote.findById(noteId).populate(
 		"createdBy",
-		"name fullname email avatar",
+		"fullname email avatar username",
 	)
 	if (!note) {
 		throw new ApiError(404, "Note not found")
 	}
+
 	res.status(200).json(new ApiResponse(200, note, "Note fetched successfully"))
 	next()
 })
@@ -87,49 +82,48 @@ const getNoteById = asyncHandler(async (req, res, next) => {
 const updateNote = asyncHandler(async (req, res, next) => {
 	const { projectId, noteId } = req.params
 	if (!projectId || !mongoose.isValidObjectId(projectId)) {
-		throw new ApiError(401, "project is not found")
+		throw new ApiError(400, "Invalid project ID")
 	}
 	if (!noteId || !mongoose.isValidObjectId(noteId)) {
-		throw new ApiError(401, "note is not found")
+		throw new ApiError(400, "Invalid note ID")
 	}
-	const { content } = req.body
-	const userID = req.user._id
 
-	const project = await Project.findById(projectId)
-	if (!project) {
-		throw new ApiError(404, "Project not found create project first")
-	}
+	const { content } = req.body
 
 	const note = await ProjectNote.findByIdAndUpdate(
 		noteId,
-		{ content, updatedBy: userID },
-		{ new: true },
+		{ content, lastEditedBy: req.user._id },
+		{ new: true, runValidators: true },
 	)
 
 	if (!note) {
-		throw new ApiError("402", "something went wrong while updating the note.")
+		throw new ApiError(404, "Note not found")
 	}
-	res.status(202).json(new ApiResponse(202, note, "Note updated successfully"))
+
+	res.status(200).json(new ApiResponse(200, note, "Note updated successfully"))
 	next()
 })
 
 const deleteNote = asyncHandler(async (req, res, next) => {
 	const { projectId, noteId } = req.params
 	if (!projectId || !mongoose.isValidObjectId(projectId)) {
-		throw new ApiError(401, "projectID is not found in project")
+		throw new ApiError(400, "Invalid project ID")
 	}
 	if (!noteId || !mongoose.isValidObjectId(noteId)) {
-		throw new ApiError(401, "note is not found")
+		throw new ApiError(400, "Invalid note ID")
 	}
-	const project = await Project.findOne({ _id: projectId })
+
+	const project = await Project.findById(projectId)
 	if (!project) {
-		throw new ApiError(404, "Project not found", [], "Project not found", false)
+		throw new ApiError(404, "Project not found")
 	}
-	const deleteNote = await ProjectNote.findOneAndDelete(noteId)
-	if (!deleteNote) {
-		throw new ApiError(402, "Something went wrong while deleting the note.", [], "", false)
+
+	const deletedNote = await ProjectNote.findByIdAndDelete(noteId)
+	if (!deletedNote) {
+		throw new ApiError(404, "Note not found")
 	}
-	res.status(203).json(new ApiResponse(203, deleteNote, "Note deleted successfully"))
+
+	res.status(200).json(new ApiResponse(200, deletedNote, "Note deleted successfully"))
 	next()
 })
 export { createNotes, getNotes, getNoteById, updateNote, deleteNote }

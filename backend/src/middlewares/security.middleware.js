@@ -21,7 +21,11 @@ const helmetConfig = helmet({
 			formAction: ["'self'"],
 			frameAncestors: ["'none'"], // Prevent clickjacking
 			imgSrc: ["'self'", "data:", "https://ik.imagekit.io"],
-			scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Required for React
+			// In production, use nonces instead of unsafe-inline/eval
+			scriptSrc:
+				process.env.NODE_ENV === "production"
+					? ["'self'"]
+					: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Required for React dev mode
 			styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
 		},
 	},

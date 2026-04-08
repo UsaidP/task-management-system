@@ -26,6 +26,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
         if (item.id !== task._id) {
           onDrop(item, task.status, index)
         }
+        return { handled: true }
       },
     }),
     [task, index, onDrop]

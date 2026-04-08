@@ -26,6 +26,14 @@ const logger = winston.createLogger({
 		}),
 		winston.format.errors({ stack: true }),
 		winston.format.splat(),
+		// Normalize object messages for better console output
+		winston.format((info) => {
+			const msg = String(info.message || "")
+			if (msg === "[object Object]") {
+				delete info.message
+			}
+			return info
+		})(),
 		winston.format.json(),
 	),
 	level: process.env.LOG_LEVEL || "info",
@@ -37,9 +45,9 @@ const logger = winston.createLogger({
 			format: winston.format.combine(
 				winston.format.timestamp(),
 				winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
-					return `${timestamp} [${level.toUpperCase()}] ${message} ${
-						stack ? `\n${stack}` : ""
-					} ${Object.keys(meta).length ? JSON.stringify(meta) : ""}`
+					const msg = message === "[object Object]" ? "" : message
+					const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : ""
+					return `${timestamp} [${level.toUpperCase()}] ${msg}${stack ? `\n${stack}` : ""} ${metaStr}`
 				}),
 			),
 			level: "error",
@@ -54,9 +62,9 @@ const logger = winston.createLogger({
 			format: winston.format.combine(
 				winston.format.timestamp(),
 				winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
-					return `${timestamp} [${level.toUpperCase()}] ${message} ${
-						stack ? `\n${stack}` : ""
-					} ${Object.keys(meta).length ? JSON.stringify(meta) : ""}`
+					const msg = message === "[object Object]" ? "" : message
+					const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : ""
+					return `${timestamp} [${level.toUpperCase()}] ${msg}${stack ? `\n${stack}` : ""} ${metaStr}`
 				}),
 			),
 			maxFiles: "14d",
@@ -69,7 +77,14 @@ const logger = winston.createLogger({
 if (process.env.NODE_ENV !== "production") {
 	logger.add(
 		new winston.transports.Console({
-			format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+			format: winston.format.combine(
+				winston.format.colorize(),
+				winston.format.printf(({ timestamp, level, message, ...meta }) => {
+					const msg = message === "[object Object]" ? "" : String(message || "")
+					const metaPart = Object.keys(meta).length ? " " + JSON.stringify(meta) : ""
+					return `${timestamp} ${level}: ${msg}${metaPart}`
+				}),
+			),
 		}),
 	)
 }
@@ -120,7 +135,7 @@ const requestLogger = (req, res, next) => {
 	req.startTime = start
 
 	// Log request details
-	logger.info({
+	logger.info("Incoming request", {
 		ip: req.ip,
 		method: req.method,
 		requestId,
@@ -135,7 +150,7 @@ const requestLogger = (req, res, next) => {
 		const duration = Date.now() - start
 		const logLevel = res.statusCode >= 500 ? "error" : res.statusCode >= 400 ? "warn" : "info"
 
-		logger.log(logLevel, {
+		logger.log(logLevel, "HTTP response", {
 			duration: `${duration}ms`,
 			method: req.method,
 			requestId,
@@ -154,7 +169,7 @@ const requestLogger = (req, res, next) => {
  * Logs errors with full stack traces and context
  */
 const errorLogger = (err, req, _res, next) => {
-	logger.error({
+	logger.error("Request error", {
 		error: {
 			message: err.message,
 			name: err.name,

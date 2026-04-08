@@ -24,24 +24,24 @@ const OverviewSkeleton = () => (
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.3 }}
-    className="space-y-8 p-8 max-w-[1400px] mx-auto"
+    className="space-y-8 p-6 sm:p-8 max-w-[1400px] mx-auto"
   >
-    <div className="flex animate-pulse items-center justify-between">
+    <div className="flex items-center justify-between animate-pulse">
       <div>
-        <div className="mb-3 h-10 w-64 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
-        <div className="h-6 w-80 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
+        <div className="w-64 h-10 mb-3 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
+        <div className="h-6 rounded-lg w-80 bg-light-bg-hover dark:bg-dark-bg-hover" />
       </div>
-      <div className="hidden h-6 w-48 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover md:block" />
+      <div className="hidden w-48 h-6 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover md:block" />
     </div>
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {[1, 2, 3, 4].map((i) => (
-        <SkeletonCard key={i} className="p-6 h-32" />
+        <SkeletonCard key={i} className="h-32 p-6" />
       ))}
     </div>
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div className="lg:col-span-2 space-y-8">
-        <SkeletonCard className="p-6 h-48" />
-        <SkeletonCard className="p-6 h-40" />
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="space-y-8 lg:col-span-2">
+        <SkeletonCard className="h-48 p-6" />
+        <SkeletonCard className="h-40 p-6" />
       </div>
       <div className="lg:col-span-1">
         <SkeletonCard className="p-6 h-96">
@@ -63,12 +63,12 @@ const OverviewSkeleton = () => (
 )
 
 const HeaderSkeleton = () => (
-  <div className="flex animate-pulse items-center justify-between">
+  <div className="flex items-center justify-between animate-pulse">
     <div>
-      <div className="mb-3 h-10 w-64 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
-      <div className="h-6 w-80 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
+      <div className="w-64 h-10 mb-3 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover" />
+      <div className="h-6 rounded-lg w-80 bg-light-bg-hover dark:bg-dark-bg-hover" />
     </div>
-    <div className="hidden h-6 w-48 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover md:block" />
+    <div className="hidden w-48 h-6 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover md:block" />
   </div>
 )
 
@@ -77,9 +77,9 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.6, delay }}
-    className="card group p-6 active:bg-light-bg-tertiary dark:active:bg-dark-bg-hover"
+    className="p-6 card group active:bg-light-bg-tertiary dark:active:bg-dark-bg-hover"
   >
-    <div className="mb-4 flex items-center justify-between">
+    <div className="flex items-center justify-between mb-4">
       <div
         className={`p-3 rounded-xl ${color} transition-transform duration-200 group-hover:scale-110 flex items-center justify-center text-white shadow-sm`}
       >
@@ -87,10 +87,10 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
       </div>
     </div>
     <div>
-      <p className="text-light-text-primary dark:text-dark-text-primary mb-1 text-4xl font-sans font-bold py-1">
+      <p className="py-1 mb-1 font-sans text-4xl font-bold text-light-text-primary dark:text-dark-text-primary">
         {value}
       </p>
-      <p className="text-light-text-secondary dark:text-dark-text-secondary font-medium">{label}</p>
+      <p className="font-medium text-light-text-secondary dark:text-dark-text-secondary">{label}</p>
     </div>
   </motion.div>
 )
@@ -100,14 +100,14 @@ const RecentActivityItem = ({ task, onClick }) => (
     type="button"
     onClick={() => onClick(task)}
     aria-label={`View task: ${task.title}`}
-    className="flex items-start gap-4 p-4 border-b border-light-border dark:border-dark-border last:border-0 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary active:bg-light-bg-tertiary dark:active:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg-primary transition-colors rounded-xl cursor-pointer w-full text-left"
+    className="flex items-start w-full gap-4 p-4 text-left transition-colors border-b cursor-pointer border-light-border dark:border-dark-border last:border-0 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary active:bg-light-bg-tertiary dark:active:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg-primary rounded-xl"
   >
-    <div className="mt-1 w-2 h-2 rounded-full flex-shrink-0 bg-accent-primary" />
+    <div className="flex-shrink-0 w-2 h-2 mt-1 rounded-full bg-accent-primary" />
     <div className="flex-1">
-      <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm mb-1">
+      <h3 className="mb-1 text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
         {task.title}
       </h3>
-      <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mb-2 line-clamp-1">
+      <p className="mb-2 text-xs text-light-text-secondary dark:text-dark-text-secondary line-clamp-1">
         {task.description}
       </p>
       <div className="flex gap-2">
@@ -116,7 +116,7 @@ const RecentActivityItem = ({ task, onClick }) => (
         </span>
       </div>
     </div>
-    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0 whitespace-nowrap">
+    <div className="flex-shrink-0 text-xs text-light-text-tertiary dark:text-dark-text-tertiary whitespace-nowrap">
       {dayjs(task.updatedAt).fromNow
         ? dayjs(task.updatedAt).fromNow()
         : dayjs(task.updatedAt).format("MMM D")}
@@ -140,7 +140,7 @@ const UpcomingTaskItem = ({ task, onClick }) => {
           <FiCalendar className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
+          <h3 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
             {task.title}
           </h3>
           <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
@@ -179,9 +179,8 @@ const Overview = () => {
     setError(null)
     try {
       const [tasksResponse] = await Promise.all([apiService.getAllTaskOfUser()])
-
       if (tasksResponse.success) {
-        const tasksData = tasksResponse.data
+        const tasksData = tasksResponse.data.tasks
 
         setStats({
           totalTasks: tasksData.length,
@@ -243,25 +242,25 @@ const Overview = () => {
   }
 
   return (
-    <div className="space-y-8 p-8 max-w-[1400px] mx-auto">
+    <div className="space-y-8 p-6 sm:p-8 max-w-[1400px] mx-auto">
       {/* Header Section */}
       {user ? (
         <motion.div
           initial={reduceMotion ? {} : { opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-center justify-between gap-4"
+          className="flex flex-col justify-between gap-4 md:flex-row md:items-center"
         >
           <div>
-            <h1 className="text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+            <h1 className="mb-2 font-serif text-4xl font-bold text-light-text-primary dark:text-dark-text-primary">
               {getGreeting()}, {user.fullname?.split(" ")[0] || "User"}!
             </h1>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary text-lg">
+            <p className="text-lg text-light-text-secondary dark:text-dark-text-secondary">
               Here is what's happening across your workspace today.
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center p-3 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl text-light-text-secondary dark:text-dark-text-secondary font-medium border border-light-border dark:border-dark-border shadow-sm">
+            <div className="flex items-center justify-center p-3 font-medium border shadow-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl text-light-text-secondary dark:text-dark-text-secondary border-light-border dark:border-dark-border">
               <FiCalendar className="mr-2" />
               {dayjs().format("dddd, MMMM D, YYYY")}
             </div>
@@ -282,28 +281,28 @@ const Overview = () => {
       {/* Stats Overview */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          icon={<FiClipboard className="h-6 w-6" />}
+          icon={<FiClipboard className="w-6 h-6" />}
           label="To Do"
           value={stats.todo}
           color="bg-light-text-tertiary dark:bg-dark-text-tertiary"
           delay={0.1}
         />
         <StatCard
-          icon={<FiClock className="h-6 w-6" />}
+          icon={<FiClock className="w-6 h-6" />}
           label="In Progress"
           value={stats.inProgress}
           color="bg-accent-primary"
           delay={0.2}
         />
         <StatCard
-          icon={<FiEye className="h-6 w-6" />}
+          icon={<FiEye className="w-6 h-6" />}
           label="Under Review"
           value={stats.underReview}
           color="bg-accent-warning"
           delay={0.3}
         />
         <StatCard
-          icon={<FiCheckSquare className="h-6 w-6" />}
+          icon={<FiCheckSquare className="w-6 h-6" />}
           label="Completed"
           value={stats.completed}
           color="bg-accent-success"
@@ -311,9 +310,9 @@ const Overview = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Left Column: Upcoming & Sprint */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="space-y-8 lg:col-span-2">
           {/* Upcoming Due Dates */}
           <motion.div
             initial={reduceMotion ? {} : { opacity: 0, y: 20 }}
@@ -322,7 +321,7 @@ const Overview = () => {
             className="card"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold font-serif text-light-text-primary dark:text-dark-text-primary flex items-center">
+              <h2 className="flex items-center font-serif text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
                 <FiCalendar className="mr-2 text-accent-primary" />
                 Upcoming Deadlines
               </h2>
@@ -363,16 +362,16 @@ const Overview = () => {
             className="card"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold font-serif text-light-text-primary dark:text-dark-text-primary flex items-center">
+              <h2 className="flex items-center font-serif text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
                 <FiActivity className="mr-2 text-accent-warning" />
                 Current Sprint Progress
               </h2>
-              <span className="text-xs font-semibold px-3 py-1 bg-accent-warning/10 text-accent-warning rounded-full">
+              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-accent-warning/10 text-accent-warning">
                 Sprint 4: Q3 Goals
               </span>
             </div>
             <div className="space-y-4">
-              <div className="flex justify-between items-end">
+              <div className="flex items-end justify-between">
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                     Expected Completion
@@ -381,7 +380,7 @@ const Overview = () => {
                     68%
                   </p>
                 </div>
-                <div className="text-right space-y-1">
+                <div className="space-y-1 text-right">
                   <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
                     Time Remaining
                   </p>
@@ -389,7 +388,7 @@ const Overview = () => {
                 </div>
               </div>
               <div
-                className="w-full h-3 bg-light-border dark:bg-dark-border rounded-full overflow-hidden"
+                className="w-full h-3 overflow-hidden rounded-full bg-light-border dark:bg-dark-border"
                 role="progressbar"
                 aria-valuenow={68}
                 aria-valuemin={0}
@@ -408,10 +407,10 @@ const Overview = () => {
             initial={reduceMotion ? {} : { opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="card h-full"
+            className="h-full card"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold font-serif text-light-text-primary dark:text-dark-text-primary flex items-center">
+              <h2 className="flex items-center font-serif text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
                 <FiClock className="mr-2 text-accent-success" />
                 Recent Activity
               </h2>
@@ -421,10 +420,10 @@ const Overview = () => {
               <div className="space-y-6">
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div key={i} className="flex gap-4 animate-pulse">
-                    <div className="w-2 h-2 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover mt-2" />
+                    <div className="w-2 h-2 mt-2 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover" />
                     <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-light-bg-hover dark:bg-dark-bg-hover rounded w-3/4" />
-                      <div className="h-3 bg-light-bg-hover dark:bg-dark-bg-hover rounded w-1/2" />
+                      <div className="w-3/4 h-4 rounded bg-light-bg-hover dark:bg-dark-bg-hover" />
+                      <div className="w-1/2 h-3 rounded bg-light-bg-hover dark:bg-dark-bg-hover" />
                     </div>
                   </div>
                 ))}
@@ -436,8 +435,8 @@ const Overview = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-10">
-                <div className="text-light-text-tertiary dark:text-dark-text-tertiary mb-3 flex justify-center">
+              <div className="py-10 text-center">
+                <div className="flex justify-center mb-3 text-light-text-tertiary dark:text-dark-text-tertiary">
                   <FiAlertCircle className="w-8 h-8" />
                 </div>
                 <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
@@ -449,7 +448,7 @@ const Overview = () => {
             <button
               type="button"
               aria-label="View full activity log"
-              className="w-full mt-6 py-3 border border-light-border dark:border-dark-border rounded-xl font-semibold text-sm text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+              className="w-full py-3 mt-6 text-sm font-semibold transition-colors border border-light-border dark:border-dark-border rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
             >
               View Activity Log
             </button>

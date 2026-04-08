@@ -31,9 +31,73 @@ import {
   FiUser,
   FiX,
 } from "react-icons/fi"
+import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import EditProfileModal from "./EditProfileModal.jsx"
+
+const ProfileSkeleton = () => (
+  <div className="space-y-6 p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto">
+    {/* Header */}
+    <div className="flex items-center justify-between mb-6">
+      <div>
+        <SkeletonText width="w-40" height="h-8" className="mb-2" />
+        <SkeletonText width="w-56" height="h-5" />
+      </div>
+      <Skeleton className="w-28 h-10 rounded-xl" />
+    </div>
+
+    {/* Profile Header Card */}
+    <div className="bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border p-6 sm:p-8">
+      <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
+        <SkeletonCircle size="w-24 h-24" className="!rounded-full" />
+        <div className="text-center sm:text-left">
+          <SkeletonText width="w-48" height="h-8" className="mb-2" />
+          <SkeletonText width="w-64" height="h-5" className="mb-1" />
+          <SkeletonText width="w-32" height="h-4" />
+        </div>
+      </div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="p-4 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary">
+            <SkeletonCircle size="w-8 h-8" className="mb-3" />
+            <SkeletonText width="w-12" height="h-8" className="mb-1" />
+            <SkeletonText width="w-20" height="h-4" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Info Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div key={i} className="p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
+          <SkeletonCircle size="w-6 h-6" className="mb-3" />
+          <SkeletonText width="w-24" height="h-4" className="mb-2" />
+          <SkeletonText width="w-32" height="h-5" />
+        </div>
+      ))}
+    </div>
+
+    {/* Settings Menu */}
+    <div className="bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border p-4">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div
+          key={i}
+          className="flex items-center gap-4 p-4 border-b border-light-border dark:border-dark-border last:border-0"
+        >
+          <SkeletonCircle size="w-10 h-10" className="!rounded-xl" />
+          <div className="flex-1">
+            <SkeletonText width="w-32" height="h-5" className="mb-1" />
+            <SkeletonText width="w-40" height="h-4" />
+          </div>
+          <SkeletonCircle size="w-5 h-5" />
+        </div>
+      ))}
+    </div>
+  </div>
+)
 
 const InfoItem = ({ icon: Icon, label, value, href }) => {
   if (!value) return null
@@ -123,6 +187,7 @@ const SettingsItem = ({ icon: Icon, title, subtitle, color, onClick, danger }) =
 
 const Me = () => {
   const { user, logout, updateUser } = useAuth()
+  const [loading, setLoading] = useState(true)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -143,12 +208,18 @@ const Me = () => {
   })
 
   useEffect(() => {
+    // Simulate brief loading for skeleton polish
+    const timer = setTimeout(() => setLoading(false), 300)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     const fetchStats = async () => {
       if (!user) return
       try {
         const tasksRes = await apiService.getAllTaskOfUser()
         if (tasksRes.success) {
-          const tasks = tasksRes.data || []
+          const tasks = tasksRes.data?.tasks || []
           setStats({
             tasksCompleted: tasks.filter((t) => t.status === "completed").length,
             tasksInProgress: tasks.filter(
@@ -291,6 +362,10 @@ const Me = () => {
       default:
         return <FiCircle className="w-4 h-4 text-light-text-tertiary" />
     }
+  }
+
+  if (loading) {
+    return <ProfileSkeleton />
   }
 
   if (!user) {

@@ -1,47 +1,65 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 
 // 1. Create the context
 const ThemeContext = createContext()
 
-// 2. Create the provider component (RENAMED)
-export const AppThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("light") // Default theme
-
-  // 3. Effect to set initial theme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme")
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-
-    if (savedTheme) {
-      setTheme(savedTheme)
-    } else if (prefersDark) {
-      setTheme("dark")
-    }
-  }, [])
-
-  // 4. Effect to apply theme class and save to localStorage
-  useEffect(() => {
-    const root = window.document.documentElement
-
-    // Remove old theme class
-    root.classList.remove("light", "dark")
-
-    // Add new theme class
-    root.classList.add(theme)
-
-    // Save to localStorage
-    localStorage.setItem("theme", theme)
-  }, [theme])
-
-  // 5. Function to toggle the theme
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"))
-  }
-
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>
+// Helper to get the effective theme
+const getEffectiveTheme = (saved, prefersDark) => {
+  if (saved && saved !== "system") return saved
+  return prefersDark ? "dark" : "light"
 }
 
-// 6. Custom hook to easily use the context (no change)
+// 2. Create the provider component
+export const AppThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("theme")
+    return saved || "light"
+  })
+
+  const [prefersDark, setPrefersDark] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  )
+
+  // 3. Listen for OS theme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const handleChange = (e) => setPrefersDark(e.matches)
+
+    mediaQuery.addEventListener("change", handleChange)
+    return () => mediaQuery.removeEventListener("change", handleChange)
+  }, [])
+
+  // 4. Apply theme class to root element
+  useEffect(() => {
+    const root = window.document.documentElement
+    const effectiveTheme = getEffectiveTheme(theme, prefersDark)
+
+    root.classList.remove("light", "dark")
+    root.classList.add(effectiveTheme)
+
+    if (theme !== "system") {
+      localStorage.setItem("theme", theme)
+    }
+  }, [theme, prefersDark])
+
+  // 5. Function to set the theme
+  const setThemeValue = useCallback((newTheme) => {
+    setTheme(newTheme)
+  }, [])
+
+  // 6. Function to toggle the theme
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === "light" ? "dark" : prev === "dark" ? "light" : "light"))
+  }, [])
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme: setThemeValue, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  )
+}
+
+// 6. Custom hook to easily use the context
 export const useTheme = () => {
   return useContext(ThemeContext)
 }

@@ -15,29 +15,51 @@ import {
 	startSprint,
 	updateSprint,
 } from "../controllers/sprint.controller.js"
-import { protect } from "../middlewares/auth.middleware.js"
-import { asyncHandler } from "../utils/async-handler.js"
+import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
+import { ProjectRoleEnum, UserRoleEnum } from "../utils/constants.js"
 
-router.route("/").post(protect, asyncHandler(createSprint))
+const { OWNER, PROJECT_ADMIN, MEMBER } = ProjectRoleEnum
+const { ADMIN } = UserRoleEnum
+const allRoles = [ADMIN, OWNER, PROJECT_ADMIN, MEMBER]
+const adminRoles = [ADMIN, OWNER, PROJECT_ADMIN]
 
-router.route("/project/:projectId").get(protect, asyncHandler(getSprints))
+// Create sprint - must be project member
+router.post("/", protect, validateProjectPermission(...adminRoles), createSprint)
 
-router.route("/project/:projectId/backlog").get(protect, asyncHandler(getBacklog))
+// Get sprints by project - any member
+router.get("/project/:projectId", protect, validateProjectPermission(...allRoles), getSprints)
 
-router.route("/project/:projectId/velocity").get(protect, asyncHandler(getSprintVelocity))
+// Get backlog - any member
+router.get(
+	"/project/:projectId/backlog",
+	protect,
+	validateProjectPermission(...allRoles),
+	getBacklog,
+)
 
+// Get velocity - any member
+router.get(
+	"/project/:projectId/velocity",
+	protect,
+	validateProjectPermission(...allRoles),
+	getSprintVelocity,
+)
+
+// Get/Update/Delete single sprint
 router
 	.route("/:sprintId")
-	.get(protect, asyncHandler(getSprintById))
-	.put(protect, asyncHandler(updateSprint))
-	.delete(protect, asyncHandler(deleteSprint))
+	.get(protect, getSprintById)
+	.put(protect, updateSprint)
+	.delete(protect, deleteSprint)
 
-router.route("/:sprintId/start").put(protect, asyncHandler(startSprint))
+// Start sprint - admin only
+router.put("/:sprintId/start", protect, startSprint)
 
-router.route("/:sprintId/complete").put(protect, asyncHandler(completeSprint))
+// Complete sprint - admin only
+router.put("/:sprintId/complete", protect, completeSprint)
 
-router.route("/:sprintId/assign-task").put(protect, asyncHandler(assignTaskToSprint))
-
-router.route("/task/:taskId/remove-from-sprint").put(protect, asyncHandler(removeTaskFromSprint))
+// Assign/remove tasks from sprint
+router.put("/:sprintId/assign-task", protect, assignTaskToSprint)
+router.put("/task/:taskId/remove-from-sprint", protect, removeTaskFromSprint)
 
 export default router

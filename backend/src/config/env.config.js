@@ -25,40 +25,42 @@ const missingVars = Object.entries(requiredEnvVars)
 
 if (missingVars.length > 0) {
 	console.error(`❌ Missing required environment variables: ${missingVars.join(", ")}`)
-	console.error(`   Fix: Create a .env file at the project root (/Volumes/E/Projects/task-management-system/.env)`)
+	console.error(
+		`   Fix: Create a .env file at the project root (/Volumes/E/Projects/task-management-system/.env)`,
+	)
 	process.exit(1)
 }
 
 // Export config for use across the app
 export const config = {
-	port: process.env.PORT || 4000,
-	nodeEnv: process.env.NODE_ENV || "development",
-	mongodbUri: process.env.MONGODB_URI,
-	corsOrigin: process.env.CORS_ORIGIN,
 	baseUrl: process.env.BASE_URL,
-	jwt: {
-		secret: process.env.ACCESS_TOKEN_SECRET,
-		refreshSecret: process.env.REFRESH_TOKEN_SECRET,
-		accessExpiry: process.env.ACCESS_TOKEN_EXPIRY,
-		refreshExpiry: process.env.REFRESH_TOKEN_EXPIRY,
-		temporaryExpiry: process.env.TEMPORARY_TOKEN_EXPIRY,
-		blacklistedExpiry: process.env.BLACKLISTED_TOKEN_EXPIRY,
+	corsOrigin: process.env.CORS_ORIGIN,
+	email: {
+		mailFrom: process.env.MAIL_FROM,
+		mailHost: process.env.MAIL_HOST,
+		mailPass: process.env.MAIL_PASS,
+		mailPort: process.env.MAIL_PORT,
+		mailUser: process.env.MAIL_USER,
+		resendApiKey: process.env.RESEND_API_KEY,
+		resendFrom: process.env.RESEND_FROM,
 	},
 	hashPepper: process.env.HASH_PEPPER,
 	imagekit: {
-		publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-		privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-		urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
 		avatarFolder: process.env.IMAGEKIT_AVATAR_FOLDER || "avatars",
+		privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
 		projectFolder: process.env.IMAGEKIT_PROJECT_FOLDER || "TaskFlow",
+		publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+		urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
 	},
-	email: {
-		resendApiKey: process.env.RESEND_API_KEY,
-		resendFrom: process.env.RESEND_FROM,
-		mailHost: process.env.MAIL_HOST,
-		mailPort: process.env.MAIL_PORT,
-		mailUser: process.env.MAIL_USER,
-		mailPass: process.env.MAIL_PASS,
-		mailFrom: process.env.MAIL_FROM,
+	jwt: {
+		accessExpiry: process.env.ACCESS_TOKEN_EXPIRY,
+		blacklistedExpiry: process.env.BLACKLISTED_TOKEN_EXPIRY,
+		refreshExpiry: process.env.REFRESH_TOKEN_EXPIRY,
+		refreshSecret: process.env.REFRESH_TOKEN_SECRET,
+		secret: process.env.ACCESS_TOKEN_SECRET,
+		temporaryExpiry: process.env.TEMPORARY_TOKEN_EXPIRY,
 	},
+	mongodbUri: process.env.MONGODB_URI,
+	nodeEnv: process.env.NODE_ENV || "development",
+	port: process.env.PORT || 4000,
 }

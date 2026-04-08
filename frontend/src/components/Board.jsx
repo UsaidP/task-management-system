@@ -62,7 +62,7 @@ const Board = () => {
     try {
       const response = await apiService.getAllTaskOfUser()
       if (response.success) {
-        const tasks = response.data
+        const tasks = response.data?.tasks || []
 
         // Group tasks by status
         const newColumns = JSON.parse(JSON.stringify(initialColumns)) // Deep copy

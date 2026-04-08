@@ -3,6 +3,7 @@ import { ProjectMember } from "../models/projectmember.model.js"
 import ApiError from "../utils/api-error.js"
 import { ApiResponse } from "../utils/api-response.js"
 import { asyncHandler } from "../utils/async-handler.js"
+import { logAudit } from "../utils/audit-log.js"
 import { ProjectRoleEnum } from "../utils/constants.js"
 
 const validateProjectData = (name, description) => {
@@ -55,6 +56,17 @@ const createProject = asyncHandler(async (req, res, next) => {
 		throw new ApiError(400, "Failed to add creator as project owner")
 	}
 
+	// Audit log
+	await logAudit({
+		actor: req.user,
+		category: "project",
+		description: `Project "${project.name}" created`,
+		event: "project.create",
+		ipAddress: req.ip,
+		targetId: project._id,
+		userAgent: req.headers["user-agent"],
+	})
+
 	res
 		.status(201)
 		.json(new ApiResponse(201, { project, projectMember }, "Project created successfully"))
@@ -62,8 +74,12 @@ const createProject = asyncHandler(async (req, res, next) => {
 })
 
 const getAllProjects = asyncHandler(async (req, res, next) => {
-	const { page = 1, limit = 10, search = "" } = req.query
+	const { page = 1, limit = 20, search = "" } = req.query
 	const userId = req.user._id
+
+	// Cap pagination values to prevent memory exhaustion
+	const pageNum = Math.max(1, Math.min(parseInt(page, 10), 100))
+	const limitNum = Math.max(1, Math.min(parseInt(limit, 10), 50))
 
 	// Find all ACTIVE project memberships for the user and populate project details
 	const projectMemberships = await ProjectMember.find({
@@ -77,17 +93,19 @@ const getAllProjects = asyncHandler(async (req, res, next) => {
 	// Build query
 	const query = { _id: { $in: projects.map((p) => p._id) } }
 	if (search) {
+		// Escape regex special characters to prevent ReDoS attacks
+		const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 		query.$or = [
-			{ name: { $options: "i", $regex: search } },
-			{ description: { $options: "i", $regex: search } },
+			{ name: { $options: "i", $regex: escapedSearch } },
+			{ description: { $options: "i", $regex: escapedSearch } },
 		]
 	}
 
 	// Execute paginated query
 	const paginatedProjects = await Project.find(query)
 		.sort({ createdAt: -1 })
-		.limit(limit * 1)
-		.skip((page - 1) * limit)
+		.limit(limitNum)
+		.skip((pageNum - 1) * limitNum)
 		.select("-__v")
 
 	const totalProjects = await Project.countDocuments(query)
@@ -97,10 +115,10 @@ const getAllProjects = asyncHandler(async (req, res, next) => {
 			200,
 			{
 				pagination: {
-					currentPage: parseInt(page, 10),
-					hasNextPage: page < Math.ceil(totalProjects / limit),
-					hasPrevPage: page > 1,
-					totalPages: Math.ceil(totalProjects / limit),
+					currentPage: pageNum,
+					hasNextPage: pageNum < Math.ceil(totalProjects / limitNum),
+					hasPrevPage: pageNum > 1,
+					totalPages: Math.ceil(totalProjects / limitNum),
 					totalProjects,
 				},
 				projects: paginatedProjects,
@@ -153,6 +171,18 @@ const deleteProject = asyncHandler(async (req, res, next) => {
 	if (!project) {
 		throw new ApiError(404, "Project not found")
 	}
+
+	// Audit log
+	await logAudit({
+		actor: req.user,
+		category: "project",
+		description: `Project "${project.name}" deleted`,
+		event: "project.delete",
+		ipAddress: req.ip,
+		targetId: project._id,
+		userAgent: req.headers["user-agent"],
+	})
+
 	res.status(200).json(new ApiResponse(200, project, "Project deleted successfully"))
 	next()
 })

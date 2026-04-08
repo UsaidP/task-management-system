@@ -252,7 +252,7 @@ const TableView = () => {
     try {
       const response = await apiService.getAllTaskOfUser()
       if (response.success) {
-        setTasks(response.data || [])
+        setTasks(response.data?.tasks || [])
       }
     } catch (err) {
       console.error("Failed to fetch tasks:", err)
@@ -323,7 +323,7 @@ const TableView = () => {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary gap-3">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-4 sm:px-6 py-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary gap-3 shadow-sm">
         <div>
           <h1 className="text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
             Table

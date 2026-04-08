@@ -231,6 +231,60 @@ export const validateRoleHierarchy = (minimumRole) => {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 5. Require Global Admin
+// ─────────────────────────────────────────────────────────────────────────────
+export const requireAdmin = asyncHandler(async (req, _res, next) => {
+	if (req.user.role !== UserRoleEnum.ADMIN) {
+		throw new ApiError(403, "Admin access required")
+	}
+	next()
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Export cache for invalidation in controllers (e.g., on member removal)
 // ─────────────────────────────────────────────────────────────────────────────
 export { permissionCache }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 6. Require Project Access via Task or Subtask
+// Used when projectId is not directly in req.params.
+// Resolves the target resource (task/subtask) to find its project,
+// then delegates to validateProjectPermission.
+// ─────────────────────────────────────────────────────────────────────────────
+export const requireProjectAccess = (resourceType, ...allowedRoles) => {
+	return asyncHandler(async (req, res, next) => {
+		const { Task } = await import("../models/task.model.js")
+		const { SubTask } = await import("../models/subtask.model.js")
+
+		const { taskId, subtaskId } = req.params
+
+		let task
+		if (resourceType === "task") {
+			// For task-based routes (:taskId)
+			if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
+				throw new ApiError(400, "Invalid or missing task ID")
+			}
+			task = await Task.findById(taskId).select("project").lean()
+		} else if (resourceType === "subtask") {
+			// For subtask-based routes (:subtaskId)
+			if (!subtaskId || !mongoose.Types.ObjectId.isValid(subtaskId)) {
+				throw new ApiError(400, "Invalid or missing subtask ID")
+			}
+			const subtask = await SubTask.findById(subtaskId).select("task").lean()
+			if (!subtask) {
+				throw new ApiError(404, "Subtask not found")
+			}
+			task = await Task.findById(subtask.task).select("project").lean()
+		}
+
+		if (!task) {
+			throw new ApiError(404, "Task not found")
+		}
+
+		// Inject projectId into params so validateProjectPermission can use it
+		req.params.projectId = task.project.toString()
+
+		// Delegate to validateProjectPermission
+		return validateProjectPermission(...allowedRoles)(req, res, next)
+	})
+}

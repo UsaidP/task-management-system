@@ -6,6 +6,7 @@ import { User } from "../models/user.model.js"
 import ApiError from "../utils/api-error.js"
 import { ApiResponse } from "../utils/api-response.js"
 import { asyncHandler } from "../utils/async-handler.js"
+import { logAudit } from "../utils/audit-log.js"
 import imagekit from "../utils/imagekit.js"
 import {
 	emailVerificationMailGenContent,
@@ -73,6 +74,18 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 	// Omit sensitive data from the final response
 	const createdUser = await User.findById(user._id).select("-password -emailVerificationToken")
+
+	// Audit log
+	await logAudit({
+		actor: createdUser,
+		category: "auth",
+		description: `User ${createdUser.username} registered`,
+		event: "user.register",
+		ipAddress: req.ip,
+		metadata: { email: createdUser.email, role: createdUser.role },
+		targetId: createdUser._id,
+		userAgent: req.headers["user-agent"],
+	})
 
 	return res
 		.status(201)
@@ -194,6 +207,17 @@ export const loginUser = asyncHandler(async (req, res) => {
 
 	const loggedInUser = await User.findById(user._id).select("-password")
 
+	// Audit log
+	await logAudit({
+		actor: user,
+		category: "auth",
+		description: `User ${user.username} logged in`,
+		event: "login.success",
+		ipAddress: req.ip,
+		targetId: user._id,
+		userAgent: req.headers["user-agent"],
+	})
+
 	const accessTokenOptions = getCookieOptions(ms(process.env.ACCESS_TOKEN_EXPIRY))
 	const refreshTokenOptions = getCookieOptions(ms(process.env.REFRESH_TOKEN_EXPIRY))
 
@@ -309,15 +333,27 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
 
 // --- Password Management ---
 export const forgetPassword = asyncHandler(async (req, res) => {
-	console.log("here")
 	const { email } = req.body
 	if (!email) {
 		throw new ApiError(400, "Email is required")
 	}
 
 	const user = await User.findOne({ email })
+
+	// Always return the same generic message regardless of whether the email exists
+	// to prevent email enumeration attacks
+	const genericResponse = res
+		.status(200)
+		.json(
+			new ApiResponse(
+				200,
+				{},
+				"If an account with that email exists, you will receive password reset instructions.",
+			),
+		)
+
 	if (!user) {
-		throw new ApiError(404, "User not found with this email")
+		return genericResponse
 	}
 
 	const { unHashedToken, hashToken, tokenExpiry } = await user.generateTemporaryToken()
@@ -328,15 +364,17 @@ export const forgetPassword = asyncHandler(async (req, res) => {
 	const resetUrl = `${process.env.CORS_ORIGIN}/reset-password/${unHashedToken}`
 	const mailgenContent = forgotPasswordMailgenContent(user.username, resetUrl)
 
-	await sendMail({
-		email: user.email,
-		mailgenContent,
-		subject: "Password Reset Request",
-	})
+	try {
+		await sendMail({
+			email: user.email,
+			mailgenContent,
+			subject: "Password Reset Request",
+		})
+	} catch (emailError) {
+		console.warn("⚠️ Password reset email failed to send:", emailError.message)
+	}
 
-	return res
-		.status(200)
-		.json(new ApiResponse(200, {}, "Password reset instructions sent to your email"))
+	return genericResponse
 })
 
 export const resetPassword = asyncHandler(async (req, res) => {
@@ -443,6 +481,17 @@ export const deleteUserAccount = asyncHandler(async (req, res) => {
 	if (!user) {
 		throw new ApiError(404, "User not found")
 	}
+
+	// Audit log before deletion
+	await logAudit({
+		actor: user,
+		category: "user",
+		description: `User ${user.username} deleted their account`,
+		event: "user.delete",
+		ipAddress: req.ip,
+		targetId: user._id,
+		userAgent: req.headers["user-agent"],
+	})
 
 	await User.findByIdAndDelete(userId)
 

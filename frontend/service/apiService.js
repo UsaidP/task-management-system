@@ -31,7 +31,13 @@ class NetworkError extends Error {
 // --- API Service Implementation ---
 class ApiService {
   constructor() {
-    this.baseURL = import.meta.env.VITE_API_URL || "https://glorious-stillness-production-0853.up.railway.app/api/v1";
+    const envUrl = import.meta.env.VITE_API_URL;
+    if (!envUrl) {
+      console.warn(
+        "⚠️ VITE_API_URL is not set. API calls will fail. Set it in .env or vite config."
+      );
+    }
+    this.baseURL = envUrl || "http://localhost:4000/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -42,6 +48,17 @@ class ApiService {
     this.failedQueue = [];
     this.refreshAttempts = 0;
     this.MAX_REFRESH_ATTEMPTS = 3;
+
+    // Retry configuration for transient errors
+    this.MAX_RETRIES = 2;
+    this.RETRY_DELAY_MS = 1000;
+  }
+
+  /**
+   * Sleep helper for exponential backoff
+   */
+  _sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -59,9 +76,10 @@ class ApiService {
   }
 
   /**
-   * The main fetch wrapper with interceptor logic.
+   * The main fetch wrapper with interceptor logic, retry with exponential backoff,
+   * and token refresh handling.
    */
-  async customFetch(endpoint, options = {}) {
+  async customFetch(endpoint, options = {}, retryCount = 0) {
     const url = `${this.baseURL}${endpoint}`;
     const headers = { ...this.defaultHeader, ...options.headers };
 
@@ -72,7 +90,8 @@ class ApiService {
     const config = {
       ...options,
       headers,
-      credentials: "include", // ✅ Ensures cookies are sent
+      credentials: "include",
+      signal: options.signal, // Support AbortController signals
     };
 
     try {
@@ -86,75 +105,65 @@ class ApiService {
           errorData = { message: response.statusText };
         }
 
-        // --- 🚀 START: Token Refresh Interceptor Logic ---
-        if (response.status === 401 && endpoint !== "/auth/refresh-token") {
-
-          // Prevent infinite refresh loops
+        // --- Token Refresh Interceptor ---
+        if (response.status === 401 && !endpoint.includes("/auth/refresh")) {
           if (this.refreshAttempts >= this.MAX_REFRESH_ATTEMPTS) {
-            this.refreshAttempts = 0
+            this.refreshAttempts = 0;
             throw new ApiError("Session expired. Please log in again.", 401);
           }
 
           if (this.isRefreshing) {
-            // If already refreshing, queue this request
             return new Promise((resolve, reject) => {
               this.failedQueue.push({
                 resolve: () => {
                   fetch(url, config)
-                    .then(res => res.json())
-                    .then(data => resolve(data))
-                    .catch(err => reject(err));
+                    .then((res) => res.json())
+                    .then((data) => resolve(data))
+                    .catch((err) => reject(err));
                 },
                 reject: (err) => reject(err),
               });
             });
           }
 
-          // This is the first 401, start refreshing
           this.isRefreshing = true;
           this.refreshAttempts += 1;
 
           try {
-            // 1. Attempt to get a new access token
             await this.refreshSession();
-
-            // 2. Success: Process the queue and resolve them
             this.processQueue(null);
-            this.refreshAttempts = 0; // Reset on success
+            this.refreshAttempts = 0;
 
-            // 3. Retry the original request
             const retryResponse = await fetch(url, config);
             if (!retryResponse.ok) {
               throw new ApiError(errorData.message || "Retry failed", retryResponse.status);
             }
             return await retryResponse.json();
-
           } catch (refreshError) {
-            // 4. Refresh Failed: This is a hard logout.
             this.processQueue(refreshError);
             this.refreshAttempts = 0;
-
             console.error("Session refresh failed. User must log in again.");
 
-            // Redirect to login if not already there
             if (typeof window !== "undefined" && !window.location.pathname.includes("/login")) {
               window.location.href = "/login?session=expired";
             }
-
             throw new ApiError("Session expired. Please log in again.", 401);
           } finally {
             this.isRefreshing = false;
           }
         }
-        // --- 🚀 END: Token Refresh Interceptor Logic ---
 
+        // --- Retry 5xx errors with exponential backoff ---
+        if (response.status >= 500 && retryCount < this.MAX_RETRIES) {
+          const delay = this.RETRY_DELAY_MS * Math.pow(2, retryCount);
+          console.warn(`⚠️ Server error ${response.status}, retrying in ${delay}ms (attempt ${retryCount + 1}/${this.MAX_RETRIES})`);
+          await this._sleep(delay);
+          return this.customFetch(endpoint, options, retryCount + 1);
+        }
 
-        // Standard error handling for other errors
+        // Standard error handling for non-retriable errors
         if (response.status === 404) {
           throw new NotFoundError(errorData.message);
-        }
-        if (response.status >= 500) {
-          throw new ServerError(errorData.message);
         }
         throw new ApiError(
           errorData.message || "An API error occurred",
@@ -162,15 +171,24 @@ class ApiService {
         );
       }
 
-      // If response was 'ok' in the first place
       return await response.json();
     } catch (error) {
-      // Handle network errors or errors from the interceptor logic
+      // Handle network errors with retry
+      if (error instanceof TypeError && error.name === "TypeError" && retryCount < this.MAX_RETRIES) {
+        const delay = this.RETRY_DELAY_MS * Math.pow(2, retryCount);
+        console.warn(`⚠️ Network error, retrying in ${delay}ms (attempt ${retryCount + 1}/${this.MAX_RETRIES})`);
+        await this._sleep(delay);
+        return this.customFetch(endpoint, options, retryCount + 1);
+      }
+
       if (error instanceof ApiError) {
-        throw error; // Re-throw custom API errors
+        throw error;
+      }
+      if (error.name === "AbortError") {
+        throw error; // Propagate abort errors for cleanup
       }
       console.error("Network Error:", error);
-      throw new NetworkError(error.message);
+      throw new NetworkError(error.message || "Network error, please check your connection");
     }
   }
 
@@ -453,8 +471,44 @@ class ApiService {
       method: "GET",
     });
   }
+
+  // --- Admin Dashboard Methods ---
+  async getAdminStats() {
+    return await this.customFetch("/dashboard/admin/stats", { method: "GET" });
+  }
+
+  async getAdminWeeklyStats() {
+    return await this.customFetch("/dashboard/admin/weekly-stats", {
+      method: "GET",
+    });
+  }
+
+  async getAdminProjectProgress() {
+    return await this.customFetch("/dashboard/admin/projects", {
+      method: "GET",
+    });
+  }
+
+  async getAdminRecentTasks() {
+    return await this.customFetch("/dashboard/admin/recent-tasks", {
+      method: "GET",
+    });
+  }
+
+  async getAdminAllUsers() {
+    return await this.customFetch("/dashboard/admin/users", {
+      method: "GET",
+    });
+  }
+
+  async getAdminTaskDistribution() {
+    return await this.customFetch("/dashboard/admin/task-distribution", {
+      method: "GET",
+    });
+  }
 }
 
 // Export a single instance
 const apiService = new ApiService();
 export default apiService;
+

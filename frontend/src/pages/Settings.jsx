@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import * as FiIcons from "react-icons/fi"
+import { Skeleton, SkeletonCircle, SkeletonText } from "../components/Skeleton.jsx"
 import { useTheme } from "../theme/ThemeContext"
 
 const containerVariants = {
@@ -19,6 +20,48 @@ const sectionVariants = {
     transition: { duration: 0.5, ease: "easeOut" },
   },
 }
+
+const SettingsSkeleton = () => (
+  <div className="space-y-6 p-6 sm:p-8 max-w-[1400px] mx-auto">
+    <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+      <div>
+        <SkeletonText width="w-32 sm:w-40" height="h-8 sm:h-10" className="mb-2" />
+        <SkeletonText width="w-48 sm:w-64" height="h-5" />
+      </div>
+      <Skeleton className="w-full sm:w-40 h-11 rounded-xl" />
+    </div>
+    <div className="grid gap-6">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div
+          key={i}
+          className="bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 rounded-2xl p-7 border border-light-border dark:border-dark-border"
+        >
+          <div className="flex items-start gap-4 mb-6">
+            <SkeletonCircle size="w-11 h-11" className="!rounded-xl" />
+            <div className="flex-1">
+              <SkeletonText width="w-40" height="h-6" className="mb-2" />
+              <SkeletonText width="w-56" height="h-4" />
+            </div>
+          </div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((j) => (
+              <div
+                key={j}
+                className="flex flex-col sm:flex-row gap-4 py-4 border-b border-light-border dark:border-dark-border last:border-0"
+              >
+                <div className="flex-1">
+                  <SkeletonText width="w-32" height="h-5" className="mb-1" />
+                  <SkeletonText width="w-40" height="h-4" />
+                </div>
+                <Skeleton className="w-full sm:w-44 h-10 rounded-xl" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)
 
 const SettingsSection = ({ icon, title, description, children }) => (
   <motion.div
@@ -102,7 +145,7 @@ const SelectDropdown = ({ value, onChange, options, id }) => (
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme()
-
+  const [loading, setLoading] = useState(true)
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem("userSettings")
     return saved
@@ -134,6 +177,16 @@ const Settings = () => {
   const handleSaveSettings = () => {
     setShowSaveToast(true)
     setTimeout(() => setShowSaveToast(false), 3000)
+  }
+
+  useEffect(() => {
+    // Simulate brief loading for skeleton polish
+    const timer = setTimeout(() => setLoading(false), 300)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (loading) {
+    return <SettingsSkeleton />
   }
 
   return (

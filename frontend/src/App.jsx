@@ -1,5 +1,7 @@
 import { StrictMode } from "react"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+import AdminLayout from "./components/admin/AdminLayout.jsx"
+import AdminRoute from "./components/admin/AdminRoute.jsx"
 import { ConfirmEmail } from "./components/auth/ConfirmEmail.jsx"
 import { Forget } from "./components/auth/Forget.jsx"
 import { Login } from "./components/auth/Login.jsx"
@@ -19,6 +21,7 @@ import { AuthProvider } from "./contexts/AuthContext.jsx"
 import { FilterProvider } from "./contexts/FilterContext.jsx"
 import { SidebarProvider } from "./contexts/SidebarContext.jsx"
 import AppLayout from "./layouts/AppLayout.jsx"
+import AdminDashboard from "./pages/AdminDashboard.jsx"
 import { Home } from "./pages/Home.jsx"
 import Overview from "./pages/Overview.jsx"
 import Settings from "./pages/Settings.jsx"
@@ -64,6 +67,17 @@ const App = () => {
                     <Route path="settings" element={<Navigate to="/setting" replace />} />
                     <Route path="project/:projectId" element={<ProjectPage />} />
                   </Route>
+                </Route>
+
+                {/* Admin-only routes */}
+                <Route
+                  element={
+                    <AdminRoute>
+                      <AppLayout />
+                    </AdminRoute>
+                  }
+                >
+                  <Route path="admin" element={<AdminDashboard />} />
                 </Route>
               </Routes>
             </SidebarProvider>

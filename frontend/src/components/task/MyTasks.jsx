@@ -104,7 +104,7 @@ export const MyTasks = () => {
       ])
 
       if (tasksRes.success) {
-        setTasks(tasksRes.data)
+        setTasks(tasksRes.data?.tasks || (Array.isArray(tasksRes.data) ? tasksRes.data : []))
       }
       if (projectsRes.success) {
         setProjects(projectsRes.data.projects)
@@ -212,62 +212,46 @@ export const MyTasks = () => {
 
   return (
     <div className="h-full flex flex-col shadow-sm">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 p-4 sm:p-6 bg-light-bg-primary dark:bg-dark-bg-primary shrink-0">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-1 sm:mb-2">
+      {/* Compact Header Bar */}
+      <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary shrink-0 shadow-sm">
+        {/* Left: Title + count */}
+        <div className="flex items-center gap-2.5 min-w-0 mr-auto">
+          <h1 className="text-xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary whitespace-nowrap">
             My Tasks
           </h1>
-          <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary">
-            Track and manage all your assigned work across projects.
-          </p>
-        </div>
-        <button
-          type="button"
-          className="btn-primary whitespace-nowrap flex items-center gap-2 w-full sm:w-auto justify-center"
-          onClick={() => setCreateModalOpen(true)}
-        >
-          <svg
-            stroke="currentColor"
-            fill="none"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-4 h-4 shrink-0"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>{" "}
-          <span>Add Task</span>
-        </button>
-      </div>
-
-      {/* Toolbar */}
-      <div className="px-4 sm:px-6 pt-0 flex flex-col sm:flex-row gap-3 sm:gap-5 items-stretch sm:items-center">
-        <div className="w-full sm:flex-1 relative">
-          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search tasks..."
-            aria-label="Search tasks"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-10 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary min-h-[44px]"
-          />
+          {filteredAndSortedTasks.length > 0 && (
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-accent-primary/10 text-accent-primary dark:bg-accent-primary/20 tabular-nums">
+              {filteredAndSortedTasks.length}
+            </span>
+          )}
         </div>
 
-        <div className="w-full sm:w-auto flex gap-3">
+        {/* Right: Search + Filter */}
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-4 h-4 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              aria-label="Search tasks"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-48 sm:w-64 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:border-accent-primary focus:w-72 transition-all duration-200 text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary"
+            />
+          </div>
           <button
             type="button"
             aria-expanded={showFilters}
             aria-controls={filterPanelId}
             onClick={() => setShowFilters(!showFilters)}
-            className="w-full sm:w-auto px-4 py-2 rounded-lg flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+              showFilters
+                ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary dark:bg-accent-primary/15"
+                : "border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+            }`}
           >
             <FiFilter className="w-4 h-4 shrink-0" />
-            <span>Filters</span>
+            <span className="hidden sm:inline">Filter</span>
           </button>
         </div>
       </div>
@@ -280,143 +264,145 @@ export const MyTasks = () => {
             initial={reduceMotion ? {} : { height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={reduceMotion ? {} : { height: 0, opacity: 0 }}
-            className="px-4 sm:px-6 flex flex-wrap gap-2 sm:gap-3 pb-3"
+            className="overflow-hidden border-b border-light-border dark:border-dark-border bg-light-bg-secondary/60 dark:bg-dark-bg-tertiary/40"
           >
-            <Listbox value={statusFilter} onChange={setStatusFilter}>
-              <div className="relative">
-                <Listbox.Button
-                  aria-label="Filter by status"
-                  className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
-                >
-                  <span className="text-light-text-primary dark:text-dark-text-primary">
-                    {statusFilter === "all" ? "All Status" : statusFilter.replace("-", " ")}
-                  </span>
-                  <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
-                </Listbox.Button>
-                <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
-                  {["all", "todo", "in-progress", "under-review", "completed"].map((status) => (
-                    <Listbox.Option key={status} value={status} as={Fragment}>
+            <div className="px-4 sm:px-6 py-3 flex flex-wrap gap-2 sm:gap-2.5">
+              <Listbox value={statusFilter} onChange={setStatusFilter}>
+                <div className="relative">
+                  <Listbox.Button
+                    aria-label="Filter by status"
+                    className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+                  >
+                    <span className="text-light-text-primary dark:text-dark-text-primary">
+                      {statusFilter === "all" ? "All Status" : statusFilter.replace("-", " ")}
+                    </span>
+                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+                    {["all", "todo", "in-progress", "under-review", "completed"].map((status) => (
+                      <Listbox.Option key={status} value={status} as={Fragment}>
+                        {({ active }) => (
+                          <li
+                            className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                          >
+                            {status === "all" ? "All Status" : status.replace("-", " ")}
+                          </li>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
+
+              <Listbox value={priorityFilter} onChange={setPriorityFilter}>
+                <div className="relative">
+                  <Listbox.Button
+                    aria-label="Filter by priority"
+                    className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+                  >
+                    <span className="text-light-text-primary dark:text-dark-text-primary">
+                      {priorityFilter === "all" ? "All Priority" : priorityFilter}
+                    </span>
+                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+                    {["all", "urgent", "high", "medium", "low", "none"].map((priority) => (
+                      <Listbox.Option key={priority} value={priority} as={Fragment}>
+                        {({ active }) => (
+                          <li
+                            className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                          >
+                            {priority === "all" ? "All Priority" : priority}
+                          </li>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
+
+              <Listbox value={projectFilter} onChange={setProjectFilter}>
+                <div className="relative">
+                  <Listbox.Button
+                    aria-label="Filter by project"
+                    className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[150px] max-w-[180px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+                  >
+                    <span className="text-light-text-primary dark:text-dark-text-primary truncate block">
+                      {projectFilter === "all"
+                        ? "All Projects"
+                        : projects.find((p) => p._id === projectFilter)?.name || "All Projects"}
+                    </span>
+                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden max-h-60 overflow-auto">
+                    <Listbox.Option value="all" as={Fragment}>
                       {({ active }) => (
                         <li
                           className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
                         >
-                          {status === "all" ? "All Status" : status.replace("-", " ")}
+                          All Projects
                         </li>
                       )}
                     </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </div>
-            </Listbox>
+                    {projects.map((p) => (
+                      <Listbox.Option key={p._id} value={p._id} as={Fragment}>
+                        {({ active }) => (
+                          <li
+                            className={`px-3 py-2 cursor-pointer text-sm truncate ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                          >
+                            {p.name}
+                          </li>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
 
-            <Listbox value={priorityFilter} onChange={setPriorityFilter}>
-              <div className="relative">
-                <Listbox.Button
-                  aria-label="Filter by priority"
-                  className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
-                >
-                  <span className="text-light-text-primary dark:text-dark-text-primary">
-                    {priorityFilter === "all" ? "All Priority" : priorityFilter}
-                  </span>
-                  <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
-                </Listbox.Button>
-                <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
-                  {["all", "urgent", "high", "medium", "low", "none"].map((priority) => (
-                    <Listbox.Option key={priority} value={priority} as={Fragment}>
+              <Listbox value={sprintFilter} onChange={setSprintFilter}>
+                <div className="relative">
+                  <Listbox.Button
+                    aria-label="Filter by sprint"
+                    className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
+                  >
+                    <span className="text-light-text-primary dark:text-dark-text-primary">
+                      {sprintFilter === "all"
+                        ? "All Sprints"
+                        : SPRINTS.find((s) => s.id === sprintFilter)?.name || "All Sprints"}
+                    </span>
+                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+                    <Listbox.Option value="all" as={Fragment}>
                       {({ active }) => (
                         <li
                           className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
                         >
-                          {priority === "all" ? "All Priority" : priority}
+                          All Sprints
                         </li>
                       )}
                     </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </div>
-            </Listbox>
-
-            <Listbox value={projectFilter} onChange={setProjectFilter}>
-              <div className="relative">
-                <Listbox.Button
-                  aria-label="Filter by project"
-                  className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[150px] max-w-[180px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
-                >
-                  <span className="text-light-text-primary dark:text-dark-text-primary truncate block">
-                    {projectFilter === "all"
-                      ? "All Projects"
-                      : projects.find((p) => p._id === projectFilter)?.name || "All Projects"}
-                  </span>
-                  <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
-                </Listbox.Button>
-                <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden max-h-60 overflow-auto">
-                  <Listbox.Option value="all" as={Fragment}>
-                    {({ active }) => (
-                      <li
-                        className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
-                      >
-                        All Projects
-                      </li>
-                    )}
-                  </Listbox.Option>
-                  {projects.map((p) => (
-                    <Listbox.Option key={p._id} value={p._id} as={Fragment}>
-                      {({ active }) => (
-                        <li
-                          className={`px-3 py-2 cursor-pointer text-sm truncate ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
-                        >
-                          {p.name}
-                        </li>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </div>
-            </Listbox>
-
-            <Listbox value={sprintFilter} onChange={setSprintFilter}>
-              <div className="relative">
-                <Listbox.Button
-                  aria-label="Filter by sprint"
-                  className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left min-w-[120px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px]"
-                >
-                  <span className="text-light-text-primary dark:text-dark-text-primary">
-                    {sprintFilter === "all"
-                      ? "All Sprints"
-                      : SPRINTS.find((s) => s.id === sprintFilter)?.name || "All Sprints"}
-                  </span>
-                  <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
-                </Listbox.Button>
-                <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
-                  <Listbox.Option value="all" as={Fragment}>
-                    {({ active }) => (
-                      <li
-                        className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
-                      >
-                        All Sprints
-                      </li>
-                    )}
-                  </Listbox.Option>
-                  {SPRINTS.map((s) => (
-                    <Listbox.Option key={s.id} value={s.id} as={Fragment}>
-                      {({ active }) => (
-                        <li
-                          className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
-                        >
-                          {s.name}
-                        </li>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </div>
-            </Listbox>
+                    {SPRINTS.map((s) => (
+                      <Listbox.Option key={s.id} value={s.id} as={Fragment}>
+                        {({ active }) => (
+                          <li
+                            className={`px-3 py-2 cursor-pointer text-sm ${active ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
+                          >
+                            {s.name}
+                          </li>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Custom Task List Table */}
-      <div className="flex-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border shadow-sm overflow-hidden flex flex-col mx-4 sm:mx-6 mb-4 sm:mb-6">
+      <div className="flex-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-t border-light-border dark:border-dark-border overflow-hidden flex flex-col">
         {/* Table Header */}
         <div className="overflow-x-auto">
           <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30 p-3 sm:p-4 font-semibold text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary min-w-[640px]">

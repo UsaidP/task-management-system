@@ -335,7 +335,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       }
                     }
                   }}
-                  className="min-h-[44px] min-w-[44px] p-2 text-light-text-tertiary hover:text-accent-danger hover:bg-accent-danger/10 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                  className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center text-light-text-tertiary hover:text-accent-danger hover:bg-accent-danger/10 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
                   <FiTrash2 aria-hidden="true" className="w-4 h-4" />
                 </button>

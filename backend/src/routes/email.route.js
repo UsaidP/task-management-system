@@ -72,9 +72,8 @@ router.post(
 			new ApiResponse(
 				200,
 				{
-					from: process.env.EMAIL_FROM,
-					provider: process.env.MAIL_HOST,
 					sentTo: email,
+					status: "delivered",
 				},
 				"Test email sent successfully! Check your inbox.",
 			),

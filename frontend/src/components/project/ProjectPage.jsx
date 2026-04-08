@@ -2,6 +2,7 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headless
 import dayjs from "dayjs"
 import quarterOfYear from "dayjs/plugin/quarterOfYear"
 import relativeTime from "dayjs/plugin/relativeTime"
+import weekOfYear from "dayjs/plugin/weekOfYear"
 import { motion } from "framer-motion"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
@@ -33,6 +34,7 @@ import ProjectMembers from "./ProjectMembers"
 
 dayjs.extend(relativeTime)
 dayjs.extend(quarterOfYear)
+dayjs.extend(weekOfYear)
 
 const deepCopy = (obj) => {
   if (obj === null || typeof obj !== "object") {
@@ -155,7 +157,6 @@ const ProjectPage = () => {
       newColumns[newTask.status] = { ...newColumns[newTask.status], tasks: newTasks }
       return newColumns
     })
-    toast.success("Task created successfully!")
   }
 
   const handleTaskUpdated = (updatedTask) => {
@@ -183,7 +184,6 @@ const ProjectPage = () => {
       newColumns[updatedTask.status] = { ...newColumns[updatedTask.status], tasks: newTasks }
       return newColumns
     })
-    toast.success("Task updated successfully!")
   }
 
   const openEditModal = (task) => {
@@ -361,11 +361,15 @@ const ProjectPage = () => {
 
   // Timeline view columns
   const timelineColumns = useMemo(() => {
+    if (timelineZoom === "day") {
+      const d = timelineDate.startOf("day")
+      return [{ label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d }]
+    }
     if (timelineZoom === "week") {
       const startOfWeek = timelineDate.startOf("week")
       return Array.from({ length: 7 }, (_, i) => {
         const d = startOfWeek.add(i, "day")
-        return { label: d.format("DD"), sublabel: d.format("ddd"), date: d }
+        return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d }
       })
     }
     if (timelineZoom === "month") {
@@ -373,7 +377,7 @@ const ProjectPage = () => {
       const daysInMonth = timelineDate.daysInMonth()
       return Array.from({ length: daysInMonth }, (_, i) => {
         const d = startOfMonth.add(i, "day")
-        return { label: d.format("DD"), sublabel: d.format("ddd"), date: d }
+        return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d }
       })
     }
     if (timelineZoom === "quarter") {
@@ -382,7 +386,7 @@ const ProjectPage = () => {
       const daysInQuarter = endOfQuarter.diff(startOfQuarter, "day") + 1
       return Array.from({ length: daysInQuarter }, (_, i) => {
         const d = startOfQuarter.add(i, "day")
-        return { label: d.format("DD"), sublabel: d.format("ddd"), date: d }
+        return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d }
       })
     }
     return []
@@ -634,11 +638,10 @@ const ProjectPage = () => {
                   key={zoom}
                   type="button"
                   onClick={() => setTimelineZoom(zoom)}
-                  className={`px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors capitalize min-h-[36px] ${
-                    timelineZoom === zoom
-                      ? "bg-accent-primary text-white shadow-sm"
-                      : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                  }`}
+                  className={`px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors capitalize min-h-[36px] ${timelineZoom === zoom
+                    ? "bg-accent-primary text-white shadow-sm"
+                    : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                    }`}
                 >
                   {zoom}
                 </button>
@@ -658,7 +661,9 @@ const ProjectPage = () => {
                   ? timelineDate.format("MMMM YYYY")
                   : timelineZoom === "quarter"
                     ? `Q${timelineDate.quarter()} ${timelineDate.format("YYYY")}`
-                    : timelineDate.format("MMM YYYY")}
+                    : timelineZoom === "week"
+                      ? `Week ${timelineDate.week()}, ${timelineDate.format("YYYY")}`
+                      : timelineDate.format("MMM DD, YYYY")}
               </span>
               <button
                 type="button"
@@ -692,7 +697,7 @@ const ProjectPage = () => {
                     <div
                       key={task._id}
                       onClick={() => openEditModal(task)}
-                      className="px-3 py-2.5 border-b border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors"
+                      className="h-10 px-3 flex items-center border-b border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors"
                     >
                       <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary truncate">
                         {task.title}
@@ -706,10 +711,44 @@ const ProjectPage = () => {
               <div className="flex-1 relative">
                 {/* Date Header */}
                 <div className="flex sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
+                  {/* Month labels row */}
+                  <div className="flex w-full border-b border-light-border/50 dark:border-dark-border/50">
+                    {(() => {
+                      const months = []
+                      let lastMonth = null
+                      let colCount = 0
+                      for (const col of timelineColumns) {
+                        if (col.month !== lastMonth) {
+                          if (lastMonth !== null) {
+                            months.push({ label: lastMonth, span: colCount })
+                          }
+                          lastMonth = col.month
+                          colCount = 1
+                        } else {
+                          colCount++
+                        }
+                      }
+                      if (lastMonth !== null) {
+                        months.push({ label: lastMonth, span: colCount })
+                      }
+                      return months.map((m, i) => (
+                        <div
+                          key={i}
+                          className="px-1 py-1 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary text-center border-r border-light-border/30 dark:border-dark-border/30 last:border-r-0 shrink-0"
+                          style={{ flexBasis: `${m.span * 40}px` }}
+                        >
+                          {m.label}
+                        </div>
+                      ))
+                    })()}
+                  </div>
+                </div>
+                {/* Day labels row */}
+                <div className="flex sticky top-7 bg-light-bg-secondary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
                   {timelineColumns.map((col, i) => (
                     <div
                       key={i}
-                      className="flex-1 min-w-[30px] sm:min-w-[40px] px-1 py-2 border-r border-light-border dark:border-dark-border text-center"
+                      className="flex-1 min-w-[30px] sm:min-w-[40px] px-1 py-1 border-r border-light-border dark:border-dark-border text-center"
                     >
                       <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                         {col.label}
@@ -722,7 +761,7 @@ const ProjectPage = () => {
                 </div>
 
                 {/* Task Bars */}
-                <div className="relative">
+                <div className="flex flex-col">
                   {filteredTasks.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 px-4">
                       <div className="w-12 h-12 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-3">
@@ -741,27 +780,44 @@ const ProjectPage = () => {
                   ) : (
                     filteredTasks.map((task, _idx) => {
                       const position = getTaskPosition(task)
-                      if (!position) return null
                       return (
-                        <motion.div
+                        <div
                           key={task._id}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          onClick={() => openEditModal(task)}
-                          className="absolute top-1 bottom-1 rounded-md cursor-pointer hover:opacity-90 transition-opacity border-l-2"
-                          style={{
-                            left: `${position.left}%`,
-                            width: `${position.width}%`,
-                            backgroundColor: `${getStatusColor(task.status)}33`,
-                            borderLeftColor: getStatusColor(task.status),
-                          }}
+                          className="relative h-10 border-b border-light-border/40 dark:border-dark-border/40"
                         >
-                          <div className="p-1.5 overflow-hidden">
-                            <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary truncate">
-                              {task.title}
-                            </p>
+                          <div className="absolute inset-0 flex pointer-events-none">
+                            {timelineColumns.map((col, i) => (
+                              <div
+                                key={i}
+                                className={`flex-1 min-w-[30px] sm:min-w-[40px] border-r border-light-border/30 dark:border-dark-border/30 ${
+                                  i % 2 === 0
+                                    ? ""
+                                    : "bg-light-bg-secondary/20 dark:bg-dark-bg-secondary/20"
+                                }`}
+                              />
+                            ))}
                           </div>
-                        </motion.div>
+                          {position && (
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              onClick={() => openEditModal(task)}
+                              className="absolute top-1.5 bottom-1.5 rounded-full cursor-pointer hover:opacity-90 transition-opacity border-l-2 z-10"
+                              style={{
+                                left: `${position.left}%`,
+                                width: `${position.width}%`,
+                                backgroundColor: `${getStatusColor(task.status)}33`,
+                                borderLeftColor: getStatusColor(task.status),
+                              }}
+                            >
+                              <div className="px-2 overflow-hidden h-full flex items-center">
+                                <p className="text-[10px] font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                                  {task.title}
+                                </p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </div>
                       )
                     })
                   )}
@@ -864,18 +920,16 @@ const ProjectPage = () => {
                 return (
                   <div
                     key={item.day}
-                    className={`min-h-[80px] sm:min-h-[100px] p-1.5 sm:p-2 border-b border-r border-light-border dark:border-dark-border last:border-r-0 ${
-                      isToday
-                        ? "bg-accent-primary/10 dark:bg-accent-primary/20"
-                        : "hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/50"
-                    }`}
+                    className={`min-h-[80px] sm:min-h-[100px] p-1.5 sm:p-2 border-b border-r border-light-border dark:border-dark-border last:border-r-0 ${isToday
+                      ? "bg-accent-primary/10 dark:bg-accent-primary/20"
+                      : "hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/50"
+                      }`}
                   >
                     <div
-                      className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-xs sm:text-xs font-medium mb-1.5 ${
-                        isToday
-                          ? "bg-accent-primary text-white"
-                          : "text-light-text-tertiary dark:text-dark-text-tertiary"
-                      }`}
+                      className={`flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full text-xs sm:text-xs font-medium mb-1.5 ${isToday
+                        ? "bg-accent-primary text-white"
+                        : "text-light-text-tertiary dark:text-dark-text-tertiary"
+                        }`}
                     >
                       {item.day}
                     </div>
@@ -948,11 +1002,10 @@ const ProjectPage = () => {
           {Object.entries(filteredColumns).map(([status, column]) => (
             <div
               key={status}
-              className={`w-72 flex-shrink-0 flex flex-col gap-3 transition-all duration-200 ${
-                dragOverColumn === status
-                  ? "ring-2 ring-accent-primary ring-offset-2 ring-offset-light-bg-primary dark:ring-offset-dark-bg-primary rounded-lg"
-                  : ""
-              }`}
+              className={`w-72 flex-shrink-0 flex flex-col gap-3 transition-all duration-200 ${dragOverColumn === status
+                ? "ring-2 ring-accent-primary ring-offset-2 ring-offset-light-bg-primary dark:ring-offset-dark-bg-primary rounded-lg"
+                : ""
+                }`}
               onDragOver={(e) => handleDragOver(e, status)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, status)}
@@ -1477,11 +1530,10 @@ const ProjectPage = () => {
                 {project?.name}
               </h1>
               <span
-                className={`text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${
-                  project?.isActive !== false
-                    ? "bg-accent-success/10 text-accent-success"
-                    : "bg-accent-danger/10 text-accent-danger"
-                }`}
+                className={`text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${project?.isActive !== false
+                  ? "bg-accent-success/10 text-accent-success"
+                  : "bg-accent-danger/10 text-accent-danger"
+                  }`}
               >
                 {project?.isActive !== false ? "Active" : "Inactive"}
               </span>
@@ -1502,11 +1554,10 @@ const ProjectPage = () => {
                       toast.error("Failed to update project status")
                     }
                   }}
-                  className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors cursor-pointer ${
-                    project?.isActive !== false
-                      ? "bg-accent-warning/10 text-accent-warning hover:bg-accent-warning/20"
-                      : "bg-accent-success/10 text-accent-success hover:bg-accent-success/20"
-                  }`}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors cursor-pointer ${project?.isActive !== false
+                    ? "bg-accent-warning/10 text-accent-warning hover:bg-accent-warning/20"
+                    : "bg-accent-success/10 text-accent-success hover:bg-accent-success/20"
+                    }`}
                   aria-label={
                     project?.isActive !== false ? "Deactivate project" : "Activate project"
                   }
@@ -1569,11 +1620,10 @@ const ProjectPage = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab("board")}
-                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
-                  activeTab === "board"
-                    ? "bg-accent-primary text-white shadow-sm"
-                    : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-                }`}
+                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${activeTab === "board"
+                  ? "bg-accent-primary text-white shadow-sm"
+                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                  }`}
               >
                 <FiCircle className="w-4 h-4" />
                 <span className="hidden sm:inline">Board</span>
@@ -1581,11 +1631,10 @@ const ProjectPage = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab("list")}
-                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
-                  activeTab === "list"
-                    ? "bg-accent-primary text-white shadow-sm"
-                    : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-                }`}
+                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${activeTab === "list"
+                  ? "bg-accent-primary text-white shadow-sm"
+                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                  }`}
               >
                 <FiCheckCircle className="w-4 h-4" />
                 <span className="hidden sm:inline">List</span>
@@ -1593,11 +1642,10 @@ const ProjectPage = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab("timeline")}
-                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
-                  activeTab === "timeline"
-                    ? "bg-accent-primary text-white shadow-sm"
-                    : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-                }`}
+                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${activeTab === "timeline"
+                  ? "bg-accent-primary text-white shadow-sm"
+                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                  }`}
               >
                 <FiClock className="w-4 h-4" />
                 <span className="hidden sm:inline">Timeline</span>
@@ -1605,11 +1653,10 @@ const ProjectPage = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab("calendar")}
-                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${
-                  activeTab === "calendar"
-                    ? "bg-accent-primary text-white shadow-sm"
-                    : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-                }`}
+                className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${activeTab === "calendar"
+                  ? "bg-accent-primary text-white shadow-sm"
+                  : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                  }`}
               >
                 <FiCalendar className="w-4 h-4" />
                 <span className="hidden sm:inline">Calendar</span>
@@ -1633,11 +1680,10 @@ const ProjectPage = () => {
           <div className="flex items-center gap-2 flex-wrap">
             <button
               type="button"
-              className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${
-                statusFilter || priorityFilter || assigneeFilter || dateFilter
-                  ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm"
-                  : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"
-              }`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${statusFilter || priorityFilter || assigneeFilter || dateFilter
+                ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm"
+                : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"
+                }`}
             >
               <FiFilter className="w-4 h-4" />
               <span>Filters</span>
@@ -1922,11 +1968,10 @@ const ProjectPage = () => {
           <button
             type="button"
             onClick={() => setActiveTab("board")}
-            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${
-              activeTab === "board"
-                ? "bg-accent-primary text-white shadow-sm"
-                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
+            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === "board"
+              ? "bg-accent-primary text-white shadow-sm"
+              : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              }`}
           >
             <FiCircle className="w-4 h-4" />
             <span className="hidden sm:inline">Board</span>
@@ -1934,11 +1979,10 @@ const ProjectPage = () => {
           <button
             type="button"
             onClick={() => setActiveTab("list")}
-            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${
-              activeTab === "list"
-                ? "bg-accent-primary text-white shadow-sm"
-                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
+            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === "list"
+              ? "bg-accent-primary text-white shadow-sm"
+              : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              }`}
           >
             <FiCheckCircle className="w-4 h-4" />
             <span className="hidden sm:inline">List</span>
@@ -1946,11 +1990,10 @@ const ProjectPage = () => {
           <button
             type="button"
             onClick={() => setActiveTab("timeline")}
-            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${
-              activeTab === "timeline"
-                ? "bg-accent-primary text-white shadow-sm"
-                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
+            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === "timeline"
+              ? "bg-accent-primary text-white shadow-sm"
+              : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              }`}
           >
             <FiClock className="w-4 h-4" />
             <span className="hidden sm:inline">Timeline</span>
@@ -1958,11 +2001,10 @@ const ProjectPage = () => {
           <button
             type="button"
             onClick={() => setActiveTab("calendar")}
-            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${
-              activeTab === "calendar"
-                ? "bg-accent-primary text-white shadow-sm"
-                : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-            }`}
+            className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === "calendar"
+              ? "bg-accent-primary text-white shadow-sm"
+              : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              }`}
           >
             <FiCalendar className="w-4 h-4" />
             <span className="hidden sm:inline">Calendar</span>

@@ -111,21 +111,15 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
   const updateUser = useCallback((newUserData) => {
-    // This can be a full user object or a partial object to merge
+    // Strip sensitive fields before storing in localStorage
+    const { password: _ignored, ...safeData } = newUserData
     setUser((currentUser) => {
-      const updatedUser = { ...currentUser, ...newUserData }
+      const updatedUser = { ...currentUser, ...safeData }
       localStorage.setItem("user", JSON.stringify(updatedUser))
       return updatedUser
     })
   }, [])
 
-  const _updatePassword = useCallback((newPassword) => {
-    setUser((currentUser) => {
-      const updatedUser = { ...currentUser, password: newPassword }
-      localStorage.setItem("user", JSON.stringify(updatedUser))
-      return updatedUser
-    })
-  }, [])
   const forgetPassword = useCallback(async (email) => {
     try {
       const response = await apiService.forgetPassword(email)
