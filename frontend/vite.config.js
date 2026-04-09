@@ -7,6 +7,8 @@ export default defineConfig({
   // Keep names to prevent TDZ issues from recharts internal circular dependencies
   esbuild: {
     keepNames: true,
+    // Disable tree shaking for recharts
+    treeShaking: false,
   },
   server: {
     port: 5173,
@@ -57,10 +59,9 @@ export default defineConfig({
             if (id.includes("dayjs") || id.includes("ms")) {
               return "utils"
             }
-            // Charts - must be isolated to avoid TDZ circular dependency issues
-            if (id.includes("recharts") || id.includes("d3-") || id.includes("victory-")) {
-              return "charts"
-            }
+            // IMPORTANT: Don't split recharts/d3/victory - they have circular dependencies
+            // that cause TDZ errors when extracted to separate chunks.
+            // Let them stay bundled with the lazy-loaded pages that use them.
           }
         },
         chunkFileNames: "assets/js/[name]-[hash].js",
@@ -82,5 +83,9 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ["react", "react-dom", "react-router-dom"],
+  },
+  // Fix for recharts circular dependency TDZ issues
+  commonjsOptions: {
+    transformMixedEsModules: true,
   },
 })
