@@ -1,10 +1,6 @@
 # Frontend Dockerfile - Production
 FROM node:20-alpine AS builder
 
-# Accept build-time API URL (set in Railway as VITE_API_URL env var)
-ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
-
 # Set working directory
 WORKDIR /app
 

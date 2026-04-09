@@ -34,11 +34,10 @@ class ApiService {
     const envUrl = import.meta.env.VITE_API_URL;
     if (!envUrl) {
       console.warn(
-        "⚠️ VITE_API_URL is not set. Falling back to relative /api/v1"
+        "⚠️ VITE_API_URL is not set. API calls will fail. Set it in .env or vite config."
       );
     }
-    // Fall back to relative path so production (same-domain) works without env var
-    this.baseURL = envUrl?.trim() || "/api/v1";
+    this.baseURL = envUrl?.trim()
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
