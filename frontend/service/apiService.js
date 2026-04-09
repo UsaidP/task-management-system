@@ -34,10 +34,11 @@ class ApiService {
     const envUrl = import.meta.env.VITE_API_URL;
     if (!envUrl) {
       console.warn(
-        "⚠️ VITE_API_URL is not set. API calls will fail. Set it in .env or vite config."
+        "⚠️ VITE_API_URL is not set. Falling back to relative /api/v1"
       );
     }
-    this.baseURL = envUrl?.trim()
+    // Fall back to relative path so production (same-domain) works without env var
+    this.baseURL = envUrl?.trim() || "/api/v1";
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -504,14 +505,6 @@ class ApiService {
   async getAdminTaskDistribution() {
     return await this.customFetch("/dashboard/admin/task-distribution", {
       method: "GET",
-    });
-  }
-
-  // --- Admin User Management ---
-  async updateUserRole(userId, role) {
-    return await this.customFetch(`/auth/users/${userId}/role`, {
-      method: "PATCH",
-      body: JSON.stringify({ role }),
     });
   }
 
