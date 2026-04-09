@@ -42,8 +42,9 @@ const NavItem = ({ to, icon: Icon, label, isCollapsed, onClick }) => {
           {/* Left accent bar */}
           {!isCollapsed && (
             <span
-              className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r-full transition-all duration-200 ${isActive ? "h-5 bg-accent-primary" : "h-0 bg-transparent"
-                }`}
+              className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r-full transition-all duration-200 ${
+                isActive ? "h-5 bg-accent-primary" : "h-0 bg-transparent"
+              }`}
             />
           )}
           <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
@@ -224,19 +225,21 @@ const Sidebar = () => {
             aria-pressed={isActive}
             title={isCollapsed ? project.name : ""}
             className={`flex items-center w-full px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 group border
-              ${isActive
-                ? "bg-accent-primary/12 border-accent-primary/30 text-accent-primary dark:bg-accent-primary/20 dark:border-accent-primary/40 shadow-sm"
-                : "border-transparent text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-light-border dark:hover:border-dark-border"
+              ${
+                isActive
+                  ? "bg-accent-primary/12 border-accent-primary/30 text-accent-primary dark:bg-accent-primary/20 dark:border-accent-primary/40 shadow-sm"
+                  : "border-transparent text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-light-border dark:hover:border-dark-border"
               }
               ${isCollapsed ? "justify-center px-0 w-10 h-10 mx-auto !rounded-lg !p-0" : ""}
             `}
           >
             <div className={`flex items-center justify-center ${isCollapsed ? "w-full" : ""}`}>
               <span
-                className={`w-2.5 h-2.5 rounded-full transition-all flex-shrink-0 ${isActive
-                  ? "bg-accent-primary shadow-sm shadow-accent-primary/40 scale-110"
-                  : "bg-light-text-secondary/50 dark:bg-dark-text-secondary/50 group-hover:bg-accent-primary/70"
-                  } ${isCollapsed ? "" : "mr-3"}`}
+                className={`w-2.5 h-2.5 rounded-full transition-all flex-shrink-0 ${
+                  isActive
+                    ? "bg-accent-primary shadow-sm shadow-accent-primary/40 scale-110"
+                    : "bg-light-text-secondary/50 dark:bg-dark-text-secondary/50 group-hover:bg-accent-primary/70"
+                } ${isCollapsed ? "" : "mr-3"}`}
               />
             </div>
             {!isCollapsed && (
@@ -323,10 +326,14 @@ const Sidebar = () => {
                    ${isDesktop ? (isCollapsed ? "w-20" : "w-72") : "w-72"}`}
       >
         <div className="flex items-center justify-between flex-none px-4 pb-4 border-b border-light-border dark:border-dark-border">
-          <div className={`flex items-center overflow-hidden transition-all duration-300 ${isCollapsed ? "w-10 justify-center" : "gap-3 ml-2"}`}>
+          <div
+            className={`flex items-center overflow-hidden transition-all duration-300 ${isCollapsed ? "w-10 justify-center" : "gap-3 ml-2"}`}
+          >
             <img
               src="/logo-light.png"
               alt="TaskFlow logo"
+              width="160"
+              height="40"
               className={`object-contain flex-shrink-0 dark:brightness-90 dark:contrast-125 transition-all duration-300 ${isCollapsed ? "h-8 w-8" : "h-10 w-auto max-w-[160px]"}`}
             />
           </div>
@@ -396,10 +403,11 @@ const Sidebar = () => {
                       setSprintFilter(null)
                       setIsSprintMenuOpen(false)
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${!sprintFilter
-                      ? "text-accent-primary font-medium bg-accent-primary/5"
-                      : "text-light-text-primary dark:text-dark-text-primary"
-                      }`}
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
+                      !sprintFilter
+                        ? "text-accent-primary font-medium bg-accent-primary/5"
+                        : "text-light-text-primary dark:text-dark-text-primary"
+                    }`}
                   >
                     All Sprints
                   </button>
@@ -415,10 +423,11 @@ const Sidebar = () => {
                           setSprintFilter(sprint._id)
                           setIsSprintMenuOpen(false)
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${sprintFilter === sprint._id
-                          ? "text-accent-primary font-medium bg-accent-primary/5"
-                          : "text-light-text-primary dark:text-dark-text-primary"
-                          }`}
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
+                          sprintFilter === sprint._id
+                            ? "text-accent-primary font-medium bg-accent-primary/5"
+                            : "text-light-text-primary dark:text-dark-text-primary"
+                        }`}
                       >
                         {sprint.name}
                       </button>

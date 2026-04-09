@@ -70,6 +70,8 @@ const Header = () => {
         <img
           src="/logo-light.png"
           alt="TaskFlow logo"
+          width="120"
+          height="36"
           className="h-9 w-auto object-contain flex-shrink-0 lg:hidden dark:brightness-90 dark:contrast-125"
         />
       </div>
@@ -106,6 +108,8 @@ const Header = () => {
                     alt={`${userName}'s avatar`}
                     className="object-cover w-full h-full rounded-full"
                     src={getOptimizedAvatarUrl(user.avatar.url, 100)}
+                    width="40"
+                    height="40"
                     loading="eager"
                     decoding="async"
                   />

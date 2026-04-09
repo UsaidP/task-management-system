@@ -16,23 +16,76 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Split vendor chunks for better caching
-          "react-vendor": ["react", "react-dom", "react-router-dom"],
-          "ui-vendor": ["framer-motion", "react-icons", "@headlessui/react"],
-          "table-vendor": ["@tanstack/react-table"],
-          "date-vendor": ["dayjs", "@mui/x-date-pickers"],
-          "dnd-vendor": ["react-dnd", "react-dnd-html5-backend"],
+        manualChunks: (id) => {
+          // Split large libraries into separate chunks
+          if (id.includes("node_modules")) {
+            // React core
+            if (id.includes("react") || id.includes("react-dom")) {
+              return "react-core"
+            }
+            // Router (lazy load)
+            if (id.includes("react-router")) {
+              return "router"
+            }
+            // UI libraries (lazy load only when needed)
+            if (id.includes("framer-motion")) {
+              return "animations"
+            }
+            if (id.includes("@mui")) {
+              return "mui-date"
+            }
+            if (id.includes("@headlessui") || id.includes("@heroicons")) {
+              return "ui-components"
+            }
+            // Data visualization (lazy load)
+            if (id.includes("recharts")) {
+              return "charts"
+            }
+            // Drag and drop (lazy load)
+            if (id.includes("react-dnd")) {
+              return "drag-drop"
+            }
+            // Table library
+            if (id.includes("@tanstack")) {
+              return "table"
+            }
+            // Icons - split into smaller chunks
+            if (id.includes("react-icons")) {
+              return "icons"
+            }
+            // Utilities
+            if (id.includes("dayjs") || id.includes("ms")) {
+              return "utils"
+            }
+          }
+        },
+        chunkFileNames: "assets/js/[name]-[hash].js",
+        entryFileNames: "assets/js/[name]-[hash].js",
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith(".css")) {
+            return "assets/css/[name]-[hash][extname]"
+          }
+          return "assets/[ext]/[name]-[hash][extname]"
         },
       },
     },
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 500,
     minify: "terser",
     terserOptions: {
       compress: {
         drop_console: true,
         drop_debugger: true,
+        pure_funcs: ["console.log", "console.info", "console.debug"],
+      },
+      format: {
+        comments: false,
       },
     },
+    cssCodeSplit: true,
+    sourcemap: false,
+    reportCompressedSize: false,
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom", "react-router-dom"],
   },
 })

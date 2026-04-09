@@ -25,16 +25,31 @@
     <meta name="twitter:description" content="The all-in-one task management platform for modern teams. Projects, sprints, and collaboration in one seamless workspace." />
     <meta name="twitter:image" content="https://taskflow.app/og-image.png" />
 
+    <!-- Preconnect to font CDNs for faster font loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Load fonts with display=swap to prevent render-blocking -->
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
-    <title>Taskflow - Work that feels human</title>
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/logo-light.png" as="image" />
+    
+    <!-- Defer non-critical scripts -->
+    <script type="module" src="/src/main.jsx" defer></script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

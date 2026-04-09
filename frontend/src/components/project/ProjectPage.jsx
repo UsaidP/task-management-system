@@ -16,19 +16,19 @@ import {
   FiLock,
   FiPlus,
   FiSearch,
-  FiUsers,
   FiSettings,
+  FiUsers,
 } from "react-icons/fi"
-import { useParams, useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import Modal from "../Modal"
 import Skeleton from "../Skeleton"
+import CreateTaskModal from "../task/CreateTaskModal"
 import TaskCardSkeleton from "../task/TaskCardSkeleton"
 import TaskDetailPanel from "../task/TaskDetailPanel"
 import BoardColumn from "./BoardColumn.jsx"
 import CalendarGrid from "./CalendarGrid.jsx"
-import CreateTaskModal from "../task/CreateTaskModal"
 import ListViewTable from "./ListViewTable.jsx"
 import ProjectActivityPanel from "./ProjectActivityPanel.jsx"
 import ProjectFilterBar from "./ProjectFilterBar.jsx"
@@ -112,7 +112,8 @@ const ProjectPage = () => {
         setColumns(groupedColumns)
       }
     } catch (err) {
-      const message = err.response?.data?.message || "An error occurred while fetching project data."
+      const message =
+        err.response?.data?.message || "An error occurred while fetching project data."
       setError(message)
       toast.error(message)
     } finally {
@@ -147,7 +148,10 @@ const ProjectPage = () => {
         }
       }
       if (originalStatus && originalStatus !== updatedTask.status) {
-        c[originalStatus] = { ...c[originalStatus], tasks: c[originalStatus].tasks.filter((t) => t._id !== updatedTask._id) }
+        c[originalStatus] = {
+          ...c[originalStatus],
+          tasks: c[originalStatus].tasks.filter((t) => t._id !== updatedTask._id),
+        }
       }
       const tasks = [...c[updatedTask.status].tasks]
       const idx = tasks.findIndex((t) => t._id === updatedTask._id)
@@ -189,7 +193,9 @@ const ProjectPage = () => {
   const handleDragStart = useCallback((e, task) => {
     setDraggedTask(task)
     e.dataTransfer.effectAllowed = "move"
-    requestAnimationFrame(() => { if (e.currentTarget) e.currentTarget.style.opacity = "0.4" })
+    requestAnimationFrame(() => {
+      if (e.currentTarget) e.currentTarget.style.opacity = "0.4"
+    })
   }, [])
 
   const handleDragEnd = useCallback((e) => {
@@ -206,61 +212,68 @@ const ProjectPage = () => {
 
   const handleDragLeave = useCallback(() => setDragOverColumn(null), [])
 
-  const handleDrop = useCallback(async (e, targetColumnId, dropIndex) => {
-    e.preventDefault()
-    setDragOverColumn(null)
-    if (!draggedTask || !draggedTask.status || !initialColumns[targetColumnId]) return
-    const sourceColumnId = draggedTask.status
-    if (!initialColumns[sourceColumnId]) return
+  const handleDrop = useCallback(
+    async (e, targetColumnId, dropIndex) => {
+      e.preventDefault()
+      setDragOverColumn(null)
+      if (!draggedTask || !draggedTask.status || !initialColumns[targetColumnId]) return
+      const sourceColumnId = draggedTask.status
+      if (!initialColumns[sourceColumnId]) return
 
-    const isSameColumn = sourceColumnId === targetColumnId
+      const isSameColumn = sourceColumnId === targetColumnId
 
-    setColumns((prev) => {
-      const c = deepCopy(prev)
-      const sourceTasks = c[sourceColumnId].tasks
-      const sourceIndex = sourceTasks.findIndex((t) => t._id === draggedTask._id)
-      if (sourceIndex === -1) return prev
+      setColumns((prev) => {
+        const c = deepCopy(prev)
+        const sourceTasks = c[sourceColumnId].tasks
+        const sourceIndex = sourceTasks.findIndex((t) => t._id === draggedTask._id)
+        if (sourceIndex === -1) return prev
 
-      if (isSameColumn) {
-        // Same-column reorder — no-op when position unchanged
-        if (dropIndex === sourceIndex || dropIndex === sourceIndex + 1) return prev
-        const [movedTask] = sourceTasks.splice(sourceIndex, 1)
-        // Adjust index since removing the task shifts subsequent positions down
-        const insertAt = dropIndex > sourceIndex ? dropIndex - 1 : dropIndex
-        sourceTasks.splice(Math.max(0, Math.min(insertAt, sourceTasks.length)), 0, movedTask)
-      } else {
-        // Cross-column move — remove from source, insert at exact position in target
-        const [movedTask] = sourceTasks.splice(sourceIndex, 1)
-        movedTask.status = targetColumnId
-        const targetTasks = c[targetColumnId].tasks
-        const insertAt = typeof dropIndex === "number"
-          ? Math.min(dropIndex, targetTasks.length)
-          : targetTasks.length
-        targetTasks.splice(insertAt, 0, movedTask)
+        if (isSameColumn) {
+          // Same-column reorder — no-op when position unchanged
+          if (dropIndex === sourceIndex || dropIndex === sourceIndex + 1) return prev
+          const [movedTask] = sourceTasks.splice(sourceIndex, 1)
+          // Adjust index since removing the task shifts subsequent positions down
+          const insertAt = dropIndex > sourceIndex ? dropIndex - 1 : dropIndex
+          sourceTasks.splice(Math.max(0, Math.min(insertAt, sourceTasks.length)), 0, movedTask)
+        } else {
+          // Cross-column move — remove from source, insert at exact position in target
+          const [movedTask] = sourceTasks.splice(sourceIndex, 1)
+          movedTask.status = targetColumnId
+          const targetTasks = c[targetColumnId].tasks
+          const insertAt =
+            typeof dropIndex === "number"
+              ? Math.min(dropIndex, targetTasks.length)
+              : targetTasks.length
+          targetTasks.splice(insertAt, 0, movedTask)
+        }
+        return c
+      })
+
+      // Only call API when status actually changes
+      if (!isSameColumn) {
+        try {
+          await apiService.updateTask(projectId, draggedTask._id, { status: targetColumnId })
+          toast.success("Task moved successfully!")
+        } catch (_err) {
+          toast.error("Failed to move task")
+          fetchProjectData()
+        }
       }
-      return c
-    })
-
-    // Only call API when status actually changes
-    if (!isSameColumn) {
-      try {
-        await apiService.updateTask(projectId, draggedTask._id, { status: targetColumnId })
-        toast.success("Task moved successfully!")
-      } catch (_err) {
-        toast.error("Failed to move task")
-        fetchProjectData()
-      }
-    }
-    setDraggedTask(null)
-  }, [draggedTask, projectId, fetchProjectData])
+      setDraggedTask(null)
+    },
+    [draggedTask, projectId, fetchProjectData]
+  )
 
   // ── Computed Values ────────────────────────────────────────────────────
-  const counts = useMemo(() => ({
-    todo: columns.todo?.tasks?.length || 0,
-    inProgress: columns["in-progress"]?.tasks?.length || 0,
-    underReview: columns["under-review"]?.tasks?.length || 0,
-    completed: columns.completed?.tasks?.length || 0,
-  }), [columns])
+  const counts = useMemo(
+    () => ({
+      todo: columns.todo?.tasks?.length || 0,
+      inProgress: columns["in-progress"]?.tasks?.length || 0,
+      underReview: columns["under-review"]?.tasks?.length || 0,
+      completed: columns.completed?.tasks?.length || 0,
+    }),
+    [columns]
+  )
 
   const totalTasks = counts.todo + counts.inProgress + counts.underReview + counts.completed
   const completedPercent = totalTasks > 0 ? Math.round((counts.completed / totalTasks) * 100) : 0
@@ -275,11 +288,20 @@ const ProjectPage = () => {
     let result = [...allTasks]
     if (searchQuery) {
       const q = searchQuery.toLowerCase()
-      result = result.filter((t) => t.title?.toLowerCase().includes(q) || t.description?.toLowerCase().includes(q))
+      result = result.filter(
+        (t) => t.title?.toLowerCase().includes(q) || t.description?.toLowerCase().includes(q)
+      )
     }
     if (statusFilter) result = result.filter((t) => t.status === statusFilter)
-    if (priorityFilter) result = result.filter((t) => t.priority?.toLowerCase() === priorityFilter.toLowerCase())
-    if (assigneeFilter) result = result.filter((t) => t.assignedTo?.some((a) => { const u = typeof a === "object" ? a : null; return u?.fullname?.toLowerCase().includes(assigneeFilter.toLowerCase()) }))
+    if (priorityFilter)
+      result = result.filter((t) => t.priority?.toLowerCase() === priorityFilter.toLowerCase())
+    if (assigneeFilter)
+      result = result.filter((t) =>
+        t.assignedTo?.some((a) => {
+          const u = typeof a === "object" ? a : null
+          return u?.fullname?.toLowerCase().includes(assigneeFilter.toLowerCase())
+        })
+      )
     if (dateFilter) {
       const today = dayjs().startOf("day")
       result = result.filter((t) => {
@@ -311,17 +333,26 @@ const ProjectPage = () => {
     }
     if (timelineZoom === "week") {
       const start = timelineDate.startOf("week")
-      return Array.from({ length: 7 }, (_, i) => { const d = start.add(i, "day"); return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d } })
+      return Array.from({ length: 7 }, (_, i) => {
+        const d = start.add(i, "day")
+        return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d }
+      })
     }
     if (timelineZoom === "month") {
       const start = timelineDate.startOf("month")
-      return Array.from({ length: timelineDate.daysInMonth() }, (_, i) => { const d = start.add(i, "day"); return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d } })
+      return Array.from({ length: timelineDate.daysInMonth() }, (_, i) => {
+        const d = start.add(i, "day")
+        return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d }
+      })
     }
     if (timelineZoom === "quarter") {
       const start = timelineDate.startOf("quarter")
       const end = timelineDate.endOf("quarter")
       const days = end.diff(start, "day") + 1
-      return Array.from({ length: days }, (_, i) => { const d = start.add(i, "day"); return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d } })
+      return Array.from({ length: days }, (_, i) => {
+        const d = start.add(i, "day")
+        return { label: d.format("DD"), sublabel: d.format("ddd"), month: d.format("MMM"), date: d }
+      })
     }
     return []
   }, [timelineZoom, timelineDate])
@@ -341,7 +372,9 @@ const ProjectPage = () => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-4 bg-light-bg-primary dark:bg-dark-bg-primary">
-        <h2 className="text-2xl font-bold text-accent-danger dark:text-accent-danger-light mb-2">Error Loading Project</h2>
+        <h2 className="text-2xl font-bold text-accent-danger dark:text-accent-danger-light mb-2">
+          Error Loading Project
+        </h2>
         <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-md">{error}</p>
       </div>
     )
@@ -349,7 +382,7 @@ const ProjectPage = () => {
 
   // ── Render ─────────────────────────────────────────────────────────────
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="h-full flex flex-col bg-light-bg-primary dark:bg-dark-bg-primary">
+    <div className="h-full flex flex-col bg-light-bg-primary dark:bg-dark-bg-primary">
       {/* Header */}
       <header className="flex items-center justify-between px-4 sm:px-6 h-[56px] flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -357,19 +390,36 @@ const ProjectPage = () => {
             <Skeleton className="h-5 w-32" />
           ) : (
             <>
-              <h1 className="text-base sm:text-lg font-bold text-light-text-primary dark:text-dark-text-primary truncate">{project?.name}</h1>
-              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${project?.isActive !== false ? "bg-accent-success/10 text-accent-success" : "bg-accent-danger/10 text-accent-danger"}`}>
+              <h1 className="text-base sm:text-lg font-bold text-light-text-primary dark:text-dark-text-primary truncate">
+                {project?.name}
+              </h1>
+              <span
+                className={`text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ${project?.isActive !== false ? "bg-accent-success/10 text-accent-success" : "bg-accent-danger/10 text-accent-danger"}`}
+              >
                 {project?.isActive !== false ? "Active" : "Inactive"}
               </span>
               {(userRole === "owner" || userRole === "project_admin") && (
-                <button type="button" onClick={async () => {
-                  const newStatus = project?.isActive === false
-                  try {
-                    await apiService.updateProject(projectId, { name: project.name, description: project.description, isActive: newStatus })
-                    setProject((prev) => ({ ...prev, isActive: newStatus }))
-                    toast.success(`Project ${newStatus ? "activated" : "deactivated"}`)
-                  } catch { toast.error("Failed to update project status") }
-                }} className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors cursor-pointer ${project?.isActive !== false ? "bg-accent-warning/10 text-accent-warning hover:bg-accent-warning/20" : "bg-accent-success/10 text-accent-success hover:bg-accent-success/20"}`} aria-label={project?.isActive !== false ? "Deactivate project" : "Activate project"}>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const newStatus = project?.isActive === false
+                    try {
+                      await apiService.updateProject(projectId, {
+                        name: project.name,
+                        description: project.description,
+                        isActive: newStatus,
+                      })
+                      setProject((prev) => ({ ...prev, isActive: newStatus }))
+                      toast.success(`Project ${newStatus ? "activated" : "deactivated"}`)
+                    } catch {
+                      toast.error("Failed to update project status")
+                    }
+                  }}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors cursor-pointer ${project?.isActive !== false ? "bg-accent-warning/10 text-accent-warning hover:bg-accent-warning/20" : "bg-accent-success/10 text-accent-success hover:bg-accent-success/20"}`}
+                  aria-label={
+                    project?.isActive !== false ? "Deactivate project" : "Activate project"
+                  }
+                >
                   {project?.isActive !== false ? "Deactivate" : "Activate"}
                 </button>
               )}
@@ -380,20 +430,33 @@ const ProjectPage = () => {
           <div className="hidden sm:flex items-center" title={`${members.length} members`}>
             <div className="flex -space-x-2">
               {members.slice(0, 4).map((m, idx) => (
-                <div key={m.user?._id || idx} className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-xs text-white font-bold">
+                <div
+                  key={m.user?._id || idx}
+                  className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-xs text-white font-bold"
+                >
                   {m.user?.fullname?.slice(0, 2).toUpperCase() || "U"}
                 </div>
               ))}
               {members.length > 4 && (
-                <div className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-xs text-light-text-tertiary dark:text-dark-text-tertiary font-medium">+{members.length - 4}</div>
+                <div className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-xs text-light-text-tertiary dark:text-dark-text-tertiary font-medium">
+                  +{members.length - 4}
+                </div>
               )}
             </div>
           </div>
-          <button type="button" onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-accent-primary text-white hover:bg-accent-primary-dark transition-all border-none cursor-pointer shadow-sm hover:shadow-md">
+          <button
+            type="button"
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-accent-primary text-white hover:bg-accent-primary-dark transition-all border-none cursor-pointer shadow-sm hover:shadow-md"
+          >
             <FiPlus className="w-4 h-4" />
             <span className="hidden sm:inline">Add Task</span>
           </button>
-          <button type="button" onClick={() => setIsMembersModalOpen(true)} className="hidden md:flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all cursor-pointer">
+          <button
+            type="button"
+            onClick={() => setIsMembersModalOpen(true)}
+            className="hidden md:flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all cursor-pointer"
+          >
             <FiUsers className="w-4 h-4" />
             <span className="hidden lg:inline">Members</span>
           </button>
@@ -406,14 +469,28 @@ const ProjectPage = () => {
           {/* Top Row: View Tabs + Search */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-1 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg p-1">
-              {[{ id: "board", icon: FiCircle, label: "Board" }, { id: "list", icon: FiCheckCircle, label: "List" }, { id: "timeline", icon: FiClock, label: "Timeline" }, { id: "calendar", icon: FiCalendar, label: "Calendar" }].map(({ id, icon: Icon, label }) => (
-                <button key={id} type="button" onClick={() => setActiveTab(id)} className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${activeTab === id ? "bg-accent-primary text-white shadow-sm" : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"}`}>
+              {[
+                { id: "board", icon: FiCircle, label: "Board" },
+                { id: "list", icon: FiCheckCircle, label: "List" },
+                { id: "timeline", icon: FiClock, label: "Timeline" },
+                { id: "calendar", icon: FiCalendar, label: "Calendar" },
+              ].map(({ id, icon: Icon, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setActiveTab(id)}
+                  className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${activeTab === id ? "bg-accent-primary text-white shadow-sm" : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"}`}
+                >
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{label}</span>
                 </button>
               ))}
               {isAdmin && (
-                <button type="button" onClick={() => navigate(`/project/${projectId}/admin`)} className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/project/${projectId}/admin`)}
+                  className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                >
                   <FiSettings className="w-4 h-4" />
                   <span className="hidden sm:inline">Admin</span>
                 </button>
@@ -421,7 +498,13 @@ const ProjectPage = () => {
             </div>
             <div className="relative flex-shrink-0">
               <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
-              <input type="text" placeholder="Search tasks..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-40 sm:w-56 lg:w-64 pl-9 pr-3 py-2 h-9 text-sm bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all" />
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-40 sm:w-56 lg:w-64 pl-9 pr-3 py-2 h-9 text-sm bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all"
+              />
             </div>
           </div>
           {/* Bottom Row: Filters */}
@@ -444,14 +527,36 @@ const ProjectPage = () => {
       {/* Simple View Tabs for Timeline/Calendar */}
       {(activeTab === "timeline" || activeTab === "calendar") && (
         <div className="flex items-center gap-1 px-4 sm:px-6 py-3 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border overflow-x-auto">
-          {[{ id: "board", icon: FiCircle }, { id: "list", icon: FiCheckCircle }, { id: "timeline", icon: FiClock }, { id: "calendar", icon: FiCalendar }].map(({ id, icon: Icon }) => (
-            <button key={id} type="button" onClick={() => setActiveTab(id)} className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === id ? "bg-accent-primary text-white shadow-sm" : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"}`}>
+          {[
+            { id: "board", icon: FiCircle },
+            { id: "list", icon: FiCheckCircle },
+            { id: "timeline", icon: FiClock },
+            { id: "calendar", icon: FiCalendar },
+          ].map(({ id, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setActiveTab(id)}
+              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === id ? "bg-accent-primary text-white shadow-sm" : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"}`}
+            >
               <Icon className="w-4 h-4" />
-              <span className="hidden sm:inline">{id === "board" ? "Board" : id === "list" ? "List" : id === "timeline" ? "Timeline" : "Calendar"}</span>
+              <span className="hidden sm:inline">
+                {id === "board"
+                  ? "Board"
+                  : id === "list"
+                    ? "List"
+                    : id === "timeline"
+                      ? "Timeline"
+                      : "Calendar"}
+              </span>
             </button>
           ))}
           {isAdmin && (
-            <button type="button" onClick={() => navigate(`/project/${projectId}/admin`)} className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary">
+            <button
+              type="button"
+              onClick={() => navigate(`/project/${projectId}/admin`)}
+              className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+            >
               <FiSettings className="w-4 h-4" />
               <span className="hidden sm:inline">Admin</span>
             </button>
@@ -464,13 +569,35 @@ const ProjectPage = () => {
         {loading ? (
           <div className="flex gap-4 p-4 sm:p-6 min-w-max">
             {["todo", "in-progress", "under-review", "completed"].map((col) => (
-              <div key={col} className="w-72 flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg p-4">
+              <div
+                key={col}
+                className="w-72 flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg p-4"
+              >
                 <div className="flex items-center gap-2 mb-4 px-1">
                   <div className="w-2.5 h-2.5 rounded-full bg-light-text-tertiary dark:bg-dark-text-tertiary" />
-                  <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1">{col === "in-progress" ? "In Progress" : col === "under-review" ? "Under Review" : col === "completed" ? "Completed" : "To Do"}</span>
-                  <div className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border dark:bg-dark-border text-xs text-light-text-tertiary dark:text-dark-text-tertiary">{col === "todo" ? 5 : col === "in-progress" ? 3 : col === "under-review" ? 2 : 4}</div>
+                  <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1">
+                    {col === "in-progress"
+                      ? "In Progress"
+                      : col === "under-review"
+                        ? "Under Review"
+                        : col === "completed"
+                          ? "Completed"
+                          : "To Do"}
+                  </span>
+                  <div className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border dark:bg-dark-border text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                    {col === "todo"
+                      ? 5
+                      : col === "in-progress"
+                        ? 3
+                        : col === "under-review"
+                          ? 2
+                          : 4}
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2"><TaskCardSkeleton /><TaskCardSkeleton /></div>
+                <div className="flex flex-col gap-2">
+                  <TaskCardSkeleton />
+                  <TaskCardSkeleton />
+                </div>
               </div>
             ))}
           </div>
@@ -478,16 +605,34 @@ const ProjectPage = () => {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-md p-6">
               <FiLock className="w-12 h-12 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-50" />
-              <h2 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">Board Access Restricted</h2>
-              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">You are not a member of this project. Contact your project admin for access.</p>
+              <h2 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+                Board Access Restricted
+              </h2>
+              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                You are not a member of this project. Contact your project admin for access.
+              </p>
             </div>
           </div>
         ) : activeTab === "list" ? (
           <ListViewTable tasks={filteredTasks} members={members} onTaskClick={openEditModal} />
         ) : activeTab === "timeline" ? (
-          <TimelineGrid tasks={filteredTasks} timelineColumns={timelineColumns} timelineZoom={timelineZoom} timelineDate={timelineDate} onTimelineZoomChange={setTimelineZoom} onTimelineDateChange={setTimelineDate} onTaskClick={openEditModal} />
+          <TimelineGrid
+            tasks={filteredTasks}
+            timelineColumns={timelineColumns}
+            timelineZoom={timelineZoom}
+            timelineDate={timelineDate}
+            onTimelineZoomChange={setTimelineZoom}
+            onTimelineDateChange={setTimelineDate}
+            onTaskClick={openEditModal}
+          />
         ) : activeTab === "calendar" ? (
-          <CalendarGrid tasks={filteredTasks} calendarDaysData={calendarDaysData} calendarDate={calendarDate} onMonthChange={setCalendarDate} onTaskClick={openEditModal} />
+          <CalendarGrid
+            tasks={filteredTasks}
+            calendarDaysData={calendarDaysData}
+            calendarDate={calendarDate}
+            onMonthChange={setCalendarDate}
+            onTaskClick={openEditModal}
+          />
         ) : (
           <div className="flex-1 overflow-x-auto p-4 sm:p-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary">
             <div className="flex gap-4 min-w-[288px]">
@@ -515,17 +660,31 @@ const ProjectPage = () => {
       {/* Footer: Stats Bar + Bottom Panels */}
       <footer className="flex-shrink-0 border-t border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
         <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-2.5 text-xs flex-wrap">
-          {[{ color: "#8B8178", label: "To Do", count: counts.todo }, { color: "#C4654A", label: "In Progress", count: counts.inProgress }, { color: "#D4A548", label: "Under Review", count: counts.underReview }, { color: "#7A9A6D", label: "Completed", count: counts.completed }].map((s) => (
+          {[
+            { color: "#8B8178", label: "To Do", count: counts.todo },
+            { color: "#C4654A", label: "In Progress", count: counts.inProgress },
+            { color: "#D4A548", label: "Under Review", count: counts.underReview },
+            { color: "#7A9A6D", label: "Completed", count: counts.completed },
+          ].map((s) => (
             <div key={s.label} className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />
-              <span className="text-light-text-tertiary dark:text-dark-text-tertiary">{s.label}:&nbsp;</span>
-              <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">{s.count}</span>
+              <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+                {s.label}:&nbsp;
+              </span>
+              <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+                {s.count}
+              </span>
             </div>
           ))}
           <div className="flex-1" />
-          <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Progress: {completedPercent}%</span>
+          <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+            Progress: {completedPercent}%
+          </span>
           <div className="w-28 h-1 bg-light-bg-hover dark:bg-dark-bg-hover rounded-full overflow-hidden">
-            <div className="h-full bg-accent-primary rounded-full transition-all" style={{ width: `${completedPercent}%` }} />
+            <div
+              className="h-full bg-accent-primary rounded-full transition-all"
+              style={{ width: `${completedPercent}%` }}
+            />
           </div>
         </div>
         <div className="flex gap-4 p-5 overflow-x-auto">
@@ -536,19 +695,51 @@ const ProjectPage = () => {
       </footer>
 
       {/* Modals */}
-      <CreateTaskModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onTaskCreated={handleTaskCreated} projectId={projectId} members={members} />
-      <ProjectMembers isOpen={isMembersModalOpen} onClose={() => setIsMembersModalOpen(false)} projectId={projectId} members={members} setMembers={setMembers} />
-      <TaskDetailPanel isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onTaskUpdated={handleTaskUpdated} task={selectedTask} members={members} />
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} title="Delete Task">
+      <CreateTaskModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTaskCreated={handleTaskCreated}
+        projectId={projectId}
+        members={members}
+      />
+      <ProjectMembers
+        isOpen={isMembersModalOpen}
+        onClose={() => setIsMembersModalOpen(false)}
+        projectId={projectId}
+        members={members}
+        setMembers={setMembers}
+      />
+      <TaskDetailPanel
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onTaskUpdated={handleTaskUpdated}
+        task={selectedTask}
+        members={members}
+      />
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Delete Task"
+      >
         <div>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">Are you sure you want to delete the task titled "{selectedTask?.title}"?</p>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary">
+            Are you sure you want to delete the task titled "{selectedTask?.title}"?
+          </p>
           <div className="flex justify-end space-x-4 mt-4">
-            <button type="button" onClick={() => setIsDeleteModalOpen(false)} className="btn-secondary">Cancel</button>
-            <button type="button" onClick={handleDelete} className="btn-danger">Delete</button>
+            <button
+              type="button"
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="btn-secondary"
+            >
+              Cancel
+            </button>
+            <button type="button" onClick={handleDelete} className="btn-danger">
+              Delete
+            </button>
           </div>
         </div>
       </Modal>
-    </motion.div>
+    </div>
   )
 }
 

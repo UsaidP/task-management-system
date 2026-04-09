@@ -526,3 +526,41 @@ export const updateUserAvatar = asyncHandler(async (req, res) => {
 		throw new ApiError(500, "Failed to upload avatar due to a server error.")
 	}
 })
+
+// --- Admin: Update User Role ---
+export const updateUserRole = asyncHandler(async (req, res) => {
+	const { userId } = req.params
+	const { role } = req.body
+
+	if (!userId) {
+		throw new ApiError(400, "User ID is required")
+	}
+
+	if (!role || !["admin", "member"].includes(role)) {
+		throw new ApiError(400, "Role must be either 'admin' or 'member'")
+	}
+
+	const user = await User.findById(userId)
+	if (!user) {
+		throw new ApiError(404, "User not found")
+	}
+
+	user.role = role
+	await user.save({ validateBeforeSave: false })
+
+	const updatedUser = await User.findById(userId).select("-password")
+
+	// Audit log
+	await logAudit({
+		actor: req.user,
+		category: "admin",
+		description: `Admin ${req.user.username} changed ${user.username} role to ${role}`,
+		event: "admin.role.change",
+		ipAddress: req.ip,
+		metadata: { newRole: role, oldRole: user.role },
+		targetId: user._id,
+		userAgent: req.headers["user-agent"],
+	})
+
+	return res.status(200).json(new ApiResponse(200, updatedUser, "User role updated successfully"))
+})

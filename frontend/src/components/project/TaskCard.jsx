@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
 import dayjs from "dayjs"
-import { FiCheckCircle, FiClock, FiAlertCircle, FiUser } from "react-icons/fi"
+import { motion } from "framer-motion"
+import { useState } from "react"
+import { FiAlertCircle, FiCheckCircle, FiClock, FiUser } from "react-icons/fi"
 
 const statusConfig = {
   todo: { color: "#8B8178", bg: "bg-[#8B817822]", text: "text-[#8B8178]", label: "To Do" },
@@ -59,9 +59,7 @@ const getAssigneeInfo = (assignedTo) => {
   const assignee = assignedTo[0]
   let avatar = null
   const name =
-    typeof assignee === "object"
-      ? assignee.user?.fullname || assignee.fullname || "User"
-      : "User"
+    typeof assignee === "object" ? assignee.user?.fullname || assignee.fullname || "User" : "User"
   if (typeof assignee === "object" && assignee.user?.avatar?.url) {
     avatar = assignee.user.avatar.url
   } else if (typeof assignee === "object" && assignee.avatar?.url) {
@@ -88,8 +86,11 @@ const TaskCard = ({ task, onClick, onDragStart, onDragEnd }) => {
   const isCompleted = task.status === "completed"
   const currentStatus = statusConfig[task.status] || statusConfig.todo
   const currentPriority = priorityConfig[task.priority?.toLowerCase()] || priorityConfig.medium
-  const { avatar: assigneeAvatar, initials: assigneeInitials, count: assigneeCount } =
-    getAssigneeInfo(task.assignedTo)
+  const {
+    avatar: assigneeAvatar,
+    initials: assigneeInitials,
+    count: assigneeCount,
+  } = getAssigneeInfo(task.assignedTo)
 
   return (
     <motion.div
@@ -151,8 +152,7 @@ const TaskCard = ({ task, onClick, onDragStart, onDragEnd }) => {
               className="h-full rounded-full transition-all duration-300"
               style={{
                 width: `${progress}%`,
-                backgroundColor:
-                  progress > 60 ? "#7A9A6D" : progress > 30 ? "#C4654A" : "#8B8178",
+                backgroundColor: progress > 60 ? "#7A9A6D" : progress > 30 ? "#C4654A" : "#8B8178",
               }}
             />
           </div>
@@ -193,7 +193,12 @@ const TaskCard = ({ task, onClick, onDragStart, onDragEnd }) => {
           <div className="flex items-center">
             {assigneeCount > 0 ? (
               <div className="flex -space-x-1.5">
-                <Avatar src={assigneeAvatar} alt={assigneeInitials} size="w-5 h-5" textSize="text-[8px]" />
+                <Avatar
+                  src={assigneeAvatar}
+                  alt={assigneeInitials}
+                  size="w-5 h-5"
+                  textSize="text-[8px]"
+                />
                 {assigneeCount > 1 && (
                   <div className="w-5 h-5 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center text-[7px] font-bold text-light-text-tertiary dark:text-dark-text-tertiary">
                     +{assigneeCount - 1}

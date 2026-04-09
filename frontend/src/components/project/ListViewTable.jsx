@@ -41,8 +41,12 @@ const Avatar = ({ member, initials }) => {
         onError={(e) => {
           e.target.style.display = "none"
           e.target.parentElement.classList.add(
-            "bg-gradient-to-br", "from-accent-primary", "to-accent-info",
-            "flex", "items-center", "justify-center"
+            "bg-gradient-to-br",
+            "from-accent-primary",
+            "to-accent-info",
+            "flex",
+            "items-center",
+            "justify-center"
           )
           e.target.parentElement.innerHTML = `<span class="text-[10px] text-white font-bold">${initials}</span>`
         }}
@@ -57,17 +61,30 @@ const ListViewTable = ({ tasks, members, onTaskClick }) => {
       <table className="w-full border border-light-border dark:border-dark-border rounded-lg overflow-hidden shadow-md dark:shadow-dark-md bg-light-bg-primary dark:bg-dark-bg-primary">
         <thead className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-primary border-b border-light-border dark:border-dark-border z-10">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">Task</th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">Status</th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">Priority</th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">Assignees</th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">Due Date</th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
+              Task
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
+              Status
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
+              Priority
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
+              Assignees
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
+              Due Date
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-light-border dark:divide-dark-border">
           {tasks.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-4 py-12 text-center text-light-text-tertiary dark:text-dark-text-tertiary">
+              <td
+                colSpan={5}
+                className="px-4 py-12 text-center text-light-text-tertiary dark:text-dark-text-tertiary"
+              >
                 No tasks found
               </td>
             </tr>
@@ -99,7 +116,9 @@ const ListViewTable = ({ tasks, members, onTaskClick }) => {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${priorityStyles[task.priority?.toLowerCase()] || priorityStyles.medium}`}>
+                    <span
+                      className={`text-xs font-medium px-2 py-1 rounded-full ${priorityStyles[task.priority?.toLowerCase()] || priorityStyles.medium}`}
+                    >
                       {task.priority || "Medium"}
                     </span>
                   </td>
@@ -111,9 +130,7 @@ const ListViewTable = ({ tasks, members, onTaskClick }) => {
                           const member = members.find((m) => (m.user?._id || m.user) === userId)
                           const userObj = member?.user || member
                           const initials = (userObj?.fullname || "U").slice(0, 2).toUpperCase()
-                          return (
-                            <Avatar key={i} member={userObj} initials={initials} />
-                          )
+                          return <Avatar key={i} member={userObj} initials={initials} />
                         })
                       ) : (
                         <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -128,7 +145,9 @@ const ListViewTable = ({ tasks, members, onTaskClick }) => {
                         {dayjs(task.dueDate).format("MMM DD, YYYY")}
                       </span>
                     ) : (
-                      <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">—</span>
+                      <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                        —
+                      </span>
                     )}
                   </td>
                 </tr>

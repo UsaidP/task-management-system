@@ -31,9 +31,9 @@ import {
   FiUser,
   FiX,
 } from "react-icons/fi"
-import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
+import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import EditProfileModal from "./EditProfileModal.jsx"
 
 const ProfileSkeleton = () => (

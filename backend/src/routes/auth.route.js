@@ -12,9 +12,10 @@ import {
 	resetPassword,
 	updateProfile,
 	updateUserAvatar,
+	updateUserRole,
 	verifyUser,
 } from "../controllers/auth.controller.js"
-import { protect } from "../middlewares/auth.middleware.js"
+import { protect, requireAdmin } from "../middlewares/auth.middleware.js"
 import { upload } from "../middlewares/multer.middleware.js"
 import validator from "../middlewares/validator.middleware.js"
 import { asyncHandler } from "../utils/async-handler.js"
@@ -63,5 +64,8 @@ router.put("/update-avatar", protect, upload.single("avatars"), asyncHandler(upd
 router.put("/update-profile", protect, asyncHandler(updateProfile))
 
 router.delete("/delete-account", protect, asyncHandler(deleteUserAccount))
+
+// Admin-only routes
+router.patch("/users/:userId/role", protect, requireAdmin, asyncHandler(updateUserRole))
 
 export default router

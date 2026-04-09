@@ -507,6 +507,14 @@ class ApiService {
     });
   }
 
+  // --- Admin User Management ---
+  async updateUserRole(userId, role) {
+    return await this.customFetch(`/auth/users/${userId}/role`, {
+      method: "PATCH",
+      body: JSON.stringify({ role }),
+    });
+  }
+
   // --- Project Admin Methods ---
   async getProjectAdminStats(projectId) {
     return await this.customFetch(`/projects/${projectId}/admin/stats`, {

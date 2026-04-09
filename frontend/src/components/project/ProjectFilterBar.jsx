@@ -1,5 +1,5 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
-import { FiFilter, FiSearch, FiChevronDown } from "react-icons/fi"
+import { FiChevronDown, FiFilter, FiSearch } from "react-icons/fi"
 
 const ProjectFilterBar = ({
   searchQuery,
@@ -14,7 +14,8 @@ const ProjectFilterBar = ({
   onDateChange,
   members,
 }) => {
-  const hasActiveFilters = searchQuery || statusFilter || priorityFilter || assigneeFilter || dateFilter
+  const hasActiveFilters =
+    searchQuery || statusFilter || priorityFilter || assigneeFilter || dateFilter
 
   const clearAll = () => {
     onSearchChange("")
@@ -26,7 +27,10 @@ const ProjectFilterBar = ({
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${hasActiveFilters ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm" : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"}`}>
+      <button
+        type="button"
+        className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${hasActiveFilters ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm" : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"}`}
+      >
         <FiFilter className="w-4 h-4" />
         <span>Filters</span>
       </button>
@@ -35,16 +39,41 @@ const ProjectFilterBar = ({
       <Listbox value={statusFilter} onChange={onStatusChange}>
         <div className="relative min-w-[150px] sm:min-w-[170px]">
           <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
-            <span className="truncate capitalize">{statusFilter ? statusFilter.replace("-", " ") : "All Status"}</span>
+            <span className="truncate capitalize">
+              {statusFilter ? statusFilter.replace("-", " ") : "All Status"}
+            </span>
             <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
           </ListboxButton>
           <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
-            <ListboxOption value="" className={({ active }) => `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`}>
-              {({ selected }) => <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>All Status</span>}
+            <ListboxOption
+              value=""
+              className={({ active }) =>
+                `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+              }
+            >
+              {({ selected }) => (
+                <span
+                  className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                >
+                  All Status
+                </span>
+              )}
             </ListboxOption>
             {["todo", "in-progress", "under-review", "completed"].map((status) => (
-              <ListboxOption key={status} value={status} className={({ active }) => `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`}>
-                {({ selected }) => <span className={`block truncate capitalize ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>{status.replace("-", " ")}</span>}
+              <ListboxOption
+                key={status}
+                value={status}
+                className={({ active }) =>
+                  `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                }
+              >
+                {({ selected }) => (
+                  <span
+                    className={`block truncate capitalize ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                  >
+                    {status.replace("-", " ")}
+                  </span>
+                )}
               </ListboxOption>
             ))}
           </ListboxOptions>
@@ -59,12 +88,35 @@ const ProjectFilterBar = ({
             <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
           </ListboxButton>
           <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
-            <ListboxOption value="" className={({ active }) => `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`}>
-              {({ selected }) => <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>All Priority</span>}
+            <ListboxOption
+              value=""
+              className={({ active }) =>
+                `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+              }
+            >
+              {({ selected }) => (
+                <span
+                  className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                >
+                  All Priority
+                </span>
+              )}
             </ListboxOption>
             {["low", "medium", "high", "urgent"].map((priority) => (
-              <ListboxOption key={priority} value={priority} className={({ active }) => `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`}>
-                {({ selected }) => <span className={`block truncate capitalize ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>{priority}</span>}
+              <ListboxOption
+                key={priority}
+                value={priority}
+                className={({ active }) =>
+                  `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                }
+              >
+                {({ selected }) => (
+                  <span
+                    className={`block truncate capitalize ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                  >
+                    {priority}
+                  </span>
+                )}
               </ListboxOption>
             ))}
           </ListboxOptions>
@@ -79,12 +131,35 @@ const ProjectFilterBar = ({
             <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
           </ListboxButton>
           <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
-            <ListboxOption value="" className={({ active }) => `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`}>
-              {({ selected }) => <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>All Assignees</span>}
+            <ListboxOption
+              value=""
+              className={({ active }) =>
+                `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+              }
+            >
+              {({ selected }) => (
+                <span
+                  className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                >
+                  All Assignees
+                </span>
+              )}
             </ListboxOption>
             {members.map((m) => (
-              <ListboxOption key={m.user?._id} value={m.user?.fullname || ""} className={({ active }) => `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`}>
-                {({ selected }) => <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>{m.user?.fullname}</span>}
+              <ListboxOption
+                key={m.user?._id}
+                value={m.user?.fullname || ""}
+                className={({ active }) =>
+                  `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                }
+              >
+                {({ selected }) => (
+                  <span
+                    className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                  >
+                    {m.user?.fullname}
+                  </span>
+                )}
               </ListboxOption>
             ))}
           </ListboxOptions>
@@ -95,16 +170,46 @@ const ProjectFilterBar = ({
       <Listbox value={dateFilter} onChange={onDateChange}>
         <div className="relative min-w-[150px] sm:min-w-[170px]">
           <ListboxButton className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all">
-            <span className="truncate">{dateFilter ? dateFilter.replace("due-", "Due ").replace("_", " ") : "Any Date"}</span>
+            <span className="truncate">
+              {dateFilter ? dateFilter.replace("due-", "Due ").replace("_", " ") : "Any Date"}
+            </span>
             <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
           </ListboxButton>
           <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
-            <ListboxOption value="" className={({ active }) => `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`}>
-              {({ selected }) => <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>Any Date</span>}
+            <ListboxOption
+              value=""
+              className={({ active }) =>
+                `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+              }
+            >
+              {({ selected }) => (
+                <span
+                  className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                >
+                  Any Date
+                </span>
+              )}
             </ListboxOption>
-            {[{ value: "overdue", label: "Overdue" }, { value: "today", label: "Due Today" }, { value: "week", label: "Due This Week" }, { value: "month", label: "Due This Month" }].map((opt) => (
-              <ListboxOption key={opt.value} value={opt.value} className={({ active }) => `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`}>
-                {({ selected }) => <span className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}>{opt.label}</span>}
+            {[
+              { value: "overdue", label: "Overdue" },
+              { value: "today", label: "Due Today" },
+              { value: "week", label: "Due This Week" },
+              { value: "month", label: "Due This Month" },
+            ].map((opt) => (
+              <ListboxOption
+                key={opt.value}
+                value={opt.value}
+                className={({ active }) =>
+                  `cursor-pointer select-none relative py-2 px-3 transition-colors duration-150 ${active ? "bg-accent-primary/10 text-accent-primary" : "text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"}`
+                }
+              >
+                {({ selected }) => (
+                  <span
+                    className={`block truncate ${selected ? "font-semibold text-accent-primary" : "font-normal"}`}
+                  >
+                    {opt.label}
+                  </span>
+                )}
               </ListboxOption>
             ))}
           </ListboxOptions>
@@ -112,7 +217,11 @@ const ProjectFilterBar = ({
       </Listbox>
 
       {hasActiveFilters && (
-        <button type="button" onClick={clearAll} className="text-xs sm:text-sm font-medium text-accent-primary dark:text-accent-primary-light hover:underline">
+        <button
+          type="button"
+          onClick={clearAll}
+          className="text-xs sm:text-sm font-medium text-accent-primary dark:text-accent-primary-light hover:underline"
+        >
           Clear
         </button>
       )}

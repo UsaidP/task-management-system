@@ -8,12 +8,18 @@ const ProjectActivityPanel = ({ tasks, members }) => {
   return (
     <div className="flex-1 max-w-[340px] border-r border-light-border dark:border-dark-border pr-5">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">Recent Activity</h3>
-        <span className="text-xs text-accent-primary dark:text-accent-primary-light cursor-pointer font-medium">View All</span>
+        <h3 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
+          Recent Activity
+        </h3>
+        <span className="text-xs text-accent-primary dark:text-accent-primary-light cursor-pointer font-medium">
+          View All
+        </span>
       </div>
       <div className="flex flex-col gap-3">
         {recentTasks.length === 0 ? (
-          <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">No recent activity</p>
+          <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+            No recent activity
+          </p>
         ) : (
           recentTasks.map((task) => {
             const member = members.find((m) => m.user?._id === task.createdBy)
@@ -29,13 +35,17 @@ const ProjectActivityPanel = ({ tasks, members }) => {
 
             return (
               <div key={task._id} className="flex gap-2.5 items-start">
-                <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-xs text-white font-bold flex-shrink-0`}>
+                <div
+                  className={`w-7 h-7 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-xs text-white font-bold flex-shrink-0`}
+                >
                   {initials}
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
                     {task.status === "completed" ? "Completed" : "Updated"} task{" "}
-                    <span className="text-accent-primary dark:text-accent-primary-light">{task.title}</span>
+                    <span className="text-accent-primary dark:text-accent-primary-light">
+                      {task.title}
+                    </span>
                   </p>
                   <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5">
                     {dayjs(task.updatedAt).fromNow()}

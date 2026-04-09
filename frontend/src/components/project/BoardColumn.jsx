@@ -38,7 +38,7 @@ const BoardColumn = ({
       cardHandledRef.current = true
       onDragOver(e, columnId)
     },
-    [onDragOver, columnId],
+    [onDragOver, columnId]
   )
 
   const handleColumnDragOver = useCallback(
@@ -51,7 +51,7 @@ const BoardColumn = ({
       }
       cardHandledRef.current = false
     },
-    [onDragOver, columnId, tasks.length],
+    [onDragOver, columnId, tasks.length]
   )
 
   const handleColumnDragLeave = useCallback(
@@ -62,7 +62,7 @@ const BoardColumn = ({
         onDragLeave()
       }
     },
-    [onDragLeave],
+    [onDragLeave]
   )
 
   const handleColumnDrop = useCallback(
@@ -72,7 +72,7 @@ const BoardColumn = ({
       setDropIndex(-1)
       onDrop(e, columnId, index)
     },
-    [onDrop, columnId, dropIndex, tasks.length],
+    [onDrop, columnId, dropIndex, tasks.length]
   )
 
   return (

@@ -37,8 +37,10 @@ const TimelineGrid = ({
 }) => {
   const formatPeriodLabel = () => {
     if (timelineZoom === "month") return timelineDate.format("MMMM YYYY")
-    if (timelineZoom === "quarter") return `Q${timelineDate.quarter()} ${timelineDate.format("YYYY")}`
-    if (timelineZoom === "week") return `Week ${timelineDate.week()}, ${timelineDate.format("YYYY")}`
+    if (timelineZoom === "quarter")
+      return `Q${timelineDate.quarter()} ${timelineDate.format("YYYY")}`
+    if (timelineZoom === "week")
+      return `Week ${timelineDate.week()}, ${timelineDate.format("YYYY")}`
     return timelineDate.format("MMM DD, YYYY")
   }
 
@@ -62,8 +64,12 @@ const TimelineGrid = ({
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary shrink-0">
         <div>
-          <h2 className="text-lg sm:text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">Timeline</h2>
-          <p className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{tasks.length} tasks</p>
+          <h2 className="text-lg sm:text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
+            Timeline
+          </h2>
+          <p className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+            {tasks.length} tasks
+          </p>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-lg p-1">
@@ -79,13 +85,23 @@ const TimelineGrid = ({
             ))}
           </div>
           <div className="flex items-center gap-1">
-            <button type="button" onClick={() => onTimelineDateChange(timelineDate.add(-1, timelineZoom))} aria-label="Previous period" className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center">
+            <button
+              type="button"
+              onClick={() => onTimelineDateChange(timelineDate.add(-1, timelineZoom))}
+              aria-label="Previous period"
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            >
               <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
             </button>
             <span className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[120px] sm:min-w-[160px] text-center px-2">
               {formatPeriodLabel()}
             </span>
-            <button type="button" onClick={() => onTimelineDateChange(timelineDate.add(1, timelineZoom))} aria-label="Next period" className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center">
+            <button
+              type="button"
+              onClick={() => onTimelineDateChange(timelineDate.add(1, timelineZoom))}
+              aria-label="Next period"
+              className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            >
               <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
             </button>
           </div>
@@ -98,10 +114,14 @@ const TimelineGrid = ({
           <div className="flex min-h-full">
             {/* Task List Sidebar */}
             <div className="w-40 sm:w-48 flex-shrink-0 border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary">
-              <div className="px-3 py-2 text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">Task</div>
+              <div className="px-3 py-2 text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase border-b border-light-border dark:border-dark-border">
+                Task
+              </div>
               {tasks.length === 0 ? (
                 <div className="p-4 text-center">
-                  <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">No tasks</p>
+                  <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                    No tasks
+                  </p>
                 </div>
               ) : (
                 tasks.map((task) => (
@@ -110,7 +130,9 @@ const TimelineGrid = ({
                     onClick={() => onTaskClick(task)}
                     className="h-10 px-3 flex items-center border-b border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors"
                   >
-                    <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary truncate">{task.title}</p>
+                    <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                      {task.title}
+                    </p>
                   </div>
                 ))
               )}
@@ -122,7 +144,11 @@ const TimelineGrid = ({
               <div className="flex sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
                 <div className="flex w-full border-b border-light-border/50 dark:border-dark-border/50">
                   {monthGroups.map((m, i) => (
-                    <div key={i} className="px-1 py-1 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary text-center border-r border-light-border/30 dark:border-dark-border/30 last:border-r-0 shrink-0" style={{ flexBasis: `${m.span * 40}px` }}>
+                    <div
+                      key={i}
+                      className="px-1 py-1 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary text-center border-r border-light-border/30 dark:border-dark-border/30 last:border-r-0 shrink-0"
+                      style={{ flexBasis: `${m.span * 40}px` }}
+                    >
                       {m.label}
                     </div>
                   ))}
@@ -131,9 +157,16 @@ const TimelineGrid = ({
               {/* Day Header */}
               <div className="flex sticky top-7 bg-light-bg-secondary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
                 {timelineColumns.map((col, i) => (
-                  <div key={i} className="flex-1 min-w-[30px] sm:min-w-[40px] px-1 py-1 border-r border-light-border dark:border-dark-border text-center">
-                    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">{col.label}</div>
-                    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase">{col.sublabel}</div>
+                  <div
+                    key={i}
+                    className="flex-1 min-w-[30px] sm:min-w-[40px] px-1 py-1 border-r border-light-border dark:border-dark-border text-center"
+                  >
+                    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                      {col.label}
+                    </div>
+                    <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase">
+                      {col.sublabel}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -143,19 +176,32 @@ const TimelineGrid = ({
                 {tasks.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-16 px-4">
                     <div className="w-12 h-12 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-3">
-                      <FiCalendar className="w-6 h-6 text-light-text-tertiary opacity-40" aria-hidden="true" />
+                      <FiCalendar
+                        className="w-6 h-6 text-light-text-tertiary opacity-40"
+                        aria-hidden="true"
+                      />
                     </div>
-                    <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">No tasks yet</p>
-                    <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">Create tasks with due dates to see them here</p>
+                    <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                      No tasks yet
+                    </p>
+                    <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                      Create tasks with due dates to see them here
+                    </p>
                   </div>
                 ) : (
                   tasks.map((task) => {
                     const position = getTaskPosition(task, timelineColumns)
                     return (
-                      <div key={task._id} className="relative h-10 border-b border-light-border/40 dark:border-dark-border/40">
+                      <div
+                        key={task._id}
+                        className="relative h-10 border-b border-light-border/40 dark:border-dark-border/40"
+                      >
                         <div className="absolute inset-0 flex pointer-events-none">
                           {timelineColumns.map((col, i) => (
-                            <div key={i} className={`flex-1 min-w-[30px] sm:min-w-[40px] border-r border-light-border/30 dark:border-dark-border/30 ${i % 2 === 0 ? "" : "bg-light-bg-secondary/20 dark:bg-dark-bg-secondary/20"}`} />
+                            <div
+                              key={i}
+                              className={`flex-1 min-w-[30px] sm:min-w-[40px] border-r border-light-border/30 dark:border-dark-border/30 ${i % 2 === 0 ? "" : "bg-light-bg-secondary/20 dark:bg-dark-bg-secondary/20"}`}
+                            />
                           ))}
                         </div>
                         {position && (
@@ -172,7 +218,9 @@ const TimelineGrid = ({
                             }}
                           >
                             <div className="px-2 overflow-hidden h-full flex items-center">
-                              <p className="text-[10px] font-medium text-light-text-primary dark:text-dark-text-primary truncate">{task.title}</p>
+                              <p className="text-[10px] font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                                {task.title}
+                              </p>
                             </div>
                           </motion.div>
                         )}

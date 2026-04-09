@@ -61,7 +61,10 @@ const Logo = ({ size = "md", iconOnly = false, className = "", to }) => {
 
   if (to) {
     return (
-      <NavLink to={to} className="focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/40 rounded-lg">
+      <NavLink
+        to={to}
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/40 rounded-lg"
+      >
         {content}
       </NavLink>
     )

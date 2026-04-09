@@ -21,7 +21,7 @@ export default {
           text: {
             primary: "#2C2420", // Espresso — headings, strong text
             secondary: "#4A3C30", // Earth — body text (improved contrast)
-            tertiary: "#6E6358", // Warm gray — hints, placeholders (improved contrast)
+            tertiary: "#5A4D42", // Warm gray — hints, placeholders (WCAG AA compliant)
             inverse: "#FAF6F1", // Linen — text on dark bg
           },
           border: {

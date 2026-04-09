@@ -137,22 +137,25 @@ const SubtaskView = ({ taskId }) => {
               <button
                 type="button"
                 onClick={() => handleToggleComplete(subtask._id, subtask.isCompleted)}
-                className={`flex items-center gap-3 flex-1 text-left ${subtask.isCompleted ? "opacity-60" : ""
-                  }`}
+                className={`flex items-center gap-3 flex-1 text-left ${
+                  subtask.isCompleted ? "opacity-60" : ""
+                }`}
               >
                 <div
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${subtask.isCompleted
-                    ? "bg-accent-primary border-accent-primary"
-                    : "border-light-text-tertiary dark:border-dark-text-tertiary"
-                    }`}
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                    subtask.isCompleted
+                      ? "bg-accent-primary border-accent-primary"
+                      : "border-light-text-tertiary dark:border-dark-text-tertiary"
+                  }`}
                 >
                   {subtask.isCompleted && <FiCheck className="w-3 h-3 text-white" />}
                 </div>
                 <span
-                  className={`text-sm font-medium transition-all ${subtask.isCompleted
-                    ? "text-light-text-tertiary dark:text-dark-text-tertiary line-through"
-                    : "text-light-text-primary dark:text-dark-text-primary"
-                    }`}
+                  className={`text-sm font-medium transition-all ${
+                    subtask.isCompleted
+                      ? "text-light-text-tertiary dark:text-dark-text-tertiary line-through"
+                      : "text-light-text-primary dark:text-dark-text-primary"
+                  }`}
                 >
                   {subtask.title}
                 </span>
