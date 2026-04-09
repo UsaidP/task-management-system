@@ -37,10 +37,6 @@ export default defineConfig({
             if (id.includes("@headlessui") || id.includes("@heroicons")) {
               return "ui-components"
             }
-            // Data visualization (lazy load)
-            if (id.includes("recharts")) {
-              return "charts"
-            }
             // Drag and drop (lazy load)
             if (id.includes("react-dnd")) {
               return "drag-drop"
@@ -57,6 +53,10 @@ export default defineConfig({
             if (id.includes("dayjs") || id.includes("ms")) {
               return "utils"
             }
+            // Charts - must be isolated to avoid TDZ circular dependency issues
+            if (id.includes("recharts") || id.includes("d3-") || id.includes("victory-")) {
+              return "charts"
+            }
           }
         },
         chunkFileNames: "assets/js/[name]-[hash].js",
@@ -70,17 +70,8 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 500,
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ["console.log", "console.info", "console.debug"],
-      },
-      format: {
-        comments: false,
-      },
-    },
+    // Use esbuild instead of terser — avoids TDZ issues with recharts circular deps
+    minify: "esbuild",
     cssCodeSplit: true,
     sourcemap: false,
     reportCompressedSize: false,

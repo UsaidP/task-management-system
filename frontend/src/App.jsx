@@ -18,11 +18,13 @@ import { AuthProvider } from "./contexts/AuthContext.jsx"
 import { FilterProvider } from "./contexts/FilterContext.jsx"
 import { SidebarProvider } from "./contexts/SidebarContext.jsx"
 import AppLayout from "./layouts/AppLayout.jsx"
-import AdminDashboard from "./pages/AdminDashboard.jsx"
-import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage.jsx"
-import AdminProjectsPage from "./pages/admin/AdminProjectsPage.jsx"
-import AdminTasksPage from "./pages/admin/AdminTasksPage.jsx"
-import AdminTeamPage from "./pages/admin/AdminTeamPage.jsx"
+
+// Lazy load admin pages (they import recharts which is heavy)
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard.jsx"))
+const AdminAnalyticsPage = lazy(() => import("./pages/admin/AdminAnalyticsPage.jsx"))
+const AdminProjectsPage = lazy(() => import("./pages/admin/AdminProjectsPage.jsx"))
+const AdminTasksPage = lazy(() => import("./pages/admin/AdminTasksPage.jsx"))
+const AdminTeamPage = lazy(() => import("./pages/admin/AdminTeamPage.jsx"))
 import { Home } from "./pages/Home.jsx"
 import Overview from "./pages/Overview.jsx"
 import ProjectAdminPage from "./pages/ProjectAdminPage.jsx"
@@ -128,11 +130,46 @@ const App = () => {
                     </AdminRoute>
                   }
                 >
-                  <Route path="admin" element={<AdminDashboard />} />
-                  <Route path="admin/tasks" element={<AdminTasksPage />} />
-                  <Route path="admin/projects" element={<AdminProjectsPage />} />
-                  <Route path="admin/team" element={<AdminTeamPage />} />
-                  <Route path="admin/analytics" element={<AdminAnalyticsPage />} />
+                  <Route
+                    path="admin"
+                    element={
+                      <Suspense fallback={<LoadingFallback />}>
+                        <AdminDashboard />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="admin/tasks"
+                    element={
+                      <Suspense fallback={<LoadingFallback />}>
+                        <AdminTasksPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="admin/projects"
+                    element={
+                      <Suspense fallback={<LoadingFallback />}>
+                        <AdminProjectsPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="admin/team"
+                    element={
+                      <Suspense fallback={<LoadingFallback />}>
+                        <AdminTeamPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="admin/analytics"
+                    element={
+                      <Suspense fallback={<LoadingFallback />}>
+                        <AdminAnalyticsPage />
+                      </Suspense>
+                    }
+                  />
                 </Route>
               </Routes>
             </SidebarProvider>
