@@ -1,0 +1,14 @@
+{
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "frontend/Dockerfile",
+    "buildArgs": {
+      "VITE_API_URL": "${VITE_API_URL}"
+    }
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "healthcheckPath": "/",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
