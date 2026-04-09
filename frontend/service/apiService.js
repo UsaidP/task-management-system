@@ -37,7 +37,7 @@ class ApiService {
         "⚠️ VITE_API_URL is not set. API calls will fail. Set it in .env or vite config."
       );
     }
-    this.baseURL = envUrl || "http://localhost:4000/api/v1";
+    this.baseURL = envUrl;
     this.defaultHeader = {
       "Content-Type": "application/json",
       Accept: "application/json",
