@@ -1,5 +1,7 @@
 import { Project } from "../models/project.model.js"
 import { ProjectMember } from "../models/projectmember.model.js"
+import { Sprint } from "../models/sprint.model.js"
+import { Task } from "../models/task.model.js"
 import ApiError from "../utils/api-error.js"
 import { ApiResponse } from "../utils/api-response.js"
 import { asyncHandler } from "../utils/async-handler.js"
@@ -187,4 +189,96 @@ const deleteProject = asyncHandler(async (req, res, next) => {
 	next()
 })
 
-export { createProject, getProjectById, updateProject, deleteProject, getAllProjects }
+// Get project admin stats
+const getProjectAdminStats = asyncHandler(async (req, res) => {
+	const { projectId } = req.params
+
+	const project = await Project.findById(projectId)
+	if (!project) {
+		throw new ApiError(404, "Project not found")
+	}
+
+	// Task counts by status
+	const taskStatusCounts = await Task.aggregate([
+		{ $match: { project: project._id } },
+		{ $group: { _id: "$status", count: { $sum: 1 } } },
+	])
+
+	// Member count
+	const memberCount = await ProjectMember.countDocuments({
+		isActive: true,
+		project: project._id,
+	})
+
+	// Sprint count (active sprints)
+	const sprintCount = await Sprint.countDocuments({
+		project: project._id,
+		status: "active",
+	})
+
+	// Overdue tasks (dueDate in past and not completed)
+	const overdueTasks = await Task.countDocuments({
+		dueDate: { $lt: new Date() },
+		project: project._id,
+		status: { $ne: "completed" },
+	})
+
+	// Total tasks
+	const totalTasks = await Task.countDocuments({ project: project._id })
+
+	// Build status map
+	const statusMap = {
+		completed: 0,
+		"in-progress": 0,
+		todo: 0,
+		"under-review": 0,
+	}
+	taskStatusCounts.forEach((item) => {
+		if (Object.hasOwn(statusMap, item._id)) {
+			statusMap[item._id] = item.count
+		}
+	})
+
+	res.status(200).json(
+		new ApiResponse(
+			200,
+			{
+				memberCount,
+				overdueTasks,
+				sprintCount,
+				taskStatusCounts: statusMap,
+				totalTasks,
+			},
+			"Project admin stats fetched successfully",
+		),
+	)
+})
+
+// Get project admin members list (with more detail than basic members endpoint)
+const getProjectAdminMembers = asyncHandler(async (req, res) => {
+	const { projectId } = req.params
+
+	const project = await Project.findById(projectId)
+	if (!project) {
+		throw new ApiError(404, "Project not found")
+	}
+
+	const members = await ProjectMember.find({
+		isActive: true,
+		project: project._id,
+	})
+		.populate("user", "email fullname avatar username")
+		.sort({ createdAt: -1 })
+
+	res.status(200).json(new ApiResponse(200, members, "Project admin members fetched successfully"))
+})
+
+export {
+	createProject,
+	deleteProject,
+	getAllProjects,
+	getProjectAdminMembers,
+	getProjectAdminStats,
+	getProjectById,
+	updateProject,
+}

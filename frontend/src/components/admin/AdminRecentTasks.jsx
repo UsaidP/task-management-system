@@ -39,13 +39,22 @@ export default function AdminRecentTasks({ tasks, loading }) {
           <p className="text-sm text-light-text-tertiary">Showing {tasks?.length || 0} tasks</p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover">
+          <button
+            type="button"
+            className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+          >
             <Filter size={14} /> Filter
           </button>
-          <button className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover">
+          <button
+            type="button"
+            className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+          >
             <ArrowUpDown size={14} /> Sort
           </button>
-          <button className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover">
+          <button
+            type="button"
+            className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+          >
             <Download size={14} /> Export
           </button>
         </div>

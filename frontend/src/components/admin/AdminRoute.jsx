@@ -1,14 +1,13 @@
-import { useNavigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
 const AdminRoute = ({ children }) => {
-  const { user } = useAuth()
-  const navigate = useNavigate()
+  const { user, loading } = useAuth()
+
+  if (loading) return null
 
   if (!user || user.role !== "admin") {
-    return (
-      <div className="flex min-h-screen items-center justify-center text-lg">Access Denied</div>
-    )
+    return <Navigate to="/overview" replace />
   }
 
   return children

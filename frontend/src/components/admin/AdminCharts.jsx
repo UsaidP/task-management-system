@@ -1,3 +1,4 @@
+import { useId } from "react"
 import {
   Area,
   AreaChart,
@@ -21,6 +22,10 @@ const COLORS = {
 const PIE_COLORS = ["#C4654A", "#7A9A6D", "#D4A548", "#6888A0", "#8B70A0", "#C44A4A"]
 
 export function AdminAreaChart({ weeklyData, loading }) {
+  const uid = useId()
+  const gradCreated = `${uid}-created`
+  const gradCompleted = `${uid}-completed`
+
   if (loading) {
     return (
       <div className="animate-pulse rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 h-72" />
@@ -53,11 +58,11 @@ export function AdminAreaChart({ weeklyData, loading }) {
       <ResponsiveContainer width="100%" height={280}>
         <AreaChart data={weeklyData || []}>
           <defs>
-            <linearGradient id="colorCreated" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={gradCreated} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={COLORS.created} stopOpacity={0.15} />
               <stop offset="95%" stopColor={COLORS.created} stopOpacity={0} />
             </linearGradient>
-            <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={gradCompleted} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={COLORS.completed} stopOpacity={0.15} />
               <stop offset="95%" stopColor={COLORS.completed} stopOpacity={0} />
             </linearGradient>
@@ -83,14 +88,14 @@ export function AdminAreaChart({ weeklyData, loading }) {
             dataKey="created"
             stroke={COLORS.created}
             strokeWidth={2}
-            fill="url(#colorCreated)"
+            fill={`url(#${gradCreated})`}
           />
           <Area
             type="monotone"
             dataKey="completed"
             stroke={COLORS.completed}
             strokeWidth={2}
-            fill="url(#colorCompleted)"
+            fill={`url(#${gradCompleted})`}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -129,8 +134,11 @@ export function AdminPieChart({ distribution, loading }) {
             paddingAngle={4}
             dataKey="value"
           >
-            {pieData.map((_entry, index) => (
-              <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+            {pieData.map((entry) => (
+              <Cell
+                key={entry.name}
+                fill={PIE_COLORS[pieData.indexOf(entry) % PIE_COLORS.length]}
+              />
             ))}
           </Pie>
           <Tooltip

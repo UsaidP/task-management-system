@@ -90,6 +90,9 @@ export default {
             DEFAULT: "#6888A0", // Dusty blue
             dark: "#4A6A82", // Deep dusty blue
           },
+          // Aliases for gradient targets
+          "info-dark": "#4A6A82",
+          "success-dark": "#5E7D52",
           // Purple — Muted (Labels, categories)
           purple: {
             light: "#AB90C0", // Light muted purple

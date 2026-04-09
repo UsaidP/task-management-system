@@ -1,6 +1,6 @@
-import { ArrowRight, CheckCircle2, Flag, MessageSquare, Plus, UserPlus } from "lucide-react"
+import { ArrowRight, CheckCircle2, MessageSquare, Plus, UserPlus } from "lucide-react"
 
-const iconMap = {
+const _iconMap = {
   completed: <CheckCircle2 size={14} />,
   created: <Plus size={14} />,
   assigned: <UserPlus size={14} />,
@@ -8,7 +8,7 @@ const iconMap = {
   commented: <MessageSquare size={14} />,
 }
 
-const iconColors = {
+const _iconColors = {
   completed: "text-accent-success bg-accent-success/10",
   created: "text-accent-warning bg-accent-warning/10",
   updated: "text-accent-info bg-accent-info/10",
@@ -16,7 +16,7 @@ const iconColors = {
   commented: "text-accent-purple bg-accent-purple/10",
 }
 
-function getActivityColor(status) {
+function _getActivityColor(status) {
   switch (status) {
     case "created":
       return "bg-accent-success/10 text-accent-success"
@@ -95,7 +95,10 @@ export default function AdminActivityFeed({ tasks, loading }) {
           <p className="text-sm text-light-text-tertiary text-center py-8">No recent activity</p>
         )}
         {activities.map((activity, index) => (
-          <div key={index} className="group relative flex gap-3 py-3">
+          <div
+            key={`${activity.user}-${activity.createdAt}-${index}`}
+            className="group relative flex gap-3 py-3"
+          >
             {index < activities.length - 1 && (
               <div className="absolute left-[19px] top-[52px] bottom-0 w-px bg-light-border dark:bg-dark-border" />
             )}

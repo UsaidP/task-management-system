@@ -17,8 +17,9 @@ import {
   FiPlus,
   FiSearch,
   FiUsers,
+  FiSettings,
 } from "react-icons/fi"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import Modal from "../Modal"
@@ -61,6 +62,7 @@ const initialColumns = {
 
 const ProjectPage = () => {
   const { projectId } = useParams()
+  const navigate = useNavigate()
   const { user } = useAuth()
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -79,6 +81,7 @@ const ProjectPage = () => {
 
   const userRole = members.find((m) => (m.user?._id || m.user) === user?._id)?.role
   const canViewBoard = userRole === "owner" || userRole === "project_admin" || userRole === "member"
+  const isAdmin = userRole === "owner" || userRole === "project_admin"
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -203,25 +206,50 @@ const ProjectPage = () => {
 
   const handleDragLeave = useCallback(() => setDragOverColumn(null), [])
 
-  const handleDrop = useCallback(async (e, targetColumnId) => {
+  const handleDrop = useCallback(async (e, targetColumnId, dropIndex) => {
     e.preventDefault()
     setDragOverColumn(null)
     if (!draggedTask || !draggedTask.status || !initialColumns[targetColumnId]) return
     const sourceColumnId = draggedTask.status
-    if (!initialColumns[sourceColumnId] || sourceColumnId === targetColumnId) return
+    if (!initialColumns[sourceColumnId]) return
+
+    const isSameColumn = sourceColumnId === targetColumnId
 
     setColumns((prev) => {
       const c = deepCopy(prev)
-      c[sourceColumnId].tasks = c[sourceColumnId].tasks.filter((t) => t._id !== draggedTask._id)
-      c[targetColumnId].tasks.push({ ...draggedTask, status: targetColumnId })
+      const sourceTasks = c[sourceColumnId].tasks
+      const sourceIndex = sourceTasks.findIndex((t) => t._id === draggedTask._id)
+      if (sourceIndex === -1) return prev
+
+      if (isSameColumn) {
+        // Same-column reorder — no-op when position unchanged
+        if (dropIndex === sourceIndex || dropIndex === sourceIndex + 1) return prev
+        const [movedTask] = sourceTasks.splice(sourceIndex, 1)
+        // Adjust index since removing the task shifts subsequent positions down
+        const insertAt = dropIndex > sourceIndex ? dropIndex - 1 : dropIndex
+        sourceTasks.splice(Math.max(0, Math.min(insertAt, sourceTasks.length)), 0, movedTask)
+      } else {
+        // Cross-column move — remove from source, insert at exact position in target
+        const [movedTask] = sourceTasks.splice(sourceIndex, 1)
+        movedTask.status = targetColumnId
+        const targetTasks = c[targetColumnId].tasks
+        const insertAt = typeof dropIndex === "number"
+          ? Math.min(dropIndex, targetTasks.length)
+          : targetTasks.length
+        targetTasks.splice(insertAt, 0, movedTask)
+      }
       return c
     })
-    try {
-      await apiService.updateTask(projectId, draggedTask._id, { status: targetColumnId })
-      toast.success("Task moved successfully!")
-    } catch (_err) {
-      toast.error("Failed to move task")
-      fetchProjectData()
+
+    // Only call API when status actually changes
+    if (!isSameColumn) {
+      try {
+        await apiService.updateTask(projectId, draggedTask._id, { status: targetColumnId })
+        toast.success("Task moved successfully!")
+      } catch (_err) {
+        toast.error("Failed to move task")
+        fetchProjectData()
+      }
     }
     setDraggedTask(null)
   }, [draggedTask, projectId, fetchProjectData])
@@ -384,6 +412,12 @@ const ProjectPage = () => {
                   <span className="hidden sm:inline">{label}</span>
                 </button>
               ))}
+              {isAdmin && (
+                <button type="button" onClick={() => navigate(`/project/${projectId}/admin`)} className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary">
+                  <FiSettings className="w-4 h-4" />
+                  <span className="hidden sm:inline">Admin</span>
+                </button>
+              )}
             </div>
             <div className="relative flex-shrink-0">
               <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
@@ -416,6 +450,12 @@ const ProjectPage = () => {
               <span className="hidden sm:inline">{id === "board" ? "Board" : id === "list" ? "List" : id === "timeline" ? "Timeline" : "Calendar"}</span>
             </button>
           ))}
+          {isAdmin && (
+            <button type="button" onClick={() => navigate(`/project/${projectId}/admin`)} className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary">
+              <FiSettings className="w-4 h-4" />
+              <span className="hidden sm:inline">Admin</span>
+            </button>
+          )}
         </div>
       )}
 
@@ -455,6 +495,7 @@ const ProjectPage = () => {
                 <BoardColumn
                   key={status}
                   column={column}
+                  columnId={status}
                   tasks={column.tasks}
                   isDragOver={dragOverColumn === status}
                   onDragOver={handleDragOver}

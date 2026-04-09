@@ -1,5 +1,3 @@
-import { ExternalLink } from "lucide-react"
-
 const avatarColors = [
   "bg-accent-primary",
   "bg-accent-info",

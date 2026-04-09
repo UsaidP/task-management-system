@@ -3,6 +3,8 @@ import {
 	createProject,
 	deleteProject,
 	getAllProjects,
+	getProjectAdminMembers,
+	getProjectAdminStats,
 	getProjectById,
 	updateProject,
 } from "../controllers/project.controller.js"
@@ -38,5 +40,21 @@ router.post("/delete/:projectId", protect, validateProjectPermission(ADMIN, OWNE
 
 // Get all projects - any authenticated user
 router.get("/all-projects", protect, getAllProjects)
+
+// Project admin stats - Owner, Project Admin, or Global Admin
+router.get(
+	"/:projectId/admin/stats",
+	protect,
+	validateProjectPermission(ADMIN, OWNER, PROJECT_ADMIN),
+	getProjectAdminStats,
+)
+
+// Project admin members - Owner, Project Admin, or Global Admin
+router.get(
+	"/:projectId/admin/members",
+	protect,
+	validateProjectPermission(ADMIN, OWNER, PROJECT_ADMIN),
+	getProjectAdminMembers,
+)
 
 export default router

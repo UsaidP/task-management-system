@@ -70,7 +70,7 @@ const Header = () => {
         <img
           src="/logo-light.png"
           alt="TaskFlow logo"
-          className="object-cover w-12 h-12 object-center lg:hidden"
+          className="h-9 w-auto object-contain flex-shrink-0 lg:hidden dark:brightness-90 dark:contrast-125"
         />
       </div>
 

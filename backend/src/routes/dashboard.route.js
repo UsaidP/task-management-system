@@ -13,17 +13,15 @@ import { asyncHandler } from "../utils/async-handler.js"
 
 const router = Router()
 
-// Existing: Get all tasks for user
-router.route("/:id").get(protect, asyncHandler(getAllTasks))
-
-// Admin dashboard endpoints (require admin role)
+// Admin dashboard endpoints — must be defined BEFORE /:id to avoid route conflict
 router.get("/admin/stats", protect, requireAdmin, getAdminStats)
 router.get("/admin/projects", protect, requireAdmin, getAdminProjectProgress)
 router.get("/admin/recent-tasks", protect, requireAdmin, getAdminRecentTasks)
 router.get("/admin/task-distribution", protect, requireAdmin, getAdminTaskDistribution)
 router.get("/admin/weekly-stats", protect, requireAdmin, getAdminWeeklyStats)
-
-// Public user list (admin managed, no route-level auth needed beyond requireAdmin)
 router.get("/admin/users", protect, requireAdmin, getAdminAllUsers)
+
+// Generic: get all tasks for a project (keep last to avoid shadowing /admin/*)
+router.route("/:id").get(protect, asyncHandler(getAllTasks))
 
 export default router

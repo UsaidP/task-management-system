@@ -1,11 +1,4 @@
-import {
-  AlertTriangle,
-  CheckCircle2,
-  CheckSquare,
-  Clock,
-  TrendingDown,
-  TrendingUp,
-} from "lucide-react"
+import { AlertTriangle, CheckCircle2, CheckSquare, Clock } from "lucide-react"
 
 const iconMap = {
   total: <CheckSquare size={22} />,
@@ -68,7 +61,7 @@ export default function AdminStatsCards({ stats, loading }) {
       {cards.map((card) => {
         const pct =
           stats.totalTasks > 0
-            ? Math.round((Number.parseInt(card.value) / stats.totalTasks) * 100)
+            ? Math.round((Number.parseInt(card.value, 10) / stats.totalTasks) * 100)
             : 0
         return (
           <div

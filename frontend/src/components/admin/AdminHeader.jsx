@@ -26,7 +26,10 @@ export default function AdminHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="relative flex h-9 w-9 items-center justify-center rounded-xl text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-secondary">
+        <button
+          type="button"
+          className="relative flex h-9 w-9 items-center justify-center rounded-xl text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-secondary"
+        >
           <Bell size={18} />
           <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent-danger text-[9px] font-bold text-light-text-inverse">
             0

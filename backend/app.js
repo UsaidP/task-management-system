@@ -123,6 +123,18 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // ============================================
+// 404 Handler for Unknown Routes
+// ============================================
+app.use((req, res, _next) => {
+	if (res.headersSent) return
+	res.status(404).json({
+		errorCode: "ROUTE_NOT_FOUND",
+		message: `Route ${req.originalUrl} not found`,
+		success: false,
+	})
+})
+
+// ============================================
 // Global Error Handler
 // ============================================
 app.use(errorLogger)

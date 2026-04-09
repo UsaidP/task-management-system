@@ -323,11 +323,11 @@ const Sidebar = () => {
                    ${isDesktop ? (isCollapsed ? "w-20" : "w-72") : "w-72"}`}
       >
         <div className="flex items-center justify-between flex-none px-4 pb-4 border-b border-light-border dark:border-dark-border">
-          <div className="flex items-center gap-3 ml-2 overflow-hidden">
+          <div className={`flex items-center overflow-hidden transition-all duration-300 ${isCollapsed ? "w-10 justify-center" : "gap-3 ml-2"}`}>
             <img
               src="/logo-light.png"
               alt="TaskFlow logo"
-              className="h-20 w-40 object-contain flex-shrink-0"
+              className={`object-contain flex-shrink-0 dark:brightness-90 dark:contrast-125 transition-all duration-300 ${isCollapsed ? "h-8 w-8" : "h-10 w-auto max-w-[160px]"}`}
             />
           </div>
 

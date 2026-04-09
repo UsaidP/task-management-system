@@ -1,8 +1,17 @@
+import { useCallback, useRef, useState } from "react"
 import { FiPlus } from "react-icons/fi"
 import TaskCard from "./TaskCard"
 
+const DropIndicator = () => (
+  <div className="flex items-center gap-1 py-0.5 pointer-events-none" aria-hidden="true">
+    <div className="w-2 h-2 rounded-full bg-accent-primary flex-shrink-0" />
+    <div className="h-0.5 flex-1 bg-accent-primary rounded-full" />
+  </div>
+)
+
 const BoardColumn = ({
   column,
+  columnId,
   tasks,
   isDragOver,
   onDragOver,
@@ -13,12 +22,69 @@ const BoardColumn = ({
   onDragEnd,
   onAddTask,
 }) => {
+  const [dropIndex, setDropIndex] = useState(-1)
+  // Ref to coordinate card-level and column-level dragOver handlers.
+  // Card handler fires first (event bubbles child → parent), sets flag.
+  // Column handler checks it to avoid overriding the precise index.
+  const cardHandledRef = useRef(false)
+
+  const handleCardDragOver = useCallback(
+    (e, index) => {
+      e.preventDefault()
+      const rect = e.currentTarget.getBoundingClientRect()
+      const midY = rect.top + rect.height / 2
+      const newIndex = e.clientY < midY ? index : index + 1
+      setDropIndex((prev) => (prev !== newIndex ? newIndex : prev))
+      cardHandledRef.current = true
+      onDragOver(e, columnId)
+    },
+    [onDragOver, columnId],
+  )
+
+  const handleColumnDragOver = useCallback(
+    (e) => {
+      e.preventDefault()
+      onDragOver(e, columnId)
+      // Only set index when no card handled this event (empty space / below cards)
+      if (!cardHandledRef.current) {
+        setDropIndex(tasks.length)
+      }
+      cardHandledRef.current = false
+    },
+    [onDragOver, columnId, tasks.length],
+  )
+
+  const handleColumnDragLeave = useCallback(
+    (e) => {
+      // Only clear when truly leaving the column (not entering a child)
+      if (!e.currentTarget.contains(e.relatedTarget)) {
+        setDropIndex(-1)
+        onDragLeave()
+      }
+    },
+    [onDragLeave],
+  )
+
+  const handleColumnDrop = useCallback(
+    (e) => {
+      e.preventDefault()
+      const index = dropIndex >= 0 ? dropIndex : tasks.length
+      setDropIndex(-1)
+      onDrop(e, columnId, index)
+    },
+    [onDrop, columnId, dropIndex, tasks.length],
+  )
+
   return (
     <div
-      className={`w-72 flex-shrink-0 flex flex-col gap-3 transition-all duration-200 ${isDragOver ? "ring-2 ring-accent-primary ring-offset-2 ring-offset-light-bg-primary dark:ring-offset-dark-bg-primary rounded-lg" : ""}`}
-      onDragOver={(e) => onDragOver(e, column)}
-      onDragLeave={onDragLeave}
-      onDrop={(e) => onDrop(e, column)}
+      className={`w-72 flex-shrink-0 flex flex-col gap-3 transition-all duration-200 ${
+        isDragOver
+          ? "ring-2 ring-accent-primary ring-offset-2 ring-offset-light-bg-primary dark:ring-offset-dark-bg-primary rounded-lg"
+          : ""
+      }`}
+      onDragOver={handleColumnDragOver}
+      onDragLeave={handleColumnDragLeave}
+      onDrop={handleColumnDrop}
     >
       {/* Column Header */}
       <div className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border">
@@ -36,15 +102,20 @@ const BoardColumn = ({
 
       {/* Column Content */}
       <div className="flex flex-col gap-2 min-h-[100px]">
-        {tasks.map((task) => (
-          <TaskCard
-            key={task._id}
-            task={task}
-            onClick={onTaskClick}
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
-          />
+        {tasks.map((task, index) => (
+          <div key={task._id}>
+            {isDragOver && dropIndex === index && <DropIndicator />}
+            <div onDragOver={(e) => handleCardDragOver(e, index)}>
+              <TaskCard
+                task={task}
+                onClick={onTaskClick}
+                onDragStart={onDragStart}
+                onDragEnd={onDragEnd}
+              />
+            </div>
+          </div>
         ))}
+        {isDragOver && dropIndex === tasks.length && <DropIndicator />}
         <button
           type="button"
           onClick={onAddTask}

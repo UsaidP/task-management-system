@@ -13,6 +13,7 @@ import CalendarView from "./components/date/CalendarView.jsx"
 import TimelineView from "./components/date/TimelineView.jsx"
 import GuestRoute from "./components/GuestRoute.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
+import ProjectAdminRoute from "./components/project/ProjectAdminRoute.jsx"
 import ProjectPage from "./components/project/ProjectPage.jsx"
 import SprintView from "./components/sprint/SprintView.jsx"
 import TableView from "./components/table/TableView.jsx"
@@ -24,6 +25,7 @@ import AppLayout from "./layouts/AppLayout.jsx"
 import AdminDashboard from "./pages/AdminDashboard.jsx"
 import { Home } from "./pages/Home.jsx"
 import Overview from "./pages/Overview.jsx"
+import ProjectAdminPage from "./pages/ProjectAdminPage.jsx"
 import Settings from "./pages/Settings.jsx"
 import "./App.css"
 import "./index.css"
@@ -65,6 +67,14 @@ const App = () => {
                     <Route path="profile" element={<Me />} />
                     <Route path="setting" element={<Settings />} />
                     <Route path="settings" element={<Navigate to="/setting" replace />} />
+                    <Route
+                      path="project/:projectId/admin"
+                      element={
+                        <ProjectAdminRoute>
+                          <ProjectAdminPage />
+                        </ProjectAdminRoute>
+                      }
+                    />
                     <Route path="project/:projectId" element={<ProjectPage />} />
                   </Route>
                 </Route>
@@ -73,7 +83,7 @@ const App = () => {
                 <Route
                   element={
                     <AdminRoute>
-                      <AppLayout />
+                      <AdminLayout />
                     </AdminRoute>
                   }
                 >
