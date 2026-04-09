@@ -93,6 +93,7 @@ const ProjectPage = () => {
 
   // ── Data Fetching ──────────────────────────────────────────────────────
   const fetchProjectData = useCallback(async () => {
+    if (!projectId || projectId === "undefined") return
     setLoading(true)
     try {
       const [projectResponse, tasksResponse, membersResponse] = await Promise.all([

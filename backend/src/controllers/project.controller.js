@@ -21,7 +21,7 @@ const validateProjectData = (name, description) => {
 }
 
 // Create a project
-const createProject = asyncHandler(async (req, res, next) => {
+const createProject = asyncHandler(async (req, res) => {
 	const { name, description } = req.body
 	validateProjectData(name, description)
 
@@ -72,10 +72,9 @@ const createProject = asyncHandler(async (req, res, next) => {
 	res
 		.status(201)
 		.json(new ApiResponse(201, { project, projectMember }, "Project created successfully"))
-	next()
 })
 
-const getAllProjects = asyncHandler(async (req, res, next) => {
+const getAllProjects = asyncHandler(async (req, res) => {
 	const { page = 1, limit = 20, search = "" } = req.query
 	const userId = req.user._id
 
@@ -128,22 +127,20 @@ const getAllProjects = asyncHandler(async (req, res, next) => {
 			"Projects fetched successfully",
 		),
 	)
-	next()
 })
 
 // Read a project by ID
-const getProjectById = asyncHandler(async (req, res, next) => {
+const getProjectById = asyncHandler(async (req, res) => {
 	const { projectId: id } = req.params
 	const project = await Project.findById(id)
 	if (!project) {
 		throw new ApiError(404, "Project not found")
 	}
 	res.status(200).json(new ApiResponse(200, project, "Project fetched successfully"))
-	next()
 })
 
 // Update a project
-const updateProject = asyncHandler(async (req, res, next) => {
+const updateProject = asyncHandler(async (req, res) => {
 	const { projectId: id } = req.params
 	const { name, description, isActive } = req.body
 	if (!id) {
@@ -163,11 +160,10 @@ const updateProject = asyncHandler(async (req, res, next) => {
 		throw new ApiError(404, "Project not found")
 	}
 	res.status(200).json(new ApiResponse(200, project, "Project updated successfully"))
-	next()
 })
 
 // Delete a project
-const deleteProject = asyncHandler(async (req, res, next) => {
+const deleteProject = asyncHandler(async (req, res) => {
 	const { projectId: id } = req.params
 	const project = await Project.findByIdAndDelete(id)
 	if (!project) {
@@ -186,7 +182,6 @@ const deleteProject = asyncHandler(async (req, res, next) => {
 	})
 
 	res.status(200).json(new ApiResponse(200, project, "Project deleted successfully"))
-	next()
 })
 
 // Get project admin stats

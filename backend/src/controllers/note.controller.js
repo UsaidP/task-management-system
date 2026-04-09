@@ -5,7 +5,7 @@ import ApiError from "../utils/api-error.js"
 import { ApiResponse } from "../utils/api-response.js"
 import { asyncHandler } from "../utils/async-handler.js"
 
-const createNotes = asyncHandler(async (req, res, next) => {
+const createNotes = asyncHandler(async (req, res) => {
 	const { projectId } = req.params
 	if (!projectId || !mongoose.isValidObjectId(projectId)) {
 		throw new ApiError(400, "Provide valid project id")
@@ -38,9 +38,8 @@ const createNotes = asyncHandler(async (req, res, next) => {
 	)
 
 	res.status(201).json(new ApiResponse(201, populatedNote, "Note created successfully"))
-	next()
 })
-const getNotes = asyncHandler(async (req, res, next) => {
+const getNotes = asyncHandler(async (req, res) => {
 	const { projectId } = req.params
 	if (!projectId || !mongoose.isValidObjectId(projectId)) {
 		throw new ApiError(400, "Provide valid project id")
@@ -57,10 +56,9 @@ const getNotes = asyncHandler(async (req, res, next) => {
 	)
 
 	res.status(200).json(new ApiResponse(200, notes || [], "Notes fetched successfully"))
-	next()
 })
 
-const getNoteById = asyncHandler(async (req, res, next) => {
+const getNoteById = asyncHandler(async (req, res) => {
 	const { noteId } = req.params
 
 	if (!noteId || !mongoose.isValidObjectId(noteId)) {
@@ -76,10 +74,9 @@ const getNoteById = asyncHandler(async (req, res, next) => {
 	}
 
 	res.status(200).json(new ApiResponse(200, note, "Note fetched successfully"))
-	next()
 })
 
-const updateNote = asyncHandler(async (req, res, next) => {
+const updateNote = asyncHandler(async (req, res) => {
 	const { projectId, noteId } = req.params
 	if (!projectId || !mongoose.isValidObjectId(projectId)) {
 		throw new ApiError(400, "Invalid project ID")
@@ -101,10 +98,9 @@ const updateNote = asyncHandler(async (req, res, next) => {
 	}
 
 	res.status(200).json(new ApiResponse(200, note, "Note updated successfully"))
-	next()
 })
 
-const deleteNote = asyncHandler(async (req, res, next) => {
+const deleteNote = asyncHandler(async (req, res) => {
 	const { projectId, noteId } = req.params
 	if (!projectId || !mongoose.isValidObjectId(projectId)) {
 		throw new ApiError(400, "Invalid project ID")
@@ -124,6 +120,5 @@ const deleteNote = asyncHandler(async (req, res, next) => {
 	}
 
 	res.status(200).json(new ApiResponse(200, deletedNote, "Note deleted successfully"))
-	next()
 })
 export { createNotes, getNotes, getNoteById, updateNote, deleteNote }
