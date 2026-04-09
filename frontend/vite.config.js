@@ -4,6 +4,10 @@ import { defineConfig } from "vite"
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // Keep names to prevent TDZ issues from recharts internal circular dependencies
+  esbuild: {
+    keepNames: true,
+  },
   server: {
     port: 5173,
     proxy: {
