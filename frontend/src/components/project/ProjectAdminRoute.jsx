@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/customHook.js"
 
 const ProjectAdminRoute = ({ children }) => {
   const { user, loading } = useAuth()
-  const { id: projectId } = useParams()
+  const { projectId } = useParams()
   const [hasAccess, setHasAccess] = useState(null)
 
   useEffect(() => {
