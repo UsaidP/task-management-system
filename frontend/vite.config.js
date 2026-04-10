@@ -25,10 +25,6 @@ export default defineConfig({
         manualChunks: (id) => {
           // Split large libraries into separate chunks
           if (id.includes("node_modules")) {
-            // React core
-            if (id.includes("react") || id.includes("react-dom")) {
-              return "react-core"
-            }
             // Router (lazy load)
             if (id.includes("react-router")) {
               return "router"
@@ -62,6 +58,7 @@ export default defineConfig({
             // IMPORTANT: Don't split recharts/d3/victory - they have circular dependencies
             // that cause TDZ errors when extracted to separate chunks.
             // Let them stay bundled with the lazy-loaded pages that use them.
+            // ALSO: Don't split react/react-dom to prevent hook issues
           }
         },
         chunkFileNames: "assets/js/[name]-[hash].js",

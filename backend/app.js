@@ -31,6 +31,9 @@ const allowedOrigins = [
 	"http://localhost:4000",
 	"http://localhost:8080",
 	"https://task-management-system-production-3110.up.railway.app",
+	"https://glorious-stillness-production-0853.up.railway.app",
+	// Support CORS_ORIGIN env var for flexible production config
+	...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim()) : []),
 ]
 
 const corsOptions = {
