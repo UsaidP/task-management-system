@@ -99,7 +99,6 @@ const CalendarView = () => {
 
   const filteredTasks = useMemo(() => {
     let result = tasks
-    // console.log("Result" + result)
     if (projectFilter) {
       result = result.filter((t) => {
         const pid = typeof t.project === "object" ? t.project?._id : t.project
@@ -111,6 +110,54 @@ const CalendarView = () => {
     }
     return result
   }, [tasks, projectFilter, sprintFilter])
+
+  // ✅ Pre-compute tasks by day: O(N) instead of O(42×N)
+  // Build a Map where key = "YYYY-MM-DD" and value = array of tasks
+  const tasksByDay = useMemo(() => {
+    const map = new Map()
+
+    filteredTasks.forEach((task) => {
+      if (!task.dueDate) return
+      const dayKey = dayjs(task.dueDate).format("YYYY-MM-DD")
+      if (!map.has(dayKey)) {
+        map.set(dayKey, [])
+      }
+      map.get(dayKey).push(task)
+    })
+
+    return map
+  }, [filteredTasks])
+
+  // ✅ Pre-compute tasks by week day offset (for week view)
+  const weekTasksByOffset = useMemo(() => {
+    const map = new Map()
+    const weekStart = currentDate.startOf("week")
+
+    filteredTasks.forEach((task) => {
+      if (!task.dueDate) return
+      const taskDate = dayjs(task.dueDate)
+      if (taskDate.isSame(weekStart, "week")) {
+        const dayOffset = taskDate.diff(weekStart, "day")
+        if (!map.has(dayOffset)) {
+          map.set(dayOffset, [])
+        }
+        map.get(dayOffset).push(task)
+      }
+    })
+
+    return map
+  }, [filteredTasks, currentDate])
+
+  // ✅ O(1) lookup instead of O(N) filter
+  const getTasksForDay = (day) => {
+    const dayKey = currentDate.date(day).format("YYYY-MM-DD")
+    return tasksByDay.get(dayKey) || []
+  }
+
+  const getWeekTasks = (dayOffset) => {
+    return weekTasksByOffset.get(dayOffset) || []
+  }
+
   const handleDayClick = (day) => {
     setSelectedDate(currentDate.date(day))
     setIsModalOpen(true)
@@ -123,25 +170,8 @@ const CalendarView = () => {
 
   const handleTaskCreated = (newTask) => {
     setTasks((prev) => [...prev, newTask])
-  }
-
-  const getTasksForDay = (day) => {
-    return filteredTasks.filter((task) => {
-      const taskDate = dayjs(task.dueDate)
-      return (
-        taskDate.date() === day &&
-        taskDate.month() === currentDate.month() &&
-        taskDate.year() === currentDate.year()
-      )
-    })
-  }
-
-  const getWeekTasks = (dayOffset) => {
-    const date = currentDate.startOf("week").add(dayOffset, "day")
-    return filteredTasks.filter((task) => {
-      const taskDate = dayjs(task.dueDate)
-      return taskDate.isSame(date, "day")
-    })
+    // Invalidate the tasksByDay map by triggering a re-render
+    // The useMemo will recalculate when filteredTasks changes
   }
 
   const getProjectName = (task) => {

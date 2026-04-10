@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from "react"
+import { createContext, useCallback, useContext, useMemo, useState } from "react"
 
 const SidebarContext = createContext()
 
@@ -30,11 +30,18 @@ export const SidebarProvider = ({ children }) => {
     })
   }, [])
 
-  return (
-    <SidebarContext.Provider value={{ isSidebarOpen, toggleSidebar, isCollapsed, toggleCollapse }}>
-      {children}
-    </SidebarContext.Provider>
+  // ✅ Memoize value object so identity is stable
+  const value = useMemo(
+    () => ({
+      isSidebarOpen,
+      toggleSidebar,
+      isCollapsed,
+      toggleCollapse,
+    }),
+    [isSidebarOpen, toggleSidebar, isCollapsed, toggleCollapse]
   )
+
+  return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
 }
 
 export const useSidebar = () => useContext(SidebarContext)

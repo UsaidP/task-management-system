@@ -111,7 +111,7 @@ const Sidebar = () => {
   }
 
   const fetchProjects = useCallback(async () => {
-    if (!user) return
+    if (!user?._id) return
     try {
       setIsLoading(true)
       setError(null)
@@ -131,7 +131,7 @@ const Sidebar = () => {
     } finally {
       setIsLoading(false)
     }
-  }, [user])
+  }, [user?._id])
 
   // Load recent projects from localStorage
   const loadRecentProjects = useCallback(() => {
@@ -163,8 +163,10 @@ const Sidebar = () => {
   }
 
   useEffect(() => {
+    // ✅ Use user._id instead of full user object to prevent stale fetches
+    if (!user?._id) return
     fetchProjects()
-  }, [fetchProjects])
+  }, [user?._id, fetchProjects])
 
   useEffect(() => {
     if (projects.length > 0) {
@@ -334,7 +336,7 @@ const Sidebar = () => {
               alt="TaskFlow logo"
               width="160"
               height="40"
-              className={`object-contain flex-shrink-0 dark:brightness-90 dark:contrast-125 transition-all duration-300 ${isCollapsed ? "h-8 w-8" : "h-10 w-auto max-w-[160px]"}`}
+              className={`object-contain flex-shrink-0 transition-all duration-300 ${isCollapsed ? "h-8 w-8" : "h-10 w-auto max-w-[160px]"} dark:invert dark:brightness-110 dark:contrast-110`}
             />
           </div>
 

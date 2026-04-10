@@ -1,6 +1,22 @@
+import { memo, useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import * as FiIcons from "react-icons/fi"
+import {
+  FiAlertTriangle,
+  FiBell,
+  FiCheck,
+  FiCheckCircle,
+  FiChevronDown,
+  FiDownload,
+  FiGlobe,
+  FiLayout,
+  FiLock,
+  FiMoon,
+  FiSettings,
+  FiShield,
+  FiSun,
+  FiTrash2,
+  FiUser,
+} from "react-icons/fi"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../components/Skeleton.jsx"
 import { useTheme } from "../theme/ThemeContext"
 
@@ -63,7 +79,7 @@ const SettingsSkeleton = () => (
   </div>
 )
 
-const SettingsSection = ({ icon, title, description, children }) => (
+const SettingsSection = memo(({ icon, title, description, children }) => (
   <motion.div
     variants={sectionVariants}
     className="bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 backdrop-blur-md rounded-2xl p-7 border border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transition-all duration-300"
@@ -85,9 +101,10 @@ const SettingsSection = ({ icon, title, description, children }) => (
     </div>
     <div className="flex flex-col">{children}</div>
   </motion.div>
-)
+))
+SettingsSection.displayName = "SettingsSection"
 
-const SettingItem = ({ label, description, children }) => (
+const SettingItem = memo(({ label, description, children }) => (
   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 border-b border-light-border dark:border-dark-border gap-4 first:pt-0 last:border-b-0 last:pb-0">
     <div className="flex flex-col gap-1 flex-1">
       <label className="text-base font-medium text-light-text-primary dark:text-dark-text-primary">
@@ -101,9 +118,10 @@ const SettingItem = ({ label, description, children }) => (
     </div>
     <div className="flex-shrink-0 w-full sm:w-auto">{children}</div>
   </div>
-)
+))
+SettingItem.displayName = "SettingItem"
 
-const ToggleSwitch = ({ checked, onChange, id }) => (
+const ToggleSwitch = memo(({ checked, onChange, id }) => (
   <label
     className="relative inline-block cursor-pointer focus-within:ring-2 focus-within:ring-accent-primary/20 rounded-full"
     htmlFor={id}
@@ -123,9 +141,10 @@ const ToggleSwitch = ({ checked, onChange, id }) => (
       />
     </div>
   </label>
-)
+))
+ToggleSwitch.displayName = "ToggleSwitch"
 
-const SelectDropdown = ({ value, onChange, options, id }) => (
+const SelectDropdown = memo(({ value, onChange, options, id }) => (
   <div className="relative inline-block w-full sm:w-auto">
     <select
       id={id}
@@ -139,9 +158,10 @@ const SelectDropdown = ({ value, onChange, options, id }) => (
         </option>
       ))}
     </select>
-    <FiIcons.FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none" />
+    <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none" />
   </div>
-)
+))
+SelectDropdown.displayName = "SelectDropdown"
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme()
@@ -214,7 +234,7 @@ const Settings = () => {
             className="btn-primary flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
             onClick={handleSaveSettings}
           >
-            <FiIcons.FiCheck />
+            <FiCheck />
             Save Changes
           </motion.button>
         </div>
@@ -229,7 +249,7 @@ const Settings = () => {
           {/* Appearance Section */}
           <SettingsSection
             title="Appearance"
-            icon={<FiIcons.FiLayout />}
+            icon={<FiLayout />}
             description="Customize how the app looks and feels"
           >
             <SettingItem label="Theme" description="Choose between light and dark mode">
@@ -243,7 +263,7 @@ const Settings = () => {
                   }`}
                   onClick={() => theme !== "light" && toggleTheme()}
                 >
-                  <FiIcons.FiSun />
+                  <FiSun />
                   <span>Light</span>
                 </button>
                 <button
@@ -255,7 +275,7 @@ const Settings = () => {
                   }`}
                   onClick={() => theme !== "dark" && toggleTheme()}
                 >
-                  <FiIcons.FiMoon />
+                  <FiMoon />
                   <span>Dark</span>
                 </button>
               </div>
@@ -265,7 +285,7 @@ const Settings = () => {
           {/* Localization Section */}
           <SettingsSection
             title="Localization"
-            icon={<FiIcons.FiGlobe />}
+            icon={<FiGlobe />}
             description="Set your language and regional preferences"
           >
             <SettingItem label="Language">
@@ -327,7 +347,7 @@ const Settings = () => {
           {/* Notifications Section */}
           <SettingsSection
             title="Notifications"
-            icon={<FiIcons.FiBell />}
+            icon={<FiBell />}
             description="Configure how you want to be notified"
           >
             <SettingItem label="Email Notifications" description="Receive task updates via email">
@@ -369,7 +389,7 @@ const Settings = () => {
           {/* Preferences Section */}
           <SettingsSection
             title="Preferences"
-            icon={<FiIcons.FiSettings />}
+            icon={<FiSettings />}
             description="General app behavior settings"
           >
             <SettingItem
@@ -394,7 +414,7 @@ const Settings = () => {
           {/* Account Section */}
           <SettingsSection
             title="Account"
-            icon={<FiIcons.FiUser />}
+            icon={<FiUser />}
             description="Manage your account and security"
           >
             <SettingItem label="Password">
@@ -404,7 +424,7 @@ const Settings = () => {
                 whileTap={{ scale: 0.98 }}
                 className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
-                <FiIcons.FiLock />
+                <FiLock />
                 Change Password
               </motion.button>
             </SettingItem>
@@ -415,7 +435,7 @@ const Settings = () => {
                 whileTap={{ scale: 0.98 }}
                 className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
-                <FiIcons.FiShield />
+                <FiShield />
                 Enable 2FA
               </motion.button>
             </SettingItem>
@@ -426,7 +446,7 @@ const Settings = () => {
                 whileTap={{ scale: 0.98 }}
                 className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
-                <FiIcons.FiDownload />
+                <FiDownload />
                 Export
               </motion.button>
             </SettingItem>
@@ -435,7 +455,7 @@ const Settings = () => {
           {/* Danger Zone */}
           <SettingsSection
             title="Danger Zone"
-            icon={<FiIcons.FiAlertTriangle />}
+            icon={<FiAlertTriangle />}
             description="Irreversible and destructive actions"
           >
             <div className="bg-accent-danger/5 dark:bg-accent-danger/10 border border-dashed border-accent-danger/30 rounded-xl p-4">
@@ -454,7 +474,7 @@ const Settings = () => {
                   whileTap={{ scale: 0.98 }}
                   className="flex flex-shrink-0 items-center justify-center gap-2 px-5 py-2.5 bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger dark:hover:bg-accent-danger-dark text-white rounded-xl text-sm font-semibold shadow-sm dark:shadow-dark-sm transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
                 >
-                  <FiIcons.FiTrash2 />
+                  <FiTrash2 />
                   Delete Account
                 </motion.button>
               </div>
@@ -470,7 +490,7 @@ const Settings = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 px-6 py-4 bg-accent-success dark:bg-accent-success-dark text-white rounded-xl font-medium backdrop-blur-md shadow-xl dark:shadow-dark-lg z-50"
         >
-          <FiIcons.FiCheckCircle className="text-xl flex-shrink-0" />
+          <FiCheckCircle className="text-xl flex-shrink-0" />
           <span>Settings saved successfully!</span>
         </motion.div>
       )}

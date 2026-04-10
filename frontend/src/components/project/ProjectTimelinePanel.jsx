@@ -48,9 +48,9 @@ const ProjectTimelinePanel = ({ project, columns }) => {
   return (
     <div className="flex-1.5 pl-5">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
+        <h2 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
           Project Timeline
-        </h3>
+        </h2>
         <div className="flex gap-1">
           <button
             type="button"

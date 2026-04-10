@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import { useEffect, useId, useState } from "react"
+import { memo, useEffect, useId, useState } from "react"
 import {
   FiArrowDown,
   FiArrowRight,
@@ -327,7 +327,7 @@ const FeatureCard = ({ icon, title, description }) => {
 }
 
 // ─── Testimonial Card ────────────────────────────────────────────
-const TestimonialCard = ({ name, role, company, initials, content }) => (
+const TestimonialCard = memo(({ name, role, company, initials, content }) => (
   <article className="relative card rounded-xl">
     <span
       className="absolute top-3 right-5 text-6xl font-serif text-accent-primary/10 leading-none select-none pointer-events-none"
@@ -359,10 +359,11 @@ const TestimonialCard = ({ name, role, company, initials, content }) => (
       </span>
     </footer>
   </article>
-)
+))
+TestimonialCard.displayName = "TestimonialCard"
 
 // ─── Pricing Card ────────────────────────────────────────────────
-const PricingCard = ({ name, price, period, features, highlighted, badge, cta }) => (
+const PricingCard = memo(({ name, price, period, features, highlighted, badge, cta }) => (
   <div
     className={`relative rounded-xl overflow-hidden ${highlighted ? "border-2 border-accent-primary shadow-glow" : "card"}`}
   >
@@ -410,10 +411,11 @@ const PricingCard = ({ name, price, period, features, highlighted, badge, cta })
       </Link>
     </div>
   </div>
-)
+))
+PricingCard.displayName = "PricingCard"
 
 // ─── FAQ Accordion ───────────────────────────────────────────────
-const FAQAccordion = ({ question, answer }) => {
+const FAQAccordion = memo(({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false)
   const r = useReducedMotion()
 
@@ -453,7 +455,8 @@ const FAQAccordion = ({ question, answer }) => {
       </AnimatePresence>
     </div>
   )
-}
+})
+FAQAccordion.displayName = "FAQAccordion"
 
 const faqData = [
   {

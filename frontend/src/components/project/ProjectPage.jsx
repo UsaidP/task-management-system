@@ -1,16 +1,12 @@
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import dayjs from "dayjs"
 import quarterOfYear from "dayjs/plugin/quarterOfYear"
 import relativeTime from "dayjs/plugin/relativeTime"
 import weekOfYear from "dayjs/plugin/weekOfYear"
-import { motion } from "framer-motion"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useId, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import {
-  FiAlertCircle,
   FiCalendar,
   FiCheckCircle,
-  FiChevronDown,
   FiCircle,
   FiClock,
   FiLock,
@@ -41,18 +37,6 @@ dayjs.extend(relativeTime)
 dayjs.extend(quarterOfYear)
 dayjs.extend(weekOfYear)
 
-const deepCopy = (obj) => {
-  if (obj === null || typeof obj !== "object") return obj
-  if (React.isValidElement(obj)) return obj
-  if (obj instanceof Date) return new Date(obj.getTime())
-  if (Array.isArray(obj)) return obj.map((item) => deepCopy(item))
-  const newObj = {}
-  for (const key in obj) {
-    if (Object.hasOwn(obj, key)) newObj[key] = deepCopy(obj[key])
-  }
-  return newObj
-}
-
 const initialColumns = {
   todo: { title: "To Do", tasks: [], color: "#8B8178" },
   "in-progress": { title: "In Progress", tasks: [], color: "#C4654A" },
@@ -64,6 +48,7 @@ const ProjectPage = () => {
   const { projectId } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
+  const searchId = useId()
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -105,11 +90,13 @@ const ProjectPage = () => {
       if (membersResponse.success) setMembers(membersResponse.data)
       if (tasksResponse.success) {
         const tasks = tasksResponse.data
-        const groupedColumns = tasks.reduce((acc, task) => {
+        const groupedColumns = Object.fromEntries(
+          Object.entries(initialColumns).map(([key, val]) => [key, { ...val, tasks: [] }])
+        )
+        tasks.forEach((task) => {
           const status = task.status || "todo"
-          if (acc[status]) acc[status].tasks.push(task)
-          return acc
-        }, deepCopy(initialColumns))
+          if (groupedColumns[status]) groupedColumns[status].tasks.push(task)
+        })
         setColumns(groupedColumns)
       }
     } catch (err) {
@@ -130,36 +117,52 @@ const ProjectPage = () => {
   // ── Task CRUD Handlers ─────────────────────────────────────────────────
   const handleTaskCreated = (newTask) => {
     if (!newTask?.status || !initialColumns[newTask.status]) return
-    setColumns((prev) => {
-      const c = deepCopy(prev)
-      c[newTask.status].tasks.push(newTask)
-      return c
-    })
+    setColumns((prev) => ({
+      ...prev,
+      [newTask.status]: {
+        ...prev[newTask.status],
+        tasks: [...(prev[newTask.status]?.tasks || []), newTask],
+      },
+    }))
   }
 
   const handleTaskUpdated = (updatedTask) => {
     if (!updatedTask?.status || !initialColumns[updatedTask.status]) return
     setColumns((prev) => {
-      const c = deepCopy(prev)
       let originalStatus
-      for (const status in c) {
-        if (c[status].tasks.some((t) => t._id === updatedTask._id)) {
+      for (const status in prev) {
+        if (prev[status].tasks.some((t) => t._id === updatedTask._id)) {
           originalStatus = status
           break
         }
       }
-      if (originalStatus && originalStatus !== updatedTask.status) {
-        c[originalStatus] = {
-          ...c[originalStatus],
-          tasks: c[originalStatus].tasks.filter((t) => t._id !== updatedTask._id),
+      if (!originalStatus) return prev
+
+      const updatedTasks = prev[originalStatus].tasks.map((t) =>
+        t._id === updatedTask._id ? updatedTask : t
+      )
+
+      if (originalStatus !== updatedTask.status) {
+        return {
+          ...prev,
+          [originalStatus]: {
+            ...prev[originalStatus],
+            tasks: updatedTasks.filter((t) => t._id !== updatedTask._id),
+          },
+          [updatedTask.status]: {
+            ...prev[updatedTask.status],
+            tasks: [...(prev[updatedTask.status]?.tasks || []), updatedTask],
+          },
         }
       }
-      const tasks = [...c[updatedTask.status].tasks]
-      const idx = tasks.findIndex((t) => t._id === updatedTask._id)
-      if (idx !== -1) tasks[idx] = updatedTask
-      else tasks.push(updatedTask)
-      c[updatedTask.status] = { ...c[updatedTask.status], tasks }
-      return c
+
+      return {
+        ...prev,
+        [originalStatus]: {
+          ...prev[originalStatus],
+          tasks: updatedTasks,
+        },
+      }
     })
   }
 
@@ -224,30 +227,37 @@ const ProjectPage = () => {
       const isSameColumn = sourceColumnId === targetColumnId
 
       setColumns((prev) => {
-        const c = deepCopy(prev)
-        const sourceTasks = c[sourceColumnId].tasks
+        const sourceTasks = prev[sourceColumnId]?.tasks || []
         const sourceIndex = sourceTasks.findIndex((t) => t._id === draggedTask._id)
         if (sourceIndex === -1) return prev
 
         if (isSameColumn) {
-          // Same-column reorder — no-op when position unchanged
           if (dropIndex === sourceIndex || dropIndex === sourceIndex + 1) return prev
-          const [movedTask] = sourceTasks.splice(sourceIndex, 1)
-          // Adjust index since removing the task shifts subsequent positions down
+          const newTasks = [...sourceTasks]
+          const [movedTask] = newTasks.splice(sourceIndex, 1)
           const insertAt = dropIndex > sourceIndex ? dropIndex - 1 : dropIndex
-          sourceTasks.splice(Math.max(0, Math.min(insertAt, sourceTasks.length)), 0, movedTask)
-        } else {
-          // Cross-column move — remove from source, insert at exact position in target
-          const [movedTask] = sourceTasks.splice(sourceIndex, 1)
-          movedTask.status = targetColumnId
-          const targetTasks = c[targetColumnId].tasks
-          const insertAt =
-            typeof dropIndex === "number"
-              ? Math.min(dropIndex, targetTasks.length)
-              : targetTasks.length
-          targetTasks.splice(insertAt, 0, movedTask)
+          newTasks.splice(Math.max(0, Math.min(insertAt, newTasks.length)), 0, movedTask)
+          return {
+            ...prev,
+            [sourceColumnId]: { ...prev[sourceColumnId], tasks: newTasks },
+          }
         }
-        return c
+
+        const targetTasks = prev[targetColumnId]?.tasks || []
+        const [movedTask] = sourceTasks.filter((t) => t._id === draggedTask._id)
+        const updatedSourceTasks = sourceTasks.filter((t) => t._id !== draggedTask._id)
+        const insertAt = Math.min(dropIndex ?? targetTasks.length, targetTasks.length)
+        const newTargetTasks = [
+          ...targetTasks.slice(0, insertAt),
+          { ...movedTask, status: targetColumnId },
+          ...targetTasks.slice(insertAt),
+        ]
+
+        return {
+          ...prev,
+          [sourceColumnId]: { ...prev[sourceColumnId], tasks: updatedSourceTasks },
+          [targetColumnId]: { ...prev[targetColumnId], tasks: newTargetTasks },
+        }
       })
 
       // Only call API when status actually changes
@@ -281,7 +291,9 @@ const ProjectPage = () => {
 
   const allTasks = useMemo(() => {
     const tasks = []
-    Object.values(columns).forEach((col) => tasks.push(...col.tasks))
+    Object.values(columns).forEach((col) => {
+      tasks.push(...col.tasks)
+    })
     return tasks
   }, [columns])
 
@@ -319,7 +331,9 @@ const ProjectPage = () => {
   }, [allTasks, searchQuery, statusFilter, priorityFilter, assigneeFilter, dateFilter])
 
   const filteredColumns = useMemo(() => {
-    const cols = deepCopy(initialColumns)
+    const cols = Object.fromEntries(
+      Object.entries(initialColumns).map(([key, val]) => [key, { ...val, tasks: [] }])
+    )
     filteredTasks.forEach((task) => {
       const status = task.status || "todo"
       if (cols[status]) cols[status].tasks.push(task)
@@ -498,8 +512,12 @@ const ProjectPage = () => {
               )}
             </div>
             <div className="relative flex-shrink-0">
+              <label htmlFor={searchId} className="sr-only">
+                Search tasks
+              </label>
               <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
               <input
+                id={searchId}
                 type="text"
                 placeholder="Search tasks..."
                 value={searchQuery}

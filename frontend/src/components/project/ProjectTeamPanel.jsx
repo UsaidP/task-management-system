@@ -25,9 +25,9 @@ const ProjectTeamPanel = ({ members, tasks }) => {
   return (
     <div className="flex-1 max-w-sm border-r border-light-border dark:border-dark-border px-5">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
+        <h2 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
           Team Performance
-        </h3>
+        </h2>
       </div>
       <div className="flex gap-4">
         {memberStats.length === 0 ? (

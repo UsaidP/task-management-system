@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 import { motion, useReducedMotion } from "framer-motion"
-import { useCallback, useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 import {
   FiActivity,
   FiAlertCircle,
@@ -72,7 +72,7 @@ const HeaderSkeleton = () => (
   </div>
 )
 
-const StatCard = ({ icon, label, value, color, delay = 0 }) => (
+const StatCard = memo(({ icon, label, value, color, delay = 0 }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -93,9 +93,10 @@ const StatCard = ({ icon, label, value, color, delay = 0 }) => (
       <p className="font-medium text-light-text-secondary dark:text-dark-text-secondary">{label}</p>
     </div>
   </motion.div>
-)
+))
+StatCard.displayName = "StatCard"
 
-const RecentActivityItem = ({ task, onClick }) => (
+const RecentActivityItem = memo(({ task, onClick }) => (
   <button
     type="button"
     onClick={() => onClick(task)}
@@ -122,9 +123,10 @@ const RecentActivityItem = ({ task, onClick }) => (
         : dayjs(task.updatedAt).format("MMM D")}
     </div>
   </button>
-)
+))
+RecentActivityItem.displayName = "RecentActivityItem"
 
-const UpcomingTaskItem = ({ task, onClick }) => {
+const UpcomingTaskItem = memo(({ task, onClick }) => {
   const isUrgent = dayjs(task.dueDate).diff(dayjs(), "day") <= 1
   return (
     <button
@@ -155,7 +157,8 @@ const UpcomingTaskItem = ({ task, onClick }) => {
       </div>
     </button>
   )
-}
+})
+UpcomingTaskItem.displayName = "UpcomingTaskItem"
 
 const Overview = () => {
   const { user } = useAuth()

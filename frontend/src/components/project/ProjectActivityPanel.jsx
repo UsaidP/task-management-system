@@ -8,9 +8,9 @@ const ProjectActivityPanel = ({ tasks, members }) => {
   return (
     <div className="flex-1 max-w-[340px] border-r border-light-border dark:border-dark-border pr-5">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
+        <h2 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
           Recent Activity
-        </h3>
+        </h2>
         <span className="text-xs text-accent-primary dark:text-accent-primary-light cursor-pointer font-medium">
           View All
         </span>

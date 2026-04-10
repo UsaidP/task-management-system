@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 
 /**
  * Hook that prevents double-submission on mutation operations.
@@ -19,17 +19,25 @@ import { useCallback, useState } from "react"
 export const useMutation = (handler) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // ✅ Use ref to track submitting state without affecting hook deps
+  // This prevents handleSubmit from getting a new identity on every isSubmitting change
+  const isSubmittingRef = useRef(false)
+
   const handleSubmit = useCallback(
     async (...args) => {
-      if (isSubmitting) return
+      // Check via ref (doesn't affect closure)
+      if (isSubmittingRef.current) return
+
+      isSubmittingRef.current = true
       setIsSubmitting(true)
       try {
         return await handler(...args)
       } finally {
+        isSubmittingRef.current = false
         setIsSubmitting(false)
       }
     },
-    [handler, isSubmitting]
+    [handler] // ✅ Stable: only changes if handler definition changes
   )
 
   return { isSubmitting, handleSubmit }
