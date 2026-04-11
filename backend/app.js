@@ -51,12 +51,9 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   optionsSuccessStatus: 200,
   origin: (origin, callback) => {
-    // Handle null origin (from file://, data: URIs, sandboxed iframes)
+    // Handle null/missing origin (server-to-server requests, healthchecks, etc.)
     if (!origin) {
-      if (process.env.NODE_ENV === "development") {
-        return callback(null, true)
-      }
-      return callback(new Error("Null origin not allowed"))
+      return callback(null, true)
     }
 
     if (allowedOrigins.includes(origin)) {
