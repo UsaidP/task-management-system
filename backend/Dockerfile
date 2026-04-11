@@ -37,7 +37,7 @@ ENV PORT=4000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-    CMD node -e "const port = process.env.PORT || 4000; require('http').get('http://localhost:' + port + '/api/v1/healthcheck', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
+    CMD node -e "const port = process.env.PORT || 4000; require('http').get('http://localhost:' + port + '/api/v1/healthcheck/ping', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
 
 # Start the application with dumb-init
 ENTRYPOINT ["dumb-init", "--"]
