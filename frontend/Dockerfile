@@ -26,7 +26,8 @@ FROM nginx:alpine
 # Install dumb-init and gettext (for envsubst)
 RUN apk add --no-cache dumb-init gettext
 
-# Env vars for backend proxy (set at runtime via Railway)
+# Env vars (set at runtime via Railway)
+ENV PORT=80
 ENV BACKEND_HOST=localhost
 ENV BACKEND_PORT=4000
 
