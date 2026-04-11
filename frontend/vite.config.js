@@ -57,44 +57,27 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
+        // Minimal manual chunking — only for packages that DON'T depend on React.
+        // Packages that import react/react-dom must NOT be split into separate
+        // manual chunks because Rollup can't share React across chunks properly,
+        // which causes duplicate React instances and breaks startTransition/hooks.
+        // Error: "TypeError: undefined is not an object (evaluating 'M.S')"
         manualChunks: (id) => {
-          // Split large libraries into separate chunks
-          if (id.includes("node_modules")) {
-            // Router (lazy load)
-            if (id.includes("react-router")) {
-              return "router"
-            }
-            // UI libraries (lazy load only when needed)
-            if (id.includes("framer-motion")) {
-              return "animations"
-            }
-            if (id.includes("@mui")) {
-              return "mui-date"
-            }
-            if (id.includes("@headlessui") || id.includes("@heroicons")) {
-              return "ui-components"
-            }
-            // Drag and drop (lazy load)
-            if (id.includes("react-dnd")) {
-              return "drag-drop"
-            }
-            // Table library
-            if (id.includes("@tanstack")) {
-              return "table"
-            }
-            // Icons - split into smaller chunks
-            if (id.includes("react-icons")) {
-              return "icons"
-            }
-            // Utilities
-            if (id.includes("dayjs") || id.includes("ms")) {
-              return "utils"
-            }
-            // IMPORTANT: Don't split recharts/d3/victory - they have circular dependencies
-            // that cause TDZ errors when extracted to separate chunks.
-            // Let them stay bundled with the lazy-loaded pages that use them.
-            // ALSO: Don't split react/react-dom to prevent hook issues
+          if (!id.includes("node_modules")) return
+
+          const pkgMatch = id.match(/node_modules\/((?:@[^/]+\/)?[^/]+)/)
+          const pkg = pkgMatch ? pkgMatch[1] : ""
+
+          // Pure utilities — no React dependency, safe to separate
+          if (pkg === "dayjs" || pkg === "ms") {
+            return "utils"
           }
+          // Pure icon SVGs — no React runtime dependency
+          if (pkg.startsWith("react-icons/")) {
+            return "icons"
+          }
+          // All React-dependent libraries stay in the main chunk
+          // (framer-motion, @tanstack/react-table, react-router, recharts, etc.)
         },
         chunkFileNames: "assets/js/[name]-[hash].js",
         entryFileNames: "assets/js/[name]-[hash].js",
@@ -106,7 +89,7 @@ export default defineConfig({
         },
       },
     },
-    chunkSizeWarningLimit: 500,
+    chunkSizeWarningLimit: 800,
     // Use terser for better minification (saves ~2.6MB vs esbuild)
     minify: "terser",
     terserOptions: {
@@ -115,15 +98,9 @@ export default defineConfig({
         drop_debugger: true,
         pure_funcs: ["console.info", "console.warn"], // Remove these too
       },
-      // Reduce bundle size by removing unused code
-      mangle: {
-        properties: {
-          regex: /^_/, // Mangle properties starting with underscore
-        },
-      },
     },
     cssCodeSplit: true,
-    sourcemap: "dev",
+    sourcemap: true,
     reportCompressedSize: false,
   },
   // Prevent React from being split into different chunks
