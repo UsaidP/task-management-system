@@ -1,0 +1,11 @@
+{
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "healthcheckPath": "/api/v1/healthcheck",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}

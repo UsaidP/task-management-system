@@ -26,11 +26,19 @@ FROM nginx:alpine
 # Install dumb-init
 RUN apk add --no-cache dumb-init
 
-# Copy custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Env vars for backend proxy (set at runtime via Railway)
+ENV BACKEND_HOST=localhost
+ENV BACKEND_PORT=4000
+
+# Copy custom nginx config as template
+COPY nginx.conf /etc/nginx/conf.d/default.conf.template
 
 # Copy built files from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy entrypoint script for env var substitution
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Set proper permissions for nginx user (nginx group already exists in Alpine)
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
@@ -38,7 +46,8 @@ RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chown -R nginx:nginx /var/log/nginx && \
     chown -R nginx:nginx /etc/nginx/conf.d && \
     touch /var/run/nginx.pid && \
-    chown -R nginx:nginx /var/run/nginx.pid
+    chown -R nginx:nginx /var/run/nginx.pid && \
+    chown -R nginx:nginx /docker-entrypoint.sh
 
 # Switch to non-root user
 USER nginx
@@ -50,6 +59,6 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
 
-# Start nginx with dumb-init
-ENTRYPOINT ["dumb-init", "--"]
-CMD ["nginx", "-g", "daemon off;"]
+# Start with entrypoint script
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["dumb-init", "nginx", "-g", "daemon off;"]
