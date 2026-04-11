@@ -9,6 +9,7 @@ const PRECACHE_RESOURCES = [
   '/',
   '/index.html',
   '/favicon.png',
+  '/manifest.json',
 ]
 
 // Install event - precache essential resources

@@ -302,7 +302,7 @@ class ApiService {
 
   async updateProject(projectId, projectData) {
     return await this.customFetch(`/projects/update/${projectId}`, {
-      method: "PUT",
+      method: "POST",
       body: JSON.stringify(projectData),
     });
   }

@@ -28,15 +28,33 @@ const prefetchResources = () => {
 }
 
 /**
+ * Unregister any existing service workers from previous deployments
+ * This prevents cached asset references from breaking after new deploys
+ */
+const unregisterServiceWorkers = async () => {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations()
+      for (const registration of registrations) {
+        await registration.unregister()
+        console.log('[TaskFlow] Service worker unregistered successfully')
+      }
+    } catch (error) {
+      console.warn('[TaskFlow] Failed to unregister service worker:', error)
+    }
+  }
+}
+
+/**
  * Load optional features that aren't needed for initial render
  */
 const loadOptionalFeatures = async () => {
-  // Load service workers, premium features, integrations, etc.
+  // Unregister old service workers to prevent caching issues
+  await unregisterServiceWorkers()
+  
+  // Load premium features, integrations, etc.
   // that aren't needed for initial render
-  // Example: Register service worker for PWA
-  // if ('serviceWorker' in navigator) {
-  //   await navigator.serviceWorker.register('/sw.js');
-  // }
+  // Note: Service workers are currently disabled to avoid asset caching issues
 }
 
 /**

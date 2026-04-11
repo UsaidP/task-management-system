@@ -1,6 +1,5 @@
 import dayjs from "dayjs"
-import { motion } from "framer-motion"
-import { useState } from "react"
+import { memo, useState } from "react"
 import { FiAlertCircle, FiCheckCircle, FiClock, FiUser } from "react-icons/fi"
 
 const statusConfig = {
@@ -34,6 +33,7 @@ const Avatar = ({ src, alt, size = "w-5 h-5", textSize = "text-[8px]" }) => {
     return (
       <div
         className={`${size} rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center font-bold text-white ${textSize}`}
+        aria-hidden="true"
       >
         {alt}
       </div>
@@ -47,6 +47,8 @@ const Avatar = ({ src, alt, size = "w-5 h-5", textSize = "text-[8px]" }) => {
       className={`${size} rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary object-cover`}
       loading="lazy"
       decoding="async"
+      width="20"
+      height="20"
       onError={() => setHasError(true)}
     />
   )
@@ -79,7 +81,7 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
 }
 
-const TaskCard = ({ task, onClick, onDragStart, onDragEnd }) => {
+const TaskCard = memo(({ task, onClick, onDragStart, onDragEnd }) => {
   const completedSubtasks = task.completedSubtasks || 0
   const totalSubtasks = task.totalSubtasks || 0
   const progress = totalSubtasks > 0 ? Math.round((completedSubtasks / totalSubtasks) * 100) : 0
@@ -93,13 +95,10 @@ const TaskCard = ({ task, onClick, onDragStart, onDragEnd }) => {
   } = getAssigneeInfo(task.assignedTo)
 
   return (
-    <motion.div
+    <div
       key={task._id}
-      layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
       onClick={() => onClick(task)}
-      className="group bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl p-3.5 cursor-pointer hover:border-accent-primary/50 dark:hover:border-accent-primary-light/50 hover:shadow-md dark:hover:shadow-dark-md hover:-translate-y-0.5 transition-all duration-200"
+      className="group bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl p-3.5 cursor-pointer hover:border-accent-primary/50 dark:hover:border-accent-primary-light/50 hover:shadow-md dark:hover:shadow-dark-md hover:-translate-y-0.5 transition-all duration-200 animate-fade-in"
       style={
         isCompleted
           ? { borderLeft: "4px solid #7A9A6D" }
@@ -213,8 +212,10 @@ const TaskCard = ({ task, onClick, onDragStart, onDragEnd }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
-}
+})
+
+TaskCard.displayName = "TaskCard"
 
 export default TaskCard

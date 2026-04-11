@@ -95,9 +95,15 @@ export default defineConfig({
         drop_debugger: true,
         pure_funcs: ["console.info", "console.warn"], // Remove these too
       },
+      // Reduce bundle size by removing unused code
+      mangle: {
+        properties: {
+          regex: /^_/, // Mangle properties starting with underscore
+        },
+      },
     },
     cssCodeSplit: true,
-    sourcemap: false,
+    sourcemap: "dev",
     reportCompressedSize: false,
   },
   optimizeDeps: {

@@ -28,6 +28,7 @@ export default function AdminHeader() {
       <div className="flex items-center gap-2">
         <button
           type="button"
+          aria-label="View notifications"
           className="relative flex h-9 w-9 items-center justify-center rounded-xl text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-secondary"
         >
           <Bell size={18} />

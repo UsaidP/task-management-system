@@ -17,7 +17,7 @@ const TABS = [
 ]
 
 const ProjectAdminPage = () => {
-  const { id: projectId } = useParams()
+  const { projectId } = useParams()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("overview")
   const [project, setProject] = useState(null)
@@ -26,6 +26,7 @@ const ProjectAdminPage = () => {
   const [loading, setLoading] = useState(true)
 
   const fetchData = useCallback(async () => {
+    if (!projectId || projectId === "undefined") return
     setLoading(true)
     try {
       const [projectRes, statsRes, membersRes] = await Promise.all([

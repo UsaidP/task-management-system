@@ -21,7 +21,7 @@ export default {
           text: {
             primary: "#2C2420", // Espresso — headings, strong text
             secondary: "#4A3C30", // Earth — body text (improved contrast)
-            tertiary: "#5A4D42", // Warm gray — hints, placeholders (WCAG AA compliant)
+            tertiary: "#6B5D52", // Warm gray — hints, placeholders (WCAG AA compliant - improved from #5A4D42)
             inverse: "#FAF6F1", // Linen — text on dark bg
           },
           border: {
@@ -41,8 +41,8 @@ export default {
           },
           text: {
             primary: "#F5EDE3", // Warm white for headings
-            secondary: "#C9BAA8", // Warm gray for body
-            tertiary: "#8B8178", // Muted for hints
+            secondary: "#D4C8B8", // Warm gray for body (improved contrast from #C9BAA8)
+            tertiary: "#A89B8E", // Muted for hints (improved contrast from #8B8178)
             inverse: "#1A1614", // Dark text on light bg
           },
           border: {

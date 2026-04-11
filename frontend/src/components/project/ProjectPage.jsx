@@ -387,9 +387,9 @@ const ProjectPage = () => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-4 bg-light-bg-primary dark:bg-dark-bg-primary">
-        <h2 className="text-2xl font-bold text-accent-danger dark:text-accent-danger-light mb-2">
+        <h1 className="text-2xl font-bold text-accent-danger dark:text-accent-danger-dark mb-2">
           Error Loading Project
-        </h2>
+        </h1>
         <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-md">{error}</p>
       </div>
     )
@@ -624,9 +624,9 @@ const ProjectPage = () => {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-md p-6">
               <FiLock className="w-12 h-12 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-50" />
-              <h2 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+              <h3 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
                 Board Access Restricted
-              </h2>
+              </h3>
               <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                 You are not a member of this project. Contact your project admin for access.
               </p>

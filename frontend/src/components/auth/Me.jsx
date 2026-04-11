@@ -33,6 +33,7 @@ import {
 } from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
+import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import EditProfileModal from "./EditProfileModal.jsx"
 
@@ -108,7 +109,7 @@ const InfoItem = ({ icon: Icon, label, value, href }) => {
         <Icon className="w-4 h-4 text-accent-primary flex-shrink-0" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide font-medium">
+        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wide font-medium">
           {label}
         </p>
         {href ? (
@@ -146,7 +147,7 @@ const StatCard = ({ icon: Icon, label, value, color, subtext }) => (
           />
         </div>
         {subtext && (
-          <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary px-2 py-1 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover">
+          <span className="text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary px-2 py-1 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover">
             {subtext}
           </span>
         )}
@@ -154,7 +155,7 @@ const StatCard = ({ icon: Icon, label, value, color, subtext }) => (
       <p className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary mb-1">
         {value}
       </p>
-      <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary font-medium uppercase tracking-wide">
+      <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-medium uppercase tracking-wide">
         {label}
       </p>
     </div>
@@ -179,9 +180,9 @@ const SettingsItem = ({ icon: Icon, title, subtitle, color, onClick, danger }) =
       >
         {title}
       </p>
-      <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">{subtitle}</p>
+      <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">{subtitle}</p>
     </div>
-    <FiChevronRight className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary group-hover:text-accent-primary transition-colors" />
+    <FiChevronRight className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary group-hover:text-accent-primary transition-colors" />
   </motion.button>
 )
 
@@ -263,7 +264,10 @@ const Me = () => {
   const avatarInitial = displayName.trim().charAt(0).toUpperCase()
 
   // Cache-busting for avatar image to prevent stale browser cache
-  const avatarSrc = user?.avatar?.url ? `${user.avatar.url}?t=${Date.now()}` : null
+  // Also apply ImageKit resize params for LCP optimization
+  const avatarSrc = user?.avatar?.url
+    ? `${getOptimizedAvatarUrl(user.avatar.url, 150)}&t=${Date.now()}`
+    : null
 
   const editProfileHandler = () => setIsEditModalOpen(true)
 
@@ -473,8 +477,10 @@ const Me = () => {
                         className="w-full h-full object-cover"
                         src={avatarSrc}
                         key={avatarSrc}
-                        loading="lazy"
+                        fetchpriority="high"
                         decoding="async"
+                        width="128"
+                        height="128"
                       />
                     ) : (
                       <span className="w-full h-full flex items-center justify-center rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
@@ -514,11 +520,11 @@ const Me = () => {
                   <span className="font-medium">{displayEmail}</span>
                 </p>
                 <div className="flex items-center justify-center md:justify-start gap-4 mt-3">
-                  <span className="flex items-center gap-1.5 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <span className="flex items-center gap-1.5 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                     <FiCalendar className="w-4 h-4" />
                     Joined {joinDate}
                   </span>
-                  <span className="flex items-center gap-1.5 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <span className="flex items-center gap-1.5 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                     <FiStar className="w-4 h-4 text-accent-warning" />
                     Member since {new Date(user.createdAt).getFullYear()}
                   </span>
