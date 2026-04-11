@@ -8,8 +8,7 @@
   },
   "deploy": {
     "numReplicas": 1,
-    "healthcheckPath": "/",
-    "restartPolicyType": "ON_FAILURE",
-    "startCommand": "dumb-init nginx -g 'daemon off;'"
+    "healthcheckPath": "/health",
+    "restartPolicyType": "ON_FAILURE"
   }
 }
