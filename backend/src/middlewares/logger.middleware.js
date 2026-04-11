@@ -8,9 +8,9 @@ import { fileURLToPath } from "node:url"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Create logs directory if it doesn't exist
+// Create logs directory if it doesn't exist (skip in production - Railway captures stdout)
 const logDir = path.resolve(__dirname, "../../logs")
-if (!fs.existsSync(logDir)) {
+if (process.env.NODE_ENV !== "production" && !fs.existsSync(logDir)) {
 	fs.mkdirSync(logDir, { recursive: true })
 }
 
@@ -38,42 +38,47 @@ const logger = winston.createLogger({
 	),
 	level: process.env.LOG_LEVEL || "info",
 	transports: [
-		// Error logs - rotated daily, kept for 30 days
-		new winston.transports.DailyRotateFile({
-			datePattern: "YYYY-MM-DD",
-			filename: path.join(logDir, "error-%DATE%.log"),
-			format: winston.format.combine(
-				winston.format.timestamp(),
-				winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
-					const msg = message === "[object Object]" ? "" : message
-					const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : ""
-					return `${timestamp} [${level.toUpperCase()}] ${msg}${stack ? `\n${stack}` : ""} ${metaStr}`
-				}),
-			),
-			level: "error",
-			maxFiles: "30d",
-			maxSize: "20m",
-		}),
+		// Only write to files in development (production uses stdout via Railway logs)
+		...(process.env.NODE_ENV !== "production"
+			? [
+					// Error logs - rotated daily, kept for 30 days
+					new winston.transports.DailyRotateFile({
+						datePattern: "YYYY-MM-DD",
+						filename: path.join(logDir, "error-%DATE%.log"),
+						format: winston.format.combine(
+							winston.format.timestamp(),
+							winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
+								const msg = message === "[object Object]" ? "" : message
+								const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : ""
+								return `${timestamp} [${level.toUpperCase()}] ${msg}${stack ? `\n${stack}` : ""} ${metaStr}`
+							}),
+						),
+						level: "error",
+						maxFiles: "30d",
+						maxSize: "20m",
+					}),
 
-		// Combined logs - rotated daily, kept for 14 days
-		new winston.transports.DailyRotateFile({
-			datePattern: "YYYY-MM-DD",
-			filename: path.join(logDir, "combined-%DATE%.log"),
-			format: winston.format.combine(
-				winston.format.timestamp(),
-				winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
-					const msg = message === "[object Object]" ? "" : message
-					const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : ""
-					return `${timestamp} [${level.toUpperCase()}] ${msg}${stack ? `\n${stack}` : ""} ${metaStr}`
-				}),
-			),
-			maxFiles: "14d",
-			maxSize: "20m",
-		}),
+					// Combined logs - rotated daily, kept for 14 days
+					new winston.transports.DailyRotateFile({
+						datePattern: "YYYY-MM-DD",
+						filename: path.join(logDir, "combined-%DATE%.log"),
+						format: winston.format.combine(
+							winston.format.timestamp(),
+							winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
+								const msg = message === "[object Object]" ? "" : message
+								const metaStr = Object.keys(meta).length ? JSON.stringify(meta) : ""
+								return `${timestamp} [${level.toUpperCase()}] ${msg}${stack ? `\n${stack}` : ""} ${metaStr}`
+							}),
+						),
+						maxFiles: "14d",
+						maxSize: "20m",
+					}),
+				]
+			: []),
 	],
 })
 
-// Add console transport in development
+// Add console transport in development (colorized)
 if (process.env.NODE_ENV !== "production") {
 	logger.add(
 		new winston.transports.Console({
@@ -81,8 +86,23 @@ if (process.env.NODE_ENV !== "production") {
 				winston.format.colorize(),
 				winston.format.printf(({ timestamp, level, message, ...meta }) => {
 					const msg = message === "[object Object]" ? "" : String(message || "")
-					const metaPart = Object.keys(meta).length ? " " + JSON.stringify(meta) : ""
+					const metaPart = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : ""
 					return `${timestamp} ${level}: ${msg}${metaPart}`
+				}),
+			),
+		}),
+	)
+}
+
+// Add console transport in production (plain JSON for Railway log capture)
+if (process.env.NODE_ENV === "production") {
+	logger.add(
+		new winston.transports.Console({
+			format: winston.format.combine(
+				winston.format.timestamp(),
+				winston.format.printf(({ timestamp, level, message, ...meta }) => {
+					const msg = message === "[object Object]" ? "" : String(message || "")
+					return JSON.stringify({ level, message: msg, timestamp, ...meta })
 				}),
 			),
 		}),
@@ -100,7 +120,7 @@ const httpLogger = morgan(
 		skip: (req, _res) => {
 			// Skip health check endpoints in production
 			if (process.env.NODE_ENV === "production") {
-				return req.url === "/api/v1/healthcheck"
+				return req.url.startsWith("/api/v1/healthcheck")
 			}
 			return false
 		},
