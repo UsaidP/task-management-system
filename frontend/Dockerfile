@@ -23,8 +23,8 @@ RUN npm run build
 # Production stage - nginx
 FROM nginx:alpine
 
-# Install dumb-init
-RUN apk add --no-cache dumb-init
+# Install dumb-init and gettext (for envsubst)
+RUN apk add --no-cache dumb-init gettext
 
 # Env vars for backend proxy (set at runtime via Railway)
 ENV BACKEND_HOST=localhost
