@@ -5,20 +5,29 @@ const ThemeContext = createContext()
 
 // Helper to get the effective theme
 const getEffectiveTheme = (saved, prefersDark) => {
-  if (saved && saved !== "system") return saved
-  return prefersDark ? "dark" : "light"
+  if (!saved || saved === "system") return prefersDark ? "dark" : "light"
+  return saved
 }
 
 // 2. Create the provider component
 export const AppThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem("theme")
-    return saved || "light"
+    try {
+      const saved = localStorage.getItem("theme")
+      return saved || "light"
+    } catch {
+      return "light"
+    }
   })
 
-  const [prefersDark, setPrefersDark] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  )
+  const [prefersDark, setPrefersDark] = useState(() => {
+    try {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)")
+      return mq?.matches || false
+    } catch {
+      return false
+    }
+  })
 
   // 3. Listen for OS theme changes
   useEffect(() => {
