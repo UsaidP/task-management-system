@@ -7,21 +7,18 @@ RUN apk add --no-cache dumb-init
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Install production dependencies only
-RUN npm ci --only=production
-
-# Copy source code
-COPY . .
-
-# Create non-root user for security
+# Create non-root user for security (Do this early so we can use it for COPY)
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
-# Change ownership of the app files
-RUN chown -R nodejs:nodejs /app
+# Copy package files and change ownership in one step
+COPY --chown=nodejs:nodejs package*.json ./
+
+# Install production dependencies only and clear cache to save space
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copy source code and change ownership in one step
+COPY --chown=nodejs:nodejs . .
 
 # Switch to non-root user
 USER nodejs
@@ -29,10 +26,8 @@ USER nodejs
 # Expose port
 EXPOSE 4000
 
-# Set NODE_ENV to production
+# Set Environment Variables
 ENV NODE_ENV=production
-
-# Default PORT to 4000 in production
 ENV PORT=4000
 
 # Health check
