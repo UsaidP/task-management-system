@@ -33,6 +33,26 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    // Prevent 504 Outdated Optimize Dep errors with lazy-loaded chunks
+    warmup: {
+      clientFiles: [
+        "./src/pages/Overview.jsx",
+        "./src/pages/Home.jsx",
+        "./src/layouts/AppLayout.jsx",
+      ],
+    },
+  },
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "framer-motion",
+      "react-icons/fi",
+      "dayjs",
+    ],
+    // Pre-bundle these to avoid 504 on lazy-load
+    entries: ["./src/**/*.jsx", "./src/**/*.js"],
   },
   build: {
     rollupOptions: {
@@ -105,10 +125,6 @@ export default defineConfig({
     cssCodeSplit: true,
     sourcemap: "dev",
     reportCompressedSize: false,
-  },
-  optimizeDeps: {
-    include: ["react", "react-dom", "react-router-dom"],
-    exclude: [],
   },
   // Prevent React from being split into different chunks
   resolve: {
