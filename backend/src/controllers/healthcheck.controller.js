@@ -2,6 +2,18 @@ import mongoose from "mongoose"
 import { ApiResponse } from "../utils/api-response.js"
 import { asyncHandler } from "../utils/async-handler.js"
 
+/**
+ * Lightweight ping for load balancer healthchecks
+ * Returns 200 as long as the HTTP server is running
+ */
+const ping = asyncHandler(async (_req, res) => {
+	res.status(200).json({
+		status: "ok",
+		timestamp: new Date().toISOString(),
+		uptime: process.uptime(),
+	})
+})
+
 const healthCheck = asyncHandler(async (_req, res) => {
 	// Test actual database connection with ping
 	const dbPing = await mongoose.connection.db.admin().ping()
@@ -37,4 +49,4 @@ const healthCheck = asyncHandler(async (_req, res) => {
 		}),
 	)
 })
-export { healthCheck }
+export { healthCheck, ping }

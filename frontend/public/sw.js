@@ -95,6 +95,14 @@ self.addEventListener('fetch', (event) => {
               })
               return response
             })
+            .catch(() => {
+              // Return a fallback response for failed requests
+              // This prevents "Failed to convert value to Response" errors
+              return new Response('', {
+                headers: { 'Content-Type': 'text/plain' },
+                status: 404,
+              })
+            })
         })
     )
   }
