@@ -15,13 +15,16 @@ import {
   sendMail,
 } from "../utils/mail.js"
 
+// How long a user must wait before requesting another verification email (in ms)
+const RESEND_COOLDOWN_MS = 60 * 1000 // 1 minute
+
 // Cookie configuration helper
 const getCookieOptions = (maxAge) => ({
   httpOnly: true,
   maxAge,
   path: "/",
   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  secure: process.env.NODE_ENV === "production", // Must be true for sameSite: 'none'
+  secure: process.env.NODE_ENV === "production",
 })
 
 // --- User Registration ---
@@ -32,13 +35,120 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Username, fullname, email, and password are required")
   }
 
-  const existingUser = await User.findOne({ $or: [{ email }, { username }] })
-  if (existingUser) {
-    throw new ApiError(409, "User with this email or username already exists")
+  // --- Step 1: Check email and username conflicts SEPARATELY ---
+  // Using $or in one query can mask which field caused the conflict
+  // and creates ambiguity when two different users match on different fields.
+  const [emailConflict, usernameConflict] = await Promise.all([
+    User.findOne({ email }),
+    User.findOne({ username }),
+  ])
+
+  // --- Step 2: Verified conflicts are hard stops ---
+  if (emailConflict?.isEmailVerified) {
+    throw new ApiError(409, "An account with this email already exists")
+  }
+  if (usernameConflict?.isEmailVerified) {
+    throw new ApiError(409, "This username is already taken")
   }
 
+  // --- Step 3: Unverified username conflict ---
+  // The username is taken by a different unverified user.
+  // We don't let the new registrant steal it — they should pick another.
+  // Exception: if emailConflict and usernameConflict point to the SAME user,
+  // it's the same person re-registering — that case is handled below.
+  const isSameUnverifiedUser =
+    emailConflict &&
+    usernameConflict &&
+    emailConflict._id.equals(usernameConflict._id)
+
+  if (usernameConflict && !isSameUnverifiedUser) {
+    // Username taken by a different unverified user
+    throw new ApiError(409, "This username is already taken")
+  }
+
+  // --- Step 4: Unverified email conflict — resend flow ---
+  // At this point emailConflict (if any) is unverified, and either:
+  //   a) no username conflict, or
+  //   b) username conflict is the same user (same person re-registering)
+  if (emailConflict && !emailConflict.isEmailVerified) {
+    // Cooldown check — prevent email spam if a valid token was recently issued
+    const tokenIssuedAt = emailConflict.emailVerificationExpiry
+      ? emailConflict.emailVerificationExpiry - ms(process.env.EMAIL_VERIFICATION_EXPIRY || "24h")
+      : null
+    const cooldownActive =
+      tokenIssuedAt && Date.now() - tokenIssuedAt < RESEND_COOLDOWN_MS
+
+    if (cooldownActive) {
+      const secondsLeft = Math.ceil(
+        (RESEND_COOLDOWN_MS - (Date.now() - tokenIssuedAt)) / 1000,
+      )
+      throw new ApiError(
+        429,
+        `Please wait ${secondsLeft} seconds before requesting another verification email`,
+      )
+    }
+
+    // Update registration data in case the user is correcting it
+    emailConflict.fullname = fullname
+    emailConflict.password = password // pre-save hook will re-hash
+
+    // Only update username if it's actually changing AND not conflicting
+    if (username !== emailConflict.username) {
+      // We already checked usernameConflict above, so this is safe
+      emailConflict.username = username
+    }
+
+    // Only update avatar if a new one is explicitly provided
+    if (avatar) {
+      emailConflict.avatar = avatar
+    }
+
+    // Role updates on re-register are ignored for security —
+    // role should only be set on initial creation or by an admin
+    // (remove this line if your app allows role selection at register time)
+    // emailConflict.role = role
+
+    // Regenerate verification token
+    const { unHashedToken, hashToken, tokenExpiry } =
+      await emailConflict.generateTemporaryToken()
+    emailConflict.emailVerificationToken = hashToken
+    emailConflict.emailVerificationExpiry = tokenExpiry
+
+    await emailConflict.save({ validateBeforeSave: false })
+
+    const verificationUrl = `${process.env.CORS_ORIGIN}/verify/${unHashedToken}`
+    const mailgenContent = reEmailVerificationMailGenContent(
+      emailConflict.username,
+      verificationUrl,
+    )
+console.log(`\n 🔗 DEV VERIFICATION LINK: ${verificationUrl} \n`);
+    try {
+      await sendMail({
+        email: emailConflict.email,
+        mailgenContent,
+        subject: "Verify Your Email Address",
+      })
+    } catch (emailError) {
+      console.warn("⚠️ Verification email failed to send:", emailError.message)
+      // Don't fail the request — user can use resend endpoint
+    }
+
+    const updatedUser = await User.findById(emailConflict._id).select(
+      "-password -emailVerificationToken",
+    )
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        updatedUser,
+        "A verification email has been resent. Please check your inbox.",
+      ),
+    )
+  }
+
+  // --- Step 5: Fresh registration ---
   const user = await User.create({
-    avatar,
+    avatar: avatar || undefined,
     email,
     fullname,
     password,
@@ -50,15 +160,15 @@ export const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Something went wrong while registering the user")
   }
 
-  // Generate verification token
   const { unHashedToken, hashToken, tokenExpiry } = await user.generateTemporaryToken()
   user.emailVerificationToken = hashToken
   user.emailVerificationExpiry = tokenExpiry
   await user.save({ validateBeforeSave: false })
 
-  // Send verification email (non-blocking - don't fail registration if email fails)
   const verificationUrl = `${process.env.CORS_ORIGIN}/verify/${unHashedToken}`
   const mailgenContent = emailVerificationMailGenContent(user.username, verificationUrl)
+
+  console.log(`\n 🔗 DEV VERIFICATION LINK: ${verificationUrl} \n`);
 
   try {
     await sendMail({
@@ -68,14 +178,13 @@ export const registerUser = asyncHandler(async (req, res) => {
     })
   } catch (emailError) {
     console.warn("⚠️ Verification email failed to send:", emailError.message)
-    // Continue with registration even if email fails
-    // User can request verification email resend later
+    // Non-blocking — user can resend via /resend-verify endpoint
   }
 
-  // Omit sensitive data from the final response
-  const createdUser = await User.findById(user._id).select("-password -emailVerificationToken")
+  const createdUser = await User.findById(user._id).select(
+    "-password -emailVerificationToken",
+  )
 
-  // Audit log
   await logAudit({
     actor: createdUser,
     category: "auth",
@@ -87,21 +196,18 @@ export const registerUser = asyncHandler(async (req, res) => {
     userAgent: req.headers["user-agent"],
   })
 
-  return res
-    .status(201)
-    .json(
-      new ApiResponse(
-        201,
-        createdUser,
-        "User registered successfully. Please check your email to verify your account.",
-      ),
-    )
+  return res.status(201).json(
+    new ApiResponse(
+      201,
+      createdUser,
+      "Registered successfully. Please check your email to verify your account.",
+    ),
+  )
 })
 
 // --- Email Verification ---
 export const verifyUser = asyncHandler(async (req, res) => {
   const { token: unHashedToken } = req.params
-  console.log(unHashedToken)
 
   if (!unHashedToken) {
     throw new ApiError(400, "Verification token is missing")
@@ -111,12 +217,12 @@ export const verifyUser = asyncHandler(async (req, res) => {
   if (!pepper) {
     throw new ApiError(500, "HASH_PEPPER environment variable not configured")
   }
+
   const hashToken = crypto
     .createHash("sha256")
     .update(unHashedToken + pepper)
     .digest("hex")
 
-  console.log(hashToken)
   const user = await User.findOne({
     emailVerificationExpiry: { $gt: Date.now() },
     emailVerificationToken: hashToken,
@@ -124,6 +230,13 @@ export const verifyUser = asyncHandler(async (req, res) => {
 
   if (!user) {
     throw new ApiError(400, "Invalid or expired verification token")
+  }
+
+  // Guard: already verified (e.g. token used twice)
+  if (user.isEmailVerified) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Email is already verified. You can log in."))
   }
 
   user.isEmailVerified = true
@@ -139,17 +252,35 @@ export const verifyUser = asyncHandler(async (req, res) => {
 // --- Resend Verification Email ---
 export const resendVerifyEmail = asyncHandler(async (req, res) => {
   const { email } = req.body
+
   if (!email) {
     throw new ApiError(400, "Email is required")
   }
 
   const user = await User.findOne({ email })
+
   if (!user) {
-    throw new ApiError(404, "User not found with this email")
+    throw new ApiError(404, "No account found with this email")
   }
 
   if (user.isEmailVerified) {
     throw new ApiError(400, "This email is already verified")
+  }
+
+  // Cooldown check
+  const tokenIssuedAt = user.emailVerificationExpiry
+    ? user.emailVerificationExpiry - ms(process.env.EMAIL_VERIFICATION_EXPIRY || "24h")
+    : null
+  const cooldownActive = tokenIssuedAt && Date.now() - tokenIssuedAt < RESEND_COOLDOWN_MS
+
+  if (cooldownActive) {
+    const secondsLeft = Math.ceil(
+      (RESEND_COOLDOWN_MS - (Date.now() - tokenIssuedAt)) / 1000,
+    )
+    throw new ApiError(
+      429,
+      `Please wait ${secondsLeft} seconds before requesting another verification email`,
+    )
   }
 
   const { unHashedToken, hashToken, tokenExpiry } = await user.generateTemporaryToken()
@@ -166,7 +297,9 @@ export const resendVerifyEmail = asyncHandler(async (req, res) => {
     subject: "Resend Email Verification",
   })
 
-  return res.status(200).json(new ApiResponse(200, {}, "Verification email sent successfully"))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Verification email sent successfully"))
 })
 
 // --- User Login ---
@@ -196,11 +329,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   const accessToken = await user.generateAccessToken()
   const refreshToken = await user.generateRefreshToken()
-  console.log("Generated refreshToken:", refreshToken)
-  console.log("Generated accessToken:", accessToken)
 
-
-  // Store the refresh token in the database
   await RefreshToken.create({
     deviceInfo: req.headers["user-agent"] || "unknown",
     expiresAt: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_EXPIRY)),
@@ -210,7 +339,6 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser = await User.findById(user._id).select("-password")
 
-  // Audit log
   await logAudit({
     actor: user,
     category: "auth",
@@ -231,24 +359,18 @@ export const loginUser = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        {
-          accessToken, // Also send in response body for manual storage if needed
-          refreshToken,
-          user: loggedInUser,
-        },
+        { accessToken, refreshToken, user: loggedInUser },
         "User logged in successfully",
       ),
     )
 })
 
 // --- User Logout ---
-// --- User Logout ---
 export const logoutUser = asyncHandler(async (req, res) => {
   const { refreshToken } = req.cookies
 
   if (refreshToken) {
     try {
-      // Invalidate the refresh token in the database
       await RefreshToken.deleteOne({ token: refreshToken })
       await BlacklistedToken.create({
         expiresAt: new Date(Date.now() + ms(process.env.BLACKLISTED_TOKEN_EXPIRY)),
@@ -256,11 +378,10 @@ export const logoutUser = asyncHandler(async (req, res) => {
         user: req.user._id,
       })
     } catch (error) {
-      console.error("Error deleting refresh token from DB:", error)
+      console.error("Error invalidating refresh token:", error)
     }
   }
 
-  // We need the secure and sameSite flags to match exactly, but NO maxAge.
   const clearCookieOptions = {
     httpOnly: true,
     path: "/",
@@ -274,16 +395,15 @@ export const logoutUser = asyncHandler(async (req, res) => {
     .clearCookie("refreshToken", clearCookieOptions)
     .json(new ApiResponse(200, {}, "User logged out successfully"))
 })
+
 // --- Refresh Access Token ---
 export const refreshAccessToken = asyncHandler(async (req, res) => {
-  console.log("Refreshing token...")
   const incomingRefreshToken = req.cookies.refreshToken
 
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Refresh token is missing")
   }
 
-  // 1. Find and delete the old refresh token to prevent reuse
   const oldTokenDoc = await RefreshToken.findOneAndDelete({
     token: incomingRefreshToken,
   })
@@ -292,32 +412,25 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid or expired refresh token")
   }
 
-  // 2. Verify the user still exists
   const user = await User.findById(oldTokenDoc.user)
   if (!user) {
     throw new ApiError(401, "User not found for this token")
   }
 
-  console.log(`User found: ${user.username}`)
-
-  // 3. Issue new tokens
   const newAccessToken = await user.generateAccessToken()
   const newRefreshToken = await user.generateRefreshToken()
 
-  // 4. Store the new refresh token
   await RefreshToken.create({
     deviceInfo: req.headers["user-agent"] || "unknown",
-    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+    expiresAt: new Date(Date.now() + ms(process.env.REFRESH_TOKEN_EXPIRY)),
     ipAddress: req.ip || "unknown",
     token: newRefreshToken,
     user: user._id,
   })
 
-  // FIXED: Use consistent cookie options
-  const accessTokenOptions = getCookieOptions(7 * 24 * 60 * 60 * 1000) // 7 days
-  const refreshTokenOptions = getCookieOptions(30 * 24 * 60 * 60 * 1000) // 30 days
+  const accessTokenOptions = getCookieOptions(ms(process.env.ACCESS_TOKEN_EXPIRY))
+  const refreshTokenOptions = getCookieOptions(ms(process.env.REFRESH_TOKEN_EXPIRY))
 
-  // 5. Set new cookies and send response
   return res
     .status(200)
     .cookie("accessToken", newAccessToken, accessTokenOptions)
@@ -325,10 +438,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        {
-          accessToken: newAccessToken,
-          refreshToken: newRefreshToken,
-        },
+        { accessToken: newAccessToken, refreshToken: newRefreshToken },
         "Tokens refreshed successfully",
       ),
     )
@@ -337,27 +447,26 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
 // --- Password Management ---
 export const forgetPassword = asyncHandler(async (req, res) => {
   const { email } = req.body
+
   if (!email) {
     throw new ApiError(400, "Email is required")
   }
 
   const user = await User.findOne({ email })
 
-  // Always return the same generic message regardless of whether the email exists
-  // to prevent email enumeration attacks
-  const genericResponse = res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        {},
-        "If an account with that email exists, you will receive password reset instructions.",
-      ),
-    )
+  // Always return the same generic message to prevent email enumeration
+  const genericResponse = res.status(200).json(
+    new ApiResponse(
+      200,
+      {},
+      "If an account with that email exists, you will receive password reset instructions.",
+    ),
+  )
 
-  if (!user) {
-    return genericResponse
-  }
+  if (!user) return genericResponse
+
+  // Only allow password reset for verified accounts
+  if (!user.isEmailVerified) return genericResponse
 
   const { unHashedToken, hashToken, tokenExpiry } = await user.generateTemporaryToken()
   user.forgotPasswordToken = hashToken
@@ -410,9 +519,15 @@ export const resetPassword = asyncHandler(async (req, res) => {
   user.password = password
   user.forgotPasswordToken = undefined
   user.forgotPasswordExpiry = undefined
+
+  // Invalidate all existing refresh tokens on password reset (security)
+  await RefreshToken.deleteMany({ user: user._id })
+
   await user.save()
 
-  return res.status(200).json(new ApiResponse(200, {}, "Password has been reset successfully."))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password has been reset successfully."))
 })
 
 // --- User Profile ---
@@ -421,20 +536,20 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(404, "User not found")
   }
-  return res.status(200).json(new ApiResponse(200, user, "User profile fetched successfully"))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User profile fetched successfully"))
 })
 
 export const getActiveSession = asyncHandler(async (req, res) => {
   const activeSessions = await RefreshToken.find({ user: req.user._id })
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        { count: activeSessions.length, sessions: activeSessions },
-        "Active sessions fetched successfully",
-      ),
-    )
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      { count: activeSessions.length, sessions: activeSessions },
+      "Active sessions fetched successfully",
+    ),
+  )
 })
 
 export const updateProfile = asyncHandler(async (req, res) => {
@@ -474,7 +589,9 @@ export const updateProfile = asyncHandler(async (req, res) => {
 
   const updatedUser = await User.findById(userId).select("-password")
 
-  return res.status(200).json(new ApiResponse(200, updatedUser, "Profile updated successfully"))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Profile updated successfully"))
 })
 
 export const deleteUserAccount = asyncHandler(async (req, res) => {
@@ -485,7 +602,6 @@ export const deleteUserAccount = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found")
   }
 
-  // Audit log before deletion
   await logAudit({
     actor: user,
     category: "user",
@@ -496,9 +612,14 @@ export const deleteUserAccount = asyncHandler(async (req, res) => {
     userAgent: req.headers["user-agent"],
   })
 
+  // Clean up sessions on account deletion
+  await RefreshToken.deleteMany({ user: userId })
+
   await User.findByIdAndDelete(userId)
 
-  return res.status(200).json(new ApiResponse(200, null, "Account deleted successfully"))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Account deleted successfully"))
 })
 
 export const updateUserAvatar = asyncHandler(async (req, res) => {
@@ -523,7 +644,9 @@ export const updateUserAvatar = asyncHandler(async (req, res) => {
       throw new ApiError(404, "User not found")
     }
 
-    return res.status(200).json(new ApiResponse(200, user, "Avatar updated successfully"))
+    return res
+      .status(200)
+      .json(new ApiResponse(200, user, "Avatar updated successfully"))
   } catch (error) {
     console.error("ImageKit Upload Error:", error)
     throw new ApiError(500, "Failed to upload avatar due to a server error.")
@@ -548,22 +671,24 @@ export const updateUserRole = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found")
   }
 
+  const oldRole = user.role // capture before mutation
   user.role = role
   await user.save({ validateBeforeSave: false })
 
   const updatedUser = await User.findById(userId).select("-password")
 
-  // Audit log
   await logAudit({
     actor: req.user,
     category: "admin",
     description: `Admin ${req.user.username} changed ${user.username} role to ${role}`,
     event: "admin.role.change",
     ipAddress: req.ip,
-    metadata: { newRole: role, oldRole: user.role },
+    metadata: { newRole: role, oldRole }, // fix: was using mutated user.role
     targetId: user._id,
     userAgent: req.headers["user-agent"],
   })
 
-  return res.status(200).json(new ApiResponse(200, updatedUser, "User role updated successfully"))
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "User role updated successfully"))
 })
