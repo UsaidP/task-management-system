@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useId, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi"
 import { Link, useLocation, useNavigate } from "react-router-dom"
@@ -10,6 +10,7 @@ export const Login = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const successMessage = location.state?.message
+  const id = useId()
 
   const [formData, setFormData] = useState({
     identifier: "",
@@ -59,7 +60,10 @@ export const Login = () => {
 
       // Show toast for email verification required (status 403)
       if (err.status === 403 && err.message?.includes("verify your email")) {
-        toast.error("Please verify your email before logging in. Check your inbox for the verification link.", { id: toastId })
+        toast.error(
+          "Please verify your email before logging in. Check your inbox for the verification link.",
+          { id: toastId }
+        )
         return
       }
 
@@ -100,7 +104,7 @@ export const Login = () => {
           >
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 gap-3">
               <div>
-                <label htmlFor="identifier" className="input-label">
+                <label htmlFor={`${id}-identifier`} className="input-label">
                   Email or Username
                 </label>
                 <div className="relative">
@@ -108,7 +112,7 @@ export const Login = () => {
                   <input
                     type="text"
                     name="identifier"
-                    id="identifier"
+                    id={`${id}-identifier`}
                     placeholder="Enter your email or username"
                     onChange={handleChange}
                     value={formData.identifier}
@@ -120,7 +124,7 @@ export const Login = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="input-label">
+                <label htmlFor={`${id}-password`} className="input-label">
                   Password
                 </label>
                 <div className="relative">
@@ -128,7 +132,7 @@ export const Login = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    id="password"
+                    id={`${id}-password`}
                     placeholder="Enter your password"
                     onChange={handleChange}
                     value={formData.password}

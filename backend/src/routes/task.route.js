@@ -1,5 +1,4 @@
 import { Router } from "express"
-import { upload } from "../middlewares/multer.middleware.js"
 
 import {
 	createTask,
@@ -13,15 +12,9 @@ import {
 	uploadAttachment,
 } from "../controllers/task.controller.js"
 import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
+import { upload } from "../middlewares/multer.middleware.js"
 import { ProjectRoleEnum, UserRoleEnum } from "../utils/constants.js"
 
-// ── Multer setup ────────────────────────────────────────────────────────────
-const uploadDir = path.join(process.cwd(), "uploads")
-if (!fs.existsSync(uploadDir)) {
-	fs.mkdirSync(uploadDir, { recursive: true })
-}
-
-const upload = multer({ dest: uploadDir })
 const router = Router()
 
 const { OWNER, PROJECT_ADMIN, MEMBER } = ProjectRoleEnum

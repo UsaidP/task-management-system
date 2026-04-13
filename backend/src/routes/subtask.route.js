@@ -25,6 +25,10 @@ router
 	.get(requireProjectAccess("task", ...allRoles), getSubTasksForTask)
 
 // Individual subtask operations - resolves projectId from the subtask's task
-router.route("/subtask/:subtaskId").get(requireProjectAccess("subtask", ...allRoles), getSubTaskById).put(requireProjectAccess("subtask", ...allRoles), updateSubTask).delete(requireProjectAccess("subtask", ...allRoles), deleteSubTask)
+router
+	.route("/subtask/:subtaskId")
+	.get(requireProjectAccess("subtask", ...allRoles), getSubTaskById)
+	.put(requireProjectAccess("subtask", ...allRoles), updateSubTask)
+	.delete(requireProjectAccess("subtask", ...allRoles), deleteSubTask)
 
 export default router

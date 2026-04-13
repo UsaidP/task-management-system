@@ -673,6 +673,9 @@ const ProjectPage = () => {
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
                   onAddTask={() => setIsCreateModalOpen(true)}
+                  onHeaderClick={(colId) => {
+                    setStatusFilter((prev) => (prev === colId ? "" : colId))
+                  }}
                 />
               ))}
             </div>
@@ -713,7 +716,16 @@ const ProjectPage = () => {
         <div className="flex gap-4 p-5 overflow-x-auto">
           <ProjectActivityPanel tasks={allTasks} members={members} />
           <ProjectTeamPanel members={members} tasks={allTasks} />
-          <ProjectTimelinePanel project={project} columns={columns} />
+          <ProjectTimelinePanel
+            project={project}
+            columns={columns}
+            timelineZoom={timelineZoom}
+            onZoomChange={setTimelineZoom}
+            onStatusClick={(status) => {
+              setStatusFilter((prev) => (prev === status ? "" : status))
+              setActiveTab("board")
+            }}
+          />
         </div>
       </footer>
 

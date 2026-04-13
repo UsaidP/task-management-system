@@ -1,8 +1,45 @@
 import { motion } from "framer-motion"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useDrag, useDrop } from "react-dnd"
 import { FiCalendar, FiMessageSquare, FiPaperclip } from "react-icons/fi"
 import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
+
+const AvatarWithFallback = ({ user }) => {
+  const [hasError, setHasError] = useState(false)
+  const avatarUrl = getOptimizedAvatarUrl(user.avatar?.url, 50)
+  const fallback = `https://i.pravatar.cc/150?u=${user._id}`
+  const initials = (user.fullname || user.email || "U")
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
+
+  if (!avatarUrl || hasError) {
+    return (
+      <div
+        className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-[8px] font-bold text-white"
+        title={user.fullname}
+      >
+        {initials}
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={avatarUrl || fallback}
+      alt={user.fullname}
+      className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-tertiary object-cover"
+      title={user.fullname}
+      loading="lazy"
+      decoding="async"
+      width="24"
+      height="24"
+      onError={() => setHasError(true)}
+    />
+  )
+}
 
 const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
   const ref = useRef(null)
@@ -148,16 +185,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
                 const assigneeId = typeof assignee === "object" ? assignee._id : assignee
                 const user = membersMap?.[assigneeId]
                 if (!user) return null
-                return (
-                  <div
-                    key={user._id}
-                    className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-tertiary bg-cover bg-center"
-                    style={{
-                      backgroundImage: `url(${getOptimizedAvatarUrl(user.avatar?.url, 50) || `https://i.pravatar.cc/150?u=${user._id}`})`,
-                    }}
-                    title={user.fullname}
-                  />
-                )
+                return <AvatarWithFallback key={user._id} user={user} />
               })}
           </div>
         </div>

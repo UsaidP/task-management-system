@@ -1,22 +1,22 @@
 export default {
-  testEnvironment: "node",
-  transform: {},
-  setupFilesAfterEnv: ["<rootDir>/tests/jest.setup.js"],
-  testMatch: ["**/tests/**/*.test.js"],
-  testTimeout: 30000,
-  maxWorkers: 1,
-  collectCoverageFrom: [
-    "src/**/*.js",
-    "!src/utils/imagekit.js",
-    "!src/config/**",
-    "!**/node_modules/**",
-  ],
-  coverageThreshold: {
-    global: {
-      lines: 70,
-      functions: 70,
-      branches: 60,
-      statements: 70,
-    },
-  },
+	collectCoverageFrom: [
+		"src/**/*.js",
+		"!src/utils/imagekit.js",
+		"!src/config/**",
+		"!**/node_modules/**",
+	],
+	coverageThreshold: {
+		global: {
+			branches: 60,
+			functions: 70,
+			lines: 70,
+			statements: 70,
+		},
+	},
+	maxWorkers: 1,
+	setupFilesAfterEnv: ["<rootDir>/tests/jest.setup.js"],
+	testEnvironment: "node",
+	testMatch: ["**/tests/**/*.test.js"],
+	testTimeout: 30000,
+	transform: {},
 }

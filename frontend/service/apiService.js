@@ -176,13 +176,6 @@ class ApiService {
         if (response.status === 404) {
           throw new NotFoundError(errorData.message);
         }
-        
-        console.log("API Error response:", {
-          status: response.status,
-          errorData,
-          endpoint,
-        });
-        
         throw new ApiError(
           errorData.message || "An API error occurred",
           response.status

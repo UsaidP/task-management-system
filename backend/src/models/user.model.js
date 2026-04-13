@@ -85,6 +85,9 @@ const userSchema = new Schema(
 			required: true,
 			type: String,
 		},
+		passwordChangedAt: {
+			type: Date,
+		},
 		phone: {
 			default: "",
 			type: String,

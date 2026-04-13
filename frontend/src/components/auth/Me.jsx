@@ -255,9 +255,9 @@ const Me = () => {
   const displayRole = user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Member"
   const joinDate = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-    })
+        year: "numeric",
+        month: "long",
+      })
     : "N/A"
 
   // Capitalize first letter of display name for avatar fallback
@@ -266,7 +266,7 @@ const Me = () => {
   // Cache-busting for avatar image to prevent stale browser cache
   // Also apply ImageKit resize params for LCP optimization
   const avatarSrc = user?.avatar?.url
-    ? `${getOptimizedAvatarUrl(user.avatar.url, 150)}&t=${Date.now()}`
+    ? `${getOptimizedAvatarUrl(user.avatar.url, 150)}${user.avatar.url.includes("?") ? "&" : "?"}t=${Date.now()}`
     : null
 
   const [avatarFailed, setAvatarFailed] = useState(false)
@@ -316,7 +316,7 @@ const Me = () => {
     }
   }
 
-  const handleProfileUpdate = async (updatedUser) => {
+  const handleProfileUpdate = (updatedUser) => {
     setIsEditModalOpen(false)
     if (updatedUser) {
       updateUser(updatedUser)
@@ -478,7 +478,9 @@ const Me = () => {
                   className="block w-32 h-32 cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow"
                 >
                   <div className="w-full h-full rounded-2xl flex items-center justify-center text-5xl font-bold text-light-text-primary dark:text-dark-text-primary relative overflow-hidden bg-transparent">
-                    {user?.avatar?.url && user.avatar.url !== "https://placehold.co/400" && !avatarFailed ? (
+                    {user?.avatar?.url &&
+                    user.avatar.url !== "https://placehold.co/400" &&
+                    !avatarFailed ? (
                       <img
                         alt="Avatar"
                         className="w-full h-full object-cover"
@@ -734,9 +736,9 @@ const Me = () => {
                   </div>
                 </div>
                 <div className="divide-y divide-light-border dark:divide-dark-border">
-                  {settingsMenu.map((item, index) => (
+                  {settingsMenu.map((item) => (
                     <SettingsItem
-                      key={index}
+                      key={item.title}
                       icon={item.icon}
                       title={item.title}
                       subtitle={item.subtitle}

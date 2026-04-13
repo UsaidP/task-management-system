@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import toast from "react-hot-toast"
 import {
   FiBriefcase,
@@ -14,6 +14,7 @@ import {
 import apiService from "../../../service/apiService.js"
 
 const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
+  const formId = useId()
   const [formData, setFormData] = useState({
     fullname: "",
     phone: "",
@@ -168,7 +169,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
                 <label
-                  htmlFor="fullname"
+                  htmlFor={`${formId}-fullname`}
                   className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
                 >
                   Full Name *
@@ -178,7 +179,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                   <input
                     type="text"
                     name="fullname"
-                    id="fullname"
+                    id={`${formId}-fullname`}
                     value={formData.fullname}
                     onChange={handleChange}
                     className="w-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-12 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary"
@@ -189,14 +190,14 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
 
               <div>
                 <label
-                  htmlFor="bio"
+                  htmlFor={`${formId}-bio`}
                   className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
                 >
                   Bio
                 </label>
                 <textarea
                   name="bio"
-                  id="bio"
+                  id={`${formId}-bio`}
                   aria-label="Bio"
                   value={formData.bio}
                   onChange={handleChange}
@@ -210,7 +211,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                 {inputFields.slice(1).map((field) => (
                   <div key={field.name}>
                     <label
-                      htmlFor={field.name}
+                      htmlFor={`${formId}-${field.name}`}
                       className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
                     >
                       {field.label}
@@ -220,7 +221,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                       <input
                         type={field.type}
                         name={field.name}
-                        id={field.name}
+                        id={`${formId}-${field.name}`}
                         value={formData[field.name]}
                         onChange={handleChange}
                         className="w-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-12 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary"

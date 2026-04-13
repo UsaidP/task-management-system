@@ -5,47 +5,81 @@
 import mongoose from "mongoose"
 import request from "supertest"
 import { MongoMemoryServer } from "mongodb-memory-server"
-import app from "../src/app.js"
-import { User } from "../src/models/user.model.js"
-import RefreshToken from "../src/models/refreshToken.model.js"
-import BlacklistedToken from "../src/models/blacklistedToken.js"
-import Project from "../src/models/project.model.js"
-import ProjectMember from "../src/models/projectmember.model.js"
-import Task from "../src/models/task.model.js"
-import Sprint from "../src/models/sprint.model.js"
-import SubTask from "../src/models/subtask.model.js"
-import ProjectNote from "../src/models/projectnote.model.js"
+
+import app from "../backend/src/app.js"
+import { User } from "../backend/src/models/user.model.js"
+import Project from "../backend/src/models/project.model.js"
+import ProjectMember from "../backend/src/models/projectmember.model.js"
+import Task from "../backend/src/models/task.model.js"
+import Sprint from "../backend/src/models/sprint.model.js"
 
 let mongoServer
+let _userCounter = 0
+
+const DEFAULT_TEST_PASSWORD = "TestP@ssw0rd!2026"
 
 // ── DB lifecycle ─────────────────────────────────────────────────────────────
 
+/**
+ * Start an in-memory MongoDB instance and connect Mongoose.
+ */
 export const connectTestDB = async () => {
-  mongoServer = await MongoMemoryServer.create()
-  await mongoose.connect(mongoServer.getUri())
+  try {
+    mongoServer = await MongoMemoryServer.create()
+    await mongoose.connect(mongoServer.getUri())
+  } catch (error) {
+    throw new Error(`Failed to connect to test database: ${error.message}`)
+  }
 }
 
+/**
+ * Disconnect Mongoose and stop the in-memory MongoDB server.
+ */
 export const disconnectTestDB = async () => {
-  await mongoose.disconnect()
-  await mongoServer.stop()
+  try {
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.disconnect()
+    }
+  } finally {
+    if (mongoServer) {
+      await mongoServer.stop()
+      mongoServer = null
+    }
+  }
 }
 
+/**
+ * Delete all documents from every collection in the test database.
+ */
 export const clearDB = async () => {
   const collections = mongoose.connection.collections
-  await Promise.all(Object.values(collections).map((c) => c.deleteMany({})))
+  if (!collections) return
+
+  const deletePromises = Object.values(collections).map((collection) =>
+    collection.deleteMany({})
+  )
+  await Promise.all(deletePromises)
+}
+
+/**
+ * Reset the user counter to avoid ID collisions across test suites.
+ */
+export const resetUserCounter = () => {
+  _userCounter = 0
 }
 
 // ── User Factory ──────────────────────────────────────────────────────────────
 
-let _userCounter = 0
-
+/**
+ * Generate user data without persisting to the database.
+ */
 export const makeUser = (overrides = {}) => {
   _userCounter++
   return {
     fullname: `Test User ${_userCounter}`,
     username: `testuser${_userCounter}`,
     email: `testuser${_userCounter}@example.com`,
-    password: "Password123!",
+    password: DEFAULT_TEST_PASSWORD,
     ...overrides,
   }
 }
@@ -67,57 +101,84 @@ export const createAdminUser = async (overrides = {}) => {
 }
 
 /**
- * Register + login via HTTP, return agent with cookies set.
+ * Create a verified user and return an authenticated Supertest agent.
  */
-export const loginAs = async (credentials) => {
+export const createAuthenticatedAgent = async (overrides = {}) => {
+  const { user, password } = await createVerifiedUser(overrides)
   const agent = request.agent(app)
-  await agent.post("/api/v1/auth/login").send(credentials)
-  return agent
+
+  const loginRes = await agent
+    .post("/api/v1/auth/login")
+    .send({ identifier: user.email, password })
+
+  if (loginRes.status >= 400) {
+    throw new Error(
+      `Login failed for user ${user.email}: ${JSON.stringify(loginRes.body)}`
+    )
+  }
+
+  return { agent, user, password }
 }
 
 /**
- * Full register → verify → login cycle via API.
- * Returns { agent, user, cookies }
+ * Log in an existing user and return an authenticated Supertest agent.
  */
-export const registerAndLogin = async (overrides = {}) => {
-  const data = makeUser(overrides)
-
-  // Create verified user directly (avoids email dependency in tests)
-  const user = await User.create({ ...data, isEmailVerified: true })
-
-  const res = await request(app)
-    .post("/api/v1/auth/login")
-    .send({ identifier: data.email, password: data.password })
-
-  const cookies = res.headers["set-cookie"]
+export const loginAs = async (identifier, password) => {
   const agent = request.agent(app)
 
-  // Attach cookies manually to agent
-  const cookieHeader = cookies?.join("; ") ?? ""
+  const loginRes = await agent
+    .post("/api/v1/auth/login")
+    .send({ identifier, password })
 
-  return { agent, user, cookies, cookieHeader, password: data.password }
+  if (loginRes.status >= 400) {
+    throw new Error(
+      `Login failed for identifier "${identifier}": ${JSON.stringify(loginRes.body)}`
+    )
+  }
+
+  return agent
 }
 
 // ── Project Factory ───────────────────────────────────────────────────────────
 
+let _projectCounter = 0
+
+/**
+ * Create a project owned by the given user.
+ */
 export const createProject = async (createdBy, overrides = {}) => {
+  _projectCounter++
   return Project.create({
-    name: `Project ${Date.now()}`,
+    name: `Test Project ${_projectCounter}`,
     description: "Test project",
     createdBy: createdBy._id,
     ...overrides,
   })
 }
 
+/**
+ * Add a member to a project.
+ */
 export const addMember = async (projectId, userId, role = "member") => {
-  return ProjectMember.create({ project: projectId, user: userId, role, isActive: true })
+  return ProjectMember.create({
+    project: projectId,
+    user: userId,
+    role,
+    isActive: true,
+  })
 }
 
 // ── Task Factory ──────────────────────────────────────────────────────────────
 
+let _taskCounter = 0
+
+/**
+ * Create a task within a project.
+ */
 export const createTask = async (projectId, createdBy, overrides = {}) => {
+  _taskCounter++
   return Task.create({
-    title: `Task ${Date.now()}`,
+    title: `Test Task ${_taskCounter}`,
     project: projectId,
     createdBy: createdBy._id,
     status: "todo",
@@ -128,9 +189,15 @@ export const createTask = async (projectId, createdBy, overrides = {}) => {
 
 // ── Sprint Factory ────────────────────────────────────────────────────────────
 
+let _sprintCounter = 0
+
+/**
+ * Create a sprint within a project.
+ */
 export const createSprint = async (projectId, createdBy, overrides = {}) => {
+  _sprintCounter++
   return Sprint.create({
-    name: `Sprint ${Date.now()}`,
+    name: `Test Sprint ${_sprintCounter}`,
     project: projectId,
     createdBy: createdBy._id,
     status: "backlog",
@@ -140,12 +207,19 @@ export const createSprint = async (projectId, createdBy, overrides = {}) => {
 
 // ── Cookie helper ─────────────────────────────────────────────────────────────
 
+/**
+ * Extract set-cookie headers from a response into a key-value map.
+ */
 export const extractCookies = (res) => {
-  const raw = res.headers["set-cookie"] ?? []
+  const raw = res?.headers?.["set-cookie"]
+  if (!raw || raw.length === 0) return {}
+
   return raw.reduce((acc, cookie) => {
     const [pair] = cookie.split(";")
     const [name, value] = pair.split("=")
-    acc[name.trim()] = value?.trim()
+    if (name) {
+      acc[name.trim()] = value?.trim() ?? ""
+    }
     return acc
   }, {})
 }

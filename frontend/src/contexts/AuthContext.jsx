@@ -64,7 +64,6 @@ export const AuthProvider = ({ children }) => {
   const login = useCallback(async (identifier, password) => {
     try {
       const response = await apiService.login(identifier, password)
-      console.log("Login API response:", response)
       if (response?.success && response?.data) {
         const userData = response.data.user
         setUser(userData)
@@ -74,12 +73,6 @@ export const AuthProvider = ({ children }) => {
       }
       return response
     } catch (error) {
-      console.log("Login error in AuthContext:", {
-        message: error.message,
-        status: error.status,
-        name: error.name,
-        fullError: error,
-      })
       setUser(null)
       throw error
     }

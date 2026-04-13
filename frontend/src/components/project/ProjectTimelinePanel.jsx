@@ -1,6 +1,12 @@
 import dayjs from "dayjs"
 
-const ProjectTimelinePanel = ({ project, columns }) => {
+const ProjectTimelinePanel = ({
+  project,
+  columns,
+  timelineZoom = "month",
+  onZoomChange,
+  onStatusClick,
+}) => {
   const today = dayjs()
   const statusPhases = [
     { status: "todo", label: "To Do", color: "#8B8178" },
@@ -8,6 +14,8 @@ const ProjectTimelinePanel = ({ project, columns }) => {
     { status: "under-review", label: "Under Review", color: "#D4A548" },
     { status: "completed", label: "Completed", color: "#7A9A6D" },
   ]
+
+  const zoomOptions = ["week", "month", "quarter"]
 
   const statusData = statusPhases.map((phase) => ({
     ...phase,
@@ -52,24 +60,20 @@ const ProjectTimelinePanel = ({ project, columns }) => {
           Project Timeline
         </h2>
         <div className="flex gap-1">
-          <button
-            type="button"
-            className="px-2.5 py-1 text-xs rounded border border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors"
-          >
-            Week
-          </button>
-          <button
-            type="button"
-            className="px-2.5 py-1 text-xs rounded bg-light-border dark:bg-dark-border text-light-text-primary dark:text-dark-text-primary border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
-          >
-            Month
-          </button>
-          <button
-            type="button"
-            className="px-2.5 py-1 text-xs rounded border border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors"
-          >
-            Quarter
-          </button>
+          {zoomOptions.map((zoom) => (
+            <button
+              key={zoom}
+              type="button"
+              onClick={() => onZoomChange?.(zoom)}
+              className={`px-2.5 py-1 text-xs rounded border transition-colors ${
+                timelineZoom === zoom
+                  ? "bg-light-border dark:bg-dark-border text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border"
+                  : "border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary"
+              }`}
+            >
+              {zoom.charAt(0).toUpperCase() + zoom.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
       <div className="flex gap-0 mb-1.5 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -107,7 +111,12 @@ const ProjectTimelinePanel = ({ project, columns }) => {
             <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary w-20 flex-shrink-0">
               {phase.label}
             </span>
-            <div className="flex-1 h-2.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded relative overflow-visible">
+            <button
+              type="button"
+              onClick={() => onStatusClick?.(phase.status)}
+              className="flex-1 h-2.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded relative overflow-visible cursor-pointer hover:opacity-90 transition-opacity"
+              title={`Filter by ${phase.label}`}
+            >
               {phase.width > 0 && (
                 <div
                   className="absolute h-2.5 rounded flex items-center justify-end pr-1 transition-all"
@@ -122,7 +131,7 @@ const ProjectTimelinePanel = ({ project, columns }) => {
                   </span>
                 </div>
               )}
-            </div>
+            </button>
           </div>
         ))}
       </div>

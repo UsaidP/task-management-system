@@ -22,6 +22,7 @@ const BoardColumn = memo(
     onDragStart,
     onDragEnd,
     onAddTask,
+    onHeaderClick,
   }) => {
     const [dropIndex, setDropIndex] = useState(-1)
     // Ref to coordinate card-level and column-level dragOver handlers.
@@ -88,18 +89,38 @@ const BoardColumn = memo(
         onDrop={handleColumnDrop}
       >
         {/* Column Header */}
-        <div className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border">
-          <span
-            className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-            style={{ backgroundColor: column.color }}
-          />
-          <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1 truncate">
-            {column.title}
-          </span>
-          <span className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border/50 dark:bg-dark-border/50 text-xs font-bold text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0">
-            {tasks.length}
-          </span>
-        </div>
+        {onHeaderClick ? (
+          <button
+            type="button"
+            onClick={() => onHeaderClick(columnId)}
+            className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border w-full cursor-pointer hover:opacity-90 transition-opacity"
+            title={`Filter by ${column.title}`}
+          >
+            <span
+              className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+              style={{ backgroundColor: column.color }}
+            />
+            <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1 truncate">
+              {column.title}
+            </span>
+            <span className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border/50 dark:bg-dark-border/50 text-xs font-bold text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0">
+              {tasks.length}
+            </span>
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border">
+            <span
+              className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+              style={{ backgroundColor: column.color }}
+            />
+            <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1 truncate">
+              {column.title}
+            </span>
+            <span className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border/50 dark:bg-dark-border/50 text-xs font-bold text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0">
+              {tasks.length}
+            </span>
+          </div>
+        )}
 
         {/* Column Content */}
         <div className="flex flex-col gap-2 min-h-[100px]">

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useId, useState } from "react"
 import toast from "react-hot-toast"
 import { FiArrowRight, FiCheck, FiEye, FiEyeOff, FiLock, FiMail, FiUser } from "react-icons/fi"
 import { Link, useNavigate } from "react-router-dom"
@@ -78,6 +78,7 @@ export const Signup = () => {
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const { signup } = useAuth()
+  const id = useId()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -143,7 +144,7 @@ export const Signup = () => {
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label htmlFor="fullname" className="input-label mb-2 block text-xs sm:text-sm">
+                  <label htmlFor={`${id}-fullname`} className="input-label mb-2 block text-xs sm:text-sm">
                     Full Name
                   </label>
                   <div className="relative">
@@ -151,7 +152,7 @@ export const Signup = () => {
                     <input
                       type="text"
                       name="fullname"
-                      id="fullname"
+                      id={`${id}-fullname`}
                       placeholder="Full Name"
                       onChange={handleChange}
                       value={formData.fullname}
@@ -162,7 +163,7 @@ export const Signup = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="username" className="input-label mb-2 block text-xs sm:text-sm">
+                  <label htmlFor={`${id}-username`} className="input-label mb-2 block text-xs sm:text-sm">
                     Username
                   </label>
                   <div className="relative">
@@ -170,7 +171,7 @@ export const Signup = () => {
                     <input
                       type="text"
                       name="username"
-                      id="username"
+                      id={`${id}-username`}
                       placeholder="username"
                       onChange={handleChange}
                       value={formData.username}
@@ -182,7 +183,7 @@ export const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="email" className="input-label mb-2 block text-xs sm:text-sm">
+                <label htmlFor={`${id}-email`} className="input-label mb-2 block text-xs sm:text-sm">
                   Email Address
                 </label>
                 <div className="relative">
@@ -190,7 +191,7 @@ export const Signup = () => {
                   <input
                     type="email"
                     name="email"
-                    id="email"
+                    id={`${id}-email`}
                     placeholder="name@example.com"
                     onChange={handleChange}
                     value={formData.email}
@@ -201,7 +202,7 @@ export const Signup = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="input-label mb-2 block text-xs sm:text-sm">
+                <label htmlFor={`${id}-password`} className="input-label mb-2 block text-xs sm:text-sm">
                   Password
                 </label>
                 <div className="relative">
@@ -209,7 +210,7 @@ export const Signup = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    id="password"
+                    id={`${id}-password`}
                     placeholder="Create a strong password"
                     onChange={handleChange}
                     value={formData.password}

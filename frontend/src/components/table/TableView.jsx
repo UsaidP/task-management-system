@@ -105,27 +105,58 @@ const PriorityBadge = ({ priority }) => {
   )
 }
 
+const AssigneeAvatar = ({ assignee }) => {
+  const [hasError, setHasError] = useState(false)
+  const u = typeof assignee === "object" ? assignee : null
+  const avatarUrl = getOptimizedAvatarUrl(u?.avatar?.url, 50)
+  const fallback = `https://i.pravatar.cc/150?u=${u?._id || assignee}`
+  const name = u?.fullname || u?.username || "assignee"
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
+
+  if (!avatarUrl || hasError) {
+    return (
+      <div
+        className="w-6 h-6 rounded-full border-2 border-white dark:border-dark-bg-secondary bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-[8px] font-bold text-white -ml-1 first:ml-0"
+        title={name}
+      >
+        {initials}
+      </div>
+    )
+  }
+
+  return (
+    <img
+      key={u?._id || assignee}
+      src={avatarUrl || fallback}
+      alt={name}
+      className="w-6 h-6 rounded-full border-2 border-white dark:border-dark-bg-secondary object-cover -ml-1 first:ml-0"
+      title={name}
+      loading="lazy"
+      decoding="async"
+      width="24"
+      height="24"
+      onError={() => setHasError(true)}
+    />
+  )
+}
+
 const AssigneeAvatars = ({ assignees }) => {
   if (!assignees || assignees.length === 0) {
     return <span className="text-sm text-light-text-tertiary">Unassigned</span>
   }
   return (
     <div className="flex items-center">
-      {assignees.slice(0, 3).map((assignee) => {
-        const u = typeof assignee === "object" ? assignee : null
-        const fallback = `https://i.pravatar.cc/150?u=${assignee._id || assignee}`
-        const name = u?.fullname || u?.username || "assignee"
-        return (
-          <img
-            key={u?._id || assignee}
-            src={getOptimizedAvatarUrl(u?.avatar?.url, 50) || fallback}
-            alt={name}
-            className="w-6 h-6 rounded-full border-2 border-white dark:border-dark-bg-secondary -ml-1 first:ml-0"
-            loading="lazy"
-            decoding="async"
-          />
-        )
-      })}
+      {assignees.slice(0, 3).map((assignee) => (
+        <AssigneeAvatar
+          key={typeof assignee === "object" ? assignee._id : assignee}
+          assignee={assignee}
+        />
+      ))}
       {assignees.length > 3 && (
         <span className="ml-2 text-xs text-light-text-tertiary">+{assignees.length - 3}</span>
       )}

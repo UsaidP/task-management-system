@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useId, useState } from "react"
 import toast from "react-hot-toast"
 import { FiArrowLeft, FiMail } from "react-icons/fi"
 import { Link } from "react-router-dom"
@@ -11,6 +11,7 @@ export const Forget = () => {
   const [loading, setLoading] = useState(false)
   const { forgetPassword } = useAuth()
   const [responseMsg, setResponseMsg] = useState("")
+  const id = useId()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -69,7 +70,7 @@ export const Forget = () => {
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="input-label mb-2 block">
+              <label htmlFor={`${id}-email`} className="input-label mb-2 block">
                 Email Address
               </label>
               <div className="relative">
@@ -77,7 +78,7 @@ export const Forget = () => {
                 <input
                   type="email"
                   name="email"
-                  id="email"
+                  id={`${id}-email`}
                   placeholder="Ex. name@example.com"
                   onChange={(e) => setEmail(e.target.value)}
                   required

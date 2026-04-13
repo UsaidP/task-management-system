@@ -60,6 +60,7 @@ const Avatar = ({
         className={`${sizeClasses[size]} rounded-xl overflow-hidden bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-light-text-inverse font-bold shadow-md relative`}
       >
         {hasImage ? (
+          // biome-ignore lint/a11y/noNoninteractiveElementInteractions: onError is a standard image event handler, not an interactive event
           <img
             src={src}
             alt={alt}

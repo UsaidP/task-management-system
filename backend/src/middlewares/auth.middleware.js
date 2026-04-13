@@ -98,6 +98,15 @@ export const protect = asyncHandler(async (req, _res, next) => {
 	const user = await User.findById(decoded._id).select("-password")
 	if (!user) throw new ApiError(401, "Account not found. Please log in again.")
 
+	// Reject tokens issued before the last password change
+	if (user.passwordChangedAt) {
+		const tokenIssuedAt = decoded.iat * 1000 // iat is in seconds
+		const passwordChangedAt = new Date(user.passwordChangedAt).getTime()
+		if (tokenIssuedAt < passwordChangedAt) {
+			throw new ApiError(401, "Token has been invalidated. Please login again.")
+		}
+	}
+
 	req.user = user
 	next()
 })

@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useRef } from "react"
+import { useEffect, useId, useRef } from "react"
 import { FiX } from "react-icons/fi"
 
 const Modal = ({ isOpen, onClose, title, children }) => {
   const modalRef = useRef(null)
   const previousFocusRef = useRef(null)
+  const modalTitleId = useId()
 
   useEffect(() => {
     if (isOpen) {
@@ -63,7 +64,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
           onClick={onClose}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="modal-title"
+          aria-labelledby={modalTitleId}
         >
           <motion.div
             ref={modalRef}
@@ -77,7 +78,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
           >
             <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border">
               <h2
-                id="modal-title"
+                id={modalTitleId}
                 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary"
               >
                 {title}

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useId, useState } from "react"
 import toast from "react-hot-toast"
 import { FiCheckCircle, FiEye, FiEyeOff, FiLock } from "react-icons/fi"
 import { Link, useParams } from "react-router-dom"
@@ -13,6 +13,7 @@ export const Reset = () => {
   const [showPassword, setShowPassword] = useState(false)
   const { resetPassword } = useAuth()
   const { token } = useParams()
+  const id = useId()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -96,7 +97,7 @@ export const Reset = () => {
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="password" className="input-label mb-2 block">
+              <label htmlFor={`${id}-password`} className="input-label mb-2 block">
                 New Password
               </label>
               <div className="relative">
@@ -104,7 +105,7 @@ export const Reset = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  id="password"
+                  id={`${id}-password`}
                   placeholder="••••••••"
                   autoComplete="new-password"
                   onChange={(e) => setPassword(e.target.value)}

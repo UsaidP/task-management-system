@@ -66,6 +66,22 @@ build/
 .idea/
 .qwen/
 
+# Test files
+*.test.js
+*.test.jsx
+*.test.ts
+*.test.tsx
+*.spec.js
+*.spec.jsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+tests/
+e2e/
+/test-results/
+/playwright-report/
+/blob-report/
+
 # OS generated files
 Thumbs.db
 *.swp

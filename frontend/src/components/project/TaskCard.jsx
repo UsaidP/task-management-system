@@ -1,6 +1,7 @@
 import dayjs from "dayjs"
 import { memo, useState } from "react"
-import { FiAlertCircle, FiCheckCircle, FiClock, FiUser } from "react-icons/fi"
+import { FiAlertCircle, FiCheckCircle, FiClock } from "react-icons/fi"
+import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
 
 const statusConfig = {
   todo: { color: "#8B8178", bg: "bg-[#8B817822]", text: "text-[#8B8178]", label: "To Do" },
@@ -54,26 +55,40 @@ const Avatar = ({ src, alt, size = "w-5 h-5", textSize = "text-[8px]" }) => {
   )
 }
 
-const getAssigneeInfo = (assignedTo) => {
+const getAssigneesInfo = (assignedTo) => {
   if (!assignedTo || assignedTo.length === 0) {
-    return { avatar: null, initials: "?", count: 0 }
+    return { avatars: [], count: 0 }
   }
-  const assignee = assignedTo[0]
-  let avatar = null
-  const name =
-    typeof assignee === "object" ? assignee.user?.fullname || assignee.fullname || "User" : "User"
-  if (typeof assignee === "object" && assignee.user?.avatar?.url) {
-    avatar = assignee.user.avatar.url
-  } else if (typeof assignee === "object" && assignee.avatar?.url) {
-    avatar = assignee.avatar.url
-  }
-  const initials = name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2)
-  return { avatar, initials, count: assignedTo.length }
+
+  const avatars = assignedTo.map((assignee) => {
+    let avatar = null
+    let name = "User"
+    let id = null
+
+    if (typeof assignee === "object") {
+      // Handle { user: {...} } structure
+      if (assignee.user?.avatar?.url) {
+        avatar = assignee.user.avatar.url
+      }
+      // Handle direct { avatar: {...} } structure
+      else if (assignee.avatar?.url) {
+        avatar = assignee.avatar.url
+      }
+      name = assignee.user?.fullname || assignee.fullname || "User"
+      id = assignee.user?._id || assignee._id
+    }
+
+    const initials = name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+
+    return { avatar, initials, name, id }
+  })
+
+  return { avatars, count: assignedTo.length }
 }
 
 const formatDate = (date) => {
@@ -88,11 +103,7 @@ const TaskCard = memo(({ task, onClick, onDragStart, onDragEnd }) => {
   const isCompleted = task.status === "completed"
   const currentStatus = statusConfig[task.status] || statusConfig.todo
   const currentPriority = priorityConfig[task.priority?.toLowerCase()] || priorityConfig.medium
-  const {
-    avatar: assigneeAvatar,
-    initials: assigneeInitials,
-    count: assigneeCount,
-  } = getAssigneeInfo(task.assignedTo)
+  const { avatars: assigneeAvatars, count: assigneeCount } = getAssigneesInfo(task.assignedTo)
 
   return (
     <div
@@ -192,21 +203,39 @@ const TaskCard = memo(({ task, onClick, onDragStart, onDragEnd }) => {
           <div className="flex items-center">
             {assigneeCount > 0 ? (
               <div className="flex -space-x-1.5">
-                <Avatar
-                  src={assigneeAvatar}
-                  alt={assigneeInitials}
-                  size="w-5 h-5"
-                  textSize="text-[8px]"
-                />
-                {assigneeCount > 1 && (
+                {assigneeAvatars.slice(0, 3).map((a, idx) => {
+                  const optimizedUrl = getOptimizedAvatarUrl(a.avatar, 50)
+                  return (
+                    <Avatar
+                      key={a.id || idx}
+                      src={optimizedUrl}
+                      alt={a.initials}
+                      size="w-5 h-5"
+                      textSize="text-[8px]"
+                    />
+                  )
+                })}
+                {assigneeCount > 3 && (
                   <div className="w-5 h-5 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center text-[7px] font-bold text-light-text-tertiary dark:text-dark-text-tertiary">
-                    +{assigneeCount - 1}
+                    +{assigneeCount - 3}
                   </div>
                 )}
               </div>
             ) : (
               <div className="w-5 h-5 rounded-full border-2 border-dashed border-light-border dark:border-dark-border flex items-center justify-center">
-                <FiUser className="w-3 h-3 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                <svg
+                  className="w-3 h-3 text-light-text-tertiary dark:text-dark-text-tertiary"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
               </div>
             )}
           </div>
