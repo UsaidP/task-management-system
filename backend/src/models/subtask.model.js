@@ -2,6 +2,9 @@ import mongoose, { Schema } from "mongoose"
 
 const subTaskSchema = new Schema(
 	{
+		completedAt: {
+			type: Date,
+		},
 		createdBy: {
 			ref: "User",
 			required: true,

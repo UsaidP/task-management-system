@@ -60,23 +60,40 @@ const getSubTaskById = asyncHandler(async (req, res) => {
 
 const updateSubTask = asyncHandler(async (req, res) => {
 	const { subtaskId } = req.params
-	const { title, isCompleted } = req.body
+	const updateData = {}
 
 	if (!mongoose.isValidObjectId(subtaskId)) {
 		throw new ApiError(400, "Invalid Subtask ID")
 	}
 
-	const subtask = await SubTask.findById(subtaskId)
+	// Only update fields that are provided in the request body
+	if (req.body.title !== undefined) {
+		updateData.title = req.body.title
+	}
+	if (req.body.isCompleted !== undefined) {
+		updateData.isCompleted = req.body.isCompleted
+
+		// If marking as completed, set completedAt timestamp
+		if (req.body.isCompleted === true) {
+			updateData.completedAt = new Date()
+		} else if (req.body.isCompleted === false) {
+			updateData.completedAt = null
+		}
+	}
+
+	// Check if there's anything to update
+	if (Object.keys(updateData).length === 0) {
+		throw new ApiError(400, "No valid fields to update")
+	}
+
+	const subtask = await SubTask.findByIdAndUpdate(subtaskId, updateData, {
+		new: true,
+		runValidators: true,
+	})
+
 	if (!subtask) {
 		throw new ApiError(404, "Subtask not found")
 	}
-
-	// Add logic here to ensure only authorized users can update
-
-	subtask.title = title ?? subtask.title
-	subtask.isCompleted = isCompleted ?? subtask.isCompleted
-
-	await subtask.save({ validateBeforeSave: false })
 
 	return res.status(200).json(new ApiResponse(200, subtask, "Subtask updated successfully"))
 })
