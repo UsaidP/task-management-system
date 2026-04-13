@@ -64,6 +64,7 @@ export const AuthProvider = ({ children }) => {
   const login = useCallback(async (identifier, password) => {
     try {
       const response = await apiService.login(identifier, password)
+      console.log("Login API response:", response)
       if (response?.success && response?.data) {
         const userData = response.data.user
         setUser(userData)
@@ -73,6 +74,12 @@ export const AuthProvider = ({ children }) => {
       }
       return response
     } catch (error) {
+      console.log("Login error in AuthContext:", {
+        message: error.message,
+        status: error.status,
+        name: error.name,
+        fullError: error,
+      })
       setUser(null)
       throw error
     }
@@ -130,6 +137,16 @@ export const AuthProvider = ({ children }) => {
     }
   }, [])
 
+  const resetPassword = useCallback(async (password, token) => {
+    try {
+      const response = await apiService.resetPassword(password, token)
+      return response
+    } catch (error) {
+      console.error("❌ Reset password error:", error)
+      throw error
+    }
+  }, [])
+
   // Derived state, computed directly from the `user` object.
   const isAuthenticated = !!user
   const userID = user?._id || null
@@ -147,6 +164,7 @@ export const AuthProvider = ({ children }) => {
       resendVerifyEmail,
       updateUser,
       forgetPassword,
+      resetPassword,
     }
   }, [
     user,
@@ -159,6 +177,7 @@ export const AuthProvider = ({ children }) => {
     resendVerifyEmail,
     updateUser,
     forgetPassword,
+    resetPassword,
   ])
 
   // Provide the context value to the rest of the app.

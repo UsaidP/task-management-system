@@ -48,21 +48,23 @@ export const Login = () => {
     setLoading(true)
     setErrors({})
 
+    const toastId = toast.loading("Signing in...")
     try {
       const response = await login(formData.identifier, formData.password)
+      toast.success(response?.message || "Signed in successfully!", { id: toastId })
       // Navigate to dashboard on successful login
       navigate("/overview", { replace: true, state: { message: response?.message } })
     } catch (err) {
       const errorMessage = err.message || "Invalid credentials. Please try again."
 
-      if (err.message?.includes("verify your email")) {
-        navigate("/confirm", { state: { email: formData.identifier } })
+      // Show toast for email verification required (status 403)
+      if (err.status === 403 && err.message?.includes("verify your email")) {
+        toast.error("Please verify your email before logging in. Check your inbox for the verification link.", { id: toastId })
         return
       }
 
-      toast.error(errorMessage)
-      // You could set specific field errors here if the API provided them
-      // For now, we'll just show a general error
+      // Show toast error for wrong password, user not found, and other errors
+      toast.error(errorMessage, { id: toastId })
     } finally {
       setLoading(false)
     }

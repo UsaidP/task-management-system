@@ -104,9 +104,7 @@ app.use(cacheControl(60))
 // ============================================
 // Route Definitions
 // ============================================
-if (process.env.NODE_ENV !== "test") {
-  app.use("/api/v1/healthcheck", healthCheck)
-}
+app.use("/api/v1/healthcheck", healthCheck)
 
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/projects", projectRouter)

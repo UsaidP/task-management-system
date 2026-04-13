@@ -262,11 +262,12 @@ const ProjectPage = () => {
 
       // Only call API when status actually changes
       if (!isSameColumn) {
+        const toastId = toast.loading("Updating task status...")
         try {
           await apiService.updateTask(projectId, draggedTask._id, { status: targetColumnId })
-          toast.success("Task moved successfully!")
+          toast.success("Task status updated successfully!", { id: toastId })
         } catch (_err) {
-          toast.error("Failed to move task")
+          toast.error("Failed to update task status", { id: toastId })
           fetchProjectData()
         }
       }
@@ -418,6 +419,7 @@ const ProjectPage = () => {
                   type="button"
                   onClick={async () => {
                     const newStatus = project?.isActive === false
+                    const toastId = toast.loading("Updating project...")
                     try {
                       await apiService.updateProject(projectId, {
                         name: project.name,
@@ -425,9 +427,11 @@ const ProjectPage = () => {
                         isActive: newStatus,
                       })
                       setProject((prev) => ({ ...prev, isActive: newStatus }))
-                      toast.success(`Project ${newStatus ? "activated" : "deactivated"}`)
+                      toast.success(`Project ${newStatus ? "activated" : "deactivated"}`, {
+                        id: toastId,
+                      })
                     } catch {
-                      toast.error("Failed to update project status")
+                      toast.error("Failed to update project status", { id: toastId })
                     }
                   }}
                   className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors cursor-pointer ${project?.isActive !== false ? "bg-accent-warning/10 text-accent-warning hover:bg-accent-warning/20" : "bg-accent-success/10 text-accent-success hover:bg-accent-success/20"}`}

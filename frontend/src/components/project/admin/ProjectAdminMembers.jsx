@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
+import { useId, useState } from "react"
 import toast from "react-hot-toast"
-import { FiUserPlus, FiX } from "react-icons/fi"
+import { FiCheck, FiChevronDown, FiUserPlus, FiX } from "react-icons/fi"
 import apiService from "../../../../service/apiService.js"
 import Modal from "../../Modal.jsx"
 
@@ -32,11 +33,20 @@ const roleColors = {
   member: "bg-accent-info/10 text-accent-info",
 }
 
+const roleOptions = [
+  { id: "member", name: "Member" },
+  { id: "project_admin", name: "Project Admin" },
+  { id: "owner", name: "Owner" },
+]
+
 const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
+  const uid = useId()
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [email, setEmail] = useState("")
   const [role, setRole] = useState("member")
   const [searchQuery, setSearchQuery] = useState("")
+
+  const selectedRoleObject = roleOptions.find((r) => r.id === role)
 
   const handleAddMember = async (e) => {
     e.preventDefault()
@@ -117,7 +127,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
         <button
           type="button"
           onClick={() => setIsAddModalOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-primary-dark"
+          className="btn-primary flex items-center gap-2"
         >
           <FiUserPlus className="h-4 w-4" />
           Add Member
@@ -131,7 +141,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
           placeholder="Search members..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-lg border border-light-border bg-light-bg-secondary px-4 py-2.5 text-sm text-light-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 dark:border-dark-border dark:bg-dark-bg-tertiary dark:text-dark-text-primary dark:placeholder:text-dark-text-tertiary"
+          className="input-field"
         />
       </div>
 
@@ -171,16 +181,55 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <select
+                  <Listbox
                     value={member.role}
-                    onChange={(e) => handleChangeRole(userId, e.target.value)}
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${roleColors[member.role] || roleColors.member}`}
-                    aria-label={`Change role for ${userName}`}
+                    onChange={(newRole) => handleChangeRole(userId, newRole)}
                   >
-                    <option value="owner">Owner</option>
-                    <option value="project_admin">Project Admin</option>
-                    <option value="member">Member</option>
-                  </select>
+                    <div className="relative">
+                      <ListboxButton
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${roleColors[member.role] || roleColors.member} flex items-center gap-1`}
+                        aria-label={`Change role for ${userName}`}
+                      >
+                        <span className="capitalize">{member.role.replace("_", " ")}</span>
+                        <FiChevronDown className="w-3 h-3" />
+                      </ListboxButton>
+                      <ListboxOptions className="absolute z-[100] mt-1 right-0 w-40 bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
+                        {roleOptions.map((option) => (
+                          <ListboxOption
+                            key={option.id}
+                            value={option.id}
+                            className={({ active }) =>
+                              `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors ${
+                                active
+                                  ? "bg-light-bg-hover dark:bg-dark-bg-hover"
+                                  : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                              }`
+                            }
+                          >
+                            {({ selected }) => (
+                              <>
+                                <span
+                                  className={`block truncate text-light-text-primary dark:text-dark-text-primary capitalize ${
+                                    selected ? "font-semibold" : "font-normal"
+                                  }`}
+                                >
+                                  {option.name}
+                                </span>
+                                {selected ? (
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <FiCheck
+                                      className="w-4 h-4 text-accent-primary"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                ) : null}
+                              </>
+                            )}
+                          </ListboxOption>
+                        ))}
+                      </ListboxOptions>
+                    </div>
+                  </Listbox>
                   {member.role !== "owner" && (
                     <button
                       type="button"
@@ -203,50 +252,86 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
         <form onSubmit={handleAddMember} className="mt-4 space-y-4">
           <div>
             <label
-              htmlFor="member-email"
+              htmlFor={`${uid}-member-email`}
               className="mb-1 block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
             >
               Email
             </label>
             <input
-              id="member-email"
+              id={`${uid}-member-email`}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="member@example.com"
-              className="w-full rounded-lg border border-light-border bg-light-bg-primary px-4 py-2.5 text-sm text-light-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 dark:border-dark-border dark:bg-dark-bg-tertiary dark:text-dark-text-primary dark:placeholder:text-dark-text-tertiary"
+              className="input-field"
               required
             />
           </div>
           <div>
             <label
-              htmlFor="member-role"
+              htmlFor={`${uid}-member-role`}
               className="mb-1 block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
             >
               Role
             </label>
-            <select
-              id="member-role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg border border-light-border bg-light-bg-primary px-4 py-2.5 text-sm text-light-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 dark:border-dark-border dark:bg-dark-bg-tertiary dark:text-dark-text-primary"
-            >
-              <option value="member">Member</option>
-              <option value="project_admin">Project Admin</option>
-            </select>
+            <Listbox value={role} onChange={setRole}>
+              <div className="relative">
+                <ListboxButton
+                  id={`${uid}-member-role`}
+                  className="input-field w-full text-left flex items-center justify-between"
+                >
+                  <span className="truncate">{selectedRoleObject?.name}</span>
+                  <FiChevronDown className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
+                </ListboxButton>
+                <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
+                  {roleOptions
+                    .filter((r) => r.id !== "owner")
+                    .map((option) => (
+                      <ListboxOption
+                        key={option.id}
+                        value={option.id}
+                        className={({ active }) =>
+                          `cursor-pointer select-none relative py-2 pl-10 pr-4 transition-colors ${
+                            active
+                              ? "bg-light-bg-hover dark:bg-dark-bg-hover"
+                              : "hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                          }`
+                        }
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span
+                              className={`block truncate text-light-text-primary dark:text-dark-text-primary ${
+                                selected ? "font-semibold" : "font-normal"
+                              }`}
+                            >
+                              {option.name}
+                            </span>
+                            {selected ? (
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <FiCheck
+                                  className="w-5 h-5 text-accent-primary"
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </ListboxOption>
+                    ))}
+                </ListboxOptions>
+              </div>
+            </Listbox>
           </div>
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setIsAddModalOpen(false)}
-              className="rounded-lg border border-light-border px-4 py-2 text-sm font-medium text-light-text-secondary transition-colors hover:bg-light-bg-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover"
+              className="btn-secondary"
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-primary-dark"
-            >
+            <button type="submit" className="btn-primary">
               Add Member
             </button>
           </div>

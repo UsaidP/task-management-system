@@ -32,15 +32,15 @@ const prefetchResources = () => {
  * This prevents cached asset references from breaking after new deploys
  */
 const unregisterServiceWorkers = async () => {
-  if ('serviceWorker' in navigator) {
+  if ("serviceWorker" in navigator) {
     try {
       const registrations = await navigator.serviceWorker.getRegistrations()
       for (const registration of registrations) {
         await registration.unregister()
-        console.log('[TaskFlow] Service worker unregistered successfully')
+        console.log("[TaskFlow] Service worker unregistered successfully")
       }
     } catch (error) {
-      console.warn('[TaskFlow] Failed to unregister service worker:', error)
+      console.warn("[TaskFlow] Failed to unregister service worker:", error)
     }
   }
 }
@@ -51,7 +51,7 @@ const unregisterServiceWorkers = async () => {
 const loadOptionalFeatures = async () => {
   // Unregister old service workers to prevent caching issues
   await unregisterServiceWorkers()
-  
+
   // Load premium features, integrations, etc.
   // that aren't needed for initial render
   // Note: Service workers are currently disabled to avoid asset caching issues

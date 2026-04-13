@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import toast from "react-hot-toast"
 import {
   FiAlertTriangle,
   FiCheckCircle,
@@ -9,6 +10,8 @@ import {
   FiUsers,
   FiZap,
 } from "react-icons/fi"
+import { useNavigate } from "react-router-dom"
+import CreateTaskModal from "../../task/CreateTaskModal"
 
 const StatCard = ({ icon: Icon, label, value, color, bgGradient, trend }) => (
   <div className="group relative overflow-hidden rounded-xl border border-light-border bg-light-bg-secondary p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-dark-border dark:bg-dark-bg-tertiary">
@@ -39,14 +42,25 @@ const StatCard = ({ icon: Icon, label, value, color, bgGradient, trend }) => (
   </div>
 )
 
-const QuickAction = ({ icon: Icon, label, description, onClick, color = "text-accent-primary", bgGradient = "bg-accent-primary/10" }) => (
+const QuickAction = ({
+  icon: Icon,
+  label,
+  description,
+  onClick,
+  color = "text-accent-primary",
+  bgGradient = "bg-accent-primary/10",
+}) => (
   <button
     type="button"
     onClick={onClick}
-    className={`group relative flex w-full flex-col items-start gap-3 rounded-xl border border-light-border bg-light-bg-primary p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:ring-2 hover:ring-accent-primary/20 dark:border-dark-border dark:bg-dark-bg-tertiary dark:hover:ring-accent-primary/30`}
+    className={
+      "group relative flex w-full flex-col items-start gap-3 rounded-xl border border-light-border bg-light-bg-primary p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:ring-2 hover:ring-accent-primary/20 dark:border-dark-border dark:bg-dark-bg-tertiary dark:hover:ring-accent-primary/30"
+    }
     aria-label={label}
   >
-    <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${bgGradient} transition-transform duration-200 group-hover:scale-110`}>
+    <div
+      className={`flex h-11 w-11 items-center justify-center rounded-lg ${bgGradient} transition-transform duration-200 group-hover:scale-110`}
+    >
       <Icon className={`h-5 w-5 ${color}`} />
     </div>
     <div className="flex-1">
@@ -69,24 +83,29 @@ const QuickAction = ({ icon: Icon, label, description, onClick, color = "text-ac
   </button>
 )
 
-const ProjectAdminOverview = ({ stats, projectId }) => {
+const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
   const navigate = useNavigate()
   const taskStatus = stats?.taskStatusCounts || {}
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const handleCreateTask = () => {
-    navigate(`/project/${projectId}/tasks/new`)
+    setIsCreateModalOpen(true)
+  }
+
+  const handleTaskCreated = (newTask) => {
+    toast.success("Task created successfully!")
+    setIsCreateModalOpen(false)
+    // Refresh the stats
+    onTabChange?.("overview")
   }
 
   const handleAddMember = () => {
-    // Navigate to members tab
-    const membersTab = document.querySelector('[data-tab="members"]')
-    if (membersTab) {
-      membersTab.click()
-    }
+    onTabChange?.("members")
   }
 
   const handleStartSprint = () => {
-    navigate(`/project/${projectId}/sprints`)
+    // Navigate to the sprint view
+    navigate("/sprint")
   }
 
   return (
@@ -215,16 +234,20 @@ const ProjectAdminOverview = ({ stats, projectId }) => {
           </div>
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-light-text-secondary dark:text-dark-text-secondary">
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-accent-success" /> Completed ({taskStatus.completed})
+              <span className="h-2.5 w-2.5 rounded-full bg-accent-success" /> Completed (
+              {taskStatus.completed})
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-accent-warning" /> In Progress ({taskStatus["in-progress"]})
+              <span className="h-2.5 w-2.5 rounded-full bg-accent-warning" /> In Progress (
+              {taskStatus["in-progress"]})
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-accent-primary" /> Under Review ({taskStatus["under-review"]})
+              <span className="h-2.5 w-2.5 rounded-full bg-accent-primary" /> Under Review (
+              {taskStatus["under-review"]})
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-light-border dark:bg-dark-border" /> To Do ({taskStatus.todo})
+              <span className="h-2.5 w-2.5 rounded-full bg-light-border dark:bg-dark-border" /> To
+              Do ({taskStatus.todo})
             </span>
           </div>
         </div>
@@ -265,6 +288,12 @@ const ProjectAdminOverview = ({ stats, projectId }) => {
           />
         </div>
       </div>
+      <CreateTaskModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTaskCreated={handleTaskCreated}
+        projectId={projectId}
+      />
     </div>
   )
 }

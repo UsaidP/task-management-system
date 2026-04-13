@@ -462,7 +462,7 @@ const faqData = [
   {
     question: "Is there really no credit card required for the free trial?",
     answer:
-      "Absolutely. Start using TaskFlow immediately with zero commitment. Upgrade only when you're ready \u2014 we'll never surprise you with a bill.",
+      "Absolutely. Start using TaskFlow immediately with zero commitment. Upgrade only when you're ready — we'll never surprise you with a bill.",
   },
   {
     question: "Can I import tasks from other tools like Trello or Asana?",
@@ -477,7 +477,7 @@ const faqData = [
   {
     question: "Do you offer discounts for nonprofits or education?",
     answer:
-      "Yes \u2014 50% off for verified nonprofits, educational institutions, and open-source projects. Contact us with proof of eligibility.",
+      "Yes — 50% off for verified nonprofits, educational institutions, and open-source projects. Contact us with proof of eligibility.",
   },
   {
     question: "How does team collaboration work?",
@@ -576,7 +576,7 @@ const Hero = ({ variants, reduced }) => (
             aria-hidden="true"
           />
           <span className="text-xs sm:text-sm font-semibold text-accent-primary dark:text-accent-primary-light">
-            Free for 14 Days \u2014 No Credit Card
+            Free for 14 Days — No Credit Card
           </span>
         </motion.div>
 
@@ -590,7 +590,7 @@ const Hero = ({ variants, reduced }) => (
 
         <p className="text-base sm:text-lg text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10 px-2">
           TaskFlow brings projects, sprints, and team collaboration into one seamless workspace.
-          Stop juggling spreadsheets \u2014 start shipping.
+          Stop juggling spreadsheets — start shipping.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16">

@@ -8,6 +8,7 @@ import { getOptimizedAvatarUrl } from "../utils/imageHelpers.js"
 
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [avatarFailed, setAvatarFailed] = useState(false)
   const { user, logout } = useAuth()
   const { toggleSidebar } = useSidebar()
   const navigate = useNavigate()
@@ -103,7 +104,7 @@ const Header = () => {
               </div>
 
               <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 font-semibold text-white transition-transform duration-200 origin-center border rounded-full shadow-sm sm:w-9 sm:h-9 bg-accent-primary hover:scale-105 border-light-border/20">
-                {user?.avatar?.url ? (
+                {user?.avatar?.url && !avatarFailed ? (
                   <img
                     alt={`${userName}'s avatar`}
                     className="object-cover w-full h-full rounded-full"
@@ -112,6 +113,7 @@ const Header = () => {
                     height="40"
                     loading="eager"
                     decoding="async"
+                    onError={() => setAvatarFailed(true)}
                   />
                 ) : (
                   <span className="text-sm sm:text-base">{userInitial}</span>

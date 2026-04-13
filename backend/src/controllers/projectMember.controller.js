@@ -27,7 +27,7 @@ export const addMember = asyncHandler(async (req, res) => {
 
 	const user = await User.findOne({ email: email })
 	if (!user) {
-		throw new ApiError(404, "User not found in database.")
+		throw new ApiError(404, "No account found with this email. Please ask them to register first.")
 	}
 	const userId = user._id
 
@@ -94,7 +94,7 @@ export const updateMember = asyncHandler(async (req, res) => {
 
 	const user = await User.findById(userId)
 	if (!user) {
-		throw new ApiError(404, "User not found in database.")
+		throw new ApiError(404, "Account not found")
 	}
 
 	// ✅ Use constants instead of hardcoded strings

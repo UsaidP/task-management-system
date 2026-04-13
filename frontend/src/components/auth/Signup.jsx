@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { FiArrowRight, FiCheck, FiEye, FiEyeOff, FiLock, FiMail, FiUser } from "react-icons/fi"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
@@ -90,15 +91,21 @@ export const Signup = () => {
     e.preventDefault()
     setLoading(true)
     setError("")
+    const toastId = toast.loading("Creating your account...")
 
     try {
       const { username, fullname, email, password } = formData
       const response = await signup(username, fullname, password, email, "member")
       if (response.success) {
+        toast.success("Account created! Please check your email to verify.", { id: toastId })
         navigate("/confirm", { state: { email } })
+      } else {
+        toast.error(response.message || "Signup failed. Please try again.", { id: toastId })
+        setError(response.message || "Signup failed. Please try again.")
       }
     } catch (err) {
       const errorMessage = err.data?.message || "Signup failed. Please try again."
+      toast.error(errorMessage, { id: toastId })
       setError(errorMessage)
     } finally {
       setLoading(false)

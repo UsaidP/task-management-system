@@ -170,7 +170,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
         toast.error(response.message || "Failed to update task", { id: toastId })
       }
     } catch (error) {
-      toast.error(error.message || "An error occurred.", { id: toastId })
+      toast.error(error.message || "Failed to update task. Please try again.", { id: toastId })
       console.error("Failed to update task", error)
     } finally {
       setIsSubmitting(false)

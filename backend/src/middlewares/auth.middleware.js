@@ -96,7 +96,7 @@ export const protect = asyncHandler(async (req, _res, next) => {
 	}
 
 	const user = await User.findById(decoded._id).select("-password")
-	if (!user) throw new ApiError(401, "User not found")
+	if (!user) throw new ApiError(401, "Account not found. Please log in again.")
 
 	req.user = user
 	next()

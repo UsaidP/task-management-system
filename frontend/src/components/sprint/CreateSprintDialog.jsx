@@ -21,19 +21,20 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
     }
 
     setLoading(true)
+    const toastId = toast.loading("Creating sprint...")
     try {
       const response = await apiService.createSprint({
         ...formData,
         projectId,
       })
       if (response.success) {
-        toast.success("Sprint created successfully")
+        toast.success("Sprint created successfully", { id: toastId })
         onSprintCreated(response.data)
         onClose()
         setFormData({ name: "", goal: "", startDate: "", endDate: "" })
       }
     } catch (err) {
-      toast.error(err.message || "Failed to create sprint")
+      toast.error(err.message || "Failed to create sprint", { id: toastId })
     } finally {
       setLoading(false)
     }

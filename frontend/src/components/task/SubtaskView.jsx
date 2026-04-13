@@ -13,8 +13,8 @@ const SubtaskView = ({ taskId }) => {
       setLoading(true)
       const response = await apiService.getSubTasksForTask(taskId)
       setSubtasks(response.data || [])
-    } catch (_err) {
-      toast.error("Failed to fetch subtasks")
+    } catch (err) {
+      toast.error(err.message || "Failed to fetch subtasks")
     } finally {
       setLoading(false)
     }
@@ -32,32 +32,36 @@ const SubtaskView = ({ taskId }) => {
     const trimmedTitle = newSubtask.trim()
     if (!trimmedTitle) return
 
+    const toastId = toast.loading("Adding subtask...")
     try {
       const response = await apiService.createSubTask(taskId, trimmedTitle)
       setSubtasks((prev) => [...prev, response.data])
       setNewSubtask("")
-      toast.success("Subtask added!")
+      toast.success("Subtask added!", { id: toastId })
     } catch (_err) {
-      toast.error("Failed to add subtask")
+      toast.error("Failed to add subtask", { id: toastId })
     }
   }
 
   const handleToggleComplete = async (subtaskId, currentStatus) => {
+    const toastId = toast.loading("Updating subtask...")
     try {
       const response = await apiService.updateSubTask(subtaskId, { isCompleted: !currentStatus })
       setSubtasks((prev) => prev.map((sub) => (sub._id === subtaskId ? response.data : sub)))
+      toast.success("Subtask updated!", { id: toastId })
     } catch (_err) {
-      toast.error("Failed to update subtask")
+      toast.error("Failed to update subtask", { id: toastId })
     }
   }
 
   const handleDeleteSubtask = async (subtaskId) => {
+    const toastId = toast.loading("Deleting subtask...")
     try {
       await apiService.deleteSubTask(subtaskId)
       setSubtasks((prev) => prev.filter((sub) => sub._id !== subtaskId))
-      toast.success("Subtask deleted!")
+      toast.success("Subtask deleted!", { id: toastId })
     } catch (_err) {
-      toast.error("Failed to delete subtask")
+      toast.error("Failed to delete subtask", { id: toastId })
     }
   }
 

@@ -315,7 +315,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   })
 
   if (!user) {
-    throw new ApiError(404, "User not found")
+    throw new ApiError(404, "No account found. Please register first to create an account.")
   }
 
   if (!user.isEmailVerified) {
@@ -414,7 +414,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
 
   const user = await User.findById(oldTokenDoc.user)
   if (!user) {
-    throw new ApiError(401, "User not found for this token")
+    throw new ApiError(401, "Account not found. Please log in again.")
   }
 
   const newAccessToken = await user.generateAccessToken()
@@ -534,7 +534,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
 export const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select("-password")
   if (!user) {
-    throw new ApiError(404, "User not found")
+    throw new ApiError(404, "Account not found. Please log in again.")
   }
   return res
     .status(200)
@@ -570,7 +570,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
 
   const user = await User.findById(userId)
   if (!user) {
-    throw new ApiError(404, "User not found")
+    throw new ApiError(404, "Account not found")
   }
 
   if (fullname !== undefined) user.fullname = fullname
@@ -599,7 +599,7 @@ export const deleteUserAccount = asyncHandler(async (req, res) => {
 
   const user = await User.findById(userId)
   if (!user) {
-    throw new ApiError(404, "User not found")
+    throw new ApiError(404, "Account not found")
   }
 
   await logAudit({
@@ -641,7 +641,7 @@ export const updateUserAvatar = asyncHandler(async (req, res) => {
     ).select("-password")
 
     if (!user) {
-      throw new ApiError(404, "User not found")
+      throw new ApiError(404, "Account not found")
     }
 
     return res
@@ -668,7 +668,7 @@ export const updateUserRole = asyncHandler(async (req, res) => {
 
   const user = await User.findById(userId)
   if (!user) {
-    throw new ApiError(404, "User not found")
+    throw new ApiError(404, "Account not found")
   }
 
   const oldRole = user.role // capture before mutation

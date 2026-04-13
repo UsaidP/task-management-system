@@ -166,11 +166,12 @@ const KanbanBoard = ({
       })
 
       // --- API Call & Rollback ---
+      const toastId = toast.loading("Updating task status...")
       try {
         await apiService.updateTask(targetProjectId, taskId, { status: newStatus })
-        toast.success("Task moved successfully!")
+        toast.success("Task status updated successfully!", { id: toastId })
       } catch (_error) {
-        toast.error("Failed to move task. Reverting.")
+        toast.error("Failed to update task status. Reverting.", { id: toastId })
         // On failure, revert to the original state
         if (originalColumnsForRollback) {
           setColumns(originalColumnsForRollback)

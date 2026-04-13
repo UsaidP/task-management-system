@@ -255,9 +255,9 @@ const Me = () => {
   const displayRole = user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Member"
   const joinDate = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-      })
+      year: "numeric",
+      month: "long",
+    })
     : "N/A"
 
   // Capitalize first letter of display name for avatar fallback
@@ -268,6 +268,12 @@ const Me = () => {
   const avatarSrc = user?.avatar?.url
     ? `${getOptimizedAvatarUrl(user.avatar.url, 150)}&t=${Date.now()}`
     : null
+
+  const [avatarFailed, setAvatarFailed] = useState(false)
+
+  const handleAvatarError = () => {
+    setAvatarFailed(true)
+  }
 
   const editProfileHandler = () => setIsEditModalOpen(true)
 
@@ -335,12 +341,13 @@ const Me = () => {
 
   const handleDeleteAccount = async () => {
     setDeleting(true)
+    const toastId = toast.loading("Deleting account...")
     try {
       await apiService.deleteAccount()
-      toast.success("Account deleted successfully")
+      toast.success("Account deleted successfully", { id: toastId })
       await logout()
     } catch (_err) {
-      toast.error("Failed to delete account")
+      toast.error("Failed to delete account", { id: toastId })
     } finally {
       setDeleting(false)
       setShowDeleteConfirm(false)
@@ -471,16 +478,13 @@ const Me = () => {
                   className="block w-32 h-32 cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow"
                 >
                   <div className="w-full h-full rounded-2xl flex items-center justify-center text-5xl font-bold text-light-text-primary dark:text-dark-text-primary relative overflow-hidden bg-transparent">
-                    {user?.avatar?.url && user.avatar.url !== "https://placehold.co/400" ? (
+                    {user?.avatar?.url && user.avatar.url !== "https://placehold.co/400" && !avatarFailed ? (
                       <img
                         alt="Avatar"
                         className="w-full h-full object-cover"
                         src={avatarSrc}
-                        key={avatarSrc}
-                        fetchpriority="high"
                         decoding="async"
-                        width="128"
-                        height="128"
+                        onError={handleAvatarError}
                       />
                     ) : (
                       <span className="w-full h-full flex items-center justify-center rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary">

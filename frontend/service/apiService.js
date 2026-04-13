@@ -107,7 +107,17 @@ class ApiService {
         }
 
         // --- Token Refresh Interceptor ---
-        if (response.status === 401 && !endpoint.includes("/auth/refresh")) {
+        // Skip token refresh for auth endpoints that don't require authentication
+        const isAuthEndpoint = 
+          endpoint.includes("/auth/login") ||
+          endpoint.includes("/auth/register") ||
+          endpoint.includes("/auth/refresh") ||
+          endpoint.includes("/auth/forget-password") ||
+          endpoint.includes("/auth/reset-password") ||
+          endpoint.includes("/auth/verify") ||
+          endpoint.includes("/auth/resend-verify-email");
+
+        if (response.status === 401 && !isAuthEndpoint) {
           if (this.refreshAttempts >= this.MAX_REFRESH_ATTEMPTS) {
             this.refreshAttempts = 0;
             throw new ApiError("Session expired. Please log in again.", 401);
@@ -166,6 +176,13 @@ class ApiService {
         if (response.status === 404) {
           throw new NotFoundError(errorData.message);
         }
+        
+        console.log("API Error response:", {
+          status: response.status,
+          errorData,
+          endpoint,
+        });
+        
         throw new ApiError(
           errorData.message || "An API error occurred",
           response.status

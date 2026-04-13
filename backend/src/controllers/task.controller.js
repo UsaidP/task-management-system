@@ -335,24 +335,19 @@ const uploadAttachment = asyncHandler(async (req, res, _next) => {
 	console.log("📎 Uploading attachment:", {
 		filename: req.file.originalname,
 		mimetype: req.file.mimetype,
-		path: req.file.path,
 		size: req.file.size,
 	})
 
-	// Read file from disk and convert to buffer for ImageKit
-	const fs = await import("node:fs")
-	const fileBuffer = fs.readFileSync(req.file.path)
+	// With memory storage, file data is already in buffer
+	const fileBuffer = req.file.buffer
 
 	// Upload to ImageKit with actual file data
 	const uploadResult = await imagekit.upload({
-		file: fileBuffer, // ✅ Read file content from disk
+		file: fileBuffer,
 		fileName: req.file.originalname,
 	})
 
 	console.log("✅ ImageKit upload result:", uploadResult)
-
-	// Clean up: delete temp file from disk
-	fs.unlinkSync(req.file.path)
 
 	if (!uploadResult) {
 		throw new ApiError(500, "Failed to upload file")

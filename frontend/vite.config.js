@@ -43,14 +43,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: [
-      "react",
-      "react-dom",
-      "react-router-dom",
-      "framer-motion",
-      "react-icons/fi",
-      "dayjs",
-    ],
+    include: ["react", "react-dom", "react-router-dom", "framer-motion", "react-icons/fi", "dayjs"],
     // Pre-bundle these to avoid 504 on lazy-load
     entries: ["./src/**/*.jsx", "./src/**/*.js"],
   },

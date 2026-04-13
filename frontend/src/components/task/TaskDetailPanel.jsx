@@ -182,15 +182,19 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
     setFormData((prev) => ({ ...prev, comments: updatedComments }))
     setNewComment("")
 
+    const toastId = toast.loading("Adding comment...")
     try {
       const response = await apiService.updateTask(projectId, formData._id, {
         comments: updatedComments,
       })
       if (response.success) {
         onTaskUpdated(response.data || response.task) // Sync up
+        toast.success("Comment added", { id: toastId })
+      } else {
+        toast.error(response.message || "Failed to add comment", { id: toastId })
       }
-    } catch (_err) {
-      toast.error("Failed to add comment")
+    } catch (err) {
+      toast.error(err.message || "Failed to add comment", { id: toastId })
       // Revert optimism if needed by refetching or stripping
     } finally {
       setIsSubmitting(false)
@@ -198,16 +202,19 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
   }
 
   const handleDeleteComment = async (commentId) => {
+    const toastId = toast.loading("Deleting comment...")
     try {
       const response = await apiService.deleteComment(projectId, formData._id, commentId)
       if (response.success) {
         const updatedComments = (formData.comments || []).filter((c) => c._id !== commentId)
         setFormData((prev) => ({ ...prev, comments: updatedComments }))
         onTaskUpdated(response.data)
-        toast.success("Comment deleted")
+        toast.success("Comment deleted", { id: toastId })
+      } else {
+        toast.error(response.message || "Failed to delete comment", { id: toastId })
       }
     } catch (err) {
-      toast.error(err.message || "Failed to delete comment")
+      toast.error(err.message || "Failed to delete comment", { id: toastId })
     }
   }
 
@@ -324,14 +331,16 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     // TODO: Replace window.confirm() with a proper accessible confirmation dialog
                     const confirm = window.confirm("Delete this task?")
                     if (confirm) {
+                      const toastId = toast.loading("Deleting task...")
                       try {
                         await apiService.deleteTask(projectId, formData._id)
-                        toast.success("Task deleted")
+                        toast.success("Task deleted successfully!", { id: toastId })
                         onClose()
                         // Ideally trigger a refresh in the parent view.
+                        onTaskUpdated({ deleted: true, id: formData._id })
                       } catch (err) {
                         console.error("Failed to delete task:", err)
-                        toast.error(err.message || "Failed to delete task")
+                        toast.error(err.message || "Failed to delete task", { id: toastId })
                       }
                     }
                   }}
@@ -661,6 +670,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                               const file = e.target.files?.[0]
                               if (!file) return
 
+                              const toastId = toast.loading("Uploading attachment...")
                               try {
                                 const formDataAttach = new FormData()
                                 formDataAttach.append("file", file)
@@ -698,15 +708,20 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                     ...prev,
                                     attachments: updatedAttachments,
                                   }))
-                                  toast.success(`Attachment uploaded: ${file.name}`)
+                                  toast.success(`Attachment uploaded: ${file.name}`, {
+                                    id: toastId,
+                                  })
                                 } else {
                                   toast.error(
-                                    `Upload failed: ${response.message || "Unknown error"}`
+                                    `Upload failed: ${response.message || "Unknown error"}`,
+                                    { id: toastId }
                                   )
                                 }
                               } catch (err) {
                                 console.error("Upload error:", err)
-                                toast.error(err.message || "Failed to upload attachment")
+                                toast.error(err.message || "Failed to upload attachment", {
+                                  id: toastId,
+                                })
                               }
 
                               // Reset file input
@@ -791,13 +806,14 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                 <button
                   type="button"
                   aria-label={`Delete attachment ${attachment.filename || ""}`}
-                  onClick={() => {
+                  onClick={async () => {
+                    const toastId = toast.loading("Removing attachment...")
                     try {
-                      apiService.deleteAttachment(projectId, taskId, i)
+                      await apiService.deleteAttachment(projectId, taskId, i)
                       onDelete(i)
-                      toast.success("Attachment removed")
-                    } catch (_err) {
-                      toast.error("Failed to remove attachment")
+                      toast.success("Attachment removed", { id: toastId })
+                    } catch (err) {
+                      toast.error(err.message || "Failed to remove attachment", { id: toastId })
                     }
                   }}
                   className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-primary/20 rounded-full hover:bg-accent-danger/50 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
@@ -853,13 +869,14 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
             <button
               type="button"
               aria-label={`Delete attachment ${attachment.filename || ""}`}
-              onClick={() => {
+              onClick={async () => {
+                const toastId = toast.loading("Removing attachment...")
                 try {
-                  apiService.deleteAttachment(projectId, taskId, i)
+                  await apiService.deleteAttachment(projectId, taskId, i)
                   onDelete(i)
-                  toast.success("Attachment removed")
-                } catch (_err) {
-                  toast.error("Failed to remove attachment")
+                  toast.success("Attachment removed", { id: toastId })
+                } catch (err) {
+                  toast.error(err.message || "Failed to remove attachment", { id: toastId })
                 }
               }}
               className="absolute top-2 right-2 p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-accent-danger/20 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"

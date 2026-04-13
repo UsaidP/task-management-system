@@ -51,17 +51,18 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
+    const toastId = toast.loading("Updating profile...")
     try {
       const response = await apiService.updateProfile(formData)
       if (response.success) {
-        toast.success("Profile updated successfully!")
+        toast.success("Profile updated successfully!", { id: toastId })
         onSave(response.data)
         onClose()
       } else {
-        toast.error(response.message || "Failed to update profile")
+        toast.error(response.message || "Failed to update profile", { id: toastId })
       }
     } catch (_error) {
-      toast.error("Failed to update profile")
+      toast.error("Failed to update profile", { id: toastId })
     } finally {
       setLoading(false)
     }

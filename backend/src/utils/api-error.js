@@ -168,7 +168,7 @@ export const ERROR_CODES = {
 	},
 	USER_NOT_FOUND: {
 		code: "RES_002",
-		message: "User not found",
+		message: "Account not found",
 		status: HTTP_STATUS.NOT_FOUND,
 	},
 

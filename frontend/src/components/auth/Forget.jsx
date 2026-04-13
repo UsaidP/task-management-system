@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { FiArrowLeft, FiMail } from "react-icons/fi"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
@@ -16,19 +17,23 @@ export const Forget = () => {
     setLoading(true)
     setError("")
     setResponseMsg("")
+    const toastId = toast.loading("Sending password reset link...")
 
     try {
       const response = await forgetPassword(email)
       if (response.success) {
+        toast.success(response.message || "Reset link sent! Check your email.", { id: toastId })
         setResponseMsg(response.message)
         setEmail("")
         // Optionally navigate to a confirmation page
         // navigate("/confirm-password-reset");
       } else {
+        toast.error(response.message || "Failed to send reset email.", { id: toastId })
         setError(response.message || "Failed to send reset email.")
       }
     } catch (error) {
       const errorMessage = error.data?.message || "Email not found. Please try again."
+      toast.error(errorMessage, { id: toastId })
       setError(errorMessage)
     } finally {
       setLoading(false)

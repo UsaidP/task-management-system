@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { FiCheckCircle, FiEye, FiEyeOff, FiLock } from "react-icons/fi"
 import { Link, useParams } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
@@ -10,23 +11,27 @@ export const Reset = () => {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const { reset_password } = useAuth()
+  const { resetPassword } = useAuth()
   const { token } = useParams()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
     setLoading(true)
+    const toastId = toast.loading("Resetting password...")
 
     try {
-      const response = await reset_password(password, token)
+      const response = await resetPassword(password, token)
       if (response.success) {
+        toast.success("Password reset successfully! You can now login.", { id: toastId })
         setSuccess(true)
       } else {
+        toast.error(response.message || "Failed to reset password.", { id: toastId })
         setError(response.message || "Failed to reset password.")
       }
     } catch (error) {
       const errorMessage = error.data?.message || "Password reset failed"
+      toast.error(errorMessage, { id: toastId })
       setError(errorMessage)
     } finally {
       setLoading(false)

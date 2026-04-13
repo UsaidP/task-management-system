@@ -121,9 +121,11 @@ const ProjectAdminPage = () => {
         {activeTab === "overview" && (
           <ProjectAdminOverview
             stats={stats}
+            projectId={projectId}
             project={project}
             members={members}
             onRefresh={fetchData}
+            onTabChange={setActiveTab}
           />
         )}
         {activeTab === "members" && (

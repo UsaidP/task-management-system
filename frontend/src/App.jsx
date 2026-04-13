@@ -1,4 +1,5 @@
 import { lazy, StrictMode, Suspense, useEffect } from "react"
+import { Toaster } from "react-hot-toast"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import AdminLayout from "./components/admin/AdminLayout.jsx"
 import AdminRoute from "./components/admin/AdminRoute.jsx"
@@ -63,6 +64,7 @@ const App = () => {
         <AuthProvider>
           <FilterProvider>
             <SidebarProvider>
+              <Toaster position="top-center" reverseOrder={false} />
               <Routes>
                 {/* Public Routes accessible to everyone */}
                 <Route

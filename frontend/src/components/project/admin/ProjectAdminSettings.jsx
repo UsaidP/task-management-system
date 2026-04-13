@@ -1,6 +1,15 @@
 import { useState } from "react"
 import toast from "react-hot-toast"
-import { FiAlertCircle, FiArchive, FiCheck, FiEye, FiEyeOff, FiSave, FiTrash2, FiX } from "react-icons/fi"
+import {
+  FiAlertCircle,
+  FiArchive,
+  FiCheck,
+  FiEye,
+  FiEyeOff,
+  FiSave,
+  FiTrash2,
+  FiX,
+} from "react-icons/fi"
 import apiService from "../../../../service/apiService.js"
 
 const ProjectAdminSettings = ({ project, setProject, projectId }) => {
@@ -82,11 +91,17 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
     }
     const toastId = toast.loading("Deleting project...")
     try {
-      await apiService.customFetch(`/projects/delete/${projectId}`, { method: "POST" })
-      toast.success("Project deleted successfully", { id: toastId })
-      window.location.href = "/overview"
-    } catch {
-      toast.error("Failed to delete project", { id: toastId })
+      const response = await apiService.customFetch(`/projects/delete/${projectId}`, {
+        method: "POST",
+      })
+      if (response.success) {
+        toast.success("Project deleted successfully", { id: toastId })
+        window.location.href = "/overview"
+      } else {
+        toast.error(response.message || "Failed to delete project", { id: toastId })
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to delete project", { id: toastId })
     }
   }
 
@@ -295,7 +310,11 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
             </div>
             <div className="p-6">
               <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                Are you sure you want to archive <strong className="text-light-text-primary dark:text-dark-text-primary">{project?.name}</strong>? The project will be hidden from the main list but can be restored later.
+                Are you sure you want to archive{" "}
+                <strong className="text-light-text-primary dark:text-dark-text-primary">
+                  {project?.name}
+                </strong>
+                ? The project will be hidden from the main list but can be restored later.
               </p>
               <div className="mt-6 flex justify-end gap-2">
                 <button
@@ -329,7 +348,8 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
             </div>
             <div className="p-6 space-y-4">
               <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                This action <strong className="text-accent-danger">cannot be undone</strong>. This will permanently delete:
+                This action <strong className="text-accent-danger">cannot be undone</strong>. This
+                will permanently delete:
               </p>
               <ul className="list-inside list-disc space-y-1 text-xs text-light-text-secondary dark:text-dark-text-secondary">
                 <li>All tasks and subtasks</li>

@@ -124,7 +124,9 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
         })
       }
     } catch (error) {
-      toast.error("An error occurred.", { id: toastId })
+      toast.error(error?.response?.data?.message || "Failed to create task. Please try again.", {
+        id: toastId,
+      })
       console.error("Failed to create task", error)
     } finally {
       setIsSubmitting(false)

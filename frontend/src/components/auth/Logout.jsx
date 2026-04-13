@@ -1,4 +1,5 @@
 import { useState } from "react"
+import toast from "react-hot-toast"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 
@@ -19,10 +20,13 @@ const Logout = () => {
   const logoutHandler = async () => {
     setLoading(true)
     setError("")
+    const toastId = toast.loading("Logging out...")
     try {
       await logout()
+      toast.success("Logged out successfully!", { id: toastId })
       navigate("/") // Navigate to home page after successful logout
     } catch (err) {
+      toast.error(err.message || "Logout failed. Please try again.", { id: toastId })
       setError(err.message || "Logout failed. Please try again.")
     } finally {
       setLoading(false)

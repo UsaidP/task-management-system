@@ -1,7 +1,5 @@
-import fs from "node:fs"
-import path from "node:path"
 import { Router } from "express"
-import multer from "multer"
+import { upload } from "../middlewares/multer.middleware.js"
 
 import {
 	createTask,
