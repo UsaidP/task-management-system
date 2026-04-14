@@ -138,13 +138,13 @@ const FormField = ({ label, icon: Icon, required, error, children, helpText, id 
   </div>
 )
 
-// Input base styles
+// Input base styles (Digital Curator - Fixed Dark Contrast)
 const inputBase =
-  "w-full rounded-xl border px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary bg-light-bg-primary dark:bg-dark-bg-tertiary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all duration-200"
+  "w-full rounded-xl px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary bg-light-bg-tertiary dark:bg-transparent placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all duration-200 shadow-sm"
 const inputNormal =
-  "border-light-border dark:border-dark-border hover:border-light-border-strong dark:hover:border-dark-border-strong focus:border-accent-primary dark:focus:border-accent-primary-light focus:ring-2 focus:ring-accent-primary/20 dark:focus:ring-accent-primary-light/20"
+  "ring-1 ring-inset ring-transparent dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/30 dark:focus:ring-accent-primary-light/30 dark:focus:ring-offset-1 dark:focus:ring-offset-dark-bg-primary/50"
 const inputError =
-  "border-accent-danger shadow-[0_0_0_3px_rgba(196,74,74,0.15)] dark:shadow-[0_0_0_3px_rgba(196,74,74,0.25)]"
+  "ring-2 ring-inset ring-accent-danger bg-accent-danger/5"
 
 // ─── Main Component ─────────────────────────────────
 const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, selectedDate }) => {
@@ -452,7 +452,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
       <form onSubmit={handleSubmit} className="relative">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 -mx-6">
           {/* ─── Left Column: Main Details ───────── */}
-          <div className="lg:col-span-2 px-6 py-6 space-y-6 border-r border-light-border dark:border-dark-border">
+          <div className="lg:col-span-2 px-6 py-6 space-y-6">
             {/* Title */}
             {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
             <FormField
@@ -521,7 +521,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                   {subtasks.map((subtask) => (
                     <div
                       key={subtask.id}
-                      className="group flex items-center gap-3 rounded-lg border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-tertiary px-3 py-2.5 transition-all hover:border-light-border-strong dark:hover:border-dark-border-strong"
+                      className="group flex items-center gap-3 rounded-lg bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-3 py-3 transition-all hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
                     >
                       <button
                         type="button"
@@ -570,13 +570,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                     }
                   }}
                   placeholder="Add a subtask and press Enter..."
-                  className="flex-1 rounded-xl border border-dashed border-light-border-strong dark:border-dark-border-strong bg-light-bg-primary dark:bg-dark-bg-tertiary px-4 py-2.5 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all focus:border-accent-primary dark:focus:border-accent-primary-light focus:ring-2 focus:ring-accent-primary/20 dark:focus:ring-accent-primary-light/20"
+                  className="flex-1 rounded-xl bg-light-bg-tertiary dark:bg-transparent px-4 py-3 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/30 ring-1 ring-inset ring-light-border-strong/30 dark:ring-white/20 border-none"
                 />
                 <button
                   type="button"
                   onClick={addSubtask}
                   disabled={!newSubtask.trim()}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
+                  className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
                   aria-label="Add subtask"
                 >
                   <Plus size={16} />
@@ -656,14 +656,14 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                         }
                       }}
                       placeholder="Type to search or create tags..."
-                      className={`w-full rounded-xl border bg-light-bg-primary dark:bg-dark-bg-tertiary py-2.5 pl-9 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
+                      className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-transparent py-3 pl-9 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
                     />
                   </div>
                   <button
                     type="button"
                     onClick={addCustomTag}
                     disabled={!newTag.trim()}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
+                    className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
                     aria-label="Add custom tag"
                   >
                     <Plus size={16} />
@@ -672,8 +672,8 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
 
                 {/* Tag Suggestions Dropdown */}
                 {showTagSuggestions && (
-                  <div className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary shadow-lg animate-scale-in origin-top overflow-hidden">
-                    <div className="px-3 py-2 border-b border-light-border dark:border-dark-border">
+                  <div className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_rgba(65,62,59,0.12)] border border-light-border/30 dark:border-dark-border/30 animate-scale-in origin-top overflow-hidden">
+                    <div className="px-3 py-2 border-b border-light-border/30 dark:border-dark-border/30">
                       <p className="text-[11px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
                         Suggested Tags
                       </p>
@@ -741,10 +741,10 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
               <button
                 type="button"
                 tabIndex={0}
-                className={`rounded-xl border-2 border-dashed bg-light-bg-primary dark:bg-dark-bg-tertiary px-6 py-6 text-center transition-all duration-200 cursor-pointer ${
+                className={`rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary px-6 py-8 text-center transition-all duration-300 cursor-pointer ${
                   isDragOver
-                    ? "border-accent-primary bg-accent-primary/5 dark:bg-accent-primary-light/10"
-                    : "border-light-border-strong dark:border-dark-border-strong hover:border-accent-primary/40 hover:bg-accent-primary/5 dark:hover:bg-accent-primary-light/5"
+                    ? "ring-2 ring-accent-primary bg-accent-primary/5 dark:bg-accent-primary-light/10"
+                    : "ring-1 ring-light-border-strong/50 dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
                 }`}
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={handleDragOver}
@@ -788,8 +788,8 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                 <div className="mt-3 space-y-2">
                   {attachments.map((attachment, index) => (
                     <div
-                      key={`${attachment.filename}-${index}`}
-                      className="group flex items-center gap-3 rounded-lg border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-tertiary px-3 py-2.5 transition-all hover:border-light-border-strong dark:hover:border-dark-border-strong"
+                      key={index}
+                      className="group flex items-center gap-3 rounded-lg bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-3 py-3 transition-all hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
                     >
                       {isImageFile(attachment.filename) ? (
                         <div className="relative h-10 w-10 rounded-md overflow-hidden bg-light-bg-tertiary dark:bg-dark-bg-tertiary flex-shrink-0">
@@ -831,7 +831,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
           </div>
 
           {/* ─── Right Column: Settings ──────────── */}
-          <div className="px-6 py-6 space-y-5 bg-light-bg-primary/50 dark:bg-dark-bg-primary/30">
+          <div className="px-6 py-6 space-y-5 bg-light-bg-secondary/40 dark:bg-dark-bg-secondary border-l border-light-border/30 dark:border-white/20">
             <h3 className="text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
               Task Settings
             </h3>
@@ -848,7 +848,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                 <button
                   type="button"
                   onClick={() => setShowAssigneeDropdown(!showAssigneeDropdown)}
-                  className="w-full flex items-center justify-between rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-tertiary px-3 py-2.5 text-sm hover:border-light-border-strong dark:hover:border-dark-border-strong transition-all cursor-pointer"
+                  className="w-full flex items-center justify-between rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-4 py-3 text-sm hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-all cursor-pointer shadow-sm"
                   aria-expanded={showAssigneeDropdown}
                   aria-haspopup="listbox"
                 >
@@ -889,7 +889,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                 </button>
                 {showAssigneeDropdown && (
                   <div
-                    className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary shadow-lg animate-scale-in origin-top overflow-hidden"
+                    className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_rgba(65,62,59,0.12)] border border-light-border/30 dark:border-dark-border/30 animate-scale-in origin-top overflow-hidden"
                     role="listbox"
                     aria-label="Assignee options"
                   >
@@ -964,10 +964,10 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                     key={option.value}
                     type="button"
                     onClick={() => updateField("priority", option.value)}
-                    className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
                       formData.priority === option.value
-                        ? `${option.color} ring-1 ring-current/20 scale-[1.02]`
-                        : "border-light-border dark:border-dark-border text-light-text-tertiary dark:text-dark-text-tertiary hover:border-light-border-strong dark:hover:border-dark-border-strong hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                        ? `${option.color} shadow-sm scale-[1.02] dark:ring-1 dark:ring-white/20`
+                        : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
                     }`}
                     aria-pressed={formData.priority === option.value}
                   >
@@ -998,10 +998,10 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                     key={option.value}
                     type="button"
                     onClick={() => updateField("status", option.value)}
-                    className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
                       formData.status === option.value
-                        ? `${option.color} border-transparent ring-1 ring-current/20 scale-[1.02]`
-                        : "border-light-border dark:border-dark-border text-light-text-tertiary dark:text-dark-text-tertiary hover:border-light-border-strong dark:hover:border-dark-border-strong hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                        ? `${option.color} shadow-sm scale-[1.02] dark:ring-1 dark:ring-white/20`
+                        : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
                     }`}
                     aria-pressed={formData.status === option.value}
                   >
@@ -1027,7 +1027,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                   type="date"
                   value={formData.dueDate}
                   onChange={(e) => updateField("dueDate", e.target.value)}
-                  className={`w-full rounded-xl border px-4 py-2.5 pr-10 text-sm bg-light-bg-primary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary outline-none transition-all ${
+                  className={`w-full rounded-xl px-4 py-3 pr-10 text-sm bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary outline-none transition-all shadow-sm ${
                     errors.dueDate ? inputError : inputNormal
                   }`}
                 />
@@ -1053,14 +1053,14 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                 value={formData.estimatedHours}
                 onChange={(e) => updateField("estimatedHours", e.target.value)}
                 placeholder="e.g., 4.5"
-                className={`w-full rounded-xl border bg-light-bg-primary dark:bg-dark-bg-tertiary px-4 py-2.5 text-sm text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
+                className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all shadow-sm ${inputNormal}`}
               />
             </div>
 
             {/* Divider */}
-            <div className="border-t border-light-border dark:border-dark-border pt-4">
+            <div className="border-t border-light-border/30 dark:border-dark-border/30 pt-4">
               {/* Summary Card */}
-              <div className="rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-4 space-y-2.5">
+              <div className="rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary p-5 space-y-3">
                 <h4 className="text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
                   Summary
                 </h4>
@@ -1135,18 +1135,18 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
         </div>
 
         {/* ─── Footer ─────────────────────────────── */}
-        <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-light-border dark:border-dark-border">
+        <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-light-border/30 dark:border-dark-border/30">
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-xl border border-light-border dark:border-dark-border px-5 py-2.5 text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors cursor-pointer"
+            className="rounded-xl px-5 py-3 text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-xl bg-accent-primary dark:bg-accent-primary-light px-6 py-2.5 text-sm font-medium text-light-text-inverse dark:text-dark-bg-primary shadow-md hover:bg-accent-primary-dark dark:hover:bg-accent-primary hover:shadow-lg transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 cursor-pointer"
+            className="rounded-xl bg-gradient-to-r from-accent-primary to-accent-primary-light px-7 py-3 text-sm font-semibold text-light-text-inverse dark:text-dark-bg-primary shadow-[0_12px_32px_rgba(196,101,74,0.3)] dark:shadow-[0_12px_32px_rgba(196,101,74,0.4)] hover:shadow-[0_16px_40px_rgba(196,101,74,0.4)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2 cursor-pointer"
           >
             {isSubmitting ? (
               <>

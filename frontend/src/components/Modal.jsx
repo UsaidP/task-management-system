@@ -67,7 +67,7 @@ const Modal = ({ isOpen, onClose, title, children, size = "md" }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay/80 dark:bg-utility-overlay-dark/80 backdrop-blur-md"
           onClick={onClose}
           role="dialog"
           aria-modal="true"
@@ -79,7 +79,7 @@ const Modal = ({ isOpen, onClose, title, children, size = "md" }) => {
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`relative bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-lg w-full ${sizeClasses[size] || sizeClasses.md} m-4 border border-light-border dark:border-dark-border outline-none`}
+            className={`relative bg-light-bg-primary dark:bg-dark-bg-primary rounded-2xl shadow-[0_12px_32px_rgba(44,36,32,0.08)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.45)] w-full ${sizeClasses[size] || sizeClasses.md} m-4 outline-none ring-1 ring-light-border/30 dark:ring-dark-border/30`}
             onClick={(e) => e.stopPropagation()}
             tabIndex={-1}
           >
