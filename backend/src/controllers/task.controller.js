@@ -91,7 +91,15 @@ const createTask = asyncHandler(async (req, res, _next) => {
 		task.subtasks = createdSubtasks.map((sub) => sub._id)
 	}
 
-	await task.save()
+	try {
+		await task.save()
+	} catch (err) {
+		if (err.name === "ValidationError") {
+			const messages = Object.values(err.errors).map((e) => e.message)
+			throw new ApiError(400, messages.join(", "))
+		}
+		throw err
+	}
 
 	// Populate subtasks before sending the response
 	const populatedTask = await Task.findById(task._id).populate("subtasks")
@@ -190,21 +198,21 @@ const getTaskById = asyncHandler(async (req, res, _next) => {
 })
 
 const updateTask = asyncHandler(async (req, res, _next) => {
-	const { projectId, taskId } = req.params
 	const {
 		title,
 		description,
 		assignedTo,
 		status,
-		priority,
+		attachments,
+		startDate,
 		dueDate,
+		priority,
+		subtasks,
 		comments,
 		labels,
-		attachments,
 	} = req.body
-
-	console.log(`🕵️ Update Task - ProjectId: ${projectId}, TaskId: ${taskId}`)
-	console.log(`🕵️ Update Task - Body:`, JSON.stringify(req.body, null, 2))
+	const { projectId, taskId } = req.params
+	const userID = req.user._id
 
 	if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
 		throw new ApiError(400, "Invalid task ID")
@@ -214,12 +222,34 @@ const updateTask = asyncHandler(async (req, res, _next) => {
 		throw new ApiError(400, "Invalid project ID")
 	}
 
+	if (!userID) {
+		return res.status(401).json({
+			message: "Login to update task",
+			success: false,
+		})
+	}
+
+	const project = await Project.findById(projectId)
+	if (!project) {
+		return res.status(404).json({
+			message: "Project not found",
+			success: false,
+		})
+	}
+
+	const existingTask = await Task.findById(taskId)
+	if (!existingTask) {
+		return res.status(404).json({
+			message: "Task not found",
+			success: false,
+		})
+	}
+
 	// Validate assignedTo if provided - ensure it's an array of ObjectIds
 	if (assignedTo !== undefined) {
 		if (!Array.isArray(assignedTo)) {
 			throw new ApiError(400, "assignedTo must be an array")
 		}
-		// Filter out invalid ObjectIds
 		const validAssignedTo = assignedTo.filter((id) => mongoose.Types.ObjectId.isValid(id))
 		if (validAssignedTo.length !== assignedTo.length) {
 			console.warn("Some assignedTo IDs were invalid and filtered out")
@@ -232,6 +262,7 @@ const updateTask = asyncHandler(async (req, res, _next) => {
 		...(assignedTo !== undefined && { assignedTo }),
 		...(status !== undefined && { status }),
 		...(priority !== undefined && { priority }),
+		...(startDate !== undefined && { startDate }),
 		...(dueDate !== undefined && { dueDate }),
 		...(comments !== undefined && { comments }),
 		...(labels !== undefined && { labels }),
@@ -242,14 +273,37 @@ const updateTask = asyncHandler(async (req, res, _next) => {
 		throw new ApiError(400, "No fields to update")
 	}
 
-	const task = await Task.findByIdAndUpdate(taskId, { $set: updatedFields }, { new: true })
+	try {
+		const task = await Task.findByIdAndUpdate(taskId, { $set: updatedFields }, { new: true })
 
-	if (!task) {
-		throw new ApiError(404, "Task not found")
+		if (!task) {
+			throw new ApiError(404, "Task not found")
+		}
+
+		// Handle subtasks update if provided
+		if (subtasks && subtasks.length > 0) {
+			await SubTask.deleteMany({ task: taskId })
+
+			const subtaskDocs = subtasks.map((sub) => ({
+				createdBy: userID,
+				task: taskId,
+				title: sub.title,
+			}))
+			const createdSubtasks = await SubTask.insertMany(subtaskDocs)
+			task.subtasks = createdSubtasks.map((sub) => sub._id)
+			await task.save()
+		}
+
+		const populatedTask = await Task.findById(taskId).populate("subtasks")
+
+		return res.status(200).json(new ApiResponse(200, populatedTask, "Task updated successfully"))
+	} catch (err) {
+		if (err.name === "ValidationError") {
+			const messages = Object.values(err.errors).map((e) => e.message)
+			throw new ApiError(400, messages.join(", "))
+		}
+		throw err
 	}
-
-	console.log(`✅ Task updated successfully: ${taskId}`)
-	return res.status(200).json(new ApiResponse(200, task, "Task updated successfully"))
 })
 
 const deleteTask = asyncHandler(async (req, res, _next) => {

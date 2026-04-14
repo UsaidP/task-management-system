@@ -904,7 +904,7 @@ const CTA = ({ variants }) => (
         </Link>
       </div>
       <p className="text-xs sm:text-sm text-white/60 mt-4">
-        No credit card required \u00b7 Free for 14 days \u00b7 Cancel anytime
+        No credit card required &middot; Free for 14 days &middot; Cancel anytime
       </p>
     </div>
   </motion.section>

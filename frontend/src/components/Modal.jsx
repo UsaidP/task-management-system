@@ -2,10 +2,17 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useId, useRef } from "react"
 import { FiX } from "react-icons/fi"
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const Modal = ({ isOpen, onClose, title, children, size = "md" }) => {
   const modalRef = useRef(null)
   const previousFocusRef = useRef(null)
   const modalTitleId = useId()
+
+  const sizeClasses = {
+    sm: "max-w-lg",
+    md: "max-w-2xl",
+    lg: "max-w-5xl",
+    xl: "max-w-7xl",
+  }
 
   useEffect(() => {
     if (isOpen) {
@@ -72,7 +79,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="relative bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-lg w-full max-w-2xl m-4 border border-light-border dark:border-dark-border outline-none"
+            className={`relative bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-lg w-full ${sizeClasses[size] || sizeClasses.md} m-4 border border-light-border dark:border-dark-border outline-none`}
             onClick={(e) => e.stopPropagation()}
             tabIndex={-1}
           >

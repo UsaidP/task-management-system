@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
-import { FiChevronDown, FiLogOut, FiMenu, FiSettings, FiUser } from "react-icons/fi"
+import { FiChevronDown, FiLogOut, FiMenu, FiUser } from "react-icons/fi"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/customHook.js"
 import { useSidebar } from "../contexts/SidebarContext.jsx"
@@ -155,16 +155,6 @@ const Header = () => {
                     >
                       <FiUser className="w-4 h-4 mr-3" aria-hidden="true" />
                       Profile
-                    </NavLink>
-
-                    <NavLink
-                      to="/settings"
-                      role="menuitem"
-                      className="flex items-center px-4 py-2.5 text-sm text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      <FiSettings className="w-4 h-4 mr-3" aria-hidden="true" />
-                      Settings
                     </NavLink>
 
                     <div className="my-1 border-t border-light-border dark:border-dark-border" />

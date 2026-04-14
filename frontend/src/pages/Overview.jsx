@@ -462,7 +462,7 @@ const Overview = () => {
       <CreateProjectModal
         isOpen={isCreateProjectModalOpen}
         onClose={() => setCreateProjectModalOpen(false)}
-        onProjectCreated={() => {}} // Handle globally typically
+        onProjectCreated={() => setCreateProjectModalOpen(false)}
       />
 
       {/* Task Detail Panel */}
@@ -471,12 +471,12 @@ const Overview = () => {
           isOpen={!!selectedTask}
           onClose={() => {
             setSelectedTask(null)
-            fetchDashboardData()
           }}
           task={selectedTask}
           members={[{ user: user }]}
-          onTaskUpdated={(_updatedTask) => {
+          onTaskUpdated={() => {
             fetchDashboardData()
+            setSelectedTask(null)
           }}
         />
       )}

@@ -138,3 +138,4 @@ ide
 /playwright/.auth/
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
 
+text.env.text
