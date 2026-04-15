@@ -450,9 +450,9 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Create New Task" size="lg">
       <form onSubmit={handleSubmit} className="relative">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 -mx-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* ─── Left Column: Main Details ───────── */}
-          <div className="lg:col-span-2 px-6 py-6 space-y-6">
+          <div className="flex-[2] min-w-0 space-y-6">
             {/* Title */}
             {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
             <FormField
@@ -598,127 +598,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
               )}
             </div>
 
-            {/* Tags */}
-            <div ref={tagRef}>
-              <div className="flex items-center gap-2 mb-2">
-                <Tag size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Tags
-                </span>
-              </div>
-
-              {/* Selected Tags */}
-              {tags.length > 0 && (
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {tags.map((tag) => (
-                    <span
-                      key={tag.id}
-                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium ${tag.color}`}
-                    >
-                      {tag.label}
-                      <button
-                        type="button"
-                        onClick={() => removeTag(tag.id)}
-                        className="ml-0.5 hover:opacity-70 transition-opacity cursor-pointer"
-                        aria-label={`Remove ${tag.label} tag`}
-                      >
-                        <X size={11} />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {/* Tag Input */}
-              <div className="relative">
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <Hash
-                      size={14}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none"
-                    />
-                    <input
-                      type="text"
-                      value={newTag}
-                      onChange={(e) => {
-                        setNewTag(e.target.value)
-                        setShowTagSuggestions(true)
-                      }}
-                      onFocus={() => setShowTagSuggestions(true)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault()
-                          const match = tagPresets.find((t) =>
-                            t.label.toLowerCase().includes(newTag.toLowerCase())
-                          )
-                          if (match) addTag(match.label, match.color)
-                          else addCustomTag()
-                        }
-                      }}
-                      placeholder="Type to search or create tags..."
-                      className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-transparent py-3 pl-9 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={addCustomTag}
-                    disabled={!newTag.trim()}
-                    className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
-                    aria-label="Add custom tag"
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
-
-                {/* Tag Suggestions Dropdown */}
-                {showTagSuggestions && (
-                  <div className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_rgba(65,62,59,0.12)] border border-light-border/30 dark:border-dark-border/30 animate-scale-in origin-top overflow-hidden">
-                    <div className="px-3 py-2 border-b border-light-border/30 dark:border-dark-border/30">
-                      <p className="text-[11px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
-                        Suggested Tags
-                      </p>
-                    </div>
-                    <div className="p-2 max-h-40 overflow-y-auto">
-                      {tagPresets
-                        .filter((t) => t.label.toLowerCase().includes(newTag.toLowerCase()))
-                        .map((tag) => {
-                          const isSelected = tags.some((existing) => existing.label === tag.label)
-                          return (
-                            <button
-                              key={tag.label}
-                              type="button"
-                              onClick={() => addTag(tag.label, tag.color)}
-                              disabled={isSelected}
-                              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${
-                                isSelected
-                                  ? "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-tertiary dark:text-dark-text-tertiary cursor-not-allowed"
-                                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                              }`}
-                            >
-                              <span
-                                className={`inline-flex h-5 w-5 items-center justify-center rounded-md text-[10px] ${tag.color}`}
-                              >
-                                <Tag size={10} />
-                              </span>
-                              {tag.label}
-                              {isSelected && (
-                                <Check size={13} className="ml-auto text-accent-success" />
-                              )}
-                            </button>
-                          )
-                        })}
-                      {tagPresets.filter((t) =>
-                        t.label.toLowerCase().includes(newTag.toLowerCase())
-                      ).length === 0 && (
-                        <p className="px-3 py-3 text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center">
-                          No matching tags. Press Enter to create "{newTag}"
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            
 
             {/* Attachments */}
             <div>
@@ -1057,8 +937,133 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
               />
             </div>
 
-            {/* Divider */}
-            <div className="border-t border-light-border/30 dark:border-dark-border/30 pt-4">
+            </div>
+
+          {/* Tags Bento Card */}
+          <div className="rounded-2xl p-6 bg-light-bg-secondary/40 dark:bg-dark-bg-secondary shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.1)] ring-1 ring-light-border/30 dark:ring-white/10 space-y-5">
+            {/* Tags */}
+            <div ref={tagRef}>
+              <div className="flex items-center gap-2 mb-2">
+                <Tag size={14} className="text-accent-primary dark:text-accent-primary-light" />
+                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Tags
+                </span>
+              </div>
+
+              {/* Selected Tags */}
+              {tags.length > 0 && (
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <span
+                      key={tag.id}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium ${tag.color}`}
+                    >
+                      {tag.label}
+                      <button
+                        type="button"
+                        onClick={() => removeTag(tag.id)}
+                        className="ml-0.5 hover:opacity-70 transition-opacity cursor-pointer"
+                        aria-label={`Remove ${tag.label} tag`}
+                      >
+                        <X size={11} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Tag Input */}
+              <div className="relative">
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Hash
+                      size={14}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none"
+                    />
+                    <input
+                      type="text"
+                      value={newTag}
+                      onChange={(e) => {
+                        setNewTag(e.target.value)
+                        setShowTagSuggestions(true)
+                      }}
+                      onFocus={() => setShowTagSuggestions(true)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault()
+                          const match = tagPresets.find((t) =>
+                            t.label.toLowerCase().includes(newTag.toLowerCase())
+                          )
+                          if (match) addTag(match.label, match.color)
+                          else addCustomTag()
+                        }
+                      }}
+                      placeholder="Type to search or create tags..."
+                      className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-transparent py-3 pl-9 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addCustomTag}
+                    disabled={!newTag.trim()}
+                    className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
+                    aria-label="Add custom tag"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+
+                {/* Tag Suggestions Dropdown */}
+                {showTagSuggestions && (
+                  <div className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_rgba(65,62,59,0.12)] border border-light-border/30 dark:border-dark-border/30 animate-scale-in origin-top overflow-hidden">
+                    <div className="px-3 py-2 border-b border-light-border/30 dark:border-dark-border/30">
+                      <p className="text-[11px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
+                        Suggested Tags
+                      </p>
+                    </div>
+                    <div className="p-2 max-h-40 overflow-y-auto">
+                      {tagPresets
+                        .filter((t) => t.label.toLowerCase().includes(newTag.toLowerCase()))
+                        .map((tag) => {
+                          const isSelected = tags.some((existing) => existing.label === tag.label)
+                          return (
+                            <button
+                              key={tag.label}
+                              type="button"
+                              onClick={() => addTag(tag.label, tag.color)}
+                              disabled={isSelected}
+                              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${
+                                isSelected
+                                  ? "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-tertiary dark:text-dark-text-tertiary cursor-not-allowed"
+                                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                              }`}
+                            >
+                              <span
+                                className={`inline-flex h-5 w-5 items-center justify-center rounded-md text-[10px] ${tag.color}`}
+                              >
+                                <Tag size={10} />
+                              </span>
+                              {tag.label}
+                              {isSelected && (
+                                <Check size={13} className="ml-auto text-accent-success" />
+                              )}
+                            </button>
+                          )
+                        })}
+                      {tagPresets.filter((t) =>
+                        t.label.toLowerCase().includes(newTag.toLowerCase())
+                      ).length === 0 && (
+                        <p className="px-3 py-3 text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center">
+                          No matching tags. Press Enter to create "{newTag}"
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          {/* Divider */}
+            <div className="pt-2">
               {/* Summary Card */}
               <div className="rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary p-5 space-y-3">
                 <h4 className="text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">

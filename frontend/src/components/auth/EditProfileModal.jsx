@@ -139,7 +139,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
         <motion.div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm"
           variants={backdropVariants}
           initial="hidden"
           animate="visible"

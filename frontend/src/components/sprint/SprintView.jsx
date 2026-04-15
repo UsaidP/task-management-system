@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom"
 import { useState } from "react"
 import { FiPlus } from "react-icons/fi"
 import useSprint from "../../hooks/useSprint.js"
@@ -5,7 +6,8 @@ import CompleteSprintDialog from "./CompleteSprintDialog.jsx"
 import CreateSprintDialog from "./CreateSprintDialog.jsx"
 import SprintBoard from "./SprintBoard.jsx"
 
-const SprintView = ({ projectId }) => {
+const SprintView = () => {
+  const { projectId } = useParams()
   const { sprints, currentSprint, completeSprint, setCurrentSprint, setSprints } =
     useSprint(projectId)
   const [showCreateDialog, setShowCreateDialog] = useState(false)

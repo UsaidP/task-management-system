@@ -17,7 +17,9 @@ import {
   FiTrash2,
   FiUser,
 } from "react-icons/fi"
+import { toast } from "react-hot-toast"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../components/Skeleton.jsx"
+import { useAuth } from "../contexts/customHook.js"
 import { useTheme } from "../theme/ThemeContext"
 
 const containerVariants = {
@@ -39,7 +41,7 @@ const sectionVariants = {
 
 const SettingsSkeleton = () => (
   <div className="space-y-6 p-6 sm:p-8 max-w-[1400px] mx-auto">
-    <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+    <div className="flex flex-col items-start justify-between gap-4 sm:flex-row">
       <div>
         <SkeletonText width="w-32 sm:w-40" height="h-8 sm:h-10" className="mb-2" />
         <SkeletonText width="w-48 sm:w-64" height="h-5" />
@@ -50,7 +52,7 @@ const SettingsSkeleton = () => (
       {[1, 2, 3, 4, 5, 6].map((i) => (
         <div
           key={i}
-          className="bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 rounded-2xl p-7 border border-light-border dark:border-dark-border"
+          className="border bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 rounded-2xl p-7 border-light-border dark:border-dark-border"
         >
           <div className="flex items-start gap-4 mb-6">
             <SkeletonCircle size="w-11 h-11" className="!rounded-xl" />
@@ -63,13 +65,13 @@ const SettingsSkeleton = () => (
             {[1, 2, 3].map((j) => (
               <div
                 key={j}
-                className="flex flex-col sm:flex-row gap-4 py-4 border-b border-light-border dark:border-dark-border last:border-0"
+                className="flex flex-col gap-4 py-4 border-b sm:flex-row border-light-border dark:border-dark-border last:border-0"
               >
                 <div className="flex-1">
                   <SkeletonText width="w-32" height="h-5" className="mb-1" />
                   <SkeletonText width="w-40" height="h-4" />
                 </div>
-                <Skeleton className="w-full sm:w-44 h-10 rounded-xl" />
+                <Skeleton className="w-full h-10 sm:w-44 rounded-xl" />
               </div>
             ))}
           </div>
@@ -82,14 +84,14 @@ const SettingsSkeleton = () => (
 const SettingsSection = memo(({ icon, title, description, children }) => (
   <motion.div
     variants={sectionVariants}
-    className="bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 backdrop-blur-md rounded-2xl p-7 border border-light-border dark:border-dark-border shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transition-all duration-300"
+    className="transition-all duration-300 border shadow-sm bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 backdrop-blur-md rounded-2xl p-7 border-light-border dark:border-dark-border hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md"
   >
-    <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
-      <div className="flex items-center justify-center w-11 h-11 bg-accent-primary/10 dark:bg-accent-primary/20 text-accent-primary dark:text-accent-primary-light rounded-xl text-xl flex-shrink-0">
+    <div className="flex flex-col items-start gap-4 mb-6 sm:flex-row">
+      <div className="flex items-center justify-center flex-shrink-0 text-xl w-11 h-11 bg-accent-primary/10 dark:bg-accent-primary/20 text-accent-primary dark:text-accent-primary-light rounded-xl">
         {icon}
       </div>
       <div className="flex-1">
-        <h2 className="text-xl font-serif font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
+        <h2 className="mb-1 font-serif text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
           {title}
         </h2>
         {description && (
@@ -105,8 +107,8 @@ const SettingsSection = memo(({ icon, title, description, children }) => (
 SettingsSection.displayName = "SettingsSection"
 
 const SettingItem = memo(({ label, description, children }) => (
-  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 border-b border-light-border dark:border-dark-border gap-4 first:pt-0 last:border-b-0 last:pb-0">
-    <div className="flex flex-col gap-1 flex-1">
+  <div className="flex flex-col gap-4 py-4 border-b sm:flex-row sm:justify-between sm:items-center border-light-border dark:border-dark-border first:pt-0 last:border-b-0 last:pb-0">
+    <div className="flex flex-col flex-1 gap-1">
       <label className="text-base font-medium text-light-text-primary dark:text-dark-text-primary">
         {label}
       </label>
@@ -123,7 +125,7 @@ SettingItem.displayName = "SettingItem"
 
 const ToggleSwitch = memo(({ checked, onChange, id }) => (
   <label
-    className="relative inline-block cursor-pointer focus-within:ring-2 focus-within:ring-accent-primary/20 rounded-full"
+    className="relative inline-block rounded-full cursor-pointer focus-within:ring-2 focus-within:ring-accent-primary/20"
     htmlFor={id}
   >
     <input
@@ -131,7 +133,7 @@ const ToggleSwitch = memo(({ checked, onChange, id }) => (
       id={id}
       checked={checked}
       onChange={(e) => onChange(e.target.checked)}
-      className="opacity-0 w-0 h-0 absolute"
+      className="absolute w-0 h-0 opacity-0"
     />
     <div
       className={`flex items-center w-12 h-6 rounded-full p-1 transition-colors duration-300 ${checked ? "bg-accent-primary dark:bg-accent-primary-light" : "bg-light-bg-hover dark:bg-dark-bg-hover"}`}
@@ -158,30 +160,45 @@ const SelectDropdown = memo(({ value, onChange, options, id }) => (
         </option>
       ))}
     </select>
-    <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none" />
+    <FiChevronDown className="absolute transform -translate-y-1/2 pointer-events-none right-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary" />
   </div>
 ))
 SelectDropdown.displayName = "SelectDropdown"
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme()
+  const { user, forgetPassword } = useAuth()
   const [loading, setLoading] = useState(true)
+
+  const changePassword = async () => {
+    try {
+      if (!user?.email) {
+        toast.error("User email not found")
+        return
+      }
+      
+      await forgetPassword(user.email)
+      toast.success(`Password reset email sent to ${user.email}`)
+    } catch (error) {
+      toast.error(error?.message || "Failed to send password reset email")
+    }
+  }
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem("userSettings")
     return saved
       ? JSON.parse(saved)
       : {
-          emailNotifications: true,
-          pushNotifications: false,
-          desktopNotifications: true,
-          language: "en",
-          timezone: "auto",
-          dateFormat: "dmy",
-          startOfWeek: "sunday",
-          taskReminders: true,
-          soundEffects: true,
-          autoSave: true,
-        }
+        emailNotifications: true,
+        pushNotifications: false,
+        desktopNotifications: true,
+        language: "en",
+        timezone: "auto",
+        dateFormat: "dmy",
+        startOfWeek: "sunday",
+        taskReminders: true,
+        soundEffects: true,
+        autoSave: true,
+      }
   })
 
   useEffect(() => {
@@ -218,25 +235,16 @@ const Settings = () => {
         className="p-5 sm:p-8 max-w-[900px] mx-auto"
       >
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start mb-10 gap-4">
+        <div className="flex flex-col items-start justify-between gap-4 mb-10 sm:flex-row">
           <div className="flex-1">
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+            <h1 className="mb-2 font-serif text-3xl font-bold sm:text-4xl text-light-text-primary dark:text-dark-text-primary">
               Settings
             </h1>
             <p className="text-base text-light-text-secondary dark:text-dark-text-secondary">
               Manage your preferences and account settings
             </p>
           </div>
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.02, translateY: -2 }}
-            whileTap={{ scale: 0.98 }}
-            className="btn-primary flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
-            onClick={handleSaveSettings}
-          >
-            <FiCheck />
-            Save Changes
-          </motion.button>
+
         </div>
 
         {/* Settings Container */}
@@ -256,11 +264,10 @@ const Settings = () => {
               <div className="flex gap-2 w-full sm:w-auto bg-light-bg-secondary dark:bg-dark-bg-tertiary p-1.5 rounded-xl">
                 <button
                   type="button"
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
-                    theme === "light"
-                      ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
-                      : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                  }`}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${theme === "light"
+                    ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
+                    : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+                    }`}
                   onClick={() => theme !== "light" && toggleTheme()}
                 >
                   <FiSun />
@@ -268,146 +275,16 @@ const Settings = () => {
                 </button>
                 <button
                   type="button"
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
-                    theme === "dark"
-                      ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
-                      : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                  }`}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${theme === "dark"
+                    ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
+                    : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+                    }`}
                   onClick={() => theme !== "dark" && toggleTheme()}
                 >
                   <FiMoon />
                   <span>Dark</span>
                 </button>
               </div>
-            </SettingItem>
-          </SettingsSection>
-
-          {/* Localization Section */}
-          <SettingsSection
-            title="Localization"
-            icon={<FiGlobe />}
-            description="Set your language and regional preferences"
-          >
-            <SettingItem label="Language">
-              <SelectDropdown
-                id="language"
-                value={settings.language}
-                onChange={(val) => updateSetting("language", val)}
-                options={[
-                  { value: "en", label: "English" },
-                  { value: "es", label: "Español" },
-                  { value: "fr", label: "Français" },
-                  { value: "de", label: "Deutsch" },
-                  { value: "ja", label: "日本語" },
-                  { value: "zh", label: "中文" },
-                ]}
-              />
-            </SettingItem>
-            <SettingItem label="Timezone">
-              <SelectDropdown
-                id="timezone"
-                value={settings.timezone}
-                onChange={(val) => updateSetting("timezone", val)}
-                options={[
-                  { value: "auto", label: "Auto-detect" },
-                  { value: "utc", label: "UTC" },
-                  { value: "est", label: "Eastern Time (ET)" },
-                  { value: "pst", label: "Pacific Time (PT)" },
-                  { value: "cet", label: "Central European Time" },
-                  { value: "ist", label: "India Standard Time" },
-                ]}
-              />
-            </SettingItem>
-            <SettingItem label="Date Format">
-              <SelectDropdown
-                id="date-format"
-                value={settings.dateFormat}
-                onChange={(val) => updateSetting("dateFormat", val)}
-                options={[
-                  { value: "mdy", label: "MM/DD/YYYY" },
-                  { value: "dmy", label: "DD/MM/YYYY" },
-                  { value: "ymd", label: "YYYY-MM-DD" },
-                ]}
-              />
-            </SettingItem>
-            <SettingItem label="Start of Week">
-              <SelectDropdown
-                id="start-of-week"
-                value={settings.startOfWeek}
-                onChange={(val) => updateSetting("startOfWeek", val)}
-                options={[
-                  { value: "sunday", label: "Sunday" },
-                  { value: "monday", label: "Monday" },
-                  { value: "saturday", label: "Saturday" },
-                ]}
-              />
-            </SettingItem>
-          </SettingsSection>
-
-          {/* Notifications Section */}
-          <SettingsSection
-            title="Notifications"
-            icon={<FiBell />}
-            description="Configure how you want to be notified"
-          >
-            <SettingItem label="Email Notifications" description="Receive task updates via email">
-              <ToggleSwitch
-                id="email-notifications"
-                checked={settings.emailNotifications}
-                onChange={(val) => updateSetting("emailNotifications", val)}
-              />
-            </SettingItem>
-            <SettingItem
-              label="Push Notifications"
-              description="Get push notifications on your device"
-            >
-              <ToggleSwitch
-                id="push-notifications"
-                checked={settings.pushNotifications}
-                onChange={(val) => updateSetting("pushNotifications", val)}
-              />
-            </SettingItem>
-            <SettingItem
-              label="Desktop Notifications"
-              description="Show notifications on your desktop"
-            >
-              <ToggleSwitch
-                id="desktop-notifications"
-                checked={settings.desktopNotifications}
-                onChange={(val) => updateSetting("desktopNotifications", val)}
-              />
-            </SettingItem>
-            <SettingItem label="Task Reminders" description="Get reminded before task deadlines">
-              <ToggleSwitch
-                id="task-reminders"
-                checked={settings.taskReminders}
-                onChange={(val) => updateSetting("taskReminders", val)}
-              />
-            </SettingItem>
-          </SettingsSection>
-
-          {/* Preferences Section */}
-          <SettingsSection
-            title="Preferences"
-            icon={<FiSettings />}
-            description="General app behavior settings"
-          >
-            <SettingItem
-              label="Sound Effects"
-              description="Play sounds for actions and notifications"
-            >
-              <ToggleSwitch
-                id="sound-effects"
-                checked={settings.soundEffects}
-                onChange={(val) => updateSetting("soundEffects", val)}
-              />
-            </SettingItem>
-            <SettingItem label="Auto-save" description="Automatically save changes as you work">
-              <ToggleSwitch
-                id="auto-save"
-                checked={settings.autoSave}
-                onChange={(val) => updateSetting("autoSave", val)}
-              />
             </SettingItem>
           </SettingsSection>
 
@@ -423,6 +300,7 @@ const Settings = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                onClick={changePassword}
               >
                 <FiLock />
                 Change Password
@@ -458,8 +336,8 @@ const Settings = () => {
             icon={<FiAlertTriangle />}
             description="Irreversible and destructive actions"
           >
-            <div className="bg-accent-danger/5 dark:bg-accent-danger/10 border border-dashed border-accent-danger/30 rounded-xl p-4">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div className="p-4 border border-dashed bg-accent-danger/5 dark:bg-accent-danger/10 border-accent-danger/30 rounded-xl">
+              <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex flex-col gap-1">
                   <label className="text-base font-medium text-light-text-primary dark:text-dark-text-primary">
                     Delete Account
@@ -488,9 +366,9 @@ const Settings = () => {
         <motion.div
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3 px-6 py-4 bg-accent-success dark:bg-accent-success-dark text-white rounded-xl font-medium backdrop-blur-md shadow-xl dark:shadow-dark-lg z-50"
+          className="fixed z-50 flex items-center gap-3 px-6 py-4 font-medium text-white transform -translate-x-1/2 shadow-xl bottom-8 left-1/2 bg-accent-success dark:bg-accent-success-dark rounded-xl backdrop-blur-md dark:shadow-dark-lg"
         >
-          <FiCheckCircle className="text-xl flex-shrink-0" />
+          <FiCheckCircle className="flex-shrink-0 text-xl" />
           <span>Settings saved successfully!</span>
         </motion.div>
       )}

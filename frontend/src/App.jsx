@@ -133,7 +133,7 @@ const App = () => {
                       }
                     />
                     <Route
-                      path="sprint"
+                      path="project/:projectId/sprint"
                       element={
                         <Suspense fallback={<LoadingFallback />}>
                           <SprintView />
