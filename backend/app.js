@@ -28,8 +28,8 @@ const app = express()
 const allowedOrigins = [
 	"http://localhost:5173",
 	"http://localhost:5174",
-	"http://localhost:4000",
-	"http://localhost:4173",
+	'https://task-management-system-dnrz.vercel.app', // Your main production Vercel URL
+  'https://task-management-system-dnrz-ma84b65i9-usaidps-projects.vercel.app',
 	"https://task-management-system-production-b964.up.railway.app",
 	"https://glorious-stillness-production-0853.up.railway.app",
 	// Support CORS_ORIGIN env var for flexible production config
