@@ -1,7 +1,7 @@
 // CustomDay.jsx
 
 import { styled } from "@mui/material/styles"
-import { PickersDay } from "@mui/x-date-pickers/PickersDay"
+import { PickersDay } from "@mui/x-date-pickers"
 
 // Styled PickersDay component to apply custom colors
 const CustomPickersDay = styled(PickersDay, {
