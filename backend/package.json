@@ -39,10 +39,8 @@
 	"name": "task-management-system",
 	"scripts": {
 		"format": "biome check --write",
-		"format:check": "",
-		"start": "nodemon index.js",
-		"start:prod": "node index.js",
-		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
+		"dev": "nodemon index.js",
+		"start": "node index.js"
 	},
 	"type": "module",
 	"version": "1.0.0"
