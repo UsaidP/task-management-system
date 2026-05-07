@@ -1,41 +1,10 @@
 import { Listbox } from "@headlessui/react" // 1. Import Listbox
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { FiUserPlus, FiX } from "react-icons/fi"
+import { UserPlusIcon, XIcon } from "@animateicons/react/lucide"
 import apiService from "../../../service/apiService.js"
+import Avatar from "../auth/Avatar"
 import Modal from "../Modal"
-
-/** @param {{ user?: unknown }} member */
-const getMemberUserId = (member) => {
-  const u = member?.user
-  if (u == null) return ""
-  if (typeof u === "object" && u !== null && "_id" in u) return String(u._id)
-  return String(u)
-}
-
-/** @param {{ user?: unknown }} member */
-const getAvatarSrc = (member) => {
-  const u = member?.user
-  if (!u || typeof u !== "object") {
-    const id = getMemberUserId(member)
-    return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
-  }
-  const a = u.avatar
-  if (typeof a === "string") return a
-  if (a && typeof a === "object" && "url" in a && typeof a.url === "string") return a.url
-  const id = u._id != null ? String(u._id) : ""
-  return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
-}
-
-/** @param {{ user?: unknown }} member */
-const getAvatarAlt = (member) => {
-  const u = member?.user
-  if (u && typeof u === "object") {
-    const name = [u.fullname, u.username, u.email].find(Boolean)
-    if (typeof name === "string") return name
-  }
-  return "Member"
-}
 
 const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => {
   const [error, setError] = useState("")
@@ -84,12 +53,12 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
     }
   }
 
-  const handleRemoveMember = async (userId) => {
+  const handleRemoveMember = async (memberId) => {
     const toastId = toast.loading("Removing member...")
     try {
-      await apiService.removeMember(projectId, userId)
+      await apiService.removeMember(projectId, memberId)
       toast.success("Member removed successfully!", { id: toastId })
-      setMembers(members.filter((member) => getMemberUserId(member) !== userId))
+      setMembers(members.filter((member) => member._id !== memberId))
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Failed to remove member"
       toast.error(errorMessage, { id: toastId })
@@ -104,7 +73,7 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
     <Modal isOpen={isOpen} onClose={onClose} title="Project Members">
       <div className="mt-4">
         {/* Add Member Form */}
-        <form onSubmit={handleAddMember} className="flex flex-col sm:flex-row gap-3 mb-6">
+        <form onSubmit={handleAddMember} className="flex flex-col gap-3 mb-6 sm:flex-row">
           <input
             type="email"
             value={email}
@@ -119,7 +88,7 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
             <div className="relative">
               <Listbox.Button
                 aria-label="Select role"
-                className="input-field w-full sm:w-40 text-left"
+                className="w-full text-left input-field sm:w-40"
               >
                 <span className="block truncate">{selectedRoleObject?.name}</span>
                 {/* You can add a chevron icon here if you want */}
@@ -152,34 +121,37 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
 
           <button
             type="submit"
-            className="btn-primary flex items-center justify-center gap-2 px-4 py-2 font-semibold rounded-lg transition-colors"
+            className="flex items-center justify-center gap-2 px-4 py-2 font-semibold transition-colors rounded-lg btn-primary"
           >
-            <FiUserPlus aria-hidden="true" />
+            <UserPlusIcon aria-hidden="true" />
             Add
           </button>
         </form>
 
-        {error && <p className="text-accent-danger text-sm text-center mb-4">{error}</p>}
+        {error && <p className="mb-4 text-sm text-center text-accent-danger">{error}</p>}
 
         {/* Members List */}
-        <ul className="space-y-2 max-h-80 overflow-y-auto pr-2" aria-label="Project members list">
+        <ul className="pr-2 space-y-2 overflow-y-auto max-h-80" aria-label="Project members list">
           {members.map((member) => {
-            const rowKey = getMemberUserId(member) || member._id
+            const rowKey = member._id
             return (
               <li
                 key={rowKey}
-                className="flex justify-between items-center rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary p-3 shadow-sm"
+                className="flex items-center justify-between p-3 border shadow-sm rounded-xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary"
               >
-                <div className="flex min-w-0 items-center">
-                  <img
-                    src={getAvatarSrc(member)}
-                    alt={getAvatarAlt(member)}
-                    loading="lazy"
-                    decoding="async"
-                    className="mr-3 h-9 w-9 flex-shrink-0 rounded-full object-cover"
+                <div className="flex items-center min-w-0">
+                  <Avatar
+                    src={member.user?.avatar?.url || member.user?.avatar}
+                    alt={
+                      typeof member.user === "object"
+                        ? member.user?.fullname || member.user?.email || "Member"
+                        : "Member"
+                    }
+                    size="sm"
+                    className="mr-3"
                   />
                   <div className="min-w-0">
-                    <p className="truncate font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    <p className="font-semibold truncate text-light-text-primary dark:text-dark-text-primary">
                       {typeof member?.user === "object" && member.user?.email
                         ? member.user.email
                         : "—"}
@@ -191,11 +163,11 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                 </div>
                 <button
                   type="button"
-                  onClick={() => handleRemoveMember(getMemberUserId(member))}
-                  className="flex-shrink-0 rounded-full p-1 text-light-text-secondary transition-colors hover:bg-accent-danger/10 hover:text-accent-danger dark:text-dark-text-secondary"
-                  aria-label={`Remove ${getAvatarAlt(member)}`}
+                  onClick={() => handleRemoveMember(member._id)}
+                  className="flex-shrink-0 p-1 transition-colors rounded-full text-light-text-secondary hover:bg-accent-danger/10 hover:text-accent-danger dark:text-dark-text-secondary"
+                  aria-label={`Remove ${typeof member.user === "object" ? member.user?.fullname || member.user?.email || "member" : "member"}`}
                 >
-                  <FiX size={20} aria-hidden="true" />
+                  <XIcon size={20} aria-hidden="true" />
                 </button>
               </li>
             )

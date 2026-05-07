@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { FiAlertTriangle, FiLayers } from "react-icons/fi"
+import { TriangleAlertIcon, LayersIcon } from "@animateicons/react/lucide"
 
 const ProjectAdminTasks = ({ stats }) => {
   const [statusFilter, setStatusFilter] = useState("")
@@ -94,7 +94,7 @@ const ProjectAdminTasks = ({ stats }) => {
       {stats?.overdueTasks > 0 && (
         <div className="rounded-xl border border-accent-danger/20 bg-accent-danger/5 p-5">
           <div className="mb-3 flex items-center gap-2">
-            <FiAlertTriangle className="h-4 w-4 text-accent-danger" />
+            <TriangleAlertIcon className="h-4 w-4 text-accent-danger" />
             <h3 className="text-sm font-semibold text-accent-danger">
               {stats.overdueTasks} Overdue Task{stats.overdueTasks > 1 ? "s" : ""}
             </h3>
@@ -170,7 +170,7 @@ const ProjectAdminTasks = ({ stats }) => {
       {/* Empty State */}
       {stats?.totalTasks === 0 && (
         <div className="rounded-xl border border-light-border bg-light-bg-secondary p-12 text-center dark:border-dark-border dark:bg-dark-bg-tertiary">
-          <FiLayers className="mx-auto mb-4 h-12 w-12 text-light-text-tertiary dark:text-dark-text-tertiary opacity-50" />
+          <LayersIcon className="mx-auto mb-4 h-12 w-12 text-light-text-tertiary dark:text-dark-text-tertiary opacity-50" />
           <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
             No Tasks Yet
           </h3>

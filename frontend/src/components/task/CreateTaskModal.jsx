@@ -1,26 +1,29 @@
 import {
-  AlertCircle,
+  TriangleAlertIcon as AlertCircle,
+  CheckIcon as Check,
+  ChevronDownIcon as ChevronDown,
+  PaperclipIcon as Paperclip,
+  PlusIcon as Plus,
+  TrashIcon as Trash2,
+  UploadIcon as Upload,
+  UserIcon as User,
+  XIcon as X,
+} from "@animateicons/react/lucide"
+import {
   AlignLeft,
   Calendar as CalendarIcon,
-  Check,
-  ChevronDown,
   Clock,
   FileText,
   Flag,
   Hash,
   ListChecks,
-  Paperclip,
-  Plus,
   Tag,
-  Trash2,
   Type,
-  Upload,
-  User,
-  X,
 } from "lucide-react"
 import { useEffect, useId, useRef, useState } from "react"
 import toast from "react-hot-toast"
 import apiService from "../../../service/apiService"
+import Avatar from "../auth/Avatar"
 import Modal from "../Modal"
 
 // ─── Option Data ──────────────────────────────────
@@ -116,7 +119,7 @@ const FormField = ({ label, icon: Icon, required, error, children, helpText, id 
     {label && id && (
       <label
         htmlFor={id}
-        className="flex items-center gap-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2"
+        className="flex items-center gap-2 mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
       >
         {Icon && <Icon size={14} className="text-accent-primary dark:text-accent-primary-light" />}
         {label}
@@ -138,13 +141,13 @@ const FormField = ({ label, icon: Icon, required, error, children, helpText, id 
   </div>
 )
 
-// Input base styles (Digital Curator - Fixed Dark Contrast)
+// Input base styles
 const inputBase =
-  "w-full rounded-xl px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary bg-light-bg-tertiary dark:bg-transparent placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all duration-200 shadow-sm"
+  "w-full rounded-xl px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary transition-all duration-200 outline-none shadow-sm"
 const inputNormal =
-  "ring-1 ring-inset ring-transparent dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/30 dark:focus:ring-accent-primary-light/30 dark:focus:ring-offset-1 dark:focus:ring-offset-dark-bg-primary/50"
+  "bg-light-bg-tertiary dark:bg-dark-bg-tertiary/50 border border-transparent hover:border-light-border-strong/30 dark:hover:border-white/10 focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/20 dark:focus:ring-accent-primary-light/20 ring-1 ring-inset ring-light-border-strong/5 dark:ring-white/5"
 const inputError =
-  "ring-2 ring-inset ring-accent-danger bg-accent-danger/5"
+  "ring-2 ring-inset ring-accent-danger/50 bg-accent-danger/5 border-accent-danger/20"
 
 // ─── Main Component ─────────────────────────────────
 const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, selectedDate }) => {
@@ -178,16 +181,17 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
 
   // Map members to selection options
   const assigneeOptions = Array.isArray(members)
-    ? members.map((member) => {
-        const u = typeof member.user === "object" && member.user !== null ? member.user : member
-        return {
-          value: u?._id || member?._id || "",
-          label: u?.fullname || member?.fullname || u?.email || member?.email || "Unknown",
-          email: u?.email || member?.email || "",
-          initials: (u?.fullname || member?.fullname || "?").charAt(0).toUpperCase(),
-          color: "bg-accent-primary",
-        }
-      })
+    ? members
+        .filter((m) => m && (m.user || m._id))
+        .map((member) => {
+          const u = typeof member.user === "object" && member.user !== null ? member.user : member
+          return {
+            value: u?._id || member?._id || "",
+            label: u?.fullname || member?.fullname || u?.username || member?.username || "Unknown",
+            email: u?.email || member?.email || "",
+            user: u,
+          }
+        })
     : []
 
   // Focus title on open
@@ -448,11 +452,11 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
 
   // ─── Render ─────────────────────────────────────
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Create New Task" size="lg">
-      <form onSubmit={handleSubmit} className="relative">
-        <div className="flex flex-col lg:flex-row gap-6">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Create New Task" size="xl">
+      <form onSubmit={handleSubmit} className="relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_1.2fr] gap-0 -mx-6 -mt-6">
           {/* ─── Left Column: Main Details ───────── */}
-          <div className="flex-[2] min-w-0 space-y-6">
+          <div className="min-w-0 px-8 py-8 border-r space-y-7 border-light-border/20 dark:border-white/5 bg-light-bg-primary dark:bg-dark-bg-primary">
             {/* Title */}
             {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
             <FormField
@@ -521,7 +525,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                   {subtasks.map((subtask) => (
                     <div
                       key={subtask.id}
-                      className="group flex items-center gap-3 rounded-lg bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-3 py-3 transition-all hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
+                      className="flex items-center gap-3 px-3 py-3 transition-all rounded-lg group bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
                     >
                       <button
                         type="button"
@@ -547,7 +551,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                       <button
                         type="button"
                         onClick={() => removeSubtask(subtask.id)}
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-light-text-tertiary dark:text-dark-text-tertiary opacity-0 group-hover:opacity-100 hover:bg-accent-danger/10 hover:text-accent-danger transition-all cursor-pointer"
+                        className="flex items-center justify-center w-6 h-6 transition-all rounded-md opacity-0 cursor-pointer text-light-text-tertiary dark:text-dark-text-tertiary group-hover:opacity-100 hover:bg-accent-danger/10 hover:text-accent-danger"
                         aria-label="Remove subtask"
                       >
                         <Trash2 size={13} />
@@ -570,7 +574,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                     }
                   }}
                   placeholder="Add a subtask and press Enter..."
-                  className="flex-1 rounded-xl bg-light-bg-tertiary dark:bg-transparent px-4 py-3 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/30 ring-1 ring-inset ring-light-border-strong/30 dark:ring-white/20 border-none"
+                  className="flex-1 px-4 py-3 text-sm transition-all border-none outline-none rounded-xl bg-light-bg-tertiary dark:bg-transparent text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/30 ring-1 ring-inset ring-light-border-strong/30 dark:ring-white/20"
                 />
                 <button
                   type="button"
@@ -588,7 +592,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                 <div className="mt-3">
                   <div className="h-1.5 w-full rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-accent-success transition-all duration-500 ease-out"
+                      className="h-full transition-all duration-500 ease-out rounded-full bg-accent-success"
                       style={{
                         width: `${subtasks.length > 0 ? (completedSubtasks / subtasks.length) * 100 : 0}%`,
                       }}
@@ -597,8 +601,6 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                 </div>
               )}
             </div>
-
-            
 
             {/* Attachments */}
             <div>
@@ -669,18 +671,18 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                   {attachments.map((attachment, index) => (
                     <div
                       key={index}
-                      className="group flex items-center gap-3 rounded-lg bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-3 py-3 transition-all hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
+                      className="flex items-center gap-3 px-3 py-3 transition-all rounded-lg group bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
                     >
                       {isImageFile(attachment.filename) ? (
-                        <div className="relative h-10 w-10 rounded-md overflow-hidden bg-light-bg-tertiary dark:bg-dark-bg-tertiary flex-shrink-0">
+                        <div className="relative flex-shrink-0 w-10 h-10 overflow-hidden rounded-md bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
                           <img
                             src={attachment.url}
                             alt={attachment.filename}
-                            className="h-full w-full object-cover"
+                            className="object-cover w-full h-full"
                           />
                         </div>
                       ) : (
-                        <div className="h-10 w-10 rounded-md bg-light-bg-tertiary dark:bg-dark-bg-tertiary flex items-center justify-center flex-shrink-0">
+                        <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-md bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
                           <FileText
                             size={18}
                             className="text-light-text-tertiary dark:text-dark-text-tertiary"
@@ -688,7 +690,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-light-text-primary dark:text-dark-text-primary truncate">
+                        <p className="text-sm truncate text-light-text-primary dark:text-dark-text-primary">
                           {attachment.filename}
                         </p>
                         <p className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary">
@@ -698,7 +700,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                       <button
                         type="button"
                         onClick={() => removeAttachment(index)}
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-light-text-tertiary dark:text-dark-text-tertiary opacity-0 group-hover:opacity-100 hover:bg-accent-danger/10 hover:text-accent-danger transition-all cursor-pointer"
+                        className="flex items-center justify-center w-6 h-6 transition-all rounded-md opacity-0 cursor-pointer text-light-text-tertiary dark:text-dark-text-tertiary group-hover:opacity-100 hover:bg-accent-danger/10 hover:text-accent-danger"
                         aria-label={`Remove ${attachment.filename}`}
                       >
                         <X size={13} />
@@ -708,242 +710,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                 </div>
               )}
             </div>
-          </div>
 
-          {/* ─── Right Column: Settings ──────────── */}
-          <div className="px-6 py-6 space-y-5 bg-light-bg-secondary/40 dark:bg-dark-bg-secondary border-l border-light-border/30 dark:border-white/20">
-            <h3 className="text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
-              Task Settings
-            </h3>
-
-            {/* Assignee */}
-            <div ref={assigneeRef}>
-              <div className="flex items-center gap-2 mb-2">
-                <User size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Assignee
-                </span>
-              </div>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowAssigneeDropdown(!showAssigneeDropdown)}
-                  className="w-full flex items-center justify-between rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-4 py-3 text-sm hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-all cursor-pointer shadow-sm"
-                  aria-expanded={showAssigneeDropdown}
-                  aria-haspopup="listbox"
-                >
-                  <span className="flex items-center gap-2">
-                    {formData.assignedTo.length > 0 ? (
-                      <>
-                        <div className="flex -space-x-2">
-                          {selectedAssignees.slice(0, 3).map((a) => (
-                            <div
-                              key={a.value}
-                              className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary text-[10px] font-bold text-light-text-inverse border-2 border-light-bg-primary dark:border-dark-bg-primary"
-                            >
-                              {a.initials}
-                            </div>
-                          ))}
-                          {selectedAssignees.length > 3 && (
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary border-2 border-light-bg-primary dark:border-dark-bg-primary">
-                              +{selectedAssignees.length - 3}
-                            </div>
-                          )}
-                        </div>
-                        <span className="text-light-text-primary dark:text-dark-text-primary">
-                          {formData.assignedTo.length} selected
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                        Assign to...
-                      </span>
-                    )}
-                  </span>
-                  <ChevronDown
-                    size={14}
-                    className={`text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ${
-                      showAssigneeDropdown ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {showAssigneeDropdown && (
-                  <div
-                    className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_rgba(65,62,59,0.12)] border border-light-border/30 dark:border-dark-border/30 animate-scale-in origin-top overflow-hidden"
-                    role="listbox"
-                    aria-label="Assignee options"
-                  >
-                    <div className="p-1.5 max-h-52 overflow-y-auto">
-                      {assigneeOptions.length === 0 ? (
-                        <p className="px-3 py-4 text-center text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-                          No members available
-                        </p>
-                      ) : (
-                        assigneeOptions.map((assignee) => {
-                          const isSelected = formData.assignedTo.includes(assignee.value)
-                          return (
-                            <button
-                              key={assignee.value}
-                              type="button"
-                              onClick={() => {
-                                updateField(
-                                  "assignedTo",
-                                  isSelected
-                                    ? formData.assignedTo.filter((id) => id !== assignee.value)
-                                    : [...formData.assignedTo, assignee.value]
-                                )
-                              }}
-                              className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${
-                                isSelected
-                                  ? "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary-light/10 dark:text-accent-primary-light font-medium"
-                                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                              }`}
-                              role="option"
-                              aria-selected={isSelected}
-                            >
-                              <div
-                                className={`flex h-7 w-7 items-center justify-center rounded-full ${assignee.color} text-[10px] font-bold text-light-text-inverse`}
-                              >
-                                {assignee.initials}
-                              </div>
-                              <div className="text-left flex-1 min-w-0">
-                                <p className="text-light-text-primary dark:text-dark-text-primary leading-tight truncate">
-                                  {assignee.label}
-                                </p>
-                                <p className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary leading-tight truncate">
-                                  {assignee.email}
-                                </p>
-                              </div>
-                              {isSelected && (
-                                <Check
-                                  size={14}
-                                  className="text-accent-primary dark:text-accent-primary-light shrink-0"
-                                />
-                              )}
-                            </button>
-                          )
-                        })
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Priority */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Flag size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Priority
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {priorityOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => updateField("priority", option.value)}
-                    className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
-                      formData.priority === option.value
-                        ? `${option.color} shadow-sm scale-[1.02] dark:ring-1 dark:ring-white/20`
-                        : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-                    }`}
-                    aria-pressed={formData.priority === option.value}
-                  >
-                    <span
-                      className={`h-2 w-2 rounded-full ${
-                        formData.priority === option.value
-                          ? option.dot
-                          : "bg-light-text-tertiary/40 dark:bg-dark-text-tertiary/40"
-                      }`}
-                    />
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Status */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Clock size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Status
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {statusOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() => updateField("status", option.value)}
-                    className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
-                      formData.status === option.value
-                        ? `${option.color} shadow-sm scale-[1.02] dark:ring-1 dark:ring-white/20`
-                        : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
-                    }`}
-                    aria-pressed={formData.status === option.value}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Due Date */}
-            {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
-            <FormField
-              label="Due Date"
-              icon={CalendarIcon}
-              required
-              error={errors.dueDate}
-              id="create-due-date"
+            {/* Tags section moved to left */}
+            <div
+              ref={tagRef}
+              className="pt-2 border-t border-light-border/30 dark:border-dark-border/20"
             >
-              <div className="relative">
-                {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
-                <input
-                  id="create-due-date"
-                  type="date"
-                  value={formData.dueDate}
-                  onChange={(e) => updateField("dueDate", e.target.value)}
-                  className={`w-full rounded-xl px-4 py-3 pr-10 text-sm bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary outline-none transition-all shadow-sm ${
-                    errors.dueDate ? inputError : inputNormal
-                  }`}
-                />
-                <CalendarIcon
-                  size={16}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none"
-                />
-              </div>
-            </FormField>
-
-            {/* Estimated Hours */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Clock size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Estimated Hours
-                </span>
-              </div>
-              <input
-                type="number"
-                min="0"
-                step="0.5"
-                value={formData.estimatedHours}
-                onChange={(e) => updateField("estimatedHours", e.target.value)}
-                placeholder="e.g., 4.5"
-                className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all shadow-sm ${inputNormal}`}
-              />
-            </div>
-
-            </div>
-
-          {/* Tags Bento Card */}
-          <div className="rounded-2xl p-6 bg-light-bg-secondary/40 dark:bg-dark-bg-secondary shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.1)] ring-1 ring-light-border/30 dark:ring-white/10 space-y-5">
-            {/* Tags */}
-            <div ref={tagRef}>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-3">
                 <Tag size={14} className="text-accent-primary dark:text-accent-primary-light" />
                 <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                   Tags
@@ -952,11 +725,11 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
 
               {/* Selected Tags */}
               {tags.length > 0 && (
-                <div className="mb-3 flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {tags.map((tag) => (
                     <span
                       key={tag.id}
-                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium ${tag.color}`}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium transition-all hover:scale-[1.02] ${tag.color}`}
                     >
                       {tag.label}
                       <button
@@ -978,7 +751,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                   <div className="relative flex-1">
                     <Hash
                       size={14}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none"
+                      className="absolute -translate-y-1/2 pointer-events-none left-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary"
                     />
                     <input
                       type="text"
@@ -1021,7 +794,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                         Suggested Tags
                       </p>
                     </div>
-                    <div className="p-2 max-h-40 overflow-y-auto">
+                    <div className="p-2 overflow-y-auto max-h-40">
                       {tagPresets
                         .filter((t) => t.label.toLowerCase().includes(newTag.toLowerCase()))
                         .map((tag) => {
@@ -1050,88 +823,312 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                             </button>
                           )
                         })}
-                      {tagPresets.filter((t) =>
-                        t.label.toLowerCase().includes(newTag.toLowerCase())
-                      ).length === 0 && (
-                        <p className="px-3 py-3 text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center">
-                          No matching tags. Press Enter to create "{newTag}"
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ─── Right Column: Settings ──────────── */}
+          <div className="py-8 px-7 space-y-7 bg-light-bg-secondary/30 dark:bg-dark-bg-secondary/20 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-[11px] font-bold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-[0.1em]">
+                Task Settings
+              </h3>
+              <div className="flex-1 h-1 mx-4 border-b border-light-border/10 dark:border-white/5" />
+            </div>
+
+            {/* Assignee */}
+            <div ref={assigneeRef}>
+              <div className="flex items-center gap-2 mb-2">
+                <User size={14} className="text-accent-primary dark:text-accent-primary-light" />
+                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Assignee
+                </span>
+              </div>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowAssigneeDropdown(!showAssigneeDropdown)}
+                  className="flex items-center justify-between w-full px-4 py-3 text-sm transition-all shadow-sm cursor-pointer rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
+                  aria-expanded={showAssigneeDropdown}
+                  aria-haspopup="listbox"
+                >
+                  <span className="flex items-center gap-2">
+                    {formData.assignedTo.length > 0 ? (
+                      <>
+                        <div className="flex -space-x-2">
+                          {selectedAssignees.slice(0, 3).map((a) => (
+                            <Avatar
+                              key={a.value}
+                              src={a.user?.avatar?.url || a.user?.avatar}
+                              alt={a.label}
+                              size="xs"
+                              className="border-2 border-light-bg-primary dark:border-dark-bg-primary"
+                            />
+                          ))}
+                          {selectedAssignees.length > 3 && (
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary border-2 border-light-bg-primary dark:border-dark-bg-primary">
+                              +{selectedAssignees.length - 3}
+                            </div>
+                          )}
+                        </div>
+                        <span className="text-light-text-primary dark:text-dark-text-primary">
+                          {formData.assignedTo.length} selected
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+                        Assign to...
+                      </span>
+                    )}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className={`text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ${
+                      showAssigneeDropdown ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {showAssigneeDropdown && (
+                  <div
+                    className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_rgba(65,62,59,0.12)] border border-light-border/30 dark:border-dark-border/30 animate-scale-in origin-top overflow-hidden"
+                    role="listbox"
+                    aria-label="Assignee options"
+                  >
+                    <div className="p-1.5 max-h-52 overflow-y-auto">
+                      {assigneeOptions.length === 0 ? (
+                        <p className="px-3 py-4 text-sm text-center text-light-text-tertiary dark:text-dark-text-tertiary">
+                          No members available
                         </p>
+                      ) : (
+                        assigneeOptions.map((assignee) => {
+                          const isSelected = formData.assignedTo.includes(assignee.value)
+                          return (
+                            <button
+                              key={assignee.value}
+                              type="button"
+                              onClick={() => {
+                                updateField(
+                                  "assignedTo",
+                                  isSelected
+                                    ? formData.assignedTo.filter((id) => id !== assignee.value)
+                                    : [...formData.assignedTo, assignee.value]
+                                )
+                              }}
+                              className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${
+                                isSelected
+                                  ? "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary-light/10 dark:text-accent-primary-light font-medium"
+                                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                              }`}
+                              role="option"
+                              aria-selected={isSelected}
+                            >
+                              <Avatar
+                                src={assignee.user?.avatar?.url || assignee.user?.avatar}
+                                alt={assignee.label}
+                                size="xs"
+                                className="border border-light-border dark:border-dark-border"
+                              />
+                              <div className="flex-1 min-w-0 text-left">
+                                <p className="leading-tight truncate text-light-text-primary dark:text-dark-text-primary">
+                                  {assignee.label}
+                                </p>
+                                <p className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary leading-tight truncate">
+                                  {assignee.email}
+                                </p>
+                              </div>
+                              {isSelected && (
+                                <Check
+                                  size={14}
+                                  className="text-accent-primary dark:text-accent-primary-light shrink-0"
+                                />
+                              )}
+                            </button>
+                          )
+                        })
                       )}
                     </div>
                   </div>
                 )}
               </div>
             </div>
-          {/* Divider */}
-            <div className="pt-2">
-              {/* Summary Card */}
-              <div className="rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary p-5 space-y-3">
-                <h4 className="text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
+
+            {/* Priority */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Flag size={14} className="text-accent-primary dark:text-accent-primary-light" />
+                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Priority
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {priorityOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => updateField("priority", option.value)}
+                    className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                      formData.priority === option.value
+                        ? `${option.color} shadow-sm scale-[1.02] dark:ring-1 dark:ring-white/20`
+                        : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                    }`}
+                    aria-pressed={formData.priority === option.value}
+                  >
+                    <span
+                      className={`h-2 w-2 rounded-full flex-shrink-0 ${
+                        formData.priority === option.value
+                          ? option.dot
+                          : "bg-light-text-tertiary/40 dark:bg-dark-text-tertiary/40"
+                      }`}
+                    />
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Status */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Clock size={14} className="text-accent-primary dark:text-accent-primary-light" />
+                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Status
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {statusOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => updateField("status", option.value)}
+                    className={`inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                      formData.status === option.value
+                        ? `${option.color} shadow-sm scale-[1.02] dark:ring-1 dark:ring-white/20`
+                        : "bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                    }`}
+                    aria-pressed={formData.status === option.value}
+                  >
+                    <span
+                      className={`h-2 w-2 rounded-full flex-shrink-0 ${
+                        formData.status === option.value
+                          ? option.dot
+                          : "bg-light-text-tertiary/40 dark:bg-dark-text-tertiary/40"
+                      }`}
+                    />
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Due Date */}
+            {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
+            <FormField
+              label="Due Date"
+              icon={CalendarIcon}
+              required
+              error={errors.dueDate}
+              id="create-due-date"
+            >
+              <div className="relative">
+                {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
+                <input
+                  id="create-due-date"
+                  type="date"
+                  value={formData.dueDate}
+                  onChange={(e) => updateField("dueDate", e.target.value)}
+                  className={`w-full rounded-xl px-4 py-3 pr-10 text-sm bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary outline-none transition-all shadow-sm ${
+                    errors.dueDate ? inputError : inputNormal
+                  }`}
+                />
+                <CalendarIcon
+                  size={16}
+                  className="absolute -translate-y-1/2 pointer-events-none right-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary"
+                />
+              </div>
+            </FormField>
+
+            {/* Estimated Hours */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Clock size={14} className="text-accent-primary dark:text-accent-primary-light" />
+                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                  Estimated Hours
+                </span>
+              </div>
+              <input
+                type="number"
+                min="0"
+                step="0.5"
+                value={formData.estimatedHours}
+                onChange={(e) => updateField("estimatedHours", e.target.value)}
+                placeholder="e.g., 4.5"
+                className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all shadow-sm ${inputNormal}`}
+              />
+            </div>
+
+            {/* Summary moved to Right column bottom */}
+            <div className="pt-2 border-t border-light-border/30 dark:border-dark-border/20">
+              <div className="p-5 space-y-4 shadow-sm rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary ring-1 ring-light-border-strong/5 dark:ring-white/5">
+                <h4 className="text-xs font-semibold tracking-wider uppercase text-light-text-tertiary dark:text-dark-text-tertiary">
                   Summary
                 </h4>
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
                       Priority
                     </span>
                     <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium flex items-center gap-1.5">
-                      <span className={`h-2 w-2 rounded-full ${selectedPriority?.dot}`} />
-                      {selectedPriority?.label}
+                      <span
+                        className={`h-2 w-2 rounded-full ${selectedPriority?.dot || "bg-light-text-tertiary/40"}`}
+                      />
+                      {selectedPriority?.label || "None"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
                       Status
                     </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
-                      {selectedStatus?.label}
+                    <span className="font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                      {selectedStatus?.label || "None"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
                       Due
                     </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                    <span className="font-medium text-light-text-secondary dark:text-dark-text-secondary">
                       {formData.dueDate
                         ? new Date(formData.dueDate).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
                             year: "numeric",
                           })
-                        : "—"}
+                        : "No date"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
                       Assignees
                     </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                    <span className="font-medium text-light-text-secondary dark:text-dark-text-secondary">
                       {selectedAssignees.length > 0 ? selectedAssignees.length : "Unassigned"}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center justify-between pt-2 text-xs border-t border-light-border/10 dark:border-dark-border/10">
                     <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Subtasks
+                      Complexity
                     </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
-                      {subtasks.length > 0 ? `${completedSubtasks}/${subtasks.length}` : "None"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Tags
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
-                      {tags.length > 0 ? tags.map((t) => t.label).join(", ") : "None"}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Files
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
-                      {attachments.length > 0 ? attachments.length : "None"}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <div className="text-[10px] px-1.5 py-0.5 rounded-md bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-tertiary dark:text-dark-text-tertiary">
+                        {subtasks.length} subtasks
+                      </div>
+                      <div className="text-[10px] px-1.5 py-0.5 rounded-md bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-tertiary dark:text-dark-text-tertiary">
+                        {attachments.length} files
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1140,11 +1137,11 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
         </div>
 
         {/* ─── Footer ─────────────────────────────── */}
-        <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-light-border/30 dark:border-dark-border/30">
+        <div className="flex items-center justify-end gap-3 px-6 pt-4 pb-2 -mx-6 border-t border-light-border/30 dark:border-dark-border/30">
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-xl px-5 py-3 text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors cursor-pointer"
+            className="px-5 py-3 text-sm font-semibold transition-colors cursor-pointer rounded-xl text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary"
           >
             Cancel
           </button>
@@ -1155,7 +1152,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
           >
             {isSubmitting ? (
               <>
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" aria-hidden="true">
                   <circle
                     className="opacity-25"
                     cx="12"

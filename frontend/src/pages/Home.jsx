@@ -1,32 +1,37 @@
+
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { memo, useEffect, useId, useState } from "react"
 import {
-  FiArrowDown,
-  FiArrowRight,
-  FiBriefcase,
-  FiCalendar,
-  FiCheck,
-  FiCheckCircle,
-  FiChevronDown,
-  FiGlobe,
-  FiLayout,
-  FiList,
-  FiMessageSquare,
-  FiMoon,
-  FiPaperclip,
-  FiShield,
-  FiTarget,
-  FiTrello,
-  FiUsers,
-  FiZap,
-} from "react-icons/fi"
+  CheckIcon,
+
+  ChevronDownIcon as FiChevronDown,
+  GlobeIcon as FiGlobe,
+  DashboardIcon as FiLayout,
+  MoonIcon as FiMoon,
+  PaperclipIcon,
+  LayoutGridIcon as FiTrello,
+  UsersIcon as FiUsers,
+  ZapIcon as FiZap,
+} from "@animateicons/react/lucide"
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  BriefcaseIcon as FiBriefcase,
+  CalendarIcon as FiCalendar,
+  ListIcon as FiList,
+  MessageCircleIcon,
+  ShieldIcon,
+  TargetIcon as FiTarget,
+} from "lucide-react"
 import { Link } from "react-router-dom"
+import { Hero3D } from "../components/landing-page/Hero3D"
 
 import {
   featureData,
   pricingData,
   teamTypes,
   testimonialData,
+  faqData,
 } from "../components/landing-page/landingPageComponent.js"
 
 // ─── Animation Variants ──────────────────────────────────────────
@@ -62,429 +67,38 @@ const SectionIcon = ({ name, className }) => {
   return Icon ? <Icon className={className} /> : null
 }
 
-// ─── Floating Orb ────────────────────────────────────────────────
-const FloatingOrb = ({ className, delay = 0, style }) => (
-  <motion.div
-    className={`absolute rounded-full blur-3xl pointer-events-none ${className}`}
-    style={style}
-    animate={{ y: [0, -16, 0], scale: [1, 1.03, 1] }}
-    transition={{ duration: 7, repeat: Number.POSITIVE_INFINITY, delay, ease: "easeInOut" }}
-    aria-hidden="true"
-  />
-)
-
-// ─── Kanban Board Preview (Interactive Demo) ─────────────────────
-const KANBAN_COLUMNS = [
-  {
-    id: "todo",
-    label: "To Do",
-    color: "#8B8178",
-    dotColor: "rgba(139, 129, 120, 0.25)",
-    tasks: [
-      {
-        title: "Design system tokens",
-        tag: "Design",
-        tagColor: "#8B70A0",
-        comments: 3,
-        attachments: 1,
-        assignee: "AK",
-      },
-      {
-        title: "API rate limiting",
-        tag: "Backend",
-        tagColor: "#6888A0",
-        comments: 1,
-        attachments: 0,
-        assignee: "JD",
-      },
-    ],
-  },
-  {
-    id: "progress",
-    label: "In Progress",
-    color: "#C4654A",
-    dotColor: "rgba(196, 101, 74, 0.25)",
-    tasks: [
-      {
-        title: "Kanban drag & drop",
-        tag: "Frontend",
-        tagColor: "#C4654A",
-        comments: 5,
-        attachments: 2,
-        assignee: "SK",
-      },
-      {
-        title: "Sprint planning v2",
-        tag: "Feature",
-        tagColor: "#D4A548",
-        comments: 2,
-        attachments: 0,
-        assignee: "MR",
-      },
-      {
-        title: "Email notifications",
-        tag: "Backend",
-        tagColor: "#6888A0",
-        comments: 4,
-        attachments: 1,
-        assignee: "AK",
-      },
-    ],
-  },
-  {
-    id: "review",
-    label: "Under Review",
-    color: "#D4A548",
-    dotColor: "rgba(212, 165, 72, 0.25)",
-    tasks: [
-      {
-        title: "User onboarding flow",
-        tag: "UX",
-        tagColor: "#7A9A6D",
-        comments: 7,
-        attachments: 3,
-        assignee: "LM",
-      },
-    ],
-  },
-  {
-    id: "done",
-    label: "Done",
-    color: "#7A9A6D",
-    dotColor: "rgba(122, 154, 109, 0.25)",
-    tasks: [
-      {
-        title: "Auth refresh tokens",
-        tag: "Backend",
-        tagColor: "#6888A0",
-        comments: 2,
-        attachments: 0,
-        assignee: "JD",
-      },
-      {
-        title: "Dark mode polish",
-        tag: "Frontend",
-        tagColor: "#C4654A",
-        comments: 6,
-        attachments: 1,
-        assignee: "SK",
-      },
-    ],
-  },
-]
-
-const KanbanBoardPreview = () => {
-  const r = useReducedMotion()
-  const [hoveredCard, setHoveredCard] = useState(null)
-
+// ─── Ticker Component ────────────────────────────────────────────
+const Ticker = () => {
   return (
-    <div
-      className="rounded-xl border border-light-border dark:border-dark-border overflow-hidden shadow-md dark:shadow-dark-md"
-      style={{ backgroundColor: "#F5EDE3" }}
-    >
-      {/* Browser chrome */}
-      <div
-        className="flex items-center gap-2 px-4 py-2.5 border-b border-light-border dark:border-dark-border"
-        style={{ backgroundColor: "#FAF6F1" }}
-      >
-        <div className="flex gap-1.5" aria-hidden="true">
-          <span
-            className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: "rgba(196, 74, 74, 0.5)" }}
-          />
-          <span
-            className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: "rgba(212, 165, 72, 0.5)" }}
-          />
-          <span
-            className="w-3 h-3 rounded-full"
-            style={{ backgroundColor: "rgba(122, 154, 109, 0.5)" }}
-          />
-        </div>
-        <div className="flex-1 mx-4">
-          <div
-            className="rounded-md px-3 py-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary max-w-xs mx-auto text-center truncate"
-            style={{ backgroundColor: "#F0E6D6" }}
-          >
-            app.taskflow.app/project/kanban-board
-          </div>
-        </div>
-      </div>
-
-      {/* Kanban columns */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 p-3 sm:p-4">
-        {KANBAN_COLUMNS.map((col) => (
-          <section
-            key={col.id}
-            className="rounded-lg p-2.5 sm:p-3"
-            style={{ backgroundColor: col.dotColor }}
-            aria-label={`${col.label} column`}
-          >
-            <div className="flex items-center gap-1.5 mb-3">
-              <span
-                className="w-2 h-2 rounded-full flex-shrink-0"
-                style={{ backgroundColor: col.color }}
-              />
-              <span className="text-xs font-semibold text-light-text-primary dark:text-dark-text-primary">
-                {col.label}
-              </span>
-              <span className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary ml-auto font-medium">
-                {col.tasks.length}
-              </span>
-            </div>
-            <div className="space-y-2">
-              {col.tasks.map((task, idx) => (
-                <motion.div
-                  key={`${col.id}-${idx}`}
-                  onHoverStart={() => setHoveredCard(`${col.id}-${idx}`)}
-                  onHoverEnd={() => setHoveredCard(null)}
-                  animate={hoveredCard === `${col.id}-${idx}` ? { y: -2 } : { y: 0 }}
-                  transition={{ duration: r ? 0 : 0.15 }}
-                  className="rounded-lg p-2.5 border border-light-border dark:border-dark-border"
-                  style={{ backgroundColor: "#FAF6F1" }}
-                >
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <span
-                      className="text-[10px] font-medium px-1.5 py-0.5 rounded-full text-white"
-                      style={{ backgroundColor: task.tagColor }}
-                    >
-                      {task.tag}
-                    </span>
-                  </div>
-                  <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary leading-snug mb-2">
-                    {task.title}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
-                      {task.comments > 0 && (
-                        <span className="flex items-center gap-0.5">
-                          <FiMessageSquare className="w-2.5 h-2.5" />
-                          {task.comments}
-                        </span>
-                      )}
-                      {task.attachments > 0 && (
-                        <span className="flex items-center gap-0.5">
-                          <FiPaperclip className="w-2.5 h-2.5" />
-                          {task.attachments}
-                        </span>
-                      )}
-                    </div>
-                    <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white shadow-sm"
-                      style={{ background: "linear-gradient(135deg, #C4654A, #A8503A)" }}
-                    >
-                      {task.assignee}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ─── Feature Card ────────────────────────────────────────────────
-const FeatureCard = ({ icon, title, description }) => {
-  const [hovered, setHovered] = useState(false)
-  const r = useReducedMotion()
-
-  return (
-    <motion.div
-      variants={fadeUp(r)}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
-      className="group relative card rounded-xl overflow-hidden cursor-default"
-    >
+    <div className="w-full bg-[#10101A] border-y border-white/5 overflow-hidden py-4">
       <motion.div
-        className="absolute -top-12 -right-12 w-28 h-28 rounded-full blur-2xl"
-        style={{ backgroundColor: "rgba(196, 101, 74, 0.08)" }}
-        animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ duration: 0.25 }}
-        aria-hidden="true"
-      />
-      <div className="relative z-10">
-        <div
-          className="w-11 h-11 rounded-lg flex items-center justify-center mb-5 transition-transform duration-200 group-hover:scale-105"
-          style={{ backgroundColor: "rgba(196, 101, 74, 0.08)" }}
-        >
-          <SectionIcon
-            name={icon}
-            className="w-5 h-5 text-accent-primary transition-colors duration-200"
-          />
-        </div>
-        <h3 className="text-base sm:text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-2 tracking-tight">
-          {title}
-        </h3>
-        <p className="text-sm sm:text-[15px] text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
-          {description}
-        </p>
-      </div>
-    </motion.div>
+        className="flex whitespace-nowrap items-center gap-12"
+        animate={{ x: [0, -1000] }}
+        transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+      >
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="flex items-center gap-12 text-[#8BAF88]/70 text-sm font-medium tracking-widest uppercase">
+            <span>Join 10k+ Teams</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span>Zero Learning Curve</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span>Shipped in 30s</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span>Made for Makers</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span>Join 10k+ Teams</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span>Zero Learning Curve</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span>Shipped in 30s</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span>Made for Makers</span>
+          </div>
+        ))}
+      </motion.div>
+    </div>
   )
 }
-
-// ─── Testimonial Card ────────────────────────────────────────────
-const TestimonialCard = memo(({ name, role, company, initials, content }) => (
-  <article className="relative card rounded-xl">
-    <span
-      className="absolute top-3 right-5 text-6xl font-serif text-accent-primary/10 leading-none select-none pointer-events-none"
-      aria-hidden="true"
-    >
-      &ldquo;
-    </span>
-    <blockquote className="relative z-10 text-sm sm:text-[15px] text-light-text-secondary dark:text-dark-text-secondary leading-relaxed italic mb-5">
-      &ldquo;{content}&rdquo;
-    </blockquote>
-    <footer className="flex items-center gap-3 pt-4 border-t border-light-border dark:border-dark-border">
-      <div
-        className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-md"
-        style={{ background: "linear-gradient(135deg, #C4654A, #A8503A)" }}
-      >
-        {initials}
-      </div>
-      <div className="flex-1 min-w-0">
-        <cite className="not-italic text-sm font-semibold text-light-text-primary dark:text-dark-text-primary block truncate">
-          {name}
-        </cite>
-        <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary truncate">
-          {role}, {company}
-        </p>
-      </div>
-      <span className="flex items-center gap-1 text-xs text-accent-success dark:text-accent-success-light font-medium flex-shrink-0">
-        <FiCheckCircle className="w-3.5 h-3.5" aria-hidden="true" />
-        Verified
-      </span>
-    </footer>
-  </article>
-))
-TestimonialCard.displayName = "TestimonialCard"
-
-// ─── Pricing Card ────────────────────────────────────────────────
-const PricingCard = memo(({ name, price, period, features, highlighted, badge, cta }) => (
-  <div
-    className={`relative rounded-xl overflow-hidden ${highlighted ? "border-2 border-accent-primary shadow-glow" : "card"}`}
-  >
-    {badge && (
-      <div
-        className="absolute -top-px left-0 right-0 h-7 flex items-center justify-center"
-        style={{ backgroundColor: "#C4654A" }}
-      >
-        <span className="text-white text-[11px] font-bold uppercase tracking-wider">{badge}</span>
-      </div>
-    )}
-    <div className={`p-6 sm:p-7 ${badge ? "pt-9" : ""}`}>
-      <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
-        {name}
-      </h3>
-      <div className="flex items-baseline gap-1 mb-1">
-        <span className="text-3xl sm:text-4xl font-bold text-light-text-primary dark:text-dark-text-primary tracking-tight">
-          {price}
-        </span>
-        {period && (
-          <span className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mb-0.5">
-            /{period}
-          </span>
-        )}
-      </div>
-      <ul className="mt-5 space-y-3">
-        {features.map((feature) => (
-          <li
-            key={feature}
-            className="flex items-start gap-2.5 text-sm text-light-text-secondary dark:text-dark-text-secondary"
-          >
-            <FiCheck className="w-4 h-4 text-accent-success dark:text-accent-success-light flex-shrink-0 mt-0.5" />
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-    <div className="px-6 sm:px-7 pb-6 sm:pb-7">
-      <Link
-        to="/register"
-        className={`block text-center py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer ${highlighted ? "btn-primary w-full" : "btn-secondary w-full"}`}
-        aria-label={`Sign up for ${name} plan`}
-      >
-        {cta}
-      </Link>
-    </div>
-  </div>
-))
-PricingCard.displayName = "PricingCard"
-
-// ─── FAQ Accordion ───────────────────────────────────────────────
-const FAQAccordion = memo(({ question, answer }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const r = useReducedMotion()
-
-  return (
-    <div className="border-b border-light-border dark:border-dark-border last:border-b-0">
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-4 px-1 text-left group cursor-pointer focus-visible-ring rounded"
-        aria-expanded={isOpen}
-      >
-        <span className="text-sm sm:text-[15px] font-medium text-light-text-primary dark:text-dark-text-primary pr-4 group-hover:text-accent-primary dark:group-hover:text-accent-primary-light transition-colors duration-200 text-left">
-          {question}
-        </span>
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: r ? 0 : 0.2 }}>
-          <FiChevronDown
-            className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0"
-            aria-hidden="true"
-          />
-        </motion.div>
-      </button>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            key="content"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: r ? 0 : 0.25, ease: "easeOut" }}
-            className="overflow-hidden"
-          >
-            <p className="pb-4 px-1 text-sm text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
-              {answer}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-})
-FAQAccordion.displayName = "FAQAccordion"
-
-const faqData = [
-  {
-    question: "Is there really no credit card required for the free trial?",
-    answer:
-      "Absolutely. Start using TaskFlow immediately with zero commitment. Upgrade only when you're ready — we'll never surprise you with a bill.",
-  },
-  {
-    question: "Can I import tasks from other tools like Trello or Asana?",
-    answer:
-      "Yes. We support CSV imports from any tool, and our one-click migrator works with Trello, Asana, Jira, and Notion. Most teams are fully migrated in under 10 minutes.",
-  },
-  {
-    question: "What happens to my data if I cancel?",
-    answer:
-      "Your data remains accessible in read-only mode for 90 days. You can export everything as CSV or JSON at any time. We believe in data portability.",
-  },
-  {
-    question: "Do you offer discounts for nonprofits or education?",
-    answer:
-      "Yes — 50% off for verified nonprofits, educational institutions, and open-source projects. Contact us with proof of eligibility.",
-  },
-  {
-    question: "How does team collaboration work?",
-    answer:
-      "Invite unlimited members on paid plans. Assign roles (admin, member, viewer), create projects with specific access, and collaborate in real time with task comments and subtasks.",
-  },
-]
 
 // ─── Navbar ──────────────────────────────────────────────────────
 const Navbar = () => {
@@ -498,29 +112,31 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${scrolled ? "bg-light-bg-primary/90 dark:bg-dark-bg-primary/90 backdrop-blur-md border-b border-light-border dark:border-dark-border shadow-sm" : "bg-transparent"}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "bg-[#08080F]/90 backdrop-blur-md border-b border-white/5 shadow-sm py-3" : "bg-transparent py-5"
+      }`}
       aria-label="Main navigation"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5 group" aria-label="TaskFlow Home">
-          <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-200">
-            <span className="font-serif font-bold text-white text-sm leading-none">T</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 group" aria-label="TaskFlow Home">
+          <div className="flex items-center justify-center w-9 h-9 transition-transform duration-300 rounded-xl bg-[#E8603A] group-hover:scale-105 shadow-[0_0_15px_rgba(232,96,58,0.4)]">
+            <span className="font-serif text-lg font-bold text-[#08080F]">T</span>
           </div>
-          <span className="font-serif font-bold text-lg text-light-text-primary dark:text-dark-text-primary hidden sm:block tracking-tight">
+          <span className="hidden font-serif text-xl font-bold tracking-tight text-[#F5EDE0] sm:block">
             TaskFlow
           </span>
         </Link>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-4">
           <Link
             to="/login"
-            className="btn-ghost text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2"
+            className="text-sm font-medium text-[#F5EDE0]/80 hover:text-[#F5EDE0] transition-colors"
             aria-label="Sign in"
           >
             Sign In
           </Link>
           <Link
             to="/register"
-            className="btn-primary text-xs sm:text-sm px-4 sm:px-5 py-1.5 sm:py-2"
+            className="text-sm font-semibold px-5 py-2.5 rounded-full bg-[#F5EDE0] text-[#08080F] hover:bg-[#E8603A] hover:text-[#08080F] transition-colors"
             aria-label="Get started"
           >
             Get Started
@@ -533,121 +149,71 @@ const Navbar = () => {
 
 // ─── Hero ────────────────────────────────────────────────────────
 const Hero = ({ variants, reduced }) => (
-  <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-    <div
-      className="absolute inset-0 bg-light-bg-primary dark:bg-dark-bg-primary"
-      aria-hidden="true"
-    />
-    <FloatingOrb
-      className="w-[28rem] h-[28rem]"
-      style={{ backgroundColor: "rgba(196, 101, 74, 0.05)", top: "-6rem", left: "-8rem" }}
-      delay={0}
-    />
-    <FloatingOrb
-      className="w-72 h-72"
-      style={{ backgroundColor: "rgba(212, 165, 72, 0.04)", top: "25%", right: "-5rem" }}
-      delay={2.5}
-    />
+  <section className="relative flex items-center justify-center min-h-screen overflow-hidden bg-[#08080F]">
+    <Hero3D variants={variants} reduced={reduced} />
 
     <div
-      className="absolute inset-0 opacity-[0.02] dark:opacity-[0.035]"
+      className="absolute inset-0 opacity-10"
       style={{
-        backgroundImage:
-          "linear-gradient(#2C2420 1px, transparent 1px), linear-gradient(90deg, #2C2420 1px, transparent 1px)",
-        backgroundSize: "60px 60px",
+        backgroundImage: "radial-gradient(circle at center, #E8603A 1px, transparent 1px)",
+        backgroundSize: "40px 40px",
       }}
       aria-hidden="true"
     />
 
-    <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
-      <motion.div variants={variants} initial="hidden" animate="visible">
+    <div className="relative z-10 max-w-5xl px-4 mx-auto text-center sm:px-6 pointer-events-none pt-24 pb-16">
+      <motion.div variants={variants} initial="hidden" animate="visible" className="pointer-events-auto">
         <motion.div
-          className="inline-flex items-center gap-2 mb-6 sm:mb-8 px-4 py-1.5 rounded-full border backdrop-blur-sm"
+          className="inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border backdrop-blur-md"
           style={{
-            backgroundColor: "rgba(196, 101, 74, 0.06)",
-            borderColor: "rgba(196, 101, 74, 0.15)",
+            backgroundColor: "rgba(232, 96, 58, 0.05)",
+            borderColor: "rgba(232, 96, 58, 0.2)",
           }}
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: reduced ? 0 : 0.45, delay: 0.1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduced ? 0 : 0.5, delay: 0.1 }}
         >
           <span
-            className="w-2 h-2 rounded-full bg-accent-success animate-pulse"
+            className="w-2 h-2 rounded-full bg-[#E8603A] animate-pulse"
             aria-hidden="true"
           />
-          <span className="text-xs sm:text-sm font-semibold text-accent-primary dark:text-accent-primary-light">
-            Free for 14 Days — No Credit Card
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#E8603A]">
+            TaskFlow 2.0 is here
           </span>
         </motion.div>
 
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary leading-[1.1] tracking-tight mb-4 sm:mb-5">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-serif font-bold text-[#F5EDE0] leading-[1.05] tracking-tight mb-6">
           Work that feels
           <br />
-          <span className="text-accent-primary dark:text-accent-primary-light">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8603A] to-[#F5EDE0]">
             naturally smooth
           </span>
         </h1>
 
-        <p className="text-base sm:text-lg text-light-text-secondary dark:text-dark-text-secondary max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-10 px-2">
+        <p className="max-w-2xl px-2 mx-auto mb-10 text-lg leading-relaxed text-[#F5EDE0]/70 sm:mb-12 font-sans font-light">
           TaskFlow brings projects, sprints, and team collaboration into one seamless workspace.
           Stop juggling spreadsheets — start shipping.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16">
+        <div className="flex flex-col items-center justify-center gap-4 mb-16 sm:flex-row sm:gap-6">
           <Link
             to="/register"
-            className="btn-primary group px-6 sm:px-7 py-3 sm:py-3.5 text-sm sm:text-base flex items-center gap-2 w-full sm:w-auto justify-center"
+            className="group px-8 py-4 text-sm font-semibold text-[#08080F] bg-[#E8603A] hover:bg-[#F5EDE0] rounded-full flex items-center gap-2 transition-all w-full sm:w-auto justify-center shadow-[0_0_30px_rgba(232,96,58,0.3)] hover:shadow-[0_0_40px_rgba(245,237,224,0.4)]"
             aria-label="Start free trial"
           >
             Start Free Today
-            <FiArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
+            <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
-          <Link
-            to="/login"
-            className="btn-secondary px-6 sm:px-7 py-3 sm:py-3.5 text-sm sm:text-base w-full sm:w-auto justify-center"
-            aria-label="Sign in"
-          >
-            Sign In
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-3 gap-6 sm:gap-12 max-w-md mx-auto mb-10 sm:mb-12">
-          {[
-            { value: "10K+", label: "Active Users" },
-            { value: "50K+", label: "Tasks Completed" },
-            { value: "99.9%", label: "Uptime" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-2xl sm:text-3xl font-bold font-serif text-light-text-primary dark:text-dark-text-primary">
-                {stat.value}
-              </div>
-              <div className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1 font-medium">
-                {stat.label}
-              </div>
-            </div>
-          ))}
         </div>
       </motion.div>
 
-      {/* Kanban Board Preview */}
       <motion.div
-        variants={variants}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: reduced ? 0 : 0.5 }}
-        className="mt-12 sm:mt-16 max-w-5xl mx-auto"
-      >
-        <KanbanBoardPreview />
-      </motion.div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto"
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 2.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
         aria-hidden="true"
       >
-        <FiArrowDown className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+        <ArrowDownIcon className="w-6 h-6 text-[#F5EDE0]/30" />
       </motion.div>
     </div>
   </section>
@@ -660,30 +226,33 @@ const Features = ({ variants, id }) => (
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, margin: "-80px" }}
-    className="py-16 sm:py-24 px-4 sm:px-6"
+    className="px-4 py-24 sm:py-32 sm:px-6 bg-[#08080F]"
     aria-labelledby={id}
   >
-    <div className="max-w-7xl mx-auto">
-      <div className="text-center mb-12 sm:mb-16">
-        <span className="inline-block text-xs sm:text-sm font-bold uppercase tracking-[0.15em] text-accent-primary dark:text-accent-primary-light mb-3">
-          Features
-        </span>
+    <div className="mx-auto max-w-7xl">
+      <div className="mb-16 text-center">
         <h2
           id={id}
-          className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3 tracking-tight"
+          className="mb-4 font-serif text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-[#F5EDE0]"
         >
           Everything You Need
         </h2>
-        <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+        <p className="max-w-xl mx-auto text-lg text-[#F5EDE0]/60 font-light">
           Powerful features designed to streamline your workflow and boost team productivity.
         </p>
       </div>
       <motion.div
         variants={stagger}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+        className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-3 bg-white/5 border border-white/5 rounded-3xl overflow-hidden"
       >
         {featureData.map((feature) => (
-          <FeatureCard key={feature.title} {...feature} />
+          <div key={feature.title} className="bg-[#10101A] p-8 hover:bg-[#151522] transition-colors">
+            <div className="w-12 h-12 rounded-2xl bg-[#E8603A]/10 flex items-center justify-center mb-6">
+              <SectionIcon name={feature.icon} className="w-6 h-6 text-[#E8603A]" />
+            </div>
+            <h3 className="text-xl font-serif font-bold text-[#F5EDE0] mb-3">{feature.title}</h3>
+            <p className="text-[#F5EDE0]/60 leading-relaxed font-light">{feature.description}</p>
+          </div>
         ))}
       </motion.div>
     </div>
@@ -699,41 +268,35 @@ const Teams = ({ variants, id }) => {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
-      className="py-16 sm:py-24 px-4 sm:px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+      className="px-4 py-24 sm:py-32 sm:px-6 bg-[#10101A] border-y border-white/5"
       aria-labelledby={id}
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12 sm:mb-16">
-          <span className="inline-block text-xs sm:text-sm font-bold uppercase tracking-[0.15em] text-accent-primary dark:text-accent-primary-light mb-3">
-            Who It&apos;s For
-          </span>
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-16 text-center">
           <h2
             id={id}
-            className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3 tracking-tight"
+            className="mb-4 font-serif text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-[#F5EDE0]"
           >
             Built for Modern Teams
           </h2>
-          <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
-            Whether you&apos;re a startup or an enterprise, TaskFlow adapts to how your team works.
+          <p className="max-w-xl mx-auto text-lg text-[#F5EDE0]/60 font-light">
+            Whether you're a startup or an enterprise, TaskFlow adapts to how your team works.
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {teamTypes.map((team) => (
             <motion.div
               key={team.label}
               variants={fadeUp(r)}
-              className="group bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl p-5 sm:p-6 border border-light-border dark:border-dark-border text-center hover:-translate-y-0.5 hover:shadow-md dark:hover:shadow-dark-md transition-all duration-200"
+              className="group bg-[#08080F] rounded-3xl p-8 border border-white/5 hover:border-[#E8603A]/30 transition-colors text-center"
             >
-              <div
-                className="w-11 h-11 rounded-lg flex items-center justify-center mx-auto mb-4 transition-transform duration-200 group-hover:scale-105"
-                style={{ backgroundColor: "rgba(196, 101, 74, 0.08)" }}
-              >
-                <SectionIcon name={team.icon} className="w-5 h-5 text-accent-primary" />
+              <div className="w-16 h-16 rounded-full bg-[#E8603A]/5 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <SectionIcon name={team.icon} className="w-8 h-8 text-[#E8603A]" />
               </div>
-              <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 text-xs sm:text-sm">
+              <h3 className="mb-3 text-lg font-serif font-bold text-[#F5EDE0]">
                 {team.label}
               </h3>
-              <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="text-[#F5EDE0]/60 font-light">
                 {team.description}
               </p>
             </motion.div>
@@ -751,27 +314,37 @@ const Testimonials = ({ variants, id }) => (
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, margin: "-80px" }}
-    className="py-16 sm:py-24 px-4 sm:px-6"
+    className="px-4 py-24 sm:py-32 sm:px-6 bg-[#08080F]"
     aria-labelledby={id}
   >
-    <div className="max-w-5xl mx-auto">
-      <div className="text-center mb-12 sm:mb-16">
-        <span className="inline-block text-xs sm:text-sm font-bold uppercase tracking-[0.15em] text-accent-primary dark:text-accent-primary-light mb-3">
-          Testimonials
-        </span>
+    <div className="max-w-6xl mx-auto">
+      <div className="mb-16 text-center">
         <h2
           id={id}
-          className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3 tracking-tight"
+          className="mb-4 font-serif text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-[#F5EDE0]"
         >
           Loved by Teams Worldwide
         </h2>
-        <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
-          See what teams are saying about TaskFlow.
-        </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         {testimonialData.map((t) => (
-          <TestimonialCard key={t.name} {...t} />
+          <div key={t.name} className="bg-[#10101A] p-8 rounded-3xl border border-white/5 relative">
+            <div className="text-[#E8603A] mb-4">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} className="inline-block mr-1">★</span>
+              ))}
+            </div>
+            <p className="text-[#F5EDE0]/80 italic mb-6 leading-relaxed font-serif text-lg">"{t.quote}"</p>
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-[#E8603A]/20 flex items-center justify-center text-[#E8603A] font-bold font-serif">
+                {t.name.charAt(0)}
+              </div>
+              <div>
+                <h4 className="font-bold text-[#F5EDE0] text-sm">{t.name}</h4>
+                <p className="text-[#F5EDE0]/50 text-xs">{t.role}</p>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
@@ -785,63 +358,120 @@ const Pricing = ({ variants, id }) => (
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, margin: "-80px" }}
-    className="py-16 sm:py-24 px-4 sm:px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+    className="px-4 py-24 sm:py-32 sm:px-6 bg-[#10101A] border-y border-white/5"
     aria-labelledby={id}
   >
     <div className="max-w-5xl mx-auto">
-      <div className="text-center mb-12 sm:mb-16">
-        <span className="inline-block text-xs sm:text-sm font-bold uppercase tracking-[0.15em] text-accent-primary dark:text-accent-primary-light mb-3">
-          Pricing
-        </span>
+      <div className="mb-16 text-center">
         <h2
           id={id}
-          className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3 tracking-tight"
+          className="mb-4 font-serif text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-[#F5EDE0]"
         >
           Simple, Transparent Pricing
         </h2>
-        <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
+        <p className="max-w-xl mx-auto text-lg text-[#F5EDE0]/60 font-light">
           Start free for 14 days. No credit card required.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3 items-center">
         {pricingData.map((plan) => (
-          <PricingCard key={plan.name} {...plan} />
+          <div 
+            key={plan.name} 
+            className={`p-8 rounded-3xl border ${plan.popular ? 'bg-[#E8603A] border-[#E8603A] transform md:-translate-y-4 shadow-[0_0_40px_rgba(232,96,58,0.2)]' : 'bg-[#08080F] border-white/10'}`}
+          >
+            {plan.popular && (
+              <div className="bg-[#08080F]/20 text-[#08080F] text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full inline-block mb-4">
+                Most Popular
+              </div>
+            )}
+            <h3 className={`text-2xl font-serif font-bold mb-2 ${plan.popular ? 'text-[#08080F]' : 'text-[#F5EDE0]'}`}>
+              {plan.name}
+            </h3>
+            <div className="mb-6">
+              <span className={`text-4xl font-bold ${plan.popular ? 'text-[#08080F]' : 'text-[#F5EDE0]'}`}>{plan.price}</span>
+              <span className={`text-sm ${plan.popular ? 'text-[#08080F]/70' : 'text-[#F5EDE0]/50'}`}>{plan.interval}</span>
+            </div>
+            <p className={`mb-8 text-sm leading-relaxed ${plan.popular ? 'text-[#08080F]/80' : 'text-[#F5EDE0]/60'}`}>
+              {plan.description}
+            </p>
+            <ul className="space-y-4 mb-8">
+              {plan.features.map((feat) => (
+                <li key={feat} className="flex items-start gap-3">
+                  <CheckIcon className={`w-5 h-5 shrink-0 ${plan.popular ? 'text-[#08080F]' : 'text-[#E8603A]'}`} />
+                  <span className={`text-sm ${plan.popular ? 'text-[#08080F]/90' : 'text-[#F5EDE0]/80'}`}>{feat}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              to="/register"
+              className={`block w-full py-4 rounded-full text-center font-bold transition-all ${
+                plan.popular 
+                  ? 'bg-[#08080F] text-[#F5EDE0] hover:bg-black' 
+                  : 'bg-white/5 text-[#F5EDE0] hover:bg-white/10'
+              }`}
+            >
+              {plan.cta}
+            </Link>
+          </div>
         ))}
       </div>
-      <p className="text-center text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-10 flex items-center justify-center gap-2">
-        <FiShield className="w-4 h-4 flex-shrink-0" />
-        All plans include core features, dark mode, and community support
-      </p>
     </div>
   </motion.section>
 )
 
 // ─── FAQ ─────────────────────────────────────────────────────────
+const FAQAccordion = memo(({ question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  return (
+    <div className="border-b border-white/5">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full py-6 text-left focus:outline-none"
+      >
+        <h3 className="text-lg font-serif font-bold text-[#F5EDE0]">{question}</h3>
+        <FiChevronDown
+          className={`w-5 h-5 text-[#E8603A] transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <p className="pb-6 text-[#F5EDE0]/60 font-light leading-relaxed">
+              {answer}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+})
+FAQAccordion.displayName = "FAQAccordion"
+
 const FAQ = ({ variants, id }) => (
   <motion.section
     variants={variants}
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, margin: "-80px" }}
-    className="py-16 sm:py-24 px-4 sm:px-6"
+    className="px-4 py-24 sm:py-32 sm:px-6 bg-[#08080F]"
     aria-labelledby={id}
   >
     <div className="max-w-3xl mx-auto">
-      <div className="text-center mb-12 sm:mb-14">
-        <span className="inline-block text-xs sm:text-sm font-bold uppercase tracking-[0.15em] text-accent-primary dark:text-accent-primary-light mb-3">
-          FAQ
-        </span>
+      <div className="mb-16 text-center">
         <h2
           id={id}
-          className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-3 tracking-tight"
+          className="mb-4 font-serif text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-[#F5EDE0]"
         >
           Frequently Asked Questions
         </h2>
-        <p className="text-sm sm:text-base text-light-text-secondary dark:text-dark-text-secondary max-w-xl mx-auto">
-          Everything you need to know about TaskFlow.
-        </p>
       </div>
-      <div className="card rounded-xl">
+      <div className="bg-[#10101A] p-8 rounded-3xl border border-white/5">
         {faqData.map((faq) => (
           <FAQAccordion key={faq.question} {...faq} />
         ))}
@@ -857,220 +487,92 @@ const CTA = ({ variants }) => (
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, margin: "-80px" }}
-    className="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden"
+    className="relative px-4 py-24 overflow-hidden sm:py-32 sm:px-6"
   >
     <div
-      className="absolute inset-0"
-      style={{ background: "linear-gradient(135deg, #C4654A 0%, #A8503A 100%)" }}
+      className="absolute inset-0 bg-[#E8603A]"
       aria-hidden="true"
     />
     <div
-      className="absolute inset-0 opacity-10"
+      className="absolute inset-0 opacity-20"
       style={{
-        backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+        backgroundImage: "radial-gradient(circle, #08080F 1px, transparent 1px)",
         backgroundSize: "28px 28px",
       }}
       aria-hidden="true"
     />
     <div className="relative z-10 max-w-3xl mx-auto text-center">
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-white mb-4 tracking-tight">
+      <h2 className="mb-6 font-serif text-4xl font-bold tracking-tight text-[#08080F] sm:text-5xl md:text-6xl">
         Ready to Transform Your Workflow?
       </h2>
-      <p className="text-sm sm:text-base text-white/80 mb-8 sm:mb-10 max-w-xl mx-auto">
+      <p className="max-w-xl mx-auto mb-12 text-lg text-[#08080F]/80">
         Get started in 30 seconds. Create your account, add your first project, invite your team,
         and start shipping.
       </p>
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+      <div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
         <Link
           to="/register"
-          className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-lg font-semibold text-sm sm:text-base shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer"
-          style={{ backgroundColor: "#FAF6F1", color: "#C4654A" }}
+          className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-[#F5EDE0] bg-[#08080F] hover:bg-black transition-colors"
           aria-label="Start free trial"
         >
           Start Free Trial
-          <FiArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
-        </Link>
-        <Link
-          to="/login"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-lg font-semibold text-sm sm:text-base border transition-all duration-200 cursor-pointer backdrop-blur-sm"
-          style={{
-            backgroundColor: "rgba(255,255,255,0.1)",
-            color: "#FAF6F1",
-            borderColor: "rgba(255,255,255,0.2)",
-          }}
-          aria-label="Sign in"
-        >
-          Sign In
+          <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
-      <p className="text-xs sm:text-sm text-white/60 mt-4">
-        No credit card required &middot; Free for 14 days &middot; Cancel anytime
-      </p>
     </div>
   </motion.section>
 )
 
 // ─── Footer ──────────────────────────────────────────────────────
 const Footer = () => {
-  const featuresId = useId()
-  const pricingId = useId()
-  const faqId = useId()
-
   return (
-    <footer className="py-12 sm:py-16 px-4 sm:px-6 border-t border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+    <footer className="px-4 py-16 border-t sm:py-24 sm:px-6 border-white/5 bg-[#08080F]">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-2 gap-12 mb-16 md:grid-cols-4">
           <div>
-            <h4 className="font-semibold text-sm text-light-text-primary dark:text-dark-text-primary mb-4">
-              Product
-            </h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <a
-                  href={`#${featuresId}`}
-                  className="text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-primary dark:hover:text-accent-primary-light transition-colors"
-                >
-                  Features
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`#${pricingId}`}
-                  className="text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-primary dark:hover:text-accent-primary-light transition-colors"
-                >
-                  Pricing
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`#${faqId}`}
-                  className="text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-primary dark:hover:text-accent-primary-light transition-colors"
-                >
-                  FAQ
-                </a>
-              </li>
+            <h4 className="mb-6 font-serif text-lg font-bold text-[#F5EDE0]">Product</h4>
+            <ul className="space-y-4 text-sm text-[#F5EDE0]/60">
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Features</a></li>
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Pricing</a></li>
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">FAQ</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-sm text-light-text-primary dark:text-dark-text-primary mb-4">
-              Resources
-            </h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                  Documentation
-                </span>
-              </li>
-              <li>
-                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                  API Reference
-                </span>
-              </li>
-              <li>
-                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                  Guides
-                </span>
-              </li>
+            <h4 className="mb-6 font-serif text-lg font-bold text-[#F5EDE0]">Resources</h4>
+            <ul className="space-y-4 text-sm text-[#F5EDE0]/60">
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Documentation</a></li>
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">API</a></li>
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Guides</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-sm text-light-text-primary dark:text-dark-text-primary mb-4">
-              Company
-            </h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">About</span>
-              </li>
-              <li>
-                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">Blog</span>
-              </li>
-              <li>
-                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                  Careers
-                </span>
-              </li>
+            <h4 className="mb-6 font-serif text-lg font-bold text-[#F5EDE0]">Company</h4>
+            <ul className="space-y-4 text-sm text-[#F5EDE0]/60">
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">About</a></li>
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Blog</a></li>
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Careers</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-sm text-light-text-primary dark:text-dark-text-primary mb-4">
-              Legal
-            </h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                  Privacy Policy
-                </span>
-              </li>
-              <li>
-                <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                  Terms of Service
-                </span>
-              </li>
-              <li>
-                <a
-                  href="mailto:hello@taskflow.app"
-                  className="text-light-text-secondary dark:text-dark-text-secondary hover:text-accent-primary dark:hover:text-accent-primary-light transition-colors"
-                  aria-label="Contact us"
-                >
-                  Contact
-                </a>
-              </li>
+            <h4 className="mb-6 font-serif text-lg font-bold text-[#F5EDE0]">Legal</h4>
+            <ul className="space-y-4 text-sm text-[#F5EDE0]/60">
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Privacy</a></li>
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Terms</a></li>
+              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Contact</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="mb-10 py-5 sm:py-6 px-4 sm:px-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-            <div className="flex-1">
-              <h4 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary mb-1">
-                Stay in the Loop
-              </h4>
-              <p className="text-xs sm:text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                Get product updates, tips, and best practices. No spam, ever.
-              </p>
+        <div className="flex flex-col items-center justify-between gap-6 pt-8 border-t border-white/5 sm:flex-row">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#E8603A]">
+              <span className="font-serif text-sm font-bold text-[#08080F]">T</span>
             </div>
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="flex w-full sm:w-auto gap-2"
-              aria-label="Newsletter signup"
-            >
-              <input
-                type="email"
-                placeholder="you@company.com"
-                className="flex-1 sm:w-56 px-4 py-2.5 text-sm rounded-lg bg-light-bg-primary dark:bg-dark-bg-secondary text-light-text-primary dark:text-dark-text-primary border border-light-border dark:border-dark-border placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-all duration-200"
-                aria-label="Email for newsletter"
-                required
-              />
-              <button
-                type="submit"
-                className="btn-primary px-4 py-2.5 text-xs sm:text-sm whitespace-nowrap"
-                aria-label="Subscribe"
-              >
-                Subscribe
-              </button>
-            </form>
+            <span className="font-serif text-lg font-bold text-[#F5EDE0]">TaskFlow</span>
           </div>
-        </div>
-
-        <div className="pt-6 border-t border-light-border dark:border-dark-border flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-accent-primary flex items-center justify-center shadow-sm">
-              <span className="font-serif font-bold text-white text-xs leading-none">T</span>
-            </div>
-            <span className="font-serif font-bold text-sm text-light-text-primary dark:text-dark-text-primary">
-              TaskFlow
-            </span>
-          </div>
-          <p className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center sm:text-left">
+          <p className="text-sm text-[#F5EDE0]/40">
             &copy; {new Date().getFullYear()} TaskFlow. All rights reserved.
           </p>
-          <a
-            href="mailto:hello@taskflow.app"
-            className="text-xs sm:text-sm text-light-text-tertiary dark:text-dark-text-tertiary hover:text-accent-primary dark:hover:text-accent-primary-light transition-colors"
-            aria-label="Email us"
-          >
-            hello@taskflow.app
-          </a>
         </div>
       </div>
     </footer>
@@ -1089,10 +591,10 @@ export const Home = () => {
   const mainId = useId()
 
   return (
-    <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-secondary dark:text-dark-text-secondary overflow-x-hidden antialiased">
+    <div className="min-h-screen bg-[#08080F] text-[#F5EDE0] font-sans selection:bg-[#E8603A]/30 selection:text-[#F5EDE0]">
       <a
         href={`#${mainId}`}
-        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:bg-accent-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium focus:shadow-md"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:bg-[#E8603A] focus:text-[#08080F] focus:px-4 focus:py-2 focus:rounded-full focus:text-sm focus:font-bold focus:shadow-md"
       >
         Skip to main content
       </a>
@@ -1101,6 +603,7 @@ export const Home = () => {
 
       <main id={mainId}>
         <Hero variants={variants} reduced={r} />
+        <Ticker />
         <Features variants={variants} id={featuresId} />
         <Teams variants={variants} id={teamsId} />
         <Testimonials variants={variants} id={testimonialsId} />

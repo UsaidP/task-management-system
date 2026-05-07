@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useId, useRef } from "react"
-import { FiX } from "react-icons/fi"
+import { XIcon as X } from "@animateicons/react/lucide"
 
 const Modal = ({ isOpen, onClose, title, children, size = "md" }) => {
   const modalRef = useRef(null)
@@ -96,7 +96,7 @@ const Modal = ({ isOpen, onClose, title, children, size = "md" }) => {
                 aria-label="Close modal"
                 className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiX
+                <X
                   className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary"
                   aria-hidden="true"
                 />

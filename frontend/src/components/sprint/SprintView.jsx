@@ -1,6 +1,6 @@
-import { useParams } from "react-router-dom"
 import { useState } from "react"
-import { FiPlus } from "react-icons/fi"
+import { PlusIcon } from "@animateicons/react/lucide"
+import { useParams } from "react-router-dom"
 import useSprint from "../../hooks/useSprint.js"
 import CompleteSprintDialog from "./CompleteSprintDialog.jsx"
 import CreateSprintDialog from "./CreateSprintDialog.jsx"
@@ -77,7 +77,7 @@ const SprintView = () => {
             onClick={() => setShowCreateDialog(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
           >
-            <FiPlus className="w-4 h-4" aria-hidden="true" />
+            <PlusIcon className="w-4 h-4" aria-hidden="true" />
             New Sprint
           </button>
         </div>

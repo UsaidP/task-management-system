@@ -1,37 +1,9 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import {
-  FiActivity,
-  FiAlertTriangle,
-  FiAward,
-  FiBell,
-  FiBriefcase,
-  FiCalendar,
-  FiCheckCircle,
-  FiChevronRight,
-  FiCircle,
-  FiClock,
-  FiEdit,
-  FiEye,
-  FiFolder,
-  FiGithub,
-  FiGlobe,
-  FiLinkedin,
-  FiLock,
-  FiMail,
-  FiMapPin,
-  FiMoon,
-  FiPhone,
-  FiSettings,
-  FiShare,
-  FiStar,
-  FiTrash2,
-  FiTrendingUp,
-  FiUser,
-  FiX,
-} from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
+import { ActivityIcon as Activity, BellIcon as Bell, CircleCheckIcon as CircleCheck, ChevronRightIcon as ChevronRight, EyeIcon as Eye, FolderIcon as Folder, GlobeIcon as Globe, LinkedinIcon as Linkedin, LockIcon as Lock, MailIcon as Mail, MapPinIcon as MapPin, MoonIcon as Moon, PhoneIcon as Phone, SettingsIcon as Settings, ShareIcon as Share, StarIcon as Star, TrashIcon as Trash, TrendingUpIcon as TrendingUp, TriangleAlertIcon as TriangleAlert, UserIcon as User, XIcon as X } from "@animateicons/react/lucide"
+import { AwardIcon as Award, BriefcaseIcon as Briefcase, CalendarIcon as Calendar, CircleIcon as Circle, ClockIcon as Clock, PencilIcon as Pencil } from "lucide-react"
 import { useAuth } from "../../contexts/customHook.js"
 import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
@@ -45,12 +17,12 @@ const ProfileSkeleton = () => (
         <SkeletonText width="w-40" height="h-8" className="mb-2" />
         <SkeletonText width="w-56" height="h-5" />
       </div>
-      <Skeleton className="w-28 h-10 rounded-xl" />
+      <Skeleton className="h-10 w-28 rounded-xl" />
     </div>
 
     {/* Profile Header Card */}
-    <div className="bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border p-6 sm:p-8">
-      <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
+    <div className="p-6 border bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-2xl border-light-border dark:border-dark-border sm:p-8">
+      <div className="flex flex-col items-center gap-6 mb-8 sm:flex-row">
         <SkeletonCircle size="w-24 h-24" className="!rounded-full" />
         <div className="text-center sm:text-left">
           <SkeletonText width="w-48" height="h-8" className="mb-2" />
@@ -59,7 +31,7 @@ const ProfileSkeleton = () => (
         </div>
       </div>
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="p-4 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-secondary">
             <SkeletonCircle size="w-8 h-8" className="mb-3" />
@@ -71,7 +43,7 @@ const ProfileSkeleton = () => (
     </div>
 
     {/* Info Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       {[1, 2, 3, 4, 5, 6].map((i) => (
         <div key={i} className="p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
           <SkeletonCircle size="w-6 h-6" className="mb-3" />
@@ -82,7 +54,7 @@ const ProfileSkeleton = () => (
     </div>
 
     {/* Settings Menu */}
-    <div className="bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border p-4">
+    <div className="p-4 border bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-2xl border-light-border dark:border-dark-border">
       {[1, 2, 3, 4, 5].map((i) => (
         <div
           key={i}
@@ -104,12 +76,12 @@ const InfoItem = ({ icon: Icon, label, value, href }) => {
   if (!value) return null
 
   return (
-    <div className="group flex items-center gap-3 p-3 rounded-lg bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary transition-colors duration-200">
-      <div className="p-2 rounded-lg bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors duration-200">
-        <Icon className="w-4 h-4 text-accent-primary flex-shrink-0" />
+    <div className="flex items-center gap-3 p-3 transition-colors duration-200 rounded-lg group bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary">
+      <div className="p-2 transition-colors duration-200 rounded-lg bg-accent-primary/10 group-hover:bg-accent-primary/20">
+        <Icon className="flex-shrink-0 w-4 h-4 text-accent-primary" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary uppercase tracking-wide font-medium">
+        <p className="text-xs font-medium tracking-wide uppercase text-light-text-secondary dark:text-dark-text-secondary">
           {label}
         </p>
         {href ? (
@@ -117,12 +89,12 @@ const InfoItem = ({ icon: Icon, label, value, href }) => {
             href={href.startsWith("http") ? href : `https://${href}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium text-accent-primary hover:text-accent-primary-dark dark:hover:text-accent-primary-light transition-colors truncate block"
+            className="block text-sm font-medium truncate transition-colors text-accent-primary hover:text-accent-primary-dark dark:hover:text-accent-primary-light"
           >
             {value}
           </a>
         ) : (
-          <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+          <p className="text-sm font-medium truncate text-light-text-primary dark:text-dark-text-primary">
             {value}
           </p>
         )}
@@ -134,7 +106,7 @@ const InfoItem = ({ icon: Icon, label, value, href }) => {
 const StatCard = ({ icon: Icon, label, value, color, subtext }) => (
   <motion.div
     whileHover={{ y: -2, scale: 1.02 }}
-    className="group relative overflow-hidden bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border p-5 transition-shadow duration-200 hover:shadow-md dark:hover:shadow-dark-md"
+    className="relative p-5 overflow-hidden transition-shadow duration-200 border group bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border-light-border dark:border-dark-border hover:shadow-md dark:hover:shadow-dark-md"
   >
     <div
       className={`absolute top-0 right-0 w-20 h-20 ${color} opacity-10 rounded-bl-full transition-opacity group-hover:opacity-20`}
@@ -147,15 +119,15 @@ const StatCard = ({ icon: Icon, label, value, color, subtext }) => (
           />
         </div>
         {subtext && (
-          <span className="text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary px-2 py-1 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover">
+          <span className="px-2 py-1 text-xs font-medium rounded-full text-light-text-secondary dark:text-dark-text-secondary bg-light-bg-hover dark:bg-dark-bg-hover">
             {subtext}
           </span>
         )}
       </div>
-      <p className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary mb-1">
+      <p className="mb-1 text-3xl font-bold text-light-text-primary dark:text-dark-text-primary">
         {value}
       </p>
-      <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary font-medium uppercase tracking-wide">
+      <p className="text-xs font-medium tracking-wide uppercase text-light-text-secondary dark:text-dark-text-secondary">
         {label}
       </p>
     </div>
@@ -182,7 +154,7 @@ const SettingsItem = ({ icon: Icon, title, subtitle, color, onClick, danger }) =
       </p>
       <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">{subtitle}</p>
     </div>
-    <FiChevronRight className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary group-hover:text-accent-primary transition-colors" />
+    <ChevronRight className="w-5 h-5 transition-colors text-light-text-secondary dark:text-dark-text-secondary group-hover:text-accent-primary" />
   </motion.button>
 )
 
@@ -293,7 +265,7 @@ const Me = () => {
       }
 
       const formData = new FormData()
-      formData.append("avatars", file)
+      formData.append("avatar", file)
 
       const toastId = toast.loading("Uploading avatar...")
       try {
@@ -365,13 +337,13 @@ const Me = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case "completed":
-        return <FiCheckCircle className="w-4 h-4 text-accent-success" />
+        return <CircleCheck className="w-4 h-4 text-accent-success" />
       case "in-progress":
-        return <FiClock className="w-4 h-4 text-accent-primary" />
+        return <Clock className="w-4 h-4 text-accent-primary" />
       case "under-review":
-        return <FiEye className="w-4 h-4 text-accent-warning" />
+        return <Eye className="w-4 h-4 text-accent-warning" />
       default:
-        return <FiCircle className="w-4 h-4 text-light-text-tertiary" />
+        return <Circle className="w-4 h-4 text-light-text-tertiary" />
     }
   }
 
@@ -381,10 +353,10 @@ const Me = () => {
 
   if (!user) {
     return (
-      <div className="flex justify-center items-center h-full">
+      <div className="flex items-center justify-center h-full">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-accent-primary/30 border-t-accent-primary rounded-full animate-spin" />
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
+          <div className="w-10 h-10 border-4 rounded-full border-accent-primary/30 border-t-accent-primary animate-spin" />
+          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
             Loading profile...
           </p>
         </div>
@@ -394,56 +366,56 @@ const Me = () => {
 
   const settingsMenu = [
     {
-      icon: FiUser,
+      icon: User,
       title: "Personal Info",
       subtitle: "Name, phone, bio, location",
       color: "text-accent-primary",
       onClick: () => setShowPersonalInfo(true),
     },
     {
-      icon: FiBell,
+      icon: Bell,
       title: "Notifications",
       subtitle: "Email & push notifications",
       color: "text-accent-warning",
       onClick: () =>
         handleSettingClick({
-          icon: FiBell,
+          icon: Bell,
           title: "Notifications",
           subtitle: "Email & push notifications",
         }),
     },
     {
-      icon: FiMoon,
+      icon: Moon,
       title: "Appearance",
       subtitle: "Theme & display settings",
       color: "text-accent-info",
       onClick: () =>
         handleSettingClick({
-          icon: FiMoon,
+          icon: Moon,
           title: "Appearance",
           subtitle: "Theme & display settings",
         }),
     },
     {
-      icon: FiLock,
+      icon: Lock,
       title: "Security",
       subtitle: "Password & authentication",
       color: "text-accent-danger",
       onClick: () =>
         handleSettingClick({
-          icon: FiLock,
+          icon: Lock,
           title: "Security",
           subtitle: "Password & authentication",
         }),
     },
     {
-      icon: FiSettings,
+      icon: Settings,
       title: "Preferences",
       subtitle: "Language, timezone, defaults",
       color: "text-accent-purple",
       onClick: () =>
         handleSettingClick({
-          icon: FiSettings,
+          icon: Settings,
           title: "Preferences",
           subtitle: "Language, timezone, defaults",
         }),
@@ -455,47 +427,48 @@ const Me = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="h-full flex flex-col overflow-hidden"
+      className="flex flex-col h-full overflow-hidden"
     >
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-6xl mx-auto p-6 md:p-8 space-y-6">
+        <div className="max-w-6xl p-6 mx-auto space-y-6 md:p-8">
           {/* Profile Header Card */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="relative overflow-hidden backdrop-blur-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border p-6 md:p-8"
+            className="relative p-6 overflow-hidden border backdrop-blur-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border-light-border dark:border-dark-border md:p-8"
           >
             {/* Decorative Element */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-accent-primary/5 to-accent-success/5 rounded-bl-full" />
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-bl-full bg-gradient-to-br from-accent-primary/5 to-accent-success/5" />
 
-            <div className="relative flex flex-col md:flex-row items-center gap-6">
+            <div className="relative flex flex-col items-center gap-6 md:flex-row">
               {/* Avatar */}
               <motion.div whileHover={{ scale: 1.05 }} className="relative group">
                 <label
                   htmlFor="profile"
-                  className="block w-32 h-32 cursor-pointer overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow"
+                  className="block w-32 h-32 overflow-hidden transition-shadow shadow-lg cursor-pointer group-hover:shadow-xl"
                 >
-                  <div className="w-full h-full rounded-2xl flex items-center justify-center text-5xl font-bold text-light-text-primary dark:text-dark-text-primary relative overflow-hidden bg-transparent">
+                  <div className="relative flex items-center justify-center w-full h-full overflow-hidden text-5xl font-bold bg-transparent rounded-2xl text-light-text-primary dark:text-dark-text-primary">
                     {user?.avatar?.url &&
-                    user.avatar.url !== "https://placehold.co/400" &&
+                    !user.avatar.url.includes("placehold.co") &&
+                    !user.avatar.url.includes("pravatar.cc") &&
                     !avatarFailed ? (
                       <img
                         alt="Avatar"
-                        className="w-full h-full object-cover"
+                        className="object-cover w-full h-full"
                         src={avatarSrc}
                         decoding="async"
                         onError={handleAvatarError}
                       />
                     ) : (
-                      <span className="w-full h-full flex items-center justify-center rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
-                        {avatarInitial}
-                      </span>
+                      <div className="flex items-center justify-center w-full h-full rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
+                        <User className="w-1/2 h-1/2 text-light-text-secondary dark:text-dark-text-secondary" />
+                      </div>
                     )}
                   </div>
-                  <div className="absolute inset-0 bg-utility-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="text-light-text-inverse text-sm font-medium">Change</span>
+                  <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0 bg-utility-overlay group-hover:opacity-100">
+                    <span className="text-sm font-medium text-light-text-inverse">Change</span>
                   </div>
                 </label>
                 <input
@@ -507,31 +480,31 @@ const Me = () => {
                   onChange={handleFileChange}
                 />
                 {/* Online Status */}
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-accent-success rounded-full border-4 border-light-bg-secondary dark:border-dark-bg-tertiary" />
+                <div className="absolute w-6 h-6 border-4 rounded-full -bottom-1 -right-1 bg-accent-success border-light-bg-secondary dark:border-dark-bg-tertiary" />
               </motion.div>
 
               {/* User Info */}
               <div className="flex-1 text-center md:text-left">
-                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
                   <h2 className="text-3xl font-bold text-light-text-primary dark:text-dark-text-primary">
                     {displayName}
                   </h2>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-xs font-semibold uppercase tracking-wide w-fit mx-auto md:mx-0">
-                    <FiAward className="w-3.5 h-3.5" />
+                    <Award className="w-3.5 h-3.5" />
                     {displayRole}
                   </span>
                 </div>
-                <p className="text-light-text-secondary flex items-center justify-center md:justify-start gap-2 mt-2">
-                  <FiMail className="w-4 h-4 text-accent-primary" />
+                <p className="flex items-center justify-center gap-2 mt-2 text-light-text-secondary md:justify-start">
+                  <Mail className="w-4 h-4 text-accent-primary" />
                   <span className="font-medium">{displayEmail}</span>
                 </p>
-                <div className="flex items-center justify-center md:justify-start gap-4 mt-3">
+                <div className="flex items-center justify-center gap-4 mt-3 md:justify-start">
                   <span className="flex items-center gap-1.5 text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                    <FiCalendar className="w-4 h-4" />
+                    <Calendar className="w-4 h-4" />
                     Joined {joinDate}
                   </span>
                   <span className="flex items-center gap-1.5 text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                    <FiStar className="w-4 h-4 text-accent-warning" />
+                    <Star className="w-4 h-4 text-accent-warning" />
                     Member since {new Date(user.createdAt).getFullYear()}
                   </span>
                 </div>
@@ -543,17 +516,17 @@ const Me = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => toast.success("Share profile coming soon!")}
-                  className="p-3 rounded-xl border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                  className="p-3 transition-colors border rounded-xl border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
                 >
-                  <FiShare className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+                  <Share className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={editProfileHandler}
-                  className="p-3 rounded-xl bg-accent-primary text-light-text-inverse hover:bg-accent-primary-dark transition-colors shadow-md"
+                  className="p-3 transition-colors shadow-md rounded-xl bg-accent-primary text-light-text-inverse hover:bg-accent-primary-dark"
                 >
-                  <FiEdit className="w-5 h-5" />
+                  <Pencil className="w-5 h-5" />
                 </motion.button>
               </div>
             </div>
@@ -564,29 +537,29 @@ const Me = () => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+            className="grid grid-cols-2 gap-4 lg:grid-cols-4"
           >
             <StatCard
-              icon={FiCheckCircle}
+              icon={CircleCheck}
               label="Completed"
               value={stats.tasksCompleted}
               color="bg-accent-success"
               subtext={`${stats.tasksCount > 0 ? Math.round((stats.tasksCompleted / stats.tasksCount) * 100) : 0}%`}
             />
             <StatCard
-              icon={FiClock}
+              icon={Clock}
               label="In Progress"
               value={stats.tasksInProgress}
               color="bg-accent-primary"
             />
             <StatCard
-              icon={FiFolder}
+              icon={Folder}
               label="Total Tasks"
               value={stats.tasksCount}
               color="bg-accent-warning"
             />
             <StatCard
-              icon={FiTrendingUp}
+              icon={TrendingUp}
               label="Productivity"
               value={
                 stats.tasksCompleted > 0
@@ -598,60 +571,60 @@ const Me = () => {
           </motion.div>
 
           {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Left Column - Profile Info */}
             <motion.div
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="lg:col-span-2 space-y-6"
+              className="space-y-6 lg:col-span-2"
             >
               {/* Profile Information */}
-              <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border overflow-hidden">
+              <div className="overflow-hidden border bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border-light-border dark:border-dark-border">
                 <div className="p-5 border-b border-light-border dark:border-dark-border">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-accent-primary/10">
-                      <FiUser className="w-5 h-5 text-accent-primary" />
+                      <User className="w-5 h-5 text-accent-primary" />
                     </div>
-                    <h3 className="text-lg font-serif font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    <h3 className="font-serif text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Profile Information
                     </h3>
                   </div>
                 </div>
                 <div className="p-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <InfoItem icon={FiPhone} label="Phone" value={user?.phone} />
-                    <InfoItem icon={FiBriefcase} label="Company" value={user?.company} />
-                    <InfoItem icon={FiBriefcase} label="Job Title" value={user?.jobTitle} />
-                    <InfoItem icon={FiMapPin} label="Location" value={user?.location} />
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    <InfoItem icon={Phone} label="Phone" value={user?.phone} />
+                    <InfoItem icon={Briefcase} label="Company" value={user?.company} />
+                    <InfoItem icon={Briefcase} label="Job Title" value={user?.jobTitle} />
+                    <InfoItem icon={MapPin} label="Location" value={user?.location} />
                     <InfoItem
-                      icon={FiGlobe}
+                      icon={Globe}
                       label="Website"
                       value={user?.website}
                       href={user?.website}
                     />
                     <InfoItem
-                      icon={FiLinkedin}
+                      icon={Linkedin}
                       label="LinkedIn"
                       value={user?.linkedin}
                       href={user?.linkedin}
                     />
                     <InfoItem
-                      icon={FiGithub}
+                      icon={Github}
                       label="GitHub"
                       value={user?.github}
                       href={user?.github}
                     />
                   </div>
                   {user?.bio && (
-                    <div className="mt-4 p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 border border-light-border dark:border-dark-border">
+                    <div className="p-4 mt-4 border rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 border-light-border dark:border-dark-border">
                       <div className="flex items-center gap-2 mb-2">
-                        <FiAward className="w-4 h-4 text-accent-primary" />
-                        <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide font-semibold">
+                        <Award className="w-4 h-4 text-accent-primary" />
+                        <p className="text-xs font-semibold tracking-wide uppercase text-light-text-tertiary dark:text-dark-text-tertiary">
                           Bio
                         </p>
                       </div>
-                      <p className="text-sm text-light-text-primary dark:text-dark-text-primary leading-relaxed">
+                      <p className="text-sm leading-relaxed text-light-text-primary dark:text-dark-text-primary">
                         {user.bio}
                       </p>
                     </div>
@@ -660,13 +633,13 @@ const Me = () => {
               </div>
 
               {/* Activity Overview */}
-              <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border overflow-hidden">
+              <div className="overflow-hidden border bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border-light-border dark:border-dark-border">
                 <div className="p-5 border-b border-light-border dark:border-dark-border">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-accent-success/10">
-                      <FiActivity className="w-5 h-5 text-accent-success" />
+                      <Activity className="w-5 h-5 text-accent-success" />
                     </div>
-                    <h3 className="text-lg font-serif font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    <h3 className="font-serif text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
                       Recent Activity
                     </h3>
                   </div>
@@ -675,11 +648,11 @@ const Me = () => {
                   {recentActivity.length === 0 ? (
                     <div className="flex items-center justify-center py-8">
                       <div className="text-center">
-                        <FiActivity className="w-12 h-12 text-light-text-tertiary dark:text-dark-text-tertiary mx-auto mb-3 opacity-40" />
-                        <p className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                        <Activity className="w-12 h-12 mx-auto mb-3 text-light-text-tertiary dark:text-dark-text-tertiary opacity-40" />
+                        <p className="font-medium text-light-text-secondary dark:text-dark-text-secondary">
                           No recent activity
                         </p>
-                        <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                        <p className="mt-1 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                           Your task updates will appear here
                         </p>
                       </div>
@@ -690,17 +663,17 @@ const Me = () => {
                         key={activity.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="flex items-start gap-3 p-4 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                        className="flex items-start gap-3 p-4 transition-colors hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
                       >
-                        <div className="p-2 rounded-lg bg-light-bg-tertiary dark:bg-dark-bg-secondary flex-shrink-0">
+                        <div className="flex-shrink-0 p-2 rounded-lg bg-light-bg-tertiary dark:bg-dark-bg-secondary">
                           {getStatusIcon(activity.status)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                          <p className="text-sm font-medium truncate text-light-text-primary dark:text-dark-text-primary">
                             {activity.type === "completed" ? "Completed" : "Updated"} task:{" "}
                             <span className="text-accent-primary">{activity.title}</span>
                           </p>
-                          <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                          <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
                             {new Date(activity.date).toLocaleDateString("en-US", {
                               month: "short",
                               day: "numeric",
@@ -724,11 +697,11 @@ const Me = () => {
               className="space-y-6"
             >
               {/* Account Settings */}
-              <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border overflow-hidden">
+              <div className="overflow-hidden border bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border-light-border dark:border-dark-border">
                 <div className="p-5 border-b border-light-border dark:border-dark-border">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-accent-warning/10">
-                      <FiSettings className="w-5 h-5 text-accent-warning" />
+                      <Settings className="w-5 h-5 text-accent-warning" />
                     </div>
                     <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
                       Account Settings
@@ -750,11 +723,11 @@ const Me = () => {
               </div>
 
               {/* Danger Zone */}
-              <div className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-accent-danger/30 overflow-hidden">
+              <div className="overflow-hidden border bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border-accent-danger/30">
                 <div className="p-5 border-b border-accent-danger/20">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-accent-danger/10">
-                      <FiTrash2 className="w-5 h-5 text-accent-danger" />
+                      <Trash className="w-5 h-5 text-accent-danger" />
                     </div>
                     <h3 className="text-lg font-bold text-accent-danger">Danger Zone</h3>
                   </div>
@@ -765,7 +738,7 @@ const Me = () => {
                       <p className="font-semibold text-light-text-primary dark:text-dark-text-primary">
                         Delete Account
                       </p>
-                      <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+                      <p className="mt-1 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                         Permanently delete your account
                       </p>
                     </div>
@@ -775,7 +748,7 @@ const Me = () => {
                       onClick={() => setShowDeleteConfirm(true)}
                       className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-accent-danger text-accent-danger font-semibold hover:bg-accent-danger hover:text-light-text-inverse transition-all duration-200"
                     >
-                      <FiTrash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                       Delete
                     </motion.button>
                   </div>
@@ -789,12 +762,12 @@ const Me = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="text-center py-6 border-t border-light-border dark:border-dark-border"
+            className="py-6 text-center border-t border-light-border dark:border-dark-border"
           >
-            <p className="text-light-text-tertiary dark:text-dark-text-tertiary text-sm font-medium">
-              Taskly v1.0.0
+            <p className="text-sm font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
+              TaskFlow v1.0.0
             </p>
-            <p className="text-light-text-tertiary dark:text-dark-text-tertiary text-xs mt-1">
+            <p className="mt-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
               Work that feels human
             </p>
           </motion.div>
@@ -825,7 +798,7 @@ const Me = () => {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-xl bg-accent-primary/10">
-                  <FiUser className="w-6 h-6 text-accent-primary" />
+                  <User className="w-6 h-6 text-accent-primary" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
@@ -839,28 +812,28 @@ const Me = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsEditModalOpen(true)}
-                  className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus-visible-ring"
+                  className="p-2 transition-colors rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus-visible-ring"
                   title="Edit Profile"
                 >
-                  <FiEdit className="w-5 h-5 text-accent-primary" />
+                  <Pencil className="w-5 h-5 text-accent-primary" />
                 </button>
                 <button
                   onClick={() => setShowPersonalInfo(false)}
-                  className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus-visible-ring"
+                  className="p-2 transition-colors rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus-visible-ring"
                 >
-                  <FiX className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                  <X className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
                 </button>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning flex items-center justify-center text-2xl font-bold text-light-text-inverse flex-shrink-0">
+                <div className="flex items-center justify-center flex-shrink-0 w-16 h-16 text-2xl font-bold rounded-xl bg-gradient-to-br from-accent-primary via-accent-success to-accent-warning text-light-text-inverse">
                   {user?.avatar?.url ? (
                     <img
                       src={user.avatar.url}
                       alt="Avatar"
-                      className="w-full h-full object-cover rounded-xl"
+                      className="object-cover w-full h-full rounded-xl"
                       loading="lazy"
                       decoding="async"
                     />
@@ -875,32 +848,32 @@ const Me = () => {
                   <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                     {user?.email}
                   </p>
-                  <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary mt-1 capitalize">
+                  <p className="mt-1 text-xs capitalize text-light-text-tertiary dark:text-dark-text-tertiary">
                     {user?.role}
                   </p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <InfoItem icon={FiPhone} label="Phone" value={user?.phone || "Not set"} />
-                <InfoItem icon={FiBriefcase} label="Company" value={user?.company || "Not set"} />
+                <InfoItem icon={Phone} label="Phone" value={user?.phone || "Not set"} />
+                <InfoItem icon={Briefcase} label="Company" value={user?.company || "Not set"} />
                 <InfoItem
-                  icon={FiBriefcase}
+                  icon={Briefcase}
                   label="Job Title"
                   value={user?.jobTitle || "Not set"}
                 />
-                <InfoItem icon={FiMapPin} label="Location" value={user?.location || "Not set"} />
+                <InfoItem icon={MapPin} label="Location" value={user?.location || "Not set"} />
               </div>
 
               {user?.bio && (
                 <div className="p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
                   <div className="flex items-center gap-2 mb-2">
-                    <FiAward className="w-4 h-4 text-accent-primary" />
-                    <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide font-semibold">
+                    <Award className="w-4 h-4 text-accent-primary" />
+                    <p className="text-xs font-semibold tracking-wide uppercase text-light-text-tertiary dark:text-dark-text-tertiary">
                       Bio
                     </p>
                   </div>
-                  <p className="text-sm text-light-text-primary dark:text-dark-text-primary leading-relaxed">
+                  <p className="text-sm leading-relaxed text-light-text-primary dark:text-dark-text-primary">
                     {user.bio}
                   </p>
                 </div>
@@ -914,10 +887,10 @@ const Me = () => {
                     }
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                    className="flex items-center gap-3 p-3 transition-colors rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
                   >
-                    <FiGlobe className="w-5 h-5 text-accent-primary flex-shrink-0" />
-                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                    <Globe className="flex-shrink-0 w-5 h-5 text-accent-primary" />
+                    <span className="text-sm font-medium truncate text-light-text-primary dark:text-dark-text-primary">
                       {user.website}
                     </span>
                   </a>
@@ -929,10 +902,10 @@ const Me = () => {
                     }
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                    className="flex items-center gap-3 p-3 transition-colors rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
                   >
-                    <FiLinkedin className="w-5 h-5 text-accent-primary flex-shrink-0" />
-                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                    <Linkedin className="flex-shrink-0 w-5 h-5 text-accent-primary" />
+                    <span className="text-sm font-medium truncate text-light-text-primary dark:text-dark-text-primary">
                       LinkedIn
                     </span>
                   </a>
@@ -942,10 +915,10 @@ const Me = () => {
                     href={user.github.startsWith("http") ? user.github : `https://${user.github}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+                    className="flex items-center gap-3 p-3 transition-colors rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
                   >
-                    <FiGithub className="w-5 h-5 text-accent-primary flex-shrink-0" />
-                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary truncate">
+                    <Github className="flex-shrink-0 w-5 h-5 text-accent-primary" />
+                    <span className="text-sm font-medium truncate text-light-text-primary dark:text-dark-text-primary">
                       GitHub
                     </span>
                   </a>
@@ -954,7 +927,7 @@ const Me = () => {
 
               <div className="pt-4 border-t border-light-border dark:border-dark-border">
                 <div className="flex items-center gap-2 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-                  <FiCalendar className="w-4 h-4" />
+                  <Calendar className="w-4 h-4" />
                   <span>
                     Joined{" "}
                     {new Date(user.createdAt).toLocaleDateString("en-US", {
@@ -981,7 +954,7 @@ const Me = () => {
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-light-border dark:border-dark-border p-6 max-w-md w-full mx-4 shadow-2xl"
+            className="w-full max-w-md p-6 mx-4 border shadow-2xl bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border-light-border dark:border-dark-border"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
@@ -1000,9 +973,9 @@ const Me = () => {
               </div>
               <button
                 onClick={() => setActiveSetting(null)}
-                className="p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus-visible-ring"
+                className="p-2 transition-colors rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus-visible-ring"
               >
-                <FiX className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                <X className="w-5 h-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
               </button>
             </div>
 
@@ -1018,8 +991,8 @@ const Me = () => {
                         Receive task updates via email
                       </p>
                     </div>
-                    <div className="w-12 h-6 bg-accent-primary rounded-full relative cursor-pointer">
-                      <div className="absolute right-1 top-1 w-4 h-4 bg-light-text-inverse rounded-full shadow" />
+                    <div className="relative w-12 h-6 rounded-full cursor-pointer bg-accent-primary">
+                      <div className="absolute w-4 h-4 rounded-full shadow right-1 top-1 bg-light-text-inverse" />
                     </div>
                   </div>
                   <div className="flex items-center justify-between p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
@@ -1031,8 +1004,8 @@ const Me = () => {
                         Get instant alerts
                       </p>
                     </div>
-                    <div className="w-12 h-6 bg-light-border dark:bg-dark-border rounded-full relative cursor-pointer">
-                      <div className="absolute left-1 top-1 w-4 h-4 bg-light-text-inverse rounded-full shadow" />
+                    <div className="relative w-12 h-6 rounded-full cursor-pointer bg-light-border dark:bg-dark-border">
+                      <div className="absolute w-4 h-4 rounded-full shadow left-1 top-1 bg-light-text-inverse" />
                     </div>
                   </div>
                 </>
@@ -1040,7 +1013,7 @@ const Me = () => {
 
               {activeSetting.title === "Appearance" && (
                 <>
-                  <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-3">
+                  <p className="mb-3 text-sm text-light-text-secondary dark:text-dark-text-secondary">
                     Choose your preferred theme
                   </p>
                   <div className="grid grid-cols-3 gap-3">
@@ -1049,8 +1022,8 @@ const Me = () => {
                       onClick={() => handleThemeChange("light")}
                       className={`p-4 rounded-xl border-2 ${selectedTheme === "light" ? "border-accent-primary bg-light-bg-primary dark:bg-dark-bg-primary" : "border-light-border dark:border-dark-border"} focus-visible-ring`}
                     >
-                      <div className="w-full h-12 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary mb-2" />
-                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
+                      <div className="w-full h-12 mb-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary" />
+                      <p className="text-xs font-medium text-center text-light-text-primary dark:text-dark-text-primary">
                         Light
                       </p>
                     </button>
@@ -1059,8 +1032,8 @@ const Me = () => {
                       onClick={() => handleThemeChange("dark")}
                       className={`p-4 rounded-xl border-2 ${selectedTheme === "dark" ? "border-accent-primary bg-dark-bg-primary" : "border-light-border dark:border-dark-border"} focus-visible-ring`}
                     >
-                      <div className="w-full h-12 rounded-lg bg-dark-bg-tertiary mb-2" />
-                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
+                      <div className="w-full h-12 mb-2 rounded-lg bg-dark-bg-tertiary" />
+                      <p className="text-xs font-medium text-center text-light-text-primary dark:text-dark-text-primary">
                         Dark
                       </p>
                     </button>
@@ -1069,8 +1042,8 @@ const Me = () => {
                       onClick={() => handleThemeChange("system")}
                       className={`p-4 rounded-xl border-2 ${selectedTheme === "system" ? "border-accent-primary" : "border-light-border dark:border-dark-border"} focus-visible-ring`}
                     >
-                      <div className="w-full h-12 rounded-lg bg-gradient-to-r from-light-bg-secondary to-dark-bg-tertiary mb-2" />
-                      <p className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary text-center">
+                      <div className="w-full h-12 mb-2 rounded-lg bg-gradient-to-r from-light-bg-secondary to-dark-bg-tertiary" />
+                      <p className="text-xs font-medium text-center text-light-text-primary dark:text-dark-text-primary">
                         System
                       </p>
                     </button>
@@ -1081,14 +1054,14 @@ const Me = () => {
               {activeSetting.title === "Security" && (
                 <>
                   <div className="p-4 rounded-xl bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
-                    <p className="font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
+                    <p className="mb-1 font-medium text-light-text-primary dark:text-dark-text-primary">
                       Password
                     </p>
                     <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                       Last changed 30 days ago
                     </p>
                   </div>
-                  <button className="w-full p-4 rounded-xl card-interactive text-left">
+                  <button className="w-full p-4 text-left rounded-xl card-interactive">
                     <p className="font-medium text-light-text-primary dark:text-dark-text-primary">
                       Change Password
                     </p>
@@ -1096,7 +1069,7 @@ const Me = () => {
                       Update your password
                     </p>
                   </button>
-                  <button className="w-full p-4 rounded-xl card-interactive text-left">
+                  <button className="w-full p-4 text-left rounded-xl card-interactive">
                     <p className="font-medium text-light-text-primary dark:text-dark-text-primary">
                       Two-Factor Authentication
                     </p>
@@ -1110,7 +1083,7 @@ const Me = () => {
               {activeSetting.title === "Preferences" && (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">
+                    <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                       Language
                     </label>
                     <select className="input-field">
@@ -1121,7 +1094,7 @@ const Me = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2 block">
+                    <label className="block mb-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
                       Timezone
                     </label>
                     <select className="input-field">
@@ -1135,7 +1108,7 @@ const Me = () => {
               )}
             </div>
 
-            <div className="flex gap-3 mt-6 pt-6 border-t border-light-border dark:border-dark-border">
+            <div className="flex gap-3 pt-6 mt-6 border-t border-light-border dark:border-dark-border">
               <button
                 onClick={() => {
                   toast.success(`${activeSetting.title} settings saved!`)
@@ -1167,18 +1140,18 @@ const Me = () => {
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border border-accent-danger p-6 max-w-sm w-full mx-4 shadow-xl dark:shadow-dark-lg"
+            className="w-full max-w-sm p-6 mx-4 border shadow-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-2xl border-accent-danger dark:shadow-dark-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 rounded-xl bg-accent-danger/10">
-                <FiAlertTriangle className="w-6 h-6 text-accent-danger" />
+                <TriangleAlert className="w-6 h-6 text-accent-danger" />
               </div>
-              <h3 className="text-lg font-serif font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <h3 className="font-serif text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
                 Delete Account?
               </h3>
             </div>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-6 leading-relaxed">
+            <p className="mb-6 text-sm leading-relaxed text-light-text-secondary dark:text-dark-text-secondary">
               This action cannot be undone. All your data, tasks, and projects will be permanently
               deleted.
             </p>

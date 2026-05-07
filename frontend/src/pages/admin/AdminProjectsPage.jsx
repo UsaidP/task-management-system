@@ -1,12 +1,6 @@
-import {
-  Archive,
-  BarChart3,
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  Search,
-  Users,
-} from "lucide-react"
+import { motion, useReducedMotion } from "framer-motion"
+import { ChevronLeftIcon, ChevronRightIcon, DownloadIcon, FolderOpenIcon, SearchIcon, UsersIcon } from "@animateicons/react/lucide"
+import { ArchiveIcon } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import apiService from "../../../service/apiService"
@@ -18,6 +12,7 @@ export default function AdminProjectsPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
+  const reduceMotion = useReducedMotion()
 
   useEffect(() => {
     async function fetchData() {
@@ -56,12 +51,12 @@ export default function AdminProjectsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="animate-pulse h-10 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-lg w-48" />
+        <div className="w-48 h-10 rounded-xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary" />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="animate-pulse rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 h-48"
+              className="h-48 p-6 border animate-pulse rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
             />
           ))}
         </div>
@@ -72,32 +67,42 @@ export default function AdminProjectsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <motion.div
+        initial={reduceMotion ? {} : { opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="flex items-center justify-between"
+      >
         <div>
-          <h1 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary font-serif">
+          <h1 className="font-serif text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
             Projects
           </h1>
-          <p className="text-sm text-light-text-tertiary mt-1">
+          <p className="mt-1 text-sm text-light-text-secondary dark:text-dark-text-secondary">
             {filtered.length} project{filtered.length !== 1 ? "s" : ""} total
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="flex items-center gap-2 rounded-lg border border-light-border dark:border-dark-border px-4 py-2 text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 border rounded-xl border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover active:scale-95 cursor-pointer"
           >
-            <Download size={16} />
+            <DownloadIcon size={16} />
             Export
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Search */}
-      <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-4 shadow-sm">
+      <motion.div
+        initial={reduceMotion ? {} : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        className="p-4 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+      >
         <div className="relative">
           <Search
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary"
+            className="absolute text-sm -translate-y-1/2 left-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary"
           />
           <input
             type="text"
@@ -107,169 +112,202 @@ export default function AdminProjectsPage() {
               setSearch(e.target.value)
               setPage(1)
             }}
-            className="w-full rounded-lg border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary py-2 pl-10 pr-4 text-sm text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-1 focus:ring-accent-primary/20"
+            className="w-full rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary py-2.5 pl-10 pr-4 text-sm text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
           />
         </div>
-      </div>
+      </motion.div>
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary/10 text-accent-primary">
-              <BarChart3 size={20} />
+        {[
+          {
+            label: "Total Projects",
+            value: projects.length,
+            icon: <FolderOpenIcon size={20} />,
+            iconBg: "bg-accent-primary/10 text-accent-primary",
+            delay: 0.1,
+          },
+          {
+            label: "Total Tasks",
+            value: projects.reduce((sum, p) => sum + (p.totalTasks || 0), 0),
+            icon: <UsersIcon size={20} />,
+            iconBg: "bg-accent-success/10 text-accent-success",
+            delay: 0.15,
+          },
+          {
+            label: "Avg Progress",
+            value: `${projects.length > 0 ? Math.round(projects.reduce((s, p) => s + (p.progress || 0), 0) / projects.length) : 0}%`,
+            icon: <ArchiveIcon size={20} />,
+            iconBg: "bg-accent-warning/10 text-accent-warning",
+            delay: 0.2,
+          },
+        ].map((stat) => (
+          <motion.div
+            key={stat.label}
+            initial={reduceMotion ? {} : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: stat.delay, ease: [0.16, 1, 0.3, 1] }}
+            className="relative p-5 overflow-hidden border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary interactive-card group"
+          >
+            <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-br from-accent-primary/5 via-transparent to-transparent group-hover:opacity-100" />
+            <div className="relative flex items-center gap-3">
+              <div
+                className={`flex items-center justify-center w-10 h-10 rounded-xl ${stat.iconBg} transition-transform duration-200 group-hover:scale-110`}
+                style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
+              >
+                {stat.icon}
+              </div>
+              <div>
+                <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                  {stat.label}
+                </p>
+                <p className="font-serif text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+                  {stat.value}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-light-text-tertiary">Total Projects</p>
-              <p className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary font-serif">
-                {projects.length}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-success/10 text-accent-success">
-              <Users size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-light-text-tertiary">Total Tasks</p>
-              <p className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary font-serif">
-                {projects.reduce((sum, p) => sum + (p.totalTasks || 0), 0)}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-warning/10 text-accent-warning">
-              <Archive size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-light-text-tertiary">Avg Progress</p>
-              <p className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary font-serif">
-                {projects.length > 0
-                  ? Math.round(
-                      projects.reduce((s, p) => s + (p.progress || 0), 0) / projects.length
-                    )
-                  : 0}
-                %
-              </p>
-            </div>
-          </div>
-        </div>
+          </motion.div>
+        ))}
       </div>
 
       {/* Project Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <motion.div
+        initial={reduceMotion ? {} : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+      >
         {paginated.length === 0 && (
-          <div className="col-span-full rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-12 text-center">
-            <p className="text-lg text-light-text-tertiary">No projects found</p>
+          <div className="p-12 text-center border col-span-full rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary">
+            <p className="text-lg text-light-text-tertiary dark:text-dark-text-tertiary">
+              No projects found
+            </p>
           </div>
         )}
         {paginated.map((project, index) => (
           <div
             key={project._id}
-            className="group rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 shadow-sm hover:shadow-md transition-all duration-300"
+            className="relative p-6 overflow-hidden transition-all duration-300 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary interactive-card group hover:shadow-md"
           >
-            <div className="mb-4 flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div
-                  className={`h-3 w-3 rounded-full ${projectColors[index % projectColors.length]}`}
-                />
+            <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-br from-accent-primary/3 via-transparent to-transparent group-hover:opacity-100" />
+            <div className="relative">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-3 h-3 rounded-full ${projectColors[index % projectColors.length]} shadow-sm`}
+                  />
+                  <Link
+                    to={`/project/${project._id}`}
+                    className="font-serif text-base font-semibold transition-colors duration-150 text-light-text-primary dark:text-dark-text-primary hover:text-accent-primary"
+                  >
+                    {project.name}
+                  </Link>
+                </div>
+              </div>
+
+              <p className="mb-4 text-sm leading-relaxed text-light-text-tertiary dark:text-dark-text-tertiary line-clamp-2">
+                {project.description || "No description"}
+              </p>
+
+              <div className="flex items-center gap-4 mb-4 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                <span>{project.totalTasks || 0} tasks</span>
+                <span>{project.completedTasks || 0} completed</span>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="mb-4 space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
+                    Progress
+                  </span>
+                  <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+                    {project.progress || 0}%
+                  </span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
+                  <div
+                    className={`h-full rounded-full ${projectColors[index % projectColors.length]} transition-all duration-700`}
+                    style={{ width: `${project.progress || 0}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-2 pt-4 border-t border-light-border/60 dark:border-dark-border/60">
                 <Link
                   to={`/project/${project._id}`}
-                  className="text-base font-semibold text-light-text-primary dark:text-dark-text-primary hover:text-accent-primary font-serif"
+                  className="flex-1 px-3 py-2 text-xs font-medium text-center transition-all duration-150 rounded-lg cursor-pointer bg-accent-primary/10 text-accent-primary hover:bg-accent-primary/20 active:scale-95"
                 >
-                  {project.name}
+                  View
+                </Link>
+                <Link
+                  to={`/project/${project._id}/admin`}
+                  className="flex-1 px-3 py-2 text-xs font-medium text-center transition-all duration-150 border rounded-lg cursor-pointer border-light-border/60 dark:border-dark-border/60 text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover active:scale-95"
+                >
+                  Admin
                 </Link>
               </div>
             </div>
-
-            <p className="mb-4 line-clamp-2 text-sm text-light-text-tertiary">
-              {project.description || "No description"}
-            </p>
-
-            <div className="mb-4 flex items-center gap-4 text-xs text-light-text-tertiary">
-              <span>{project.totalTasks || 0} tasks</span>
-              <span>{project.completedTasks || 0} completed</span>
-            </div>
-
-            {/* Progress Bar */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-light-text-tertiary">Progress</span>
-                <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
-                  {project.progress || 0}%
-                </span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
-                <div
-                  className={`h-full rounded-full ${projectColors[index % projectColors.length]} transition-all duration-700`}
-                  style={{ width: `${project.progress || 0}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-4 flex items-center gap-2 border-t border-light-border dark:border-dark-border pt-4">
-              <Link
-                to={`/project/${project._id}`}
-                className="flex-1 rounded-lg bg-accent-primary/10 px-3 py-1.5 text-center text-xs font-medium text-accent-primary hover:bg-accent-primary/20 cursor-pointer"
-              >
-                View
-              </Link>
-              <Link
-                to={`/project/${project._id}/admin`}
-                className="flex-1 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-center text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer"
-              >
-                Admin
-              </Link>
-            </div>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary px-6 py-3">
-          <p className="text-sm text-light-text-tertiary">
+        <motion.div
+          initial={reduceMotion ? {} : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+          className="flex items-center justify-between px-6 py-3 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+        >
+          <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
             Showing {(page - 1) * ITEMS_PER_PAGE + 1}–
             {Math.min(page * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <button
               type="button"
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeftIcon size={16} />
             </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPage(p)}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium cursor-pointer ${
-                  p === page
-                    ? "bg-accent-primary text-light-text-inverse"
-                    : "text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                }`}
-              >
-                {p}
-              </button>
-            ))}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+              .map((p, idx, arr) => {
+                const showEllipsis = idx > 0 && p - arr[idx - 1] > 1
+                return (
+                  <span key={p} className="flex items-center">
+                    {showEllipsis && (
+                      <span className="px-1 text-light-text-tertiary dark:text-dark-text-tertiary">
+                        …
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setPage(p)}
+                      className={`flex items-center justify-center w-8 h-8 text-sm font-medium rounded-lg cursor-pointer transition-all duration-150 ${
+                        p === page
+                          ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/20"
+                          : "text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  </span>
+                )
+              })}
             <button
               type="button"
               disabled={page >= totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
             >
-              <ChevronRight size={16} />
+              <ChevronRightIcon size={16} />
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   )

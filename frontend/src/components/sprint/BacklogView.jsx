@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { useCallback, useEffect, useState } from "react"
-import { FiCalendar, FiCheckCircle, FiPlus } from "react-icons/fi"
+import { CircleCheckIcon, PlusIcon } from "@animateicons/react/lucide"
+import { CalendarIcon } from "lucide-react"
 import apiService from "../../../service/apiService.js"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
@@ -108,7 +109,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-offset-2 dark:focus:ring-offset-dark-bg-primary min-h-[44px]"
           aria-label="Create new sprint"
         >
-          <FiPlus className="w-4 h-4" aria-hidden="true" />
+          <PlusIcon className="w-4 h-4" aria-hidden="true" />
           <span className="hidden sm:inline">New Sprint</span>
         </button>
       </div>
@@ -118,7 +119,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
         {backlogTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-light-text-tertiary dark:text-dark-text-tertiary py-16">
             <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-4">
-              <FiCheckCircle className="w-8 h-8 opacity-40" aria-hidden="true" />
+              <CircleCheckIcon className="w-8 h-8 opacity-40" aria-hidden="true" />
             </div>
             <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
               Backlog is empty
@@ -171,7 +172,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                       <div className="flex items-center gap-4 text-xs text-light-text-tertiary dark:text-dark-text-tertiary flex-wrap">
                         {task.dueDate && (
                           <span className="flex items-center gap-1">
-                            <FiCalendar className="w-3 h-3" aria-hidden="true" />
+                            <CalendarIcon className="w-3 h-3" aria-hidden="true" />
                             {new Date(task.dueDate).toLocaleDateString()}
                           </span>
                         )}

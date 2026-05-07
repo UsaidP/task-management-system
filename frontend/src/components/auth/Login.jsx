@@ -1,7 +1,8 @@
 import { motion } from "framer-motion"
 import { useEffect, useId, useState } from "react"
 import toast from "react-hot-toast"
-import { FiArrowRight, FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi"
+import { EyeIcon as Eye, EyeOffIcon as EyeOff, LockIcon as Lock, MailIcon as Mail } from "@animateicons/react/lucide"
+import { ArrowRightIcon as ArrowRight } from "lucide-react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -108,7 +109,7 @@ export const Login = () => {
                   Email or Username
                 </label>
                 <div className="relative">
-                  <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                   <input
                     type="text"
                     name="identifier"
@@ -128,7 +129,7 @@ export const Login = () => {
                   Password
                 </label>
                 <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
@@ -146,9 +147,9 @@ export const Login = () => {
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
-                      <FiEyeOff className="w-5 h-5" />
+                      <EyeOff className="w-5 h-5" />
                     ) : (
-                      <FiEye className="w-5 h-5" />
+                      <Eye className="w-5 h-5" />
                     )}
                   </button>
                 </div>
@@ -166,7 +167,7 @@ export const Login = () => {
                 ) : (
                   <>
                     <span>Sign In</span>
-                    <FiArrowRight className="ml-2 transition-transform duration-200 group-hover:translate-x-1" />
+                    <ArrowRight className="ml-2 transition-transform duration-200 group-hover:translate-x-1" />
                   </>
                 )}
               </button>

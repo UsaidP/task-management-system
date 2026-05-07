@@ -33,32 +33,31 @@ router
 	.route("/register")
 	.post(authLimiter, userRegistrationValidator(), validator, asyncHandler(registerUser))
 
-router.route("/verify/:token").post(authLimiter, asyncHandler(verifyUser))
-router.route("/resend-verify-email").post(authLimiter, asyncHandler(resendVerifyEmail))
+// Email verification
+router.route("/verify/:token").get(authLimiter, asyncHandler(verifyUser))
+router
+	.route("/verify-email")
+	.post(authLimiter, userForgotPasswordValidator(), validator, asyncHandler(resendVerifyEmail))
 
 router.route("/login").post(authLimiter, userLoginValidator(), validator, asyncHandler(loginUser))
 
 router.route("/logout").post(protect, asyncHandler(logoutUser))
 
-router.route("/refresh-token").post(protect, asyncHandler(refreshAccessToken))
+router.route("/refresh-token").post(asyncHandler(refreshAccessToken))
 
 router
-	.route("/forget-password")
+	.route("/forgot")
 	.post(authLimiter, userForgotPasswordValidator(), validator, asyncHandler(forgetPassword))
 router
-	.route("/reset-password/:token")
+	.route("/reset/:token")
 	.post(authLimiter, userResetPasswordValidator(), validator, asyncHandler(resetPassword))
 
-//Protected Routes
+// Protected Routes
 router.get("/me", protect, asyncHandler(getUserProfile))
-
-router.get("/get-active-sessions", protect, asyncHandler(getActiveSession))
-
-router.put("/update-avatar", protect, upload.single("avatars"), asyncHandler(updateUserAvatar))
-
-router.put("/update-profile", protect, asyncHandler(updateProfile))
-
-router.delete("/delete-account", protect, asyncHandler(deleteUserAccount))
+router.get("/sessions", protect, asyncHandler(getActiveSession))
+router.patch("/profile", protect, asyncHandler(updateProfile))
+router.patch("/avatar", protect, upload.single("avatar"), asyncHandler(updateUserAvatar))
+router.delete("/account", protect, asyncHandler(deleteUserAccount))
 
 // Admin-only routes
 router.patch("/users/:userId/role", protect, requireAdmin, asyncHandler(updateUserRole))

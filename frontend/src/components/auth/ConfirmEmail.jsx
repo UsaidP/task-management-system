@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import { useState } from "react"
-import { FiMail } from "react-icons/fi"
+import { MailIcon as Mail } from "@animateicons/react/lucide"
 import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -40,7 +40,7 @@ export const ConfirmEmail = () => {
         className="w-full max-w-md auth-card space-y-6 text-center"
       >
         <div className="w-20 h-20 bg-accent-primary/10 dark:bg-accent-primary/20 text-accent-primary dark:text-accent-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
-          <FiMail className="w-10 h-10" />
+          <Mail className="w-10 h-10" />
         </div>
 
         <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">

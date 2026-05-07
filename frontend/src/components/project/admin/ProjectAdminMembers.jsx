@@ -1,36 +1,26 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import { useId, useState } from "react"
 import toast from "react-hot-toast"
-import { FiCheck, FiChevronDown, FiUserPlus, FiX } from "react-icons/fi"
+import { CheckIcon, ChevronDownIcon, UserPlusIcon, XIcon } from "@animateicons/react/lucide"
 import apiService from "../../../../service/apiService.js"
+import Avatar from "../../auth/Avatar.jsx"
 import Modal from "../../Modal.jsx"
 
-const getAvatarSrc = (member) => {
+const MemberAvatar = ({ member }) => {
   const u = member?.user
-  if (!u || typeof u !== "object") {
-    const id = u ? String(u) : ""
-    return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
-  }
-  const a = u.avatar
-  if (typeof a === "string") return a
-  if (a && typeof a === "object" && "url" in a && typeof a.url === "string") return a.url
-  const id = u._id != null ? String(u._id) : ""
-  return id ? `https://i.pravatar.cc/150?u=${id}` : "https://placehold.co/72"
-}
+  const user = typeof u === "object" ? u : null
+  const name = user ? [user.fullname, user.username, user.email].find(Boolean) : "Member"
 
-const getAvatarAlt = (member) => {
-  const u = member?.user
-  if (u && typeof u === "object") {
-    const name = [u.fullname, u.username, u.email].find(Boolean)
-    if (typeof name === "string") return name
-  }
-  return "Member"
+  return <Avatar src={user?.avatar?.url || user?.avatar} alt={name} size="md" />
 }
 
 const roleColors = {
-  owner: "bg-accent-danger/10 text-accent-danger",
-  project_admin: "bg-accent-warning/10 text-accent-warning",
-  member: "bg-accent-info/10 text-accent-info",
+  owner:
+    "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary/20 dark:text-accent-primary-light",
+  project_admin:
+    "bg-accent-warning/10 text-accent-warning dark:bg-accent-warning/20 dark:text-accent-warning-light",
+  member:
+    "bg-light-bg-tertiary text-light-text-secondary dark:bg-dark-bg-tertiary dark:text-dark-text-secondary",
 }
 
 const roleOptions = [
@@ -129,7 +119,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
           onClick={() => setIsAddModalOpen(true)}
           className="btn-primary flex items-center gap-2"
         >
-          <FiUserPlus className="h-4 w-4" />
+          <UserPlusIcon className="h-4 w-4" />
           Add Member
         </button>
       </div>
@@ -165,12 +155,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                 className="flex items-center justify-between rounded-xl border border-light-border bg-light-bg-secondary p-4 transition-colors hover:bg-light-bg-hover dark:border-dark-border dark:bg-dark-bg-tertiary dark:hover:bg-dark-bg-hover"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <img
-                    src={getAvatarSrc(member)}
-                    alt={getAvatarAlt(member)}
-                    className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
-                    loading="lazy"
-                  />
+                  <MemberAvatar member={member} />
                   <div className="min-w-0">
                     <p className="truncate font-medium text-light-text-primary dark:text-dark-text-primary">
                       {userName}
@@ -191,7 +176,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                         aria-label={`Change role for ${userName}`}
                       >
                         <span className="capitalize">{member.role.replace("_", " ")}</span>
-                        <FiChevronDown className="w-3 h-3" />
+                        <ChevronDownIcon className="w-3 h-3" />
                       </ListboxButton>
                       <ListboxOptions className="absolute z-[100] mt-1 right-0 w-40 bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                         {roleOptions.map((option) => (
@@ -217,7 +202,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                                 </span>
                                 {selected ? (
                                   <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <FiCheck
+                                    <CheckIcon
                                       className="w-4 h-4 text-accent-primary"
                                       aria-hidden="true"
                                     />
@@ -237,7 +222,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                       className="rounded-full p-1.5 text-light-text-tertiary transition-colors hover:bg-accent-danger/10 hover:text-accent-danger"
                       aria-label={`Remove ${userName}`}
                     >
-                      <FiX className="h-4 w-4" />
+                      <XIcon className="h-4 w-4" />
                     </button>
                   )}
                 </div>
@@ -281,7 +266,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                   className="input-field w-full text-left flex items-center justify-between"
                 >
                   <span className="truncate">{selectedRoleObject?.name}</span>
-                  <FiChevronDown className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
+                  <ChevronDownIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
                 </ListboxButton>
                 <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {roleOptions
@@ -309,7 +294,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                             </span>
                             {selected ? (
                               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <FiCheck
+                                <CheckIcon
                                   className="w-5 h-5 text-accent-primary"
                                   aria-hidden="true"
                                 />

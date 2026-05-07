@@ -1,5 +1,5 @@
 import { memo, useCallback, useRef, useState } from "react"
-import { FiPlus } from "react-icons/fi"
+import { PlusIcon } from "@animateicons/react/lucide"
 import TaskCard from "./TaskCard"
 
 const DropIndicator = () => (
@@ -143,7 +143,7 @@ const BoardColumn = memo(
             onClick={onAddTask}
             className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-light-border dark:border-dark-border text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-primary dark:hover:bg-dark-bg-primary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-primary/50 transition-all w-full text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary"
           >
-            <FiPlus className="w-4 h-4" />
+            <PlusIcon className="w-4 h-4" />
             Add Task
           </button>
         </div>

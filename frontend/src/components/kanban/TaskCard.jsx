@@ -1,45 +1,18 @@
 import { motion } from "framer-motion"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { useDrag, useDrop } from "react-dnd"
-import { FiCalendar, FiMessageSquare, FiPaperclip } from "react-icons/fi"
-import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
+import { Calendar } from "lucide-react"
+import { MessageCircleIcon, PaperclipIcon } from "@animateicons/react/lucide"
+import Avatar from "../auth/Avatar"
 
-const AvatarWithFallback = ({ user }) => {
-  const [hasError, setHasError] = useState(false)
-  const avatarUrl = getOptimizedAvatarUrl(user.avatar?.url, 50)
-  const fallback = `https://i.pravatar.cc/150?u=${user._id}`
-  const initials = (user.fullname || user.email || "U")
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2)
-
-  if (!avatarUrl || hasError) {
-    return (
-      <div
-        className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-[8px] font-bold text-white"
-        title={user.fullname}
-      >
-        {initials}
-      </div>
-    )
-  }
-
-  return (
-    <img
-      src={avatarUrl || fallback}
-      alt={user.fullname}
-      className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-tertiary object-cover"
-      title={user.fullname}
-      loading="lazy"
-      decoding="async"
-      width="24"
-      height="24"
-      onError={() => setHasError(true)}
-    />
-  )
-}
+const AvatarWithFallback = ({ user }) => (
+  <Avatar
+    src={user.avatar?.url || user.avatar}
+    alt={user.fullname || "User"}
+    size="xs"
+    className="border-2 border-light-bg-primary dark:border-dark-bg-tertiary"
+  />
+)
 
 const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
   const ref = useRef(null)
@@ -123,23 +96,23 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
       whileHover={{ y: -2, zIndex: 10 }}
       className={`task-card w-full p-4 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary hover:border-accent-primary/50 dark:hover:border-accent-primary/50 transition-colors cursor-pointer relative z-0 hover:z-20 ${isDragging ? "opacity-50 shadow-lg rotate-2 z-50" : "opacity-100 shadow-sm"}`}
     >
-      <header className="flex justify-between items-start mb-3">
+      <header className="flex items-start justify-between mb-3">
         <span className="tag tag-project">{task.project?.name || "Personal"}</span>
         <span className={getStatusClass(task.status)}>{task.status}</span>
       </header>
       <main className="mb-4">
-        <h3 className="text-base font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 line-clamp-2">
+        <h3 className="mb-1 text-base font-semibold text-light-text-primary dark:text-dark-text-primary line-clamp-2">
           {task.title}
         </h3>
         <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary line-clamp-2">
           {task.description}
         </p>
       </main>
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex items-center justify-between mb-3">
         <span className={getPriorityClass(task.priority)}>{task.priority}</span>
         {task.dueDate && (
           <div className="flex items-center gap-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-            <FiCalendar className="w-3 h-3" />
+            <Calendar className="w-3 h-3" />
             <span>
               {new Date(task.dueDate).toLocaleDateString("en-US", {
                 month: "short",
@@ -151,7 +124,7 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
       </div>
       {totalSubtasks > 0 && (
         <div className="mb-3">
-          <div className="flex justify-between items-center mb-1">
+          <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
               Subtasks
             </span>
@@ -167,14 +140,14 @@ const TaskCard = ({ task, index, onEdit, onDelete, membersMap, onDrop }) => {
           </div>
         </div>
       )}
-      <footer className="flex justify-between items-center pt-2 border-t border-light-border dark:border-dark-border">
+      <footer className="flex items-center justify-between pt-2 border-t border-light-border dark:border-dark-border">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-            <FiMessageSquare className="w-3 h-3" />
+            <MessageCircleIcon className="w-3 h-3" />
             <span>{task.comments?.length || 0}</span>
           </div>
           <div className="flex items-center gap-1 text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-            <FiPaperclip className="w-3 h-3" />
+            <PaperclipIcon className="w-3 h-3" />
             <span>{task.attachments?.length || 0}</span>
           </div>
         </div>

@@ -1,9 +1,10 @@
-import { FiAlertTriangle, FiInbox, FiWifiOff } from "react-icons/fi"
+import { TriangleAlertIcon as AlertTriangle, WifiOffIcon as WifiOff } from "@animateicons/react/lucide"
+import { InboxIcon as Inbox } from "lucide-react"
 
 export const NotFound = () => (
   <div className="flex flex-col items-center justify-center h-full text-center p-6">
     <div className="p-4 rounded-2xl bg-accent-warning/10 dark:bg-accent-warning/20 mb-4">
-      <FiAlertTriangle className="w-10 h-10 text-accent-warning" />
+      <AlertTriangle className="w-10 h-10 text-accent-warning" />
     </div>
     <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
       404 - Not Found
@@ -17,7 +18,7 @@ export const NotFound = () => (
 export const ServerError = ({ onRetry }) => (
   <div className="flex flex-col items-center justify-center h-full text-center p-6">
     <div className="p-4 rounded-2xl bg-accent-danger/10 dark:bg-accent-danger/20 mb-4">
-      <FiAlertTriangle className="w-10 h-10 text-accent-danger" />
+      <AlertTriangle className="w-10 h-10 text-accent-danger" />
     </div>
     <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
       500 - Server Error
@@ -40,7 +41,7 @@ export const ServerError = ({ onRetry }) => (
 export const NetworkError = ({ onRetry }) => (
   <div className="flex flex-col items-center justify-center h-full text-center p-6">
     <div className="p-4 rounded-2xl bg-accent-danger/10 dark:bg-accent-danger/20 mb-4">
-      <FiWifiOff className="w-10 h-10 text-accent-danger" />
+      <WifiOff className="w-10 h-10 text-accent-danger" />
     </div>
     <h2 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
       Network Error
@@ -60,7 +61,7 @@ export const NetworkError = ({ onRetry }) => (
   </div>
 )
 
-export const EmptyState = ({ message, icon: Icon = FiInbox }) => (
+export const EmptyState = ({ message, icon: Icon = Inbox }) => (
   <div className="flex flex-col items-center justify-center h-full text-center p-6 border-2 border-dashed border-light-border dark:border-dark-border rounded-2xl">
     <div className="p-4 rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary mb-4">
       <Icon className="w-10 h-10 text-light-text-tertiary dark:text-dark-text-tertiary" />
@@ -69,7 +70,7 @@ export const EmptyState = ({ message, icon: Icon = FiInbox }) => (
   </div>
 )
 
-export const EmptyStateAction = ({ message, icon: Icon = FiInbox, actionLabel, onAction }) => (
+export const EmptyStateAction = ({ message, icon: Icon = Inbox, actionLabel, onAction }) => (
   <div className="flex flex-col items-center justify-center h-full text-center p-6 border-2 border-dashed border-light-border dark:border-dark-border rounded-2xl">
     <div className="p-4 rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary mb-4">
       <Icon className="w-10 h-10 text-light-text-tertiary dark:text-dark-text-tertiary" />

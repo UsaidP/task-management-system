@@ -40,7 +40,10 @@
 	"scripts": {
 		"format": "biome check --write",
 		"dev": "nodemon index.js",
-		"start": "node index.js"
+		"start": "node index.js",
+		"test": "node --experimental-vm-modules node_modules/.bin/jest --forceExit --detectOpenHandles",
+		"test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watch --forceExit",
+		"test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage --forceExit --detectOpenHandles"
 	},
 	"type": "module",
 	"version": "1.0.0"

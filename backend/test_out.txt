@@ -1,0 +1,132 @@
+
+> task-management-system@1.0.0 test
+> node --experimental-vm-modules node_modules/.bin/jest --forceExit --detectOpenHandles projectMember.test.js
+
+(node:53081) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+2026-05-05T08:03:21.164Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"h3oiwg9sjt7","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:21.548Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"385ms","method":"POST","requestId":"h3oiwg9sjt7","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:21.589Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"7crvny5djyp","type":"request","url":"/api/v1/members/69f9a448d2062d234edd10f2"}
+2026-05-05T08:03:21.790Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"201ms","method":"POST","requestId":"7crvny5djyp","statusCode":201,"type":"response","url":"/69f9a448d2062d234edd10f2"}
+2026-05-05T08:03:22.343Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"4z7snhj6ni9","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:22.606Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"262ms","method":"POST","requestId":"4z7snhj6ni9","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:22.680Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"h82t9rjflhw","type":"request","url":"/api/v1/members/69f9a44ad2062d234edd111b"}
+2026-05-05T08:03:22.769Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Email is required.","name":"Error","stack":"Error: Email is required.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:17:9\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:183:3\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"h82t9rjflhw","type":"error","url":"/api/v1/members/69f9a44ad2062d234edd111b","user":"69f9a449d2062d234edd1119"}
+2026-05-05T08:03:22.822Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"142ms","method":"POST","requestId":"h82t9rjflhw","statusCode":400,"type":"response","url":"/api/v1/members/69f9a44ad2062d234edd111b"}
+2026-05-05T08:03:25.066Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"823t4pzekd9","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:25.710Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"644ms","method":"POST","requestId":"823t4pzekd9","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:25.736Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"aa7k5k0ii7t","type":"request","url":"/api/v1/members/69f9a44dd2062d234edd113b"}
+2026-05-05T08:03:25.799Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Role is required.","name":"Error","stack":"Error: Role is required.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:20:9\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:183:3\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"aa7k5k0ii7t","type":"error","url":"/api/v1/members/69f9a44dd2062d234edd113b","user":"69f9a44ad2062d234edd1136"}
+2026-05-05T08:03:25.813Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"77ms","method":"POST","requestId":"aa7k5k0ii7t","statusCode":400,"type":"response","url":"/api/v1/members/69f9a44dd2062d234edd113b"}
+2026-05-05T08:03:26.577Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"8wdkysh3hk7","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:26.813Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"236ms","method":"POST","requestId":"8wdkysh3hk7","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:26.837Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"k8cfmz5s2ch","type":"request","url":"/api/v1/members/69f9a44ed2062d234edd115b"}
+2026-05-05T08:03:26.876Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Role must be one of: member, owner, project_admin","name":"Error","stack":"Error: Role must be one of: member, owner, project_admin\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:36:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"k8cfmz5s2ch","type":"error","url":"/api/v1/members/69f9a44ed2062d234edd115b","user":"69f9a44dd2062d234edd1156"}
+2026-05-05T08:03:26.885Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"48ms","method":"POST","requestId":"k8cfmz5s2ch","statusCode":400,"type":"response","url":"/api/v1/members/69f9a44ed2062d234edd115b"}
+2026-05-05T08:03:27.313Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"rvfruhcypg","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:27.557Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"244ms","method":"POST","requestId":"rvfruhcypg","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:27.580Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"3wwsmyn71h","type":"request","url":"/api/v1/members/69f9a44fd2062d234edd117e"}
+2026-05-05T08:03:27.632Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Role must be one of: member, owner, project_admin","name":"Error","stack":"Error: Role must be one of: member, owner, project_admin\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:36:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"3wwsmyn71h","type":"error","url":"/api/v1/members/69f9a44fd2062d234edd117e","user":"69f9a44ed2062d234edd1179"}
+2026-05-05T08:03:27.646Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"66ms","method":"POST","requestId":"3wwsmyn71h","statusCode":400,"type":"response","url":"/api/v1/members/69f9a44fd2062d234edd117e"}
+2026-05-05T08:03:28.737Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"3jou79l7w4w","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:32.212Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"3475ms","method":"POST","requestId":"3jou79l7w4w","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:32.312Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"jcwle874hd","type":"request","url":"/api/v1/members/69f9a450d2062d234edd11a1"}
+2026-05-05T08:03:32.722Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"User is already a member of this project.","name":"Error","stack":"Error: User is already a member of this project.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:51:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"jcwle874hd","type":"error","url":"/api/v1/members/69f9a450d2062d234edd11a1","user":"69f9a44fd2062d234edd119c"}
+2026-05-05T08:03:32.738Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"427ms","method":"POST","requestId":"jcwle874hd","statusCode":400,"type":"response","url":"/api/v1/members/69f9a450d2062d234edd11a1"}
+2026-05-05T08:03:34.730Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"snhf7xyafc","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:37.590Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"2860ms","method":"POST","requestId":"snhf7xyafc","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:38.123Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"1mm1qdv0afy","type":"request","url":"/api/v1/members/69f9a456d2062d234edd11c4"}
+2026-05-05T08:03:38.953Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"No account found with this email. Please ask them to register first.","name":"Error","stack":"Error: No account found with this email. Please ask them to register first.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:30:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":404},"method":"POST","requestId":"1mm1qdv0afy","type":"error","url":"/api/v1/members/69f9a456d2062d234edd11c4","user":"69f9a455d2062d234edd11c2"}
+2026-05-05T08:03:39.027Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"904ms","method":"POST","requestId":"1mm1qdv0afy","statusCode":404,"type":"response","url":"/api/v1/members/69f9a456d2062d234edd11c4"}
+2026-05-05T08:03:46.028Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"9mr25rja57j","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:47.326Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"1298ms","method":"POST","requestId":"9mr25rja57j","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:47.448Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"h6q7ursaqwj","type":"request","url":"/api/v1/members/69f9a461d2062d234edd11e9"}
+  console.warn
+    [RBAC DENIED] User 69f9a45dd2062d234edd11e4 has role "member", needs: admin or owner or project_admin
+
+      159 |
+      160 | 		if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    > 161 | 			console.warn(
+          | 			        ^
+      162 | 				`[RBAC DENIED] User ${req.user._id} has role "${userRole}", needs: ${allowedRoles.join(" or ")}`,
+      163 | 			)
+      164 | 			throw new ApiError(
+
+      at src/middlewares/auth.middleware.js:161:12
+
+2026-05-05T08:03:47.802Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. Required: admin or owner or project_admin. Your role: member.","name":"Error","stack":"Error: Access denied. Required: admin or owner or project_admin. Your role: member.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:164:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"POST","requestId":"h6q7ursaqwj","type":"error","url":"/api/v1/members/69f9a461d2062d234edd11e9","user":"69f9a45dd2062d234edd11e4"}
+2026-05-05T08:03:47.828Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"380ms","method":"POST","requestId":"h6q7ursaqwj","statusCode":403,"type":"response","url":"/api/v1/members/69f9a461d2062d234edd11e9"}
+2026-05-05T08:03:51.956Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"0t9o11ru06vf","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:54.095Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"2139ms","method":"POST","requestId":"0t9o11ru06vf","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:54.157Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"PUT","requestId":"2ldk6db1l95","type":"request","url":"/api/v1/members/69f9a467d2062d234edd1209"}
+2026-05-05T08:03:54.695Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"538ms","method":"PUT","requestId":"2ldk6db1l95","statusCode":200,"type":"response","url":"/69f9a467d2062d234edd1209"}
+2026-05-05T08:03:56.362Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"edz613ixycs","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:03:59.340Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"2978ms","method":"POST","requestId":"edz613ixycs","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:03:59.568Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"PUT","requestId":"2bvwp48fsdi","type":"request","url":"/api/v1/members/69f9a46bd2062d234edd122c"}
+2026-05-05T08:03:59.839Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"User ID is required.","name":"Error","stack":"Error: User ID is required.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:84:9\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:183:3\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"PUT","requestId":"2bvwp48fsdi","type":"error","url":"/api/v1/members/69f9a46bd2062d234edd122c","user":"69f9a46ad2062d234edd122a"}
+2026-05-05T08:03:59.869Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"301ms","method":"PUT","requestId":"2bvwp48fsdi","statusCode":400,"type":"response","url":"/api/v1/members/69f9a46bd2062d234edd122c"}
+2026-05-05T08:04:01.652Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"yfm9vya0fxe","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:04:04.147Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"2495ms","method":"POST","requestId":"yfm9vya0fxe","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:04:04.667Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"PUT","requestId":"8mhq83xbtyf","type":"request","url":"/api/v1/members/69f9a471d2062d234edd124c"}
+2026-05-05T08:04:05.754Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Role must be one of: member, owner, project_admin","name":"Error","stack":"Error: Role must be one of: member, owner, project_admin\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:102:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"PUT","requestId":"8mhq83xbtyf","type":"error","url":"/api/v1/members/69f9a471d2062d234edd124c","user":"69f9a470d2062d234edd1247"}
+2026-05-05T08:04:05.803Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"1136ms","method":"PUT","requestId":"8mhq83xbtyf","statusCode":400,"type":"response","url":"/api/v1/members/69f9a471d2062d234edd124c"}
+2026-05-05T08:04:09.985Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"gqjv468o39h","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:04:12.709Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"2724ms","method":"POST","requestId":"gqjv468o39h","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:04:13.113Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"PUT","requestId":"8tp7vsary8a","type":"request","url":"/api/v1/members/69f9a479d2062d234edd126e"}
+2026-05-05T08:04:14.077Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Account not found","name":"Error","stack":"Error: Account not found\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:97:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":404},"method":"PUT","requestId":"8tp7vsary8a","type":"error","url":"/api/v1/members/69f9a479d2062d234edd126e","user":"69f9a476d2062d234edd126c"}
+2026-05-05T08:04:14.382Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"1269ms","method":"PUT","requestId":"8tp7vsary8a","statusCode":404,"type":"response","url":"/api/v1/members/69f9a479d2062d234edd126e"}
+2026-05-05T08:04:20.762Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"wxw7zfjl2j","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:04:22.048Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"1286ms","method":"POST","requestId":"wxw7zfjl2j","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:04:22.283Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"DELETE","requestId":"q0utij52ya9","type":"request","url":"/api/v1/members/69f9a484d2062d234edd1291/69f9a484d2062d234edd1295"}
+2026-05-05T08:04:22.606Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"323ms","method":"DELETE","requestId":"q0utij52ya9","statusCode":200,"type":"response","url":"/69f9a484d2062d234edd1291/69f9a484d2062d234edd1295"}
+2026-05-05T08:04:24.701Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"x0axq0lgw5","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:04:28.868Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"4167ms","method":"POST","requestId":"x0axq0lgw5","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:04:29.006Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"DELETE","requestId":"6rfcwg9mr5","type":"request","url":"/api/v1/members/69f9a488d2062d234edd12b4/69f9a488d2062d234edd12b6"}
+2026-05-05T08:04:29.970Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Cannot remove last admin/owner. Transfer admin rights first or specify transferRoleTo.","name":"Error","stack":"Error: Cannot remove last admin/owner. Transfer admin rights first or specify transferRoleTo.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:150:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"DELETE","requestId":"6rfcwg9mr5","type":"error","url":"/api/v1/members/69f9a488d2062d234edd12b4/69f9a488d2062d234edd12b6","user":"69f9a487d2062d234edd12b2"}
+2026-05-05T08:04:30.284Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"1278ms","method":"DELETE","requestId":"6rfcwg9mr5","statusCode":400,"type":"response","url":"/api/v1/members/69f9a488d2062d234edd12b4/69f9a488d2062d234edd12b6"}
+2026-05-05T08:04:39.220Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"k9s4qopmlz","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:04:40.430Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"1210ms","method":"POST","requestId":"k9s4qopmlz","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:04:40.866Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"DELETE","requestId":"zm99uqnrqm","type":"request","url":"/api/v1/members/69f9a496d2062d234edd12d7/69f9a496d2062d234edd12d9"}
+2026-05-05T08:04:41.424Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"558ms","method":"DELETE","requestId":"zm99uqnrqm","statusCode":200,"type":"response","url":"/69f9a496d2062d234edd12d7/69f9a496d2062d234edd12d9"}
+2026-05-05T08:04:44.052Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"scqqz7a11cc","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:04:45.340Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"1288ms","method":"POST","requestId":"scqqz7a11cc","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:04:45.427Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"DELETE","requestId":"67fjtdsyrlq","type":"request","url":"/api/v1/members/69f9a49ad2062d234edd12fc/69f9a49bd2062d234edd1300"}
+2026-05-05T08:04:45.654Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Project member not found.","name":"Error","stack":"Error: Project member not found.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:138:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":404},"method":"DELETE","requestId":"67fjtdsyrlq","type":"error","url":"/api/v1/members/69f9a49ad2062d234edd12fc/69f9a49bd2062d234edd1300","user":"69f9a49ad2062d234edd12fa"}
+2026-05-05T08:04:45.672Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"245ms","method":"DELETE","requestId":"67fjtdsyrlq","statusCode":404,"type":"response","url":"/api/v1/members/69f9a49ad2062d234edd12fc/69f9a49bd2062d234edd1300"}
+2026-05-05T08:04:49.422Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"77fd6gf20v","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:04:52.081Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"2659ms","method":"POST","requestId":"77fd6gf20v","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:04:52.448Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"GET","requestId":"9x8sv48qq2","type":"request","url":"/api/v1/members/69f9a4a0d2062d234edd131f"}
+2026-05-05T08:04:52.982Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"534ms","method":"GET","requestId":"9x8sv48qq2","statusCode":200,"type":"response","url":"/69f9a4a0d2062d234edd131f"}
+2026-05-05T08:04:54.630Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"f68shfoj4hr","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:04:57.092Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"2462ms","method":"POST","requestId":"f68shfoj4hr","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:04:57.466Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"GET","requestId":"ipeth5jt0s","type":"request","url":"/api/v1/members/69f9a4a6d2062d234edd1345"}
+2026-05-05T08:04:58.117Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"651ms","method":"GET","requestId":"ipeth5jt0s","statusCode":200,"type":"response","url":"/69f9a4a6d2062d234edd1345"}
+PASS tests/projectMember.test.js (108.183 s)
+  POST /api/v1/members/:projectId — add member
+    ✓ adds member by email with valid role (2864 ms)
+    ✓ returns 400 when email missing (1026 ms)
+    ✓ returns 400 when role missing (2990 ms)
+    ✓ returns 400 for invalid role value (1067 ms)
+    ✓ returns 400 when trying to assign global admin role at project level (765 ms)
+    ✓ returns 400 when user is already a member (5138 ms)
+    ✓ returns 404 for non-existent user email (6565 ms)
+    ✓ returns 403 for regular member trying to add (8674 ms)
+  PUT /api/v1/members/:projectId — update member role
+    ✓ updates member role (6736 ms)
+    ✓ returns 400 when userId missing (5114 ms)
+    ✓ returns 400 for invalid role value (5934 ms)
+    ✓ returns 404 for non-existent user (8837 ms)
+  DELETE /api/v1/members/:projectId/:memberId — remove member
+    ✓ soft-deletes member (8203 ms)
+    ✓ prevents removing last admin/owner without transferRoleTo (7595 ms)
+    ✓ transfers admin rights when transferRoleTo specified (11131 ms)
+    ✓ returns 404 for non-existent member (4099 ms)
+  GET /api/v1/members/:projectId — list members
+    ✓ returns active members with populated user data (7333 ms)
+    ✓ only returns active members (excludes soft-deleted) (5244 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       18 passed, 18 total
+Snapshots:   0 total
+Time:        108.828 s
+Ran all test suites matching /projectMember.test.js/i.

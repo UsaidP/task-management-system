@@ -27,7 +27,7 @@ const AdminTasksPage = lazy(() => import("./pages/admin/AdminTasksPage.jsx"))
 const AdminTeamPage = lazy(() => import("./pages/admin/AdminTeamPage.jsx"))
 
 // Lazy load other page-level routes
-const Home = lazy(() => import("./pages/Home.jsx"))
+const Home = lazy(() => import("./pages/HomeMasterpiece.jsx"))
 const Overview = lazy(() => import("./pages/Overview.jsx"))
 const ProjectPage = lazy(() => import("./components/project/ProjectPage.jsx"))
 const ProjectAdminPage = lazy(() => import("./pages/ProjectAdminPage.jsx"))

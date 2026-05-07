@@ -5,8 +5,13 @@ import { Fragment, useCallback, useMemo, useState } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import toast from "react-hot-toast"
-import { FiChevronDown, FiFilter, FiPlus, FiSearch } from "react-icons/fi"
 import apiService from "../../../service/apiService"
+import { Filter } from "lucide-react"
+import {
+  ChevronDownIcon as ChevronDown,
+  PlusIcon as Plus,
+  SearchIcon as Search,
+} from "@animateicons/react/lucide"
 import Column from "./Column"
 import ColumnHeader from "./ColumnHeader"
 import TaskCard from "./TaskCard"
@@ -195,7 +200,7 @@ const KanbanBoard = ({
         <div className="rounded-xl p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border shadow-sm">
           <div className="flex flex-col md:flex-row items-center gap-3 mb-3">
             <div className="w-full md:flex-1 relative">
-              <FiSearch
+              <Search
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5"
                 aria-hidden="true"
               />
@@ -216,7 +221,7 @@ const KanbanBoard = ({
                 aria-expanded={showFilters}
                 className={`w-full md:w-auto px-4 py-2 rounded-xl flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 ${showFilters || hasActiveFilters ? "border-accent-primary text-accent-primary" : ""}`}
               >
-                <FiFilter className="w-4 h-4" aria-hidden="true" />
+                <Filter className="w-4 h-4" aria-hidden="true" />
                 <span>Filters</span>
               </button>
 
@@ -226,7 +231,7 @@ const KanbanBoard = ({
                   onClick={onCreateTask}
                   className="btn-primary w-full md:w-auto px-4 py-2 flex items-center justify-center gap-2 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                 >
-                  <FiPlus className="w-4 h-4" aria-hidden="true" />
+                  <Plus className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden sm:inline">New Task</span>
                   <span className="sm:hidden">Add</span>
                 </button>
@@ -258,7 +263,7 @@ const KanbanBoard = ({
                         <span className="truncate capitalize">
                           {selectedPriorityObject?.name || "Priority"}
                         </span>
-                        <FiChevronDown
+                        <ChevronDown
                           className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary
                              transition-transform duration-200 ${
                                isPriorityMenuOpen ? "rotate-180" : ""
@@ -306,7 +311,7 @@ const KanbanBoard = ({
                         <span className="truncate">
                           {selectedAssigneeObject?.name || "Assignee"}
                         </span>
-                        <FiChevronDown
+                        <ChevronDown
                           className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary
                              transition-transform duration-200 ${
                                isAssigneeMenuOpen ? "rotate-180" : ""

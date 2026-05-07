@@ -4,20 +4,23 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import {
-  FiAlertCircle,
-  FiCalendar,
-  FiCheck,
-  FiDownload,
-  FiFileText,
-  FiPlus,
-  FiSave,
-  FiTag,
-  FiTrash2,
-  FiUser,
-  FiX,
-} from "react-icons/fi"
+  TriangleAlertIcon as AlertCircle,
+  CheckIcon as Check,
+  DownloadIcon as Download,
+  PlusIcon as Plus,
+  TrashIcon as Trash2,
+  UserIcon as User,
+  XIcon as X,
+} from "@animateicons/react/lucide"
+import {
+  Calendar as CalendarIcon,
+  FileText,
+  Save,
+  Tag,
+} from "lucide-react"
 import apiService from "../../../service/apiService"
 import { useAuth } from "../../contexts/customHook"
+import Avatar from "../auth/Avatar"
 import SubtaskView from "./SubtaskView"
 
 const priorityOptions = [
@@ -95,7 +98,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
       return {
         id: u?._id || member?._id || "",
         name: u?.fullname || member?.fullname || u?.email || member?.email || "Unknown",
-        avatar: u?.avatar?.url || `https://i.pravatar.cc/150?u=${u?._id || member?._id}`,
+        user: u,
       }
     })
   }, [members])
@@ -321,7 +324,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   disabled={isUpdating}
                   className="btn-primary py-1.5 px-3 text-sm flex items-center gap-1.5"
                 >
-                  <FiSave aria-hidden="true" className="w-3.5 h-3.5" />
+                  <Save aria-hidden="true" className="w-3.5 h-3.5" />
                   {isUpdating ? "Saving..." : "Update"}
                 </button>
                 <button
@@ -346,7 +349,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   }}
                   className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center text-light-text-tertiary hover:text-accent-danger hover:bg-accent-danger/10 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
-                  <FiTrash2 aria-hidden="true" className="w-4 h-4" />
+                  <Trash2 aria-hidden="true" className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
@@ -354,7 +357,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   onClick={onClose}
                   className="min-h-[44px] min-w-[44px] p-2 text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
-                  <FiX aria-hidden="true" className="w-5 h-5" />
+                  <X aria-hidden="true" className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -385,7 +388,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 <div className="grid grid-cols-[120px_1fr] gap-y-4 text-sm items-center">
                   {/* Assignees */}
                   <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
-                    <FiUser aria-hidden="true" className="w-4 h-4" /> Assignees
+                    <User aria-hidden="true" className="w-4 h-4" /> Assignees
                   </div>
                   <div>
                     <Listbox
@@ -405,14 +408,12 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                 const opt = assigneeOptions.find((a) => a.id === id)
                                 if (!opt) return null
                                 return (
-                                  <img
+                                  <Avatar
                                     key={opt.id}
-                                    src={opt.avatar}
+                                    src={opt.user?.avatar?.url || opt.user?.avatar}
                                     alt={opt.name}
-                                    title={opt.name}
-                                    loading="lazy"
-                                    decoding="async"
-                                    className="w-6 h-6 rounded-full border-2 border-light-bg-primary dark:border-dark-bg-secondary ring-2 ring-accent-primary/20"
+                                    size="xs"
+                                    className="border-2 border-light-bg-primary dark:border-dark-bg-secondary ring-2 ring-accent-primary/20"
                                   />
                                 )
                               })}
@@ -431,17 +432,15 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                 }
                               >
                                 <div className="flex-1 flex items-center gap-2 text-light-text-secondary dark:text-dark-text-secondary">
-                                  <img
-                                    src={option.avatar}
-                                    alt=""
-                                    loading="lazy"
-                                    decoding="async"
-                                    className="w-5 h-5 rounded-full"
+                                  <Avatar
+                                    src={option.user?.avatar?.url || option.user?.avatar}
+                                    alt={option.name}
+                                    size="xs"
                                   />
                                   <span className="truncate">{option.name}</span>
                                 </div>
                                 {selected && (
-                                  <FiCheck
+                                  <Check
                                     aria-hidden="true"
                                     className="text-accent-primary w-4 h-4"
                                   />
@@ -456,7 +455,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
 
                   {/* Due Date */}
                   <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
-                    <FiCalendar aria-hidden="true" className="w-4 h-4" /> Due Date
+                    <CalendarIcon aria-hidden="true" className="w-4 h-4" /> Due Date
                   </div>
                   <div>
                     <input
@@ -469,7 +468,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
 
                   {/* Priority */}
                   <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
-                    <FiTag aria-hidden="true" className="w-4 h-4" /> Priority
+                    <Tag aria-hidden="true" className="w-4 h-4" /> Priority
                   </div>
                   <div>
                     <Listbox
@@ -561,17 +560,15 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                         {formData.comments?.map((comment, i) => {
                           const author = assigneeOptions.find((a) => a.id === comment.user) || {
                             name: "User",
-                            avatar: "https://i.pravatar.cc/150",
                           }
                           return (
                             <div key={i} className="flex gap-3 items-start group">
-                              <img
-                                src={author.avatar}
-                                alt=""
-                                loading="lazy"
-                                decoding="async"
-                                className="w-8 h-8 rounded-full flex-shrink-0"
+                              <Avatar
+                                src={comment.user?.avatar?.url || comment.user?.avatar}
+                                alt={author.name}
+                                size="sm"
                               />
+
                               <div className="flex-1">
                                 <div className="flex items-center justify-between gap-2 mb-1">
                                   <span className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary">
@@ -584,7 +581,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                       onClick={() => handleDeleteComment(comment._id)}
                                       className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center text-light-text-tertiary hover:text-accent-danger transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
                                     >
-                                      <FiTrash2 aria-hidden="true" className="w-3 h-3" />
+                                      <Trash2 aria-hidden="true" className="w-3 h-3" />
                                     </button>
                                   )}
                                 </div>
@@ -643,7 +640,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                           />
                         ) : (
                           <div className="text-center py-8">
-                            <FiFileText
+                            <FileText
                               aria-hidden="true"
                               className="w-12 h-12 mx-auto mb-2 text-light-text-tertiary opacity-50"
                             />
@@ -658,7 +655,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       {/* Upload Button */}
                       <div className="border-t border-light-border dark:border-dark-border pt-4">
                         <label className="flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] border-2 border-dashed border-light-border dark:border-dark-border rounded-xl cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
-                          <FiPlus aria-hidden="true" className="w-5 h-5 text-light-text-tertiary" />
+                          <Plus aria-hidden="true" className="w-5 h-5 text-light-text-tertiary" />
                           <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                             Add Attachment
                           </span>
@@ -801,7 +798,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                     window.open(proxyUrl, "_blank")
                   }}
                 >
-                  <FiDownload aria-hidden="true" className="w-4 h-4 text-light-text-primary" />
+                  <Download aria-hidden="true" className="w-4 h-4 text-light-text-primary" />
                 </a>
                 <button
                   type="button"
@@ -819,7 +816,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                   className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-primary/20 rounded-full hover:bg-accent-danger/50 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                   title="Delete"
                 >
-                  <FiTrash2 aria-hidden="true" className="w-4 h-4 text-light-text-primary" />
+                  <Trash2 aria-hidden="true" className="w-4 h-4 text-light-text-primary" />
                 </button>
               </div>
             </div>
@@ -832,9 +829,9 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
             className="flex flex-col items-center gap-2 p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border hover:border-accent-primary transition-colors group relative"
           >
             {isImage && hasError ? (
-              <FiAlertCircle aria-hidden="true" className="w-8 h-8 text-accent-info" />
+              <AlertCircle aria-hidden="true" className="w-8 h-8 text-accent-info" />
             ) : (
-              <FiFileText aria-hidden="true" className="w-8 h-8 text-light-text-tertiary" />
+              <FileText aria-hidden="true" className="w-8 h-8 text-light-text-tertiary" />
             )}
             <span
               className="text-xs text-light-text-secondary dark:text-dark-text-secondary text-center truncate w-full"
@@ -853,7 +850,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                 aria-label={`Download ${attachment.filename || "attachment"}`}
                 className="min-h-[44px] px-3 py-1.5 text-xs bg-accent-primary text-white rounded-lg hover:bg-accent-primary/80 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiDownload aria-hidden="true" className="w-3.5 h-3.5" />
+                <Download aria-hidden="true" className="w-3.5 h-3.5" />
                 {isImage && hasError ? "Open" : "Download"}
               </a>
               <a
@@ -882,7 +879,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
               className="absolute top-2 right-2 p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-accent-danger/20 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               title="Delete"
             >
-              <FiTrash2 aria-hidden="true" className="w-3.5 h-3.5 text-accent-danger" />
+              <Trash2 aria-hidden="true" className="w-3.5 h-3.5 text-accent-danger" />
             </button>
           </div>
         )

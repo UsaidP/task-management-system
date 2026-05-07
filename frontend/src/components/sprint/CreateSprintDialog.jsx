@@ -1,7 +1,8 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react"
 import { useState } from "react"
 import toast from "react-hot-toast"
-import { FiCalendar, FiX } from "react-icons/fi"
+import { XIcon } from "@animateicons/react/lucide"
+import { CalendarIcon } from "lucide-react"
 import apiService from "../../../service/apiService"
 
 const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => {
@@ -55,7 +56,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
               aria-label="Close dialog"
               className="p-1 rounded-xl hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
             >
-              <FiX className="w-5 h-5" />
+              <XIcon className="w-5 h-5" />
             </button>
           </div>
 
@@ -100,7 +101,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                   Start Date *
                 </label>
                 <div className="relative">
-                  <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                  <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
                   <input
                     id="start-date"
                     type="date"
@@ -121,7 +122,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                   End Date *
                 </label>
                 <div className="relative">
-                  <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                  <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
                   <input
                     id="end-date"
                     type="date"

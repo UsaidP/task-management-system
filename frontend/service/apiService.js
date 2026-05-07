@@ -1,3 +1,12 @@
+/**
+ * API Service Module
+ *
+ * Centralized HTTP client with automatic token refresh, exponential backoff
+ * retries for transient errors, and structured error handling.
+ *
+ * @module apiService
+ */
+
 // --- Custom Error Classes ---
 class ApiError extends Error {
   constructor(message, status) {
@@ -39,7 +48,7 @@ class ApiService {
     }
     // Fall back to relative path so production (same-domain) works without env var
     this.baseURL = envUrl?.trim() || "/api/v1";
-    this.defaultHeader = {
+    this.defaultHeaders = {
       "Content-Type": "application/json",
       Accept: "application/json",
     };
@@ -82,7 +91,7 @@ class ApiService {
    */
   async customFetch(endpoint, options = {}, retryCount = 0) {
     const url = `${this.baseURL}${endpoint}`;
-    const headers = { ...this.defaultHeader, ...options.headers };
+    const headers = { ...this.defaultHeaders, ...options.headers };
 
     if (options.body instanceof FormData) {
       delete headers["Content-Type"];
@@ -112,10 +121,9 @@ class ApiService {
           endpoint.includes("/auth/login") ||
           endpoint.includes("/auth/register") ||
           endpoint.includes("/auth/refresh") ||
-          endpoint.includes("/auth/forget-password") ||
-          endpoint.includes("/auth/reset-password") ||
-          endpoint.includes("/auth/verify") ||
-          endpoint.includes("/auth/resend-verify-email");
+          endpoint.includes("/auth/forgot") ||
+          endpoint.includes("/auth/reset") ||
+          endpoint.includes("/auth/verify");
 
         if (response.status === 401 && !isAuthEndpoint) {
           if (this.refreshAttempts >= this.MAX_REFRESH_ATTEMPTS) {
@@ -232,14 +240,14 @@ class ApiService {
   }
 
   async updateProfile(profileData) {
-    return await this.customFetch("/auth/update-profile", {
-      method: "PUT",
+    return await this.customFetch("/auth/profile", {
+      method: "PATCH",
       body: JSON.stringify(profileData),
     });
   }
 
   async deleteAccount() {
-    return await this.customFetch("/auth/delete-account", {
+    return await this.customFetch("/auth/account", {
       method: "DELETE",
     });
   }
@@ -251,14 +259,14 @@ class ApiService {
   }
 
   async forgetPassword(email) {
-    return await this.customFetch("/auth/forget-password", {
+    return await this.customFetch("/auth/forgot", {
       method: "POST",
       body: JSON.stringify({ email }),
     });
   }
 
   async resetPassword(password, token) {
-    return await this.customFetch(`/auth/reset-password/${token}`, {
+    return await this.customFetch(`/auth/reset/${token}`, {
       method: "POST",
       body: JSON.stringify({ password }),
     });
@@ -266,12 +274,12 @@ class ApiService {
 
   async verifyEmail(token) {
     return await this.customFetch(`/auth/verify/${token}`, {
-      method: "POST",
-      body: JSON.stringify({ token }),
+      method: "GET",
     });
   }
+
   async resendVerifyEmail(email) {
-    return await this.customFetch("/auth/resend-verify-email", {
+    return await this.customFetch("/auth/verify-email", {
       method: "POST",
       body: JSON.stringify({ email }),
     });
@@ -284,8 +292,8 @@ class ApiService {
   }
 
   async updateAvatar(formData) {
-    return await this.customFetch("/auth/update-avatar", {
-      method: "PUT",
+    return await this.customFetch("/auth/avatar", {
+      method: "PATCH",
       body: formData, // FormData is handled by customFetch
     });
   }
@@ -345,7 +353,7 @@ class ApiService {
   }
 
   async getAllTaskOfUser() {
-    return await this.customFetch(`/tasks/tasks`, {
+    return await this.customFetch(`/tasks`, {
       method: "GET",
     });
   }
@@ -377,22 +385,28 @@ class ApiService {
 
   // --- Member Methods ---
   async getAllMembers(projectId) {
-    return await this.customFetch(`/members/all-members/${projectId}`, {
+    return await this.customFetch(`/members/${projectId}`, {
       method: "GET",
     });
   }
 
   async addMember(projectId, email, role) {
-    return await this.customFetch(`/members/add/${projectId}`, {
+    return await this.customFetch(`/members/${projectId}`, {
       method: "POST",
       body: JSON.stringify({ email, role }),
     });
   }
 
-  async removeMember(projectId, userId) {
-    return await this.customFetch(`/members/remove/${projectId}`, {
-      method: "POST",
-      body: JSON.stringify({ userId }),
+  async removeMember(projectId, memberId) {
+    return await this.customFetch(`/members/${projectId}/${memberId}`, {
+      method: "DELETE",
+    });
+  }
+
+  async updateMemberRole(projectId, memberId, role) {
+    return await this.customFetch(`/members/${projectId}`, {
+      method: "PUT",
+      body: JSON.stringify({ memberId, role }),
     });
   }
 
@@ -500,8 +514,9 @@ class ApiService {
     });
   }
 
-  async getAdminRecentTasks() {
-    return await this.customFetch("/dashboard/admin/recent-tasks", {
+  async getAdminRecentTasks(limit) {
+    const query = limit ? `?limit=${limit}` : "";
+    return await this.customFetch(`/dashboard/admin/recent-tasks${query}`, {
       method: "GET",
     });
   }
@@ -528,6 +543,13 @@ class ApiService {
   async getProjectAdminMembers(projectId) {
     return await this.customFetch(`/projects/${projectId}/admin/members`, {
       method: "GET",
+    });
+  }
+
+  async updateUserRole(userId, role) {
+    return await this.customFetch(`/auth/users/${userId}/role`, {
+      method: "PATCH",
+      body: JSON.stringify({ role }),
     });
   }
 }

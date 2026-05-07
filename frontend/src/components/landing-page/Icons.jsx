@@ -1,20 +1,42 @@
-import * as FeatherIcons from "react-icons/fi"
+import {
+  DashboardIcon,
+  LayoutGridIcon,
+  UsersIcon,
+  MoonIcon,
+  ZapIcon,
+  GlobeIcon,
+  TriangleAlertIcon
+} from "@animateicons/react/lucide"
+import { CalendarIcon, ListIcon, BriefcaseIcon, TargetIcon } from "lucide-react"
+
+const ICON_MAP = {
+  FiLayout: DashboardIcon,
+  FiTrello: LayoutGridIcon,
+  FiCalendar: CalendarIcon,
+  FiList: ListIcon,
+  FiUsers: UsersIcon,
+  FiMoon: MoonIcon,
+  FiZap: ZapIcon,
+  FiBriefcase: BriefcaseIcon,
+  FiTarget: TargetIcon,
+  FiGlobe: GlobeIcon,
+}
 
 /**
- * A dynamic icon component that renders a Feather Icon based on a string name.
+ * A dynamic icon component that renders an icon based on a string name.
  * This prevents having to import every single icon into our main page.
  *
  * @param {object} props
- * @param {keyof typeof FeatherIcons} props.name - The name of the Feather Icon to render (e.g., "FiTrello").
+ * @param {string} props.name - The name of the Icon to render (e.g., "FiTrello").
  */
 export const Icon = ({ name, ...props }) => {
-  const FeatherIcon = FeatherIcons[name]
+  const LucideIcon = ICON_MAP[name]
 
   // If the icon name is invalid, render a fallback icon to indicate an error.
-  if (!FeatherIcon) {
+  if (!LucideIcon) {
     console.warn(`Icon "${name}" not found. Rendering a fallback.`)
-    return <FeatherIcons.FiAlertCircle {...props} />
+    return <TriangleAlertIcon {...props} />
   }
 
-  return <FeatherIcon {...props} />
+  return <LucideIcon {...props} />
 }

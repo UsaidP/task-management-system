@@ -1,12 +1,13 @@
-import { Bell } from "lucide-react"
+import { BellIcon } from "@animateicons/react/lucide"
 import { useAuth } from "../../contexts/customHook.js"
+import Avatar from "../auth/Avatar"
 
 export default function AdminHeader() {
   const { user } = useAuth()
 
-  let initials = "A"
+  let _initials = "A"
   if (user?.fullname) {
-    initials = user.fullname
+    _initials = user.fullname
       .split(" ")
       .map((n) => n[0])
       .join("")
@@ -31,16 +32,18 @@ export default function AdminHeader() {
           aria-label="View notifications"
           className="relative flex h-9 w-9 items-center justify-center rounded-xl text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-secondary"
         >
-          <Bell size={18} />
+          <BellIcon size={18} />
           <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent-danger text-[9px] font-bold text-light-text-inverse">
             0
           </span>
         </button>
 
         <div className="flex items-center gap-2.5 ml-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-primary text-sm font-bold text-light-text-inverse">
-            {initials}
-          </div>
+          <Avatar
+            src={user?.avatar?.url || user?.avatar}
+            alt={user?.fullname || "Admin"}
+            size="sm"
+          />
           <div className="hidden md:block">
             <p className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary leading-tight">
               {user?.fullname || "Admin"}

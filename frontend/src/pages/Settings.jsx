@@ -1,23 +1,8 @@
 import { motion } from "framer-motion"
 import { memo, useEffect, useState } from "react"
-import {
-  FiAlertTriangle,
-  FiBell,
-  FiCheck,
-  FiCheckCircle,
-  FiChevronDown,
-  FiDownload,
-  FiGlobe,
-  FiLayout,
-  FiLock,
-  FiMoon,
-  FiSettings,
-  FiShield,
-  FiSun,
-  FiTrash2,
-  FiUser,
-} from "react-icons/fi"
 import { toast } from "react-hot-toast"
+import { TriangleAlertIcon, BellIcon, CheckIcon, CircleCheckIcon, ChevronDownIcon, DownloadIcon, GlobeIcon, DashboardIcon, LockIcon, MoonIcon, SettingsIcon, SunIcon, TrashIcon, UserIcon } from "@animateicons/react/lucide"
+import { ShieldIcon } from "lucide-react"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../components/Skeleton.jsx"
 import { useAuth } from "../contexts/customHook.js"
 import { useTheme } from "../theme/ThemeContext"
@@ -160,7 +145,7 @@ const SelectDropdown = memo(({ value, onChange, options, id }) => (
         </option>
       ))}
     </select>
-    <FiChevronDown className="absolute transform -translate-y-1/2 pointer-events-none right-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary" />
+    <ChevronDownIcon className="absolute transform -translate-y-1/2 pointer-events-none right-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary" />
   </div>
 ))
 SelectDropdown.displayName = "SelectDropdown"
@@ -176,7 +161,7 @@ const Settings = () => {
         toast.error("User email not found")
         return
       }
-      
+
       await forgetPassword(user.email)
       toast.success(`Password reset email sent to ${user.email}`)
     } catch (error) {
@@ -188,17 +173,17 @@ const Settings = () => {
     return saved
       ? JSON.parse(saved)
       : {
-        emailNotifications: true,
-        pushNotifications: false,
-        desktopNotifications: true,
-        language: "en",
-        timezone: "auto",
-        dateFormat: "dmy",
-        startOfWeek: "sunday",
-        taskReminders: true,
-        soundEffects: true,
-        autoSave: true,
-      }
+          emailNotifications: true,
+          pushNotifications: false,
+          desktopNotifications: true,
+          language: "en",
+          timezone: "auto",
+          dateFormat: "dmy",
+          startOfWeek: "sunday",
+          taskReminders: true,
+          soundEffects: true,
+          autoSave: true,
+        }
   })
 
   useEffect(() => {
@@ -244,7 +229,6 @@ const Settings = () => {
               Manage your preferences and account settings
             </p>
           </div>
-
         </div>
 
         {/* Settings Container */}
@@ -257,31 +241,33 @@ const Settings = () => {
           {/* Appearance Section */}
           <SettingsSection
             title="Appearance"
-            icon={<FiLayout />}
+            icon={<DashboardIcon />}
             description="Customize how the app looks and feels"
           >
             <SettingItem label="Theme" description="Choose between light and dark mode">
               <div className="flex gap-2 w-full sm:w-auto bg-light-bg-secondary dark:bg-dark-bg-tertiary p-1.5 rounded-xl">
                 <button
                   type="button"
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${theme === "light"
-                    ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
-                    : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                    }`}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
+                    theme === "light"
+                      ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
+                      : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+                  }`}
                   onClick={() => theme !== "light" && toggleTheme()}
                 >
-                  <FiSun />
+                  <SunIcon />
                   <span>Light</span>
                 </button>
                 <button
                   type="button"
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${theme === "dark"
-                    ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
-                    : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                    }`}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
+                    theme === "dark"
+                      ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
+                      : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
+                  }`}
                   onClick={() => theme !== "dark" && toggleTheme()}
                 >
-                  <FiMoon />
+                  <MoonIcon />
                   <span>Dark</span>
                 </button>
               </div>
@@ -291,7 +277,7 @@ const Settings = () => {
           {/* Account Section */}
           <SettingsSection
             title="Account"
-            icon={<FiUser />}
+            icon={<UserIcon />}
             description="Manage your account and security"
           >
             <SettingItem label="Password">
@@ -302,7 +288,7 @@ const Settings = () => {
                 className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                 onClick={changePassword}
               >
-                <FiLock />
+                <LockIcon />
                 Change Password
               </motion.button>
             </SettingItem>
@@ -313,7 +299,7 @@ const Settings = () => {
                 whileTap={{ scale: 0.98 }}
                 className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
-                <FiShield />
+                <ShieldIcon />
                 Enable 2FA
               </motion.button>
             </SettingItem>
@@ -324,7 +310,7 @@ const Settings = () => {
                 whileTap={{ scale: 0.98 }}
                 className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
-                <FiDownload />
+                <DownloadIcon />
                 Export
               </motion.button>
             </SettingItem>
@@ -333,7 +319,7 @@ const Settings = () => {
           {/* Danger Zone */}
           <SettingsSection
             title="Danger Zone"
-            icon={<FiAlertTriangle />}
+            icon={<TriangleAlertIcon />}
             description="Irreversible and destructive actions"
           >
             <div className="p-4 border border-dashed bg-accent-danger/5 dark:bg-accent-danger/10 border-accent-danger/30 rounded-xl">
@@ -352,7 +338,7 @@ const Settings = () => {
                   whileTap={{ scale: 0.98 }}
                   className="flex flex-shrink-0 items-center justify-center gap-2 px-5 py-2.5 bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger dark:hover:bg-accent-danger-dark text-white rounded-xl text-sm font-semibold shadow-sm dark:shadow-dark-sm transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
                 >
-                  <FiTrash2 />
+                  <TrashIcon />
                   Delete Account
                 </motion.button>
               </div>
@@ -368,7 +354,7 @@ const Settings = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           className="fixed z-50 flex items-center gap-3 px-6 py-4 font-medium text-white transform -translate-x-1/2 shadow-xl bottom-8 left-1/2 bg-accent-success dark:bg-accent-success-dark rounded-xl backdrop-blur-md dark:shadow-dark-lg"
         >
-          <FiCheckCircle className="flex-shrink-0 text-xl" />
+          <CircleCheckIcon className="flex-shrink-0 text-xl" />
           <span>Settings saved successfully!</span>
         </motion.div>
       )}

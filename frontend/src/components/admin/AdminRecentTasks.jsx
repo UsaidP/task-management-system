@@ -1,4 +1,6 @@
-import { ArrowUpDown, Download, Filter } from "lucide-react"
+import { DownloadIcon } from "@animateicons/react/lucide"
+import { ArrowUpDownIcon, FilterIcon } from "lucide-react"
+import Avatar from "../auth/Avatar"
 
 const statusColors = {
   "in-progress": "status-in-progress",
@@ -43,19 +45,19 @@ export default function AdminRecentTasks({ tasks, loading }) {
             type="button"
             className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
           >
-            <Filter size={14} /> Filter
+            <FilterIcon size={14} /> Filter
           </button>
           <button
             type="button"
             className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
           >
-            <ArrowUpDown size={14} /> Sort
+            <ArrowUpDownIcon size={14} /> Sort
           </button>
           <button
             type="button"
             className="flex items-center gap-1.5 rounded-lg border border-light-border dark:border-dark-border px-3 py-1.5 text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
           >
-            <Download size={14} /> Export
+            <DownloadIcon size={14} /> Export
           </button>
         </div>
       </div>
@@ -103,9 +105,11 @@ export default function AdminRecentTasks({ tasks, loading }) {
                   </td>
                   <td className="px-6 py-3.5">
                     <div className="flex items-center gap-2">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-primary text-[10px] font-bold text-light-text-inverse">
-                        {initials}
-                      </div>
+                      <Avatar
+                        src={assignee.avatar?.url || assignee.avatar}
+                        alt={assignee.fullname || "User"}
+                        size="sm"
+                      />
                       <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                         {assignee.fullname || "Unassigned"}
                       </span>

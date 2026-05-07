@@ -1,15 +1,14 @@
 import { useState } from "react"
 import toast from "react-hot-toast"
 import {
-  FiAlertCircle,
-  FiArchive,
-  FiCheck,
-  FiEye,
-  FiEyeOff,
-  FiSave,
-  FiTrash2,
-  FiX,
-} from "react-icons/fi"
+  TriangleAlertIcon,
+  CheckIcon,
+  EyeIcon,
+  EyeOffIcon,
+  TrashIcon,
+  XIcon,
+} from "@animateicons/react/lucide"
+import { Archive, Save } from "lucide-react"
 import apiService from "../../../../service/apiService.js"
 
 const ProjectAdminSettings = ({ project, setProject, projectId }) => {
@@ -185,7 +184,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
                 disabled={isSaving || !name.trim()}
                 className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-accent-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <FiCheck className="h-4 w-4" />
+                <CheckIcon className="h-4 w-4" />
                 {isSaving ? "Saving..." : "Save Changes"}
               </button>
               <button
@@ -193,7 +192,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
                 onClick={handleCancelEdit}
                 className="flex items-center gap-2 rounded-lg border border-light-border px-4 py-2 text-sm font-medium text-light-text-secondary transition-all duration-200 hover:bg-light-bg-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover"
               >
-                <FiX className="h-4 w-4" />
+                <XIcon className="h-4 w-4" />
                 Cancel
               </button>
             </div>
@@ -221,9 +220,9 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
               }`}
             >
               {project?.isActive !== false ? (
-                <FiEye className="h-5 w-5 text-accent-success" />
+                <EyeIcon className="h-5 w-5 text-accent-success" />
               ) : (
-                <FiEyeOff className="h-5 w-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                <EyeOffIcon className="h-5 w-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
               )}
             </div>
             <div>
@@ -251,7 +250,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
       <div className="rounded-xl border-2 border-accent-danger/30 bg-accent-danger/5">
         <div className="border-b border-accent-danger/30 px-6 py-4">
           <div className="flex items-center gap-2">
-            <FiAlertCircle className="h-4 w-4 text-accent-danger" />
+            <TriangleAlertIcon className="h-4 w-4 text-accent-danger" />
             <h3 className="text-sm font-semibold text-accent-danger">Danger Zone</h3>
           </div>
           <p className="mt-0.5 text-xs text-light-text-secondary dark:text-dark-text-secondary">
@@ -274,7 +273,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
               onClick={() => setShowArchiveConfirm(true)}
               className="flex w-full items-center justify-center gap-2 rounded-lg border border-accent-warning px-4 py-2 text-xs font-medium text-accent-warning transition-all duration-200 hover:bg-accent-warning/10 sm:w-auto"
             >
-              <FiArchive className="h-3.5 w-3.5" />
+              <Archive className="h-3.5 w-3.5" />
               Archive
             </button>
           </div>
@@ -292,7 +291,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
               onClick={() => setShowDeleteConfirm(true)}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-danger px-4 py-2 text-xs font-medium text-white transition-all duration-200 hover:bg-accent-danger-dark sm:w-auto"
             >
-              <FiTrash2 className="h-3.5 w-3.5" />
+              <TrashIcon className="h-3.5 w-3.5" />
               Delete
             </button>
           </div>

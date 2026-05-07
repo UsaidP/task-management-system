@@ -149,6 +149,14 @@ export const validateProjectPermission = (...allowedRoles) => {
 		}).lean()
 
 		if (!membership) {
+			// Check if project exists to provide better error code (404 vs 403)
+			const { Project } = await import("../models/project.model.js")
+			const projectExists = await Project.exists({ _id: projectId })
+
+			if (!projectExists) {
+				throw new ApiError(404, "Project not found")
+			}
+
 			console.warn(
 				`[RBAC DENIED] User ${req.user._id} tried to access project ${projectId} - not a member`,
 			)
@@ -264,34 +272,50 @@ export const requireProjectAccess = (resourceType, ...allowedRoles) => {
 	return asyncHandler(async (req, res, next) => {
 		const { Task } = await import("../models/task.model.js")
 		const { SubTask } = await import("../models/subtask.model.js")
+		const { ProjectNote } = await import("../models/projectnote.model.js")
+		const { Sprint } = await import("../models/sprint.model.js")
 
-		const { taskId, subtaskId } = req.params
+		const { taskId, subtaskId, noteId, sprintId } = req.params
 
-		let task
+		let projectId
 		if (resourceType === "task") {
-			// For task-based routes (:taskId)
 			if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
 				throw new ApiError(400, "Invalid or missing task ID")
 			}
-			task = await Task.findById(taskId).select("project").lean()
+			const task = await Task.findById(taskId).select("project").lean()
+			if (!task) throw new ApiError(404, "Task not found")
+			projectId = task.project
 		} else if (resourceType === "subtask") {
-			// For subtask-based routes (:subtaskId)
 			if (!subtaskId || !mongoose.Types.ObjectId.isValid(subtaskId)) {
 				throw new ApiError(400, "Invalid or missing subtask ID")
 			}
 			const subtask = await SubTask.findById(subtaskId).select("task").lean()
-			if (!subtask) {
-				throw new ApiError(404, "Subtask not found")
+			if (!subtask) throw new ApiError(404, "Subtask not found")
+			const task = await Task.findById(subtask.task).select("project").lean()
+			if (!task) throw new ApiError(404, "Parent task not found")
+			projectId = task.project
+		} else if (resourceType === "note") {
+			if (!noteId || !mongoose.Types.ObjectId.isValid(noteId)) {
+				throw new ApiError(400, "Invalid or missing note ID")
 			}
-			task = await Task.findById(subtask.task).select("project").lean()
+			const note = await ProjectNote.findById(noteId).select("project").lean()
+			if (!note) throw new ApiError(404, "Note not found")
+			projectId = note.project
+		} else if (resourceType === "sprint") {
+			if (!sprintId || !mongoose.Types.ObjectId.isValid(sprintId)) {
+				throw new ApiError(400, "Invalid or missing sprint ID")
+			}
+			const sprint = await Sprint.findById(sprintId).select("project").lean()
+			if (!sprint) throw new ApiError(404, "Sprint not found")
+			projectId = sprint.project
 		}
 
-		if (!task) {
-			throw new ApiError(404, "Task not found")
+		if (!projectId) {
+			throw new ApiError(404, `${resourceType} not found or project not resolved`)
 		}
 
 		// Inject projectId into params so validateProjectPermission can use it
-		req.params.projectId = task.project.toString()
+		req.params.projectId = projectId.toString()
 
 		// Delegate to validateProjectPermission
 		return validateProjectPermission(...allowedRoles)(req, res, next)

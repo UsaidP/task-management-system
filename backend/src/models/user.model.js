@@ -146,6 +146,7 @@ userSchema.methods.generateRefreshToken = function () {
 	return jwt.sign(
 		{
 			_id: this._id,
+			nonce: crypto.randomBytes(16).toString("hex"),
 		},
 		process.env.REFRESH_TOKEN_SECRET,
 		{

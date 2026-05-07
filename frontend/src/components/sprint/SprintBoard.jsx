@@ -2,13 +2,14 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { useCallback, useEffect, useState } from "react"
 import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
-import { FiCheckCircle, FiClock, FiEye, FiPlus } from "react-icons/fi"
+import { CircleCheckIcon, EyeIcon, PlusIcon } from "@animateicons/react/lucide"
+import { ClockIcon } from "lucide-react"
 import apiService from "../../../service/apiService.js"
-import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
+import Avatar from "../auth/Avatar"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
 const TaskCard = ({ task, onTaskClick }) => {
-  const reduceMotion = useReducedMotion()
+  const _reduceMotion = useReducedMotion()
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "TASK",
     item: { taskId: task._id, currentStatus: task.status },
@@ -89,22 +90,13 @@ const TaskCard = ({ task, onTaskClick }) => {
         <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-light-border/50 dark:border-dark-border/50">
           <div className="flex -space-x-1 first:space-x-0">
             {task.assignedTo.slice(0, 3).map((user, idx) => {
-              const avatarUrl = getOptimizedAvatarUrl(user?.avatar?.url, 50)
-              const fallback = `https://i.pravatar.cc/150?u=${user._id || idx}`
-              const name = user.fullname || user.email || "User"
-              const initials = name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .toUpperCase()
-                .slice(0, 2)
-
               return (
-                <AvatarWithFallback
+                <Avatar
                   key={user._id || idx}
-                  src={avatarUrl || fallback}
-                  alt={initials}
-                  name={name}
+                  src={user?.avatar?.url || user?.avatar}
+                  alt={user.fullname || "User"}
+                  size="xs"
+                  className="border-2 border-light-bg-primary dark:border-dark-bg-tertiary -ml-1 first:ml-0"
                 />
               )
             })}
@@ -120,37 +112,8 @@ const TaskCard = ({ task, onTaskClick }) => {
   )
 }
 
-const AvatarWithFallback = ({ src, alt, name }) => {
-  const [hasError, setHasError] = useState(false)
-
-  if (!src || hasError) {
-    return (
-      <div
-        className="w-6 h-6 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary text-white text-[10px] flex items-center justify-center font-medium ring-2 ring-light-bg-primary dark:ring-dark-bg-tertiary -ml-1 first:ml-0"
-        title={name}
-      >
-        {alt}
-      </div>
-    )
-  }
-
-  return (
-    <img
-      src={src}
-      alt={name}
-      className="w-6 h-6 rounded-full object-cover ring-2 ring-light-bg-primary dark:ring-dark-bg-tertiary -ml-1 first:ml-0"
-      title={name}
-      loading="lazy"
-      decoding="async"
-      width="24"
-      height="24"
-      onError={() => setHasError(true)}
-    />
-  )
-}
-
 const Column = ({ status, tasks, onTaskClick, onDropTask }) => {
-  const reduceMotion = useReducedMotion()
+  const _reduceMotion = useReducedMotion()
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "TASK",
     drop: (item) => {
@@ -166,22 +129,22 @@ const Column = ({ status, tasks, onTaskClick, onDropTask }) => {
   const columnConfig = {
     todo: {
       bg: "bg-task-status-todo",
-      icon: FiPlus,
+      icon: PlusIcon,
       title: "To Do",
     },
     "in-progress": {
       bg: "bg-task-status-progress",
-      icon: FiClock,
+      icon: ClockIcon,
       title: "In Progress",
     },
     "under-review": {
       bg: "bg-task-status-review",
-      icon: FiEye,
+      icon: EyeIcon,
       title: "In Review",
     },
     completed: {
       bg: "bg-task-status-done",
-      icon: FiCheckCircle,
+      icon: CircleCheckIcon,
       title: "Done",
     },
   }

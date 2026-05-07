@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { FiCheck, FiPlus, FiTrash2 } from "react-icons/fi"
+import {
+  CheckIcon as Check,
+  PlusIcon as Plus,
+  TrashIcon as Trash2,
+} from "@animateicons/react/lucide"
 import apiService from "../../../service/apiService.js"
 
 const SubtaskView = ({ taskId }) => {
@@ -121,7 +125,7 @@ const SubtaskView = ({ taskId }) => {
           aria-label="Add subtask"
           className="btn-primary px-4 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <FiPlus className="w-5 h-5" />
+          <Plus className="w-5 h-5" />
         </button>
       </form>
 
@@ -152,7 +156,7 @@ const SubtaskView = ({ taskId }) => {
                       : "border-light-text-tertiary dark:border-dark-text-tertiary"
                   }`}
                 >
-                  {subtask.isCompleted && <FiCheck className="w-3 h-3 text-white" />}
+                  {subtask.isCompleted && <Check className="w-3 h-3 text-white" />}
                 </div>
                 <span
                   className={`text-sm font-medium transition-all ${
@@ -170,7 +174,7 @@ const SubtaskView = ({ taskId }) => {
                 aria-label={`Delete subtask: ${subtask.title}`}
                 className="p-2 transition-all rounded-lg opacity-0 text-light-text-tertiary hover:text-error hover:bg-error/10 group-hover:opacity-100"
               >
-                <FiTrash2 className="w-4 h-4" />
+                <Trash2 className="w-4 h-4" />
               </button>
             </li>
           ))}

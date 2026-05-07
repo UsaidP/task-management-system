@@ -43,7 +43,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "react-router-dom", "framer-motion", "react-icons/fi", "dayjs"],
+    include: ["react", "react-dom", "react-router-dom", "framer-motion", "@animateicons/react", "dayjs"],
     // Pre-bundle these to avoid 504 on lazy-load
     entries: ["./src/**/*.jsx", "./src/**/*.js"],
   },
@@ -64,10 +64,6 @@ export default defineConfig({
           // Pure utilities — no React dependency, safe to separate
           if (pkg === "dayjs" || pkg === "ms") {
             return "utils"
-          }
-          // Pure icon SVGs — no React runtime dependency
-          if (pkg.startsWith("react-icons/")) {
-            return "icons"
           }
           // All React-dependent libraries stay in the main chunk
           // (framer-motion, @tanstack/react-table, react-router, recharts, etc.)

@@ -22,6 +22,15 @@ const userRegistrationValidator = () => {
 			.isLength({ max: 13 })
 			.withMessage("Username should be maximum of 13 character"),
 
+		body("fullname")
+			.trim()
+			.notEmpty()
+			.withMessage("Full name is required")
+			.isLength({ min: 3 })
+			.withMessage("Full name should be minimum of 3 character")
+			.isLength({ max: 50 })
+			.withMessage("Full name should be maximum of 50 character"),
+
 		body("password")
 			.notEmpty()
 			.withMessage("Password is required")

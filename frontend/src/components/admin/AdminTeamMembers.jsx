@@ -1,3 +1,5 @@
+import Avatar from "../auth/Avatar"
+
 const avatarColors = [
   "bg-accent-primary",
   "bg-accent-info",
@@ -38,24 +40,24 @@ export default function AdminTeamMembers({ users, loading }) {
             member.totalTasks > 0
               ? Math.round((member.completedTasks / member.totalTasks) * 100)
               : 0
-          const initials = (member.fullname || "U")
+          const _initials = (member.fullname || "U")
             .split(" ")
             .map((n) => n[0])
             .join("")
             .toUpperCase()
             .slice(0, 2)
-          const colorClass = avatarColors[index % avatarColors.length]
+          const _colorClass = avatarColors[index % avatarColors.length]
 
           return (
             <div
               key={member._id}
               className="group flex items-center gap-3 rounded-xl p-2 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
             >
-              <div
-                className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-light-text-inverse flex-shrink-0 ${colorClass}`}
-              >
-                {initials}
-              </div>
+              <Avatar
+                src={member.avatar?.url || member.avatar}
+                alt={member.fullname || "Team member"}
+                size="md"
+              />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between">
                   <p className="truncate text-sm font-medium text-light-text-primary dark:text-dark-text-primary">

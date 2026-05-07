@@ -19,35 +19,15 @@ const Logo = ({ size = "md", iconOnly = false, className = "", to }) => {
 
   const content = (
     <div className={`flex items-center ${s.gap} ${className}`}>
-      {/* Icon — checkmark badge */}
-      <svg
+      {/* Icon — pinwheel */}
+      <img
+        src="/taskflow_icon_pinwheel.svg"
+        alt="TaskFlow pinwheel"
         width={s.icon}
         height={s.icon}
-        viewBox="0 0 40 40"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="flex-shrink-0"
+        className="flex-shrink-0 object-contain rounded-lg shadow-sm shadow-accent-primary/5"
         aria-hidden="true"
-      >
-        {/* Rounded square background */}
-        <rect width="40" height="40" rx="10" fill="url(#logo-gradient)" />
-        {/* Checkmark */}
-        <path
-          d="M12 21L17.5 26.5L28 14"
-          stroke="white"
-          strokeWidth="3.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* Gradient definition */}
-        <defs>
-          <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40">
-            <stop offset="0%" stopColor="#E8553A" />
-            <stop offset="50%" stopColor="#D4662F" />
-            <stop offset="100%" stopColor="#5A8F4A" />
-          </linearGradient>
-        </defs>
-      </svg>
+      />
 
       {/* Wordmark */}
       {!iconOnly && (

@@ -1,7 +1,12 @@
 import { motion } from "framer-motion"
 import { useId, useState } from "react"
 import toast from "react-hot-toast"
-import { FiCheckCircle, FiEye, FiEyeOff, FiLock } from "react-icons/fi"
+import {
+  CircleCheckIcon as CheckCircle,
+  EyeIcon as Eye,
+  EyeOffIcon as EyeOff,
+  LockIcon as Lock,
+} from "@animateicons/react/lucide"
 import { Link, useParams } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -49,7 +54,7 @@ export const Reset = () => {
           className="w-full max-w-md auth-card space-y-6 text-center"
         >
           <div className="w-16 h-16 bg-accent-success/10 dark:bg-accent-success/20 text-accent-success rounded-full flex items-center justify-center mx-auto mb-4">
-            <FiCheckCircle className="w-8 h-8" />
+            <CheckCircle className="w-8 h-8" />
           </div>
           <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
             Password Reset!
@@ -101,7 +106,7 @@ export const Reset = () => {
                 New Password
               </label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -118,7 +123,7 @@ export const Reset = () => {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>

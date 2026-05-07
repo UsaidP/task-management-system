@@ -4,20 +4,12 @@ import relativeTime from "dayjs/plugin/relativeTime"
 import weekOfYear from "dayjs/plugin/weekOfYear"
 import { useCallback, useEffect, useId, useMemo, useState } from "react"
 import toast from "react-hot-toast"
-import {
-  FiCalendar,
-  FiCheckCircle,
-  FiCircle,
-  FiClock,
-  FiLock,
-  FiPlus,
-  FiSearch,
-  FiSettings,
-  FiUsers,
-} from "react-icons/fi"
+import { CircleCheckIcon, LockIcon, PlusIcon, SearchIcon, SettingsIcon, UserIcon, UsersIcon } from "@animateicons/react/lucide"
+import { Circle, CalendarIcon, ClockIcon } from "lucide-react"
 import { useNavigate, useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
+import Avatar from "../auth/Avatar"
 import Modal from "../Modal"
 import Skeleton from "../Skeleton"
 import CreateTaskModal from "../task/CreateTaskModal"
@@ -449,12 +441,13 @@ const ProjectPage = () => {
           <div className="hidden sm:flex items-center" title={`${members.length} members`}>
             <div className="flex -space-x-2">
               {members.slice(0, 4).map((m, idx) => (
-                <div
+                <Avatar
                   key={m.user?._id || idx}
-                  className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-xs text-white font-bold"
-                >
-                  {m.user?.fullname?.slice(0, 2).toUpperCase() || "U"}
-                </div>
+                  src={m.user?.avatar?.url || m.user?.avatar}
+                  alt={m.user?.fullname || "Member"}
+                  size="xs"
+                  className="border-2 border-light-bg-secondary dark:border-dark-bg-tertiary"
+                />
               ))}
               {members.length > 4 && (
                 <div className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-xs text-light-text-tertiary dark:text-dark-text-tertiary font-medium">
@@ -468,7 +461,7 @@ const ProjectPage = () => {
             onClick={() => setIsCreateModalOpen(true)}
             className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-accent-primary text-white hover:bg-accent-primary-dark transition-all border-none cursor-pointer shadow-sm hover:shadow-md"
           >
-            <FiPlus className="w-4 h-4" />
+            <PlusIcon className="w-4 h-4" />
             <span className="hidden sm:inline">Add Task</span>
           </button>
           <button
@@ -476,7 +469,7 @@ const ProjectPage = () => {
             onClick={() => setIsMembersModalOpen(true)}
             className="hidden md:flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all cursor-pointer"
           >
-            <FiUsers className="w-4 h-4" />
+            <UsersIcon className="w-4 h-4" />
             <span className="hidden lg:inline">Members</span>
           </button>
         </div>
@@ -489,10 +482,10 @@ const ProjectPage = () => {
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-1 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg p-1">
               {[
-                { id: "board", icon: FiCircle, label: "Board" },
-                { id: "list", icon: FiCheckCircle, label: "List" },
-                { id: "timeline", icon: FiClock, label: "Timeline" },
-                { id: "calendar", icon: FiCalendar, label: "Calendar" },
+                { id: "board", icon: Circle, label: "Board" },
+                { id: "list", icon: CircleCheckIcon, label: "List" },
+                { id: "timeline", icon: ClockIcon, label: "Timeline" },
+                { id: "calendar", icon: CalendarIcon, label: "Calendar" },
               ].map(({ id, icon: Icon, label }) => (
                 <button
                   key={id}
@@ -510,7 +503,7 @@ const ProjectPage = () => {
                   onClick={() => navigate(`/project/${projectId}/admin`)}
                   className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
                 >
-                  <FiSettings className="w-4 h-4" />
+                  <SettingsIcon className="w-4 h-4" />
                   <span className="hidden sm:inline">Admin</span>
                 </button>
               )}
@@ -519,7 +512,7 @@ const ProjectPage = () => {
               <label htmlFor={searchId} className="sr-only">
                 Search tasks
               </label>
-              <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
+              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
               <input
                 id={searchId}
                 type="text"
@@ -551,10 +544,10 @@ const ProjectPage = () => {
       {(activeTab === "timeline" || activeTab === "calendar") && (
         <div className="flex items-center gap-1 px-4 sm:px-6 py-3 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border overflow-x-auto">
           {[
-            { id: "board", icon: FiCircle },
-            { id: "list", icon: FiCheckCircle },
-            { id: "timeline", icon: FiClock },
-            { id: "calendar", icon: FiCalendar },
+            { id: "board", icon: Circle },
+            { id: "list", icon: CircleCheckIcon },
+            { id: "timeline", icon: ClockIcon },
+            { id: "calendar", icon: CalendarIcon },
           ].map(({ id, icon: Icon }) => (
             <button
               key={id}
@@ -580,7 +573,7 @@ const ProjectPage = () => {
               onClick={() => navigate(`/project/${projectId}/admin`)}
               className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
             >
-              <FiSettings className="w-4 h-4" />
+              <SettingsIcon className="w-4 h-4" />
               <span className="hidden sm:inline">Admin</span>
             </button>
           )}
@@ -627,7 +620,7 @@ const ProjectPage = () => {
         ) : !canViewBoard ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-md p-6">
-              <FiLock className="w-12 h-12 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-50" />
+              <LockIcon className="w-12 h-12 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-50" />
               <h3 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
                 Board Access Restricted
               </h3>
@@ -713,7 +706,7 @@ const ProjectPage = () => {
             />
           </div>
         </div>
-        <div className="flex gap-4 p-5 overflow-x-auto">
+        <div className="flex gap-6 p-5 overflow-x-auto justify-start lg:justify-center items-start scrollbar-hide">
           <ProjectActivityPanel tasks={allTasks} members={members} />
           <ProjectTeamPanel members={members} tasks={allTasks} />
           <ProjectTimelinePanel

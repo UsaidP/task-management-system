@@ -15,7 +15,7 @@ import {
   startSprint,
   updateSprint,
 } from "../controllers/sprint.controller.js"
-import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
+import { protect, requireProjectAccess, validateProjectPermission } from "../middlewares/auth.middleware.js"
 import { ProjectRoleEnum, UserRoleEnum } from "../utils/constants.js"
 import { asyncHandler } from "../utils/async-handler.js"
 import ApiError from "../utils/api-error.js"
@@ -68,18 +68,18 @@ router.get(
 // Get/Update/Delete single sprint
 router
   .route("/:sprintId")
-  .get(protect, getSprintById)
-  .put(protect, updateSprint)
-  .delete(protect, deleteSprint)
+  .get(protect, requireProjectAccess("sprint", ...allRoles), getSprintById)
+  .put(protect, requireProjectAccess("sprint", ...adminRoles), updateSprint)
+  .delete(protect, requireProjectAccess("sprint", ...adminRoles), deleteSprint)
 
 // Start sprint - admin only
-router.put("/:sprintId/start", protect, startSprint)
+router.put("/:sprintId/start", protect, requireProjectAccess("sprint", ...adminRoles), startSprint)
 
 // Complete sprint - admin only
-router.put("/:sprintId/complete", protect, completeSprint)
+router.put("/:sprintId/complete", protect, requireProjectAccess("sprint", ...adminRoles), completeSprint)
 
 // Assign/remove tasks from sprint
-router.put("/:sprintId/assign-task", protect, assignTaskToSprint)
-router.put("/task/:taskId/remove-from-sprint", protect, removeTaskFromSprint)
+router.put("/:sprintId/assign-task", protect, requireProjectAccess("sprint", ...adminRoles), assignTaskToSprint)
+router.put("/task/:taskId/remove-from-sprint", protect, requireProjectAccess("task", ...adminRoles), removeTaskFromSprint)
 
 export default router

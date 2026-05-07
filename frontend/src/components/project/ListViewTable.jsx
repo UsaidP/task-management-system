@@ -1,4 +1,6 @@
 import dayjs from "dayjs"
+import { UserIcon } from "@animateicons/react/lucide"
+import SharedAvatar from "../auth/Avatar"
 
 const priorityStyles = {
   urgent: "bg-[#C44A4A22] text-[#C44A4A]",
@@ -21,39 +23,14 @@ const statusLabels = {
   completed: "Completed",
 }
 
-const Avatar = ({ member, initials }) => {
-  const avatarUrl = member?.user?.avatar?.url
-  if (!avatarUrl) {
-    return (
-      <div className="w-6 h-6 rounded-full overflow-hidden border-2 border-light-bg-primary dark:border-dark-bg-secondary flex-shrink-0 bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-[10px] text-white font-bold">
-        {initials}
-      </div>
-    )
-  }
-  return (
-    <div className="w-6 h-6 rounded-full overflow-hidden border-2 border-light-bg-primary dark:border-dark-bg-secondary -ml-1 first:ml-0 flex-shrink-0">
-      <img
-        src={avatarUrl}
-        alt={member?.user?.fullname || "User"}
-        className="w-full h-full object-cover"
-        loading="lazy"
-        decoding="async"
-        onError={(e) => {
-          e.target.style.display = "none"
-          e.target.parentElement.classList.add(
-            "bg-gradient-to-br",
-            "from-accent-primary",
-            "to-accent-info",
-            "flex",
-            "items-center",
-            "justify-center"
-          )
-          e.target.parentElement.innerHTML = `<span class="text-[10px] text-white font-bold">${initials}</span>`
-        }}
-      />
-    </div>
-  )
-}
+const Avatar = ({ member }) => (
+  <SharedAvatar
+    src={member?.user?.avatar?.url || member?.avatar?.url || member?.user?.avatar}
+    alt={member?.user?.fullname || member?.fullname || "User"}
+    size="xs"
+    className="border-2 border-light-bg-primary dark:border-dark-bg-secondary"
+  />
+)
 
 const ListViewTable = ({ tasks, members, onTaskClick }) => {
   return (
@@ -129,8 +106,7 @@ const ListViewTable = ({ tasks, members, onTaskClick }) => {
                           const userId = typeof a === "object" ? a._id || a.user?._id : a
                           const member = members.find((m) => (m.user?._id || m.user) === userId)
                           const userObj = member?.user || member
-                          const initials = (userObj?.fullname || "U").slice(0, 2).toUpperCase()
-                          return <Avatar key={i} member={userObj} initials={initials} />
+                          return <Avatar key={i} member={userObj} />
                         })
                       ) : (
                         <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">

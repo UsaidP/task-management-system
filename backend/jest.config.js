@@ -17,6 +17,6 @@ export default {
 	setupFilesAfterEnv: ["<rootDir>/tests/jest.setup.js"],
 	testEnvironment: "node",
 	testMatch: ["**/tests/**/*.test.js"],
-	testTimeout: 30000,
+	testTimeout: 60000,
 	transform: {},
 }

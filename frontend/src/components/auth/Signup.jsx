@@ -1,7 +1,8 @@
 import { motion } from "framer-motion"
 import { useId, useState } from "react"
 import toast from "react-hot-toast"
-import { FiArrowRight, FiCheck, FiEye, FiEyeOff, FiLock, FiMail, FiUser } from "react-icons/fi"
+import { CheckIcon as Check, EyeIcon as Eye, EyeOffIcon as EyeOff, LockIcon as Lock, MailIcon as Mail, UserIcon as User } from "@animateicons/react/lucide"
+import { ArrowRightIcon as ArrowRight } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -151,7 +152,7 @@ export const Signup = () => {
                     Full Name
                   </label>
                   <div className="relative">
-                    <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                     <input
                       type="text"
                       name="fullname"
@@ -173,7 +174,7 @@ export const Signup = () => {
                     Username
                   </label>
                   <div className="relative">
-                    <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                     <input
                       type="text"
                       name="username"
@@ -196,7 +197,7 @@ export const Signup = () => {
                   Email Address
                 </label>
                 <div className="relative">
-                  <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                   <input
                     type="email"
                     name="email"
@@ -218,7 +219,7 @@ export const Signup = () => {
                   Password
                 </label>
                 <div className="relative">
-                  <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
@@ -236,9 +237,9 @@ export const Signup = () => {
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
-                      <FiEyeOff className="w-5 h-5" />
+                      <EyeOff className="w-5 h-5" />
                     ) : (
-                      <FiEye className="w-5 h-5" />
+                      <Eye className="w-5 h-5" />
                     )}
                   </button>
                 </div>
@@ -258,11 +259,11 @@ export const Signup = () => {
 
               <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary space-y-2">
                 <div className="flex items-center space-x-2">
-                  <FiCheck className="w-4 h-4 text-accent-success" />
+                  <Check className="w-4 h-4 text-accent-success" />
                   <span>Free forever, no credit card required</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <FiCheck className="w-4 h-4 text-accent-success" />
+                  <Check className="w-4 h-4 text-accent-success" />
                   <span>Unlimited projects and tasks</span>
                 </div>
               </div>
@@ -280,7 +281,7 @@ export const Signup = () => {
                 ) : (
                   <div className="flex items-center justify-center">
                     Create Account
-                    <FiArrowRight className="flex ml-2 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="flex ml-2 group-hover:translate-x-1 transition-transform" />
                   </div>
                 )}
               </button>

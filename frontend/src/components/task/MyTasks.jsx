@@ -2,16 +2,8 @@ import { Listbox } from "@headlessui/react"
 import dayjs from "dayjs"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { Fragment, useCallback, useEffect, useId, useMemo, useState } from "react"
-import {
-  FiArrowDown,
-  FiArrowUp,
-  FiCalendar,
-  FiChevronDown,
-  FiFilter,
-  FiFolder,
-  FiList,
-  FiSearch,
-} from "react-icons/fi"
+import { ChevronDownIcon as ChevronDown, LayoutListIcon as List, SearchIcon as Search } from "@animateicons/react/lucide"
+import { Calendar as CalendarIcon, Filter as FilterIcon, Folder as FolderIcon, ArrowDownIcon as ArrowDown, ArrowUpIcon as ArrowUp } from "lucide-react"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import { EmptyState } from "../ErrorStates.jsx"
@@ -65,9 +57,9 @@ const SPRINTS = [
 const SortIcon = ({ field, activeField, direction }) => {
   if (activeField !== field) return <div className="w-4 h-4" />
   return direction === "asc" ? (
-    <FiArrowUp className="w-4 h-4" />
+    <ArrowUp className="w-4 h-4" />
   ) : (
-    <FiArrowDown className="w-4 h-4" />
+    <ArrowDown className="w-4 h-4" />
   )
 }
 
@@ -229,7 +221,7 @@ export const MyTasks = () => {
         {/* Right: Search + Filter */}
         <div className="flex items-center gap-2 shrink-0">
           <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-4 h-4 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-4 h-4 pointer-events-none" />
             <input
               type="text"
               placeholder="Search tasks..."
@@ -250,7 +242,7 @@ export const MyTasks = () => {
                 : "border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
             }`}
           >
-            <FiFilter className="w-4 h-4 shrink-0" />
+            <FilterIcon className="w-4 h-4 shrink-0" />
             <span className="hidden sm:inline">Filter</span>
           </button>
         </div>
@@ -276,7 +268,7 @@ export const MyTasks = () => {
                     <span className="text-light-text-primary dark:text-dark-text-primary">
                       {statusFilter === "all" ? "All Status" : statusFilter.replace("-", " ")}
                     </span>
-                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
                   </Listbox.Button>
                   <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                     {["all", "todo", "in-progress", "under-review", "completed"].map((status) => (
@@ -303,7 +295,7 @@ export const MyTasks = () => {
                     <span className="text-light-text-primary dark:text-dark-text-primary">
                       {priorityFilter === "all" ? "All Priority" : priorityFilter}
                     </span>
-                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
                   </Listbox.Button>
                   <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                     {["all", "urgent", "high", "medium", "low", "none"].map((priority) => (
@@ -332,7 +324,7 @@ export const MyTasks = () => {
                         ? "All Projects"
                         : projects.find((p) => p._id === projectFilter)?.name || "All Projects"}
                     </span>
-                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
                   </Listbox.Button>
                   <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden max-h-60 overflow-auto">
                     <Listbox.Option value="all" as={Fragment}>
@@ -370,7 +362,7 @@ export const MyTasks = () => {
                         ? "All Sprints"
                         : SPRINTS.find((s) => s.id === sprintFilter)?.name || "All Sprints"}
                     </span>
-                    <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
                   </Listbox.Button>
                   <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                     <Listbox.Option value="all" as={Fragment}>
@@ -484,7 +476,7 @@ export const MyTasks = () => {
                   }}
                 >
                   <div className="flex-1 min-w-[200px] flex items-center gap-2 sm:gap-3">
-                    <FiList className="text-light-text-tertiary dark:text-dark-text-tertiary group-hover:text-accent-primary transition-colors shrink-0" />
+                    <List className="text-light-text-tertiary dark:text-dark-text-tertiary group-hover:text-accent-primary transition-colors shrink-0" />
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm line-clamp-1 truncate">
                         {task.title}
@@ -501,7 +493,7 @@ export const MyTasks = () => {
                   </div>
                   <div className="w-36 sm:w-48 hidden md:flex items-center gap-2 shrink-0">
                     <span className="tag tag-project truncate max-w-full">
-                      <FiFolder className="inline mr-1 shrink-0" />
+                      <FolderIcon className="inline mr-1 shrink-0" />
                       {task.project?.name || "Personal"}
                     </span>
                   </div>
@@ -510,7 +502,7 @@ export const MyTasks = () => {
                       <span
                         className={`flex items-center gap-1.5 ${dayjs(task.dueDate).isBefore(dayjs(), "day") && task.status !== "completed" ? "text-accent-danger" : ""}`}
                       >
-                        <FiCalendar className="w-4 h-4 shrink-0" />
+                        <CalendarIcon className="w-4 h-4 shrink-0" />
                         <span className="truncate">{dayjs(task.dueDate).format("MMM D")}</span>
                       </span>
                     ) : (

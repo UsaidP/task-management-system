@@ -1,5 +1,6 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
-import { FiChevronDown, FiFilter } from "react-icons/fi"
+import { ChevronDownIcon } from "@animateicons/react/lucide"
+import { FilterIcon } from "lucide-react"
 
 const ProjectFilterBar = ({
   searchQuery,
@@ -35,7 +36,7 @@ const ProjectFilterBar = ({
         className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${hasActiveFilters ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm" : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"}`}
         aria-label="Toggle filters"
       >
-        <FiFilter className="w-4 h-4" />
+        <FilterIcon className="w-4 h-4" />
         <span>Filters</span>
       </button>
 
@@ -49,7 +50,7 @@ const ProjectFilterBar = ({
             <span className="truncate capitalize">
               {statusFilter ? statusFilter.replace("-", " ") : "All Status"}
             </span>
-            <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+            <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
           </ListboxButton>
           <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
             <ListboxOption
@@ -95,7 +96,7 @@ const ProjectFilterBar = ({
             aria-label="Filter by priority"
           >
             <span className="truncate capitalize">{priorityFilter || "All Priority"}</span>
-            <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+            <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
           </ListboxButton>
           <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
             <ListboxOption
@@ -141,7 +142,7 @@ const ProjectFilterBar = ({
             aria-label="Filter by assignee"
           >
             <span className="truncate">{assigneeFilter || "All Assignees"}</span>
-            <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+            <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
           </ListboxButton>
           <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
             <ListboxOption
@@ -190,7 +191,7 @@ const ProjectFilterBar = ({
             <span className="truncate">
               {dateFilter ? dateFilter.replace("due-", "Due ").replace("_", " ") : "Any Date"}
             </span>
-            <FiChevronDown className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+            <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
           </ListboxButton>
           <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
             <ListboxOption

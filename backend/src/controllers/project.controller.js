@@ -143,22 +143,36 @@ const getProjectById = asyncHandler(async (req, res) => {
 const updateProject = asyncHandler(async (req, res) => {
 	const { projectId: id } = req.params
 	const { name, description, isActive } = req.body
+
 	if (!id) {
-		throw new ApiError(400, "Create a project first, then update it")
-	}
-	if (!name || !description) {
-		throw new ApiError(400, "Project name and description are required")
+		throw new ApiError(400, "Project ID is required")
 	}
 
-	const updateData = { description: description?.trim(), name: name.trim() }
-	if (typeof isActive === "boolean") {
-		updateData.isActive = isActive
-	}
-
-	const project = await Project.findByIdAndUpdate(id, updateData, { new: true })
+	const project = await Project.findById(id)
 	if (!project) {
 		throw new ApiError(404, "Project not found")
 	}
+
+	if (name !== undefined) {
+		if (name.trim().length === 0) {
+			throw new ApiError(400, "Project Name cannot be empty")
+		}
+		project.name = name.trim()
+	}
+
+	if (description !== undefined) {
+		if (description.trim().length > 500) {
+			throw new ApiError(400, "Project Description is too long, max 500 characters allowed")
+		}
+		project.description = description.trim()
+	}
+
+	if (typeof isActive === "boolean") {
+		project.isActive = isActive
+	}
+
+	await project.save()
+
 	res.status(200).json(new ApiResponse(200, project, "Project updated successfully"))
 })
 

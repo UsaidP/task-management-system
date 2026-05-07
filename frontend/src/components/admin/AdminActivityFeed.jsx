@@ -1,11 +1,13 @@
-import { ArrowRight, CheckCircle2, MessageSquare, Plus, UserPlus } from "lucide-react"
+import { CircleCheckIcon, MessageCircleIcon, PlusIcon, UserPlusIcon } from "@animateicons/react/lucide"
+import { ArrowRightIcon } from "lucide-react"
+import Avatar from "../auth/Avatar"
 
 const _iconMap = {
-  completed: <CheckCircle2 size={14} />,
-  created: <Plus size={14} />,
-  assigned: <UserPlus size={14} />,
-  updated: <ArrowRight size={14} />,
-  commented: <MessageSquare size={14} />,
+  completed: <CircleCheckIcon size={14} />,
+  created: <PlusIcon size={14} />,
+  assigned: <UserPlusIcon size={14} />,
+  updated: <ArrowRightIcon size={14} />,
+  commented: <MessageCircleIcon size={14} />,
 }
 
 const _iconColors = {
@@ -51,16 +53,9 @@ export default function AdminActivityFeed({ tasks, loading }) {
   // Generate activities from recent tasks
   const activities = (tasks || []).slice(0, 7).map((task) => {
     const author = task.createdBy || {}
-    const initials = (author.fullname || "A")
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
     const actionType = task.status === "completed" ? "completed" : "created"
     return {
-      user: author.fullname || "Unknown",
-      initials,
+      user: author,
       action: actionType,
       target: task.title,
       status: task.status,
@@ -96,23 +91,23 @@ export default function AdminActivityFeed({ tasks, loading }) {
         )}
         {activities.map((activity, index) => (
           <div
-            key={`${activity.user}-${activity.createdAt}-${index}`}
+            key={`${activity.user.fullname}-${activity.createdAt}-${index}`}
             className="group relative flex gap-3 py-3"
           >
             {index < activities.length - 1 && (
               <div className="absolute left-[19px] top-[52px] bottom-0 w-px bg-light-border dark:bg-dark-border" />
             )}
 
-            <div
-              className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full ${activity.status === "completed" ? "bg-accent-success" : "bg-accent-primary"} text-xs font-bold text-light-text-inverse`}
-            >
-              {activity.initials}
-            </div>
+            <Avatar
+              src={activity.user.avatar?.url || activity.user.avatar}
+              alt={activity.user.fullname || "User"}
+              size="sm"
+            />
 
             <div className="min-w-0 flex-1 pt-0.5">
               <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
                 <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
-                  {activity.user}
+                  {activity.user.fullname || "Unknown"}
                 </span>{" "}
                 {activity.action === "completed" ? "completed" : "created"}{" "}
                 <span className="font-medium text-accent-primary">{activity.target}</span>

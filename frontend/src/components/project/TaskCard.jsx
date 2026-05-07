@@ -1,6 +1,7 @@
 import dayjs from "dayjs"
 import { memo, useState } from "react"
-import { FiAlertCircle, FiCheckCircle, FiClock } from "react-icons/fi"
+import { TriangleAlertIcon, CircleCheckIcon, UserIcon } from "@animateicons/react/lucide"
+import { ClockIcon } from "lucide-react"
 import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
 
 const statusConfig = {
@@ -33,10 +34,10 @@ const Avatar = ({ src, alt, size = "w-5 h-5", textSize = "text-[8px]" }) => {
   if (!src || hasError) {
     return (
       <div
-        className={`${size} rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center font-bold text-white ${textSize}`}
+        className={`${size} rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-gradient-to-br from-accent-primary to-accent-info flex items-center justify-center text-white`}
         aria-hidden="true"
       >
-        {alt}
+        <UserIcon className="w-3 h-3" />
       </div>
     )
   }
@@ -133,7 +134,7 @@ const TaskCard = memo(({ task, onClick, onDragStart, onDragEnd }) => {
         )}
         {isCompleted && task.completedAt && (
           <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[#7A9A6D22] text-[#7A9A6D] flex items-center gap-1 flex-shrink-0">
-            <FiCheckCircle className="w-3 h-3" />
+            <CircleCheckIcon className="w-3 h-3" />
             Done
           </span>
         )}
@@ -176,7 +177,7 @@ const TaskCard = memo(({ task, onClick, onDragStart, onDragEnd }) => {
             <span
               className={`flex items-center gap-1 text-xs font-medium ${dayjs(task.dueDate).isBefore(dayjs()) && !isCompleted ? "text-accent-danger" : "text-light-text-tertiary dark:text-dark-text-tertiary"}`}
             >
-              <FiClock className="w-3 h-3" />
+              <ClockIcon className="w-3 h-3" />
               {formatDate(task.dueDate)}
             </span>
           )}
@@ -186,7 +187,7 @@ const TaskCard = memo(({ task, onClick, onDragStart, onDragEnd }) => {
           {/* Comments Count */}
           {(task.comments?.length || 0) > 0 && (
             <span className="flex items-center gap-1 text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
-              <FiAlertCircle className="w-3 h-3" />
+              <TriangleAlertIcon className="w-3 h-3" />
               {task.comments.length}
             </span>
           )}
@@ -194,7 +195,7 @@ const TaskCard = memo(({ task, onClick, onDragStart, onDragEnd }) => {
           {/* Subtask Count */}
           {totalSubtasks > 0 && !isCompleted && (
             <span className="flex items-center gap-1 text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
-              <FiCheckCircle className="w-3 h-3" />
+              <CircleCheckIcon className="w-3 h-3" />
               {completedSubtasks}/{totalSubtasks}
             </span>
           )}

@@ -1,7 +1,8 @@
 import dayjs from "dayjs"
 import { AnimatePresence, motion } from "framer-motion"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { FiCalendar, FiChevronLeft, FiChevronRight, FiPlus } from "react-icons/fi"
+import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@animateicons/react/lucide"
+import { CalendarIcon } from "lucide-react"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
@@ -253,7 +254,7 @@ const CalendarView = () => {
                 aria-label={`Previous ${viewMode}`}
                 className="btn-ghost p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiChevronLeft className="w-5 h-5" aria-hidden="true" />
+                <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
               </button>
               <span className="text-sm sm:text-base font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[180px] sm:min-w-[220px] text-center">
                 {viewMode === "month"
@@ -266,7 +267,7 @@ const CalendarView = () => {
                 aria-label={`Next ${viewMode}`}
                 className="btn-ghost p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiChevronRight className="w-5 h-5" aria-hidden="true" />
+                <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
               </button>
               <button
                 type="button"
@@ -276,7 +277,7 @@ const CalendarView = () => {
                 }}
                 className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-accent-primary text-white text-sm sm:text-base font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiPlus className="w-4 h-4" aria-hidden="true" />
+                <PlusIcon className="w-4 h-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Add Task</span>
                 <span className="sm:hidden">Add</span>
               </button>
@@ -518,7 +519,7 @@ const CalendarView = () => {
               {!isLoading && filteredTasks.length === 0 && (
                 <div className="flex flex-col items-center justify-center px-4 py-16">
                   <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover">
-                    <FiCalendar
+                    <CalendarIcon
                       className="w-8 h-8 text-light-text-tertiary opacity-40"
                       aria-hidden="true"
                     />

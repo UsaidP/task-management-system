@@ -130,3 +130,31 @@ export const teamTypes = [
   { icon: "FiTarget", label: "Product Teams", description: "Track roadmaps from idea to launch" },
   { icon: "FiGlobe", label: "Remote Teams", description: "Stay aligned across time zones" },
 ]
+
+export const faqData = [
+  {
+    question: "What is TaskFlow?",
+    answer:
+      "TaskFlow is a modern task management platform that helps teams organize, track, and deliver projects efficiently. It combines Kanban boards, calendar views, and table views in one unified workspace.",
+  },
+  {
+    question: "Is there a free trial available?",
+    answer:
+      "Yes! We offer a 14-day free trial with no credit card required. You'll have access to all core features so you can experience the full power of TaskFlow before committing.",
+  },
+  {
+    question: "Can I invite my team members?",
+    answer:
+      "Absolutely. TaskFlow supports team collaboration with role-based access control. You can invite team members, assign tasks, and collaborate in real-time with subtasks and rich task details.",
+  },
+  {
+    question: "Does TaskFlow support dark mode?",
+    answer:
+      "Yes, TaskFlow has a built-in dark mode with a warm earth-tone palette. You can seamlessly switch between light and dark themes to suit your preference and reduce eye strain.",
+  },
+  {
+    question: "What kind of support do you offer?",
+    answer:
+      "Free trial users get community support. Pro plan subscribers receive priority support, and Enterprise customers get a dedicated account manager along with SLA guarantees.",
+  },
+]

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { useId, useState } from "react"
 import toast from "react-hot-toast"
-import { FiArrowLeft, FiMail } from "react-icons/fi"
+import { ChevronLeftIcon as ArrowLeft, MailIcon as Mail } from "@animateicons/react/lucide"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -74,7 +74,7 @@ export const Forget = () => {
                 Email Address
               </label>
               <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                 <input
                   type="email"
                   name="email"
@@ -120,7 +120,7 @@ export const Forget = () => {
                 to="/login"
                 className="flex items-center justify-center font-medium text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors"
               >
-                <FiArrowLeft className="mr-2" /> Back to Login
+                <ArrowLeft className="mr-2" /> Back to Login
               </Link>
             </div>
           </form>

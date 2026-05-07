@@ -1,6 +1,10 @@
 import dayjs from "dayjs"
+import weekOfYear from "dayjs/plugin/weekOfYear"
 import { motion } from "framer-motion"
-import { FiCalendar, FiChevronLeft, FiChevronRight } from "react-icons/fi"
+import { ChevronLeftIcon, ChevronRightIcon } from "@animateicons/react/lucide"
+import { CalendarIcon } from "lucide-react"
+
+dayjs.extend(weekOfYear)
 
 const statusColors = {
   todo: "#8B8178",
@@ -91,7 +95,7 @@ const TimelineGrid = ({
               aria-label="Previous period"
               className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
             >
-              <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+              <ChevronLeftIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
             </button>
             <span className="text-xs sm:text-sm font-medium text-light-text-primary dark:text-dark-text-primary min-w-[120px] sm:min-w-[160px] text-center px-2">
               {formatPeriodLabel()}
@@ -102,7 +106,7 @@ const TimelineGrid = ({
               aria-label="Next period"
               className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
             >
-              <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+              <ChevronRightIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
             </button>
           </div>
         </div>
@@ -176,7 +180,7 @@ const TimelineGrid = ({
                 {tasks.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-16 px-4">
                     <div className="w-12 h-12 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-3">
-                      <FiCalendar
+                      <CalendarIcon
                         className="w-6 h-6 text-light-text-tertiary opacity-40"
                         aria-hidden="true"
                       />

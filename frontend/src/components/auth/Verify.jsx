@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { FiCheckCircle, FiXCircle } from "react-icons/fi"
+import { CircleCheckIcon as CheckCircle } from "@animateicons/react/lucide"
+import { CircleXIcon as XCircle } from "lucide-react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
 
@@ -67,7 +68,7 @@ export const Verify = () => {
         {status === "success" && (
           <>
             <div className="w-20 h-20 bg-accent-success/10 dark:bg-accent-success/20 text-accent-success rounded-full flex items-center justify-center mx-auto mb-6">
-              <FiCheckCircle className="w-10 h-10" />
+              <CheckCircle className="w-10 h-10" />
             </div>
 
             <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
@@ -109,7 +110,7 @@ export const Verify = () => {
         {status === "error" && (
           <>
             <div className="w-20 h-20 bg-accent-danger/10 dark:bg-accent-danger/20 text-accent-danger rounded-full flex items-center justify-center mx-auto mb-6">
-              <FiXCircle className="w-10 h-10" />
+              <XCircle className="w-10 h-10" />
             </div>
 
             <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">

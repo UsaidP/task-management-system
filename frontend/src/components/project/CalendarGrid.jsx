@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 import { motion } from "framer-motion"
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi"
+import { ChevronLeftIcon, ChevronRightIcon } from "@animateicons/react/lucide"
 
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
@@ -38,7 +38,7 @@ const CalendarGrid = ({ tasks, calendarDaysData, calendarDate, onMonthChange, on
               onClick={() => onMonthChange(calendarDate.add(-1, "month"))}
               className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
             >
-              <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+              <ChevronLeftIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
             </button>
             <span className="text-xs sm:text-sm font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[120px] sm:min-w-[160px] text-center px-2">
               {calendarDate.format("MMMM YYYY")}
@@ -48,7 +48,7 @@ const CalendarGrid = ({ tasks, calendarDaysData, calendarDate, onMonthChange, on
               onClick={() => onMonthChange(calendarDate.add(1, "month"))}
               className="p-1.5 sm:p-2 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
             >
-              <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
+              <ChevronRightIcon className="w-4 h-4 sm:w-5 sm:h-5 text-light-text-secondary dark:text-dark-text-secondary" />
             </button>
           </div>
           <button

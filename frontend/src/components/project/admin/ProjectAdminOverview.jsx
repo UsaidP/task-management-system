@@ -1,15 +1,7 @@
 import { useState } from "react"
 import toast from "react-hot-toast"
-import {
-  FiAlertTriangle,
-  FiCheckCircle,
-  FiClock,
-  FiLayers,
-  FiPlus,
-  FiUserPlus,
-  FiUsers,
-  FiZap,
-} from "react-icons/fi"
+import { TriangleAlertIcon, CircleCheckIcon, LayersIcon, PlusIcon, UserPlusIcon, UsersIcon, ZapIcon } from "@animateicons/react/lucide"
+import { ClockIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import CreateTaskModal from "../../task/CreateTaskModal"
 
@@ -109,11 +101,11 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard
-          icon={FiLayers}
+          icon={LayersIcon}
           label="Total Tasks"
           value={stats?.totalTasks}
           color="text-accent-primary"
@@ -121,21 +113,21 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
           trend={stats?.trend}
         />
         <StatCard
-          icon={FiCheckCircle}
+          icon={CircleCheckIcon}
           label="Completed"
           value={taskStatus.completed}
           color="text-accent-success"
           bgGradient="bg-accent-success/10"
         />
         <StatCard
-          icon={FiClock}
+          icon={ClockIcon}
           label="In Progress"
           value={taskStatus["in-progress"]}
           color="text-accent-warning"
           bgGradient="bg-accent-warning/10"
         />
         <StatCard
-          icon={FiAlertTriangle}
+          icon={TriangleAlertIcon}
           label="Overdue"
           value={stats?.overdueTasks}
           color="text-accent-danger"
@@ -145,9 +137,9 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
 
       {/* Secondary Stats */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-light-border bg-light-bg-secondary p-4 shadow-sm dark:border-dark-border dark:bg-dark-bg-tertiary">
+        <div className="p-4 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
           <div className="flex items-center gap-2">
-            <FiUsers className="h-4 w-4 text-accent-info" />
+            <UsersIcon className="w-4 h-4 text-accent-info" />
             <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
               Members
             </span>
@@ -156,9 +148,9 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
             {stats?.memberCount ?? 0}
           </p>
         </div>
-        <div className="rounded-xl border border-light-border bg-light-bg-secondary p-4 shadow-sm dark:border-dark-border dark:bg-dark-bg-tertiary">
+        <div className="p-4 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
           <div className="flex items-center gap-2">
-            <FiZap className="h-4 w-4 text-accent-warning" />
+            <ZapIcon className="w-4 h-4 text-accent-warning" />
             <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
               Active Sprints
             </span>
@@ -167,9 +159,9 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
             {stats?.sprintCount ?? 0}
           </p>
         </div>
-        <div className="rounded-xl border border-light-border bg-light-bg-secondary p-4 shadow-sm dark:border-dark-border dark:bg-dark-bg-tertiary">
+        <div className="p-4 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
           <div className="flex items-center gap-2">
-            <FiCheckCircle className="h-4 w-4 text-accent-purple" />
+            <CircleCheckIcon className="w-4 h-4 text-accent-purple" />
             <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
               Under Review
             </span>
@@ -182,7 +174,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
 
       {/* Progress Bar */}
       {stats?.totalTasks > 0 && (
-        <div className="rounded-xl border border-light-border bg-light-bg-secondary p-5 shadow-sm dark:border-dark-border dark:bg-dark-bg-tertiary">
+        <div className="p-5 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
           <h3 className="mb-3 text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
             Task Progress
           </h3>
@@ -190,7 +182,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
             {stats.totalTasks > 0 && (
               <>
                 <div
-                  className="bg-accent-success transition-all duration-300"
+                  className="transition-all duration-300 bg-accent-success"
                   style={{ width: `${(taskStatus.completed / stats.totalTasks) * 100}%` }}
                   title={`Completed: ${taskStatus.completed}`}
                   role="progressbar"
@@ -200,7 +192,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
                   aria-label={`Completed: ${taskStatus.completed}`}
                 />
                 <div
-                  className="bg-accent-warning transition-all duration-300"
+                  className="transition-all duration-300 bg-accent-warning"
                   style={{ width: `${(taskStatus["in-progress"] / stats.totalTasks) * 100}%` }}
                   title={`In Progress: ${taskStatus["in-progress"]}`}
                   role="progressbar"
@@ -210,7 +202,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
                   aria-label={`In Progress: ${taskStatus["in-progress"]}`}
                 />
                 <div
-                  className="bg-accent-primary transition-all duration-300"
+                  className="transition-all duration-300 bg-accent-primary"
                   style={{ width: `${(taskStatus["under-review"] / stats.totalTasks) * 100}%` }}
                   title={`Under Review: ${taskStatus["under-review"]}`}
                   role="progressbar"
@@ -220,7 +212,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
                   aria-label={`Under Review: ${taskStatus["under-review"]}`}
                 />
                 <div
-                  className="bg-light-border transition-all duration-300 dark:bg-dark-border"
+                  className="transition-all duration-300 bg-light-border dark:bg-dark-border"
                   style={{ width: `${(taskStatus.todo / stats.totalTasks) * 100}%` }}
                   title={`To Do: ${taskStatus.todo}`}
                   role="progressbar"
@@ -232,7 +224,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
               </>
             )}
           </div>
-          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+          <div className="flex flex-wrap mt-3 text-xs gap-x-4 gap-y-2 text-light-text-secondary dark:text-dark-text-secondary">
             <span className="flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-accent-success" /> Completed (
               {taskStatus.completed})
@@ -254,7 +246,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
       )}
 
       {/* Quick Actions */}
-      <div className="rounded-xl border border-light-border bg-light-bg-secondary p-5 shadow-sm dark:border-dark-border dark:bg-dark-bg-tertiary">
+      <div className="p-5 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
         <h3 className="mb-1 text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
           Quick Actions
         </h3>
@@ -263,7 +255,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <QuickAction
-            icon={FiPlus}
+            icon={PlusIcon}
             label="Create Task"
             description="Add a new task to the project"
             onClick={handleCreateTask}
@@ -271,7 +263,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
             bgGradient="bg-accent-primary/10"
           />
           <QuickAction
-            icon={FiUserPlus}
+            icon={UserPlusIcon}
             label="Add Member"
             description="Invite someone to the project"
             onClick={handleAddMember}
@@ -279,7 +271,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
             bgGradient="bg-accent-info/10"
           />
           <QuickAction
-            icon={FiZap}
+            icon={ZapIcon}
             label="Start Sprint"
             description="Begin a new sprint cycle"
             onClick={handleStartSprint}

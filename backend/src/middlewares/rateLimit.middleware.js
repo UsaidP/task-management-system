@@ -10,7 +10,7 @@ import ApiError from "../utils/api-error.js"
  * Skip rate limiting in test environment to prevent
  * false positives from sequential test requests.
  */
-const isTestEnv = () => process.env.NODE_ENV === "development"
+const isTestEnv = () => process.env.NODE_ENV === "test" || process.env.NODE_ENV === "development"
 
 /**
  * Strict limiter for authentication endpoints

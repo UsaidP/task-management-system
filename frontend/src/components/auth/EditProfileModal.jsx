@@ -1,17 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useId, useState } from "react"
 import toast from "react-hot-toast"
-import {
-  FiBriefcase,
-  FiGithub,
-  FiGlobe,
-  FiLinkedin,
-  FiMapPin,
-  FiPhone,
-  FiUser,
-  FiX,
-} from "react-icons/fi"
 import apiService from "../../../service/apiService.js"
+import { GithubIcon as Github, GlobeIcon as Globe, LinkedinIcon as Linkedin, MapPinIcon as MapPin, PhoneIcon as Phone, UserIcon as User, XIcon as X } from "@animateicons/react/lucide"
+import { BriefcaseIcon as Briefcase } from "lucide-react"
 
 const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
   const formId = useId()
@@ -81,53 +73,53 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
   }
 
   const inputFields = [
-    { name: "fullname", label: "Full Name", icon: FiUser, type: "text", placeholder: "John Doe" },
+    { name: "fullname", label: "Full Name", icon: User, type: "text", placeholder: "John Doe" },
     {
       name: "phone",
       label: "Phone Number",
-      icon: FiPhone,
+      icon: Phone,
       type: "tel",
       placeholder: "+1 234 567 8900",
     },
     {
       name: "company",
       label: "Company",
-      icon: FiBriefcase,
+      icon: Briefcase,
       type: "text",
       placeholder: "Acme Inc.",
     },
     {
       name: "jobTitle",
       label: "Job Title",
-      icon: FiBriefcase,
+      icon: Briefcase,
       type: "text",
       placeholder: "Software Engineer",
     },
     {
       name: "location",
       label: "Location",
-      icon: FiMapPin,
+      icon: MapPin,
       type: "text",
       placeholder: "San Francisco, CA",
     },
     {
       name: "website",
       label: "Website",
-      icon: FiGlobe,
+      icon: Globe,
       type: "url",
       placeholder: "https://example.com",
     },
     {
       name: "linkedin",
       label: "LinkedIn",
-      icon: FiLinkedin,
+      icon: Linkedin,
       type: "text",
       placeholder: "linkedin.com/in/username",
     },
     {
       name: "github",
       label: "GitHub",
-      icon: FiGithub,
+      icon: Github,
       type: "text",
       placeholder: "github.com/username",
     },
@@ -162,7 +154,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                 aria-label="Close modal"
                 className="min-w-[44px] min-h-[44px] flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <FiX size={24} aria-hidden="true" />
+                <X size={24} aria-hidden="true" />
               </button>
             </div>
 
@@ -175,7 +167,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                   Full Name *
                 </label>
                 <div className="relative">
-                  <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
                   <input
                     type="text"
                     name="fullname"

@@ -10,10 +10,12 @@ import {
 import dayjs from "dayjs"
 import { motion } from "framer-motion"
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react"
-import { FiArrowDown, FiArrowUp, FiChevronDown, FiGrid } from "react-icons/fi"
+import { ChevronDownIcon, LayoutGridIcon, UserIcon } from "@animateicons/react/lucide"
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react"
 import apiService from "../../../service/apiService.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
 import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
+import Avatar from "../auth/Avatar"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
@@ -106,41 +108,13 @@ const PriorityBadge = ({ priority }) => {
 }
 
 const AssigneeAvatar = ({ assignee }) => {
-  const [hasError, setHasError] = useState(false)
   const u = typeof assignee === "object" ? assignee : null
-  const avatarUrl = getOptimizedAvatarUrl(u?.avatar?.url, 50)
-  const fallback = `https://i.pravatar.cc/150?u=${u?._id || assignee}`
-  const name = u?.fullname || u?.username || "assignee"
-  const initials = name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2)
-
-  if (!avatarUrl || hasError) {
-    return (
-      <div
-        className="w-6 h-6 rounded-full border-2 border-white dark:border-dark-bg-secondary bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-[8px] font-bold text-white -ml-1 first:ml-0"
-        title={name}
-      >
-        {initials}
-      </div>
-    )
-  }
-
   return (
-    <img
-      key={u?._id || assignee}
-      src={avatarUrl || fallback}
-      alt={name}
-      className="w-6 h-6 rounded-full border-2 border-white dark:border-dark-bg-secondary object-cover -ml-1 first:ml-0"
-      title={name}
-      loading="lazy"
-      decoding="async"
-      width="24"
-      height="24"
-      onError={() => setHasError(true)}
+    <Avatar
+      src={u?.avatar?.url || u?.avatar}
+      alt={u?.fullname || u?.username || "User"}
+      size="xs"
+      className="border-2 border-light-bg-primary dark:border-dark-bg-secondary"
     />
   )
 }
@@ -150,7 +124,7 @@ const AssigneeAvatars = ({ assignees }) => {
     return <span className="text-sm text-light-text-tertiary">Unassigned</span>
   }
   return (
-    <div className="flex items-center">
+    <div className="flex items-center -space-x-1.5">
       {assignees.slice(0, 3).map((assignee) => (
         <AssigneeAvatar
           key={typeof assignee === "object" ? assignee._id : assignee}
@@ -158,7 +132,9 @@ const AssigneeAvatars = ({ assignees }) => {
         />
       ))}
       {assignees.length > 3 && (
-        <span className="ml-2 text-xs text-light-text-tertiary">+{assignees.length - 3}</span>
+        <div className="w-5 h-5 rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary border-2 border-light-bg-primary dark:border-dark-bg-secondary flex items-center justify-center text-[9px] font-semibold text-light-text-tertiary dark:text-dark-text-tertiary ml-1">
+          +{assignees.length - 3}
+        </div>
       )}
     </div>
   )
@@ -263,9 +239,9 @@ const SortIcon = ({ column }) => {
   const sorted = column.getIsSorted()
   if (!sorted) return null
   return sorted === "asc" ? (
-    <FiArrowUp className="w-4 h-4 ml-1" />
+    <ArrowUpIcon className="w-4 h-4 ml-1" />
   ) : (
-    <FiArrowDown className="w-4 h-4 ml-1" />
+    <ArrowDownIcon className="w-4 h-4 ml-1" />
   )
 }
 
@@ -387,7 +363,7 @@ const TableView = () => {
                       columnFilters.find((f) => f.id === "status")?.value
                     : "All Status"}
                 </span>
-                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
               </Listbox.Button>
               <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                 {Object.entries(statusLabels).map(([key, label]) => (
@@ -423,7 +399,7 @@ const TableView = () => {
                 <span className="text-light-text-primary dark:text-dark-text-primary truncate">
                   {columnFilters.find((f) => f.id === "priority")?.value || "All Priority"}
                 </span>
-                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
               </Listbox.Button>
               <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                 {["", "low", "medium", "high", "urgent"].map((priority) => (
@@ -459,7 +435,7 @@ const TableView = () => {
                 <span className="text-light-text-primary dark:text-dark-text-primary truncate block">
                   {columnFilters.find((f) => f.id === "project")?.value || "All Projects"}
                 </span>
-                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
               </Listbox.Button>
               <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden max-h-60 overflow-auto">
                 <Listbox.Option value="" as={Fragment}>
@@ -504,7 +480,7 @@ const TableView = () => {
                 <span className="text-light-text-primary dark:text-dark-text-primary truncate">
                   {columnFilters.find((f) => f.id === "sprint")?.value || "All Sprints"}
                 </span>
-                <FiChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
               </Listbox.Button>
               <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                 <Listbox.Option value="" as={Fragment}>
@@ -616,7 +592,7 @@ const TableView = () => {
         {table.getRowModel().rows.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 px-4">
             <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-4">
-              <FiGrid className="w-8 h-8 text-light-text-tertiary opacity-40" aria-hidden="true" />
+              <LayoutGridIcon className="w-8 h-8 text-light-text-tertiary opacity-40" aria-hidden="true" />
             </div>
             <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
               No tasks found

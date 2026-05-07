@@ -1,21 +1,14 @@
-import {
-  BarChart3,
-  CheckSquare,
-  ChevronLeft,
-  ChevronRight,
-  FolderOpen,
-  LayoutDashboard,
-  Users,
-  Zap,
-} from "lucide-react"
+import { TrendingUpIcon, ChevronLeftIcon, ChevronRightIcon, FolderOpenIcon, DashboardIcon, UsersIcon, ZapIcon } from "@animateicons/react/lucide"
+import { SquareCheckIcon } from "lucide-react"
 import { NavLink } from "react-router-dom"
+import Logo from "../common/Logo.jsx"
 
 const mainNav = [
-  { id: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
-  { id: "/admin/tasks", label: "All Tasks", icon: CheckSquare },
-  { id: "/admin/projects", label: "Projects", icon: FolderOpen },
-  { id: "/admin/team", label: "Team", icon: Users },
-  { id: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { id: "/admin", label: "Dashboard", icon: DashboardIcon, end: true },
+  { id: "/admin/tasks", label: "All Tasks", icon: SquareCheckIcon },
+  { id: "/admin/projects", label: "Projects", icon: FolderOpenIcon },
+  { id: "/admin/team", label: "Team", icon: UsersIcon },
+  { id: "/admin/analytics", label: "Analytics", icon: TrendingUpIcon },
 ]
 
 export default function AdminSidebar({ collapsed, onToggle }) {
@@ -26,29 +19,22 @@ export default function AdminSidebar({ collapsed, onToggle }) {
       }`}
     >
       {/* Logo */}
-      <div className="flex h-16 items-center justify-between border-b border-light-border dark:border-dark-border px-4">
+      <div className="flex items-center justify-between h-16 px-4 border-b border-light-border dark:border-dark-border">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-accent-primary">
-            <Zap className="h-5 w-5 text-light-text-inverse" />
-          </div>
-          {!collapsed && (
-            <span className="text-lg font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary font-serif">
-              Taskly
-            </span>
-          )}
+          <Logo size="md" iconOnly={collapsed} to="/admin" />
         </div>
         <button
           type="button"
           onClick={onToggle}
-          className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-secondary cursor-pointer"
+          className="flex items-center justify-center flex-shrink-0 rounded-md cursor-pointer h-7 w-7 text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-secondary"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          {collapsed ? <ChevronRightIcon size={16} /> : <ChevronLeftIcon size={16} />}
         </button>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {!collapsed && (
           <div className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-light-text-tertiary">
             Admin Panel

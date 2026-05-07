@@ -11,9 +11,10 @@ import {
 	updateTask,
 	uploadAttachment,
 } from "../controllers/task.controller.js"
-import { protect, validateProjectPermission } from "../middlewares/auth.middleware.js"
+import { protect, requireProjectAccess, validateProjectPermission } from "../middlewares/auth.middleware.js"
 import { upload } from "../middlewares/multer.middleware.js"
 import { ProjectRoleEnum, UserRoleEnum } from "../utils/constants.js"
+import { asyncHandler } from "../utils/async-handler.js"
 
 const router = Router()
 
@@ -24,19 +25,42 @@ const { ADMIN } = UserRoleEnum
 const allRoles = [ADMIN, OWNER, PROJECT_ADMIN, MEMBER]
 const adminRoles = [ADMIN, OWNER, PROJECT_ADMIN]
 
-// ── ✅ Static routes FIRST (before dynamic /:projectId) ─────────────────────
-// Get all tasks for user across all projects
-router.route("/tasks").get(protect, getAllTasks)
+// ── ✅ Unified Task Routes ──────────────────────────────────────────────────
+// Supports:
+// 1. GET /api/v1/tasks?projectId=... -> Project tasks (with permission check)
+// 2. GET /api/v1/tasks -> All tasks for user across all projects
+router.route("/").get(
+	protect,
+	asyncHandler(async (req, res, next) => {
+		if (req.query.projectId) {
+			req.params.projectId = req.query.projectId
+			return validateProjectPermission(...allRoles)(req, res, next)
+		}
+		next()
+	}),
+	asyncHandler(async (req, res, next) => {
+		if (req.query.projectId) {
+			return getTasks(req, res, next)
+		}
+		return getAllTasks(req, res, next)
+	}),
+)
 
-// ── Project-scoped task routes ───────────────────────────────────────────────
-
-// Create task & Get all tasks for project
+// Create task - requires projectId in body or query if not in path
+// But tests use POST /api/v1/tasks/:projectId
 router
 	.route("/:projectId")
 	.post(protect, validateProjectPermission(...allRoles), createTask)
 	.get(protect, validateProjectPermission(...allRoles), getTasks)
 
-// Get, Update, Delete single task
+// Get, Update, Delete single task - use requireProjectAccess for resource-based routing
+router
+	.route("/t/:taskId")
+	.get(protect, requireProjectAccess("task", ...allRoles), getTaskById)
+	.put(protect, requireProjectAccess("task", ...allRoles), updateTask)
+	.delete(protect, requireProjectAccess("task", ...adminRoles), deleteTask)
+
+// Backwards compatibility for /:projectId/:taskId
 router
 	.route("/:projectId/:taskId")
 	.get(protect, validateProjectPermission(...allRoles), getTaskById)

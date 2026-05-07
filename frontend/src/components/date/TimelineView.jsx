@@ -2,7 +2,8 @@ import dayjs from "dayjs"
 import weekOfYear from "dayjs/plugin/weekOfYear"
 import { motion } from "framer-motion"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { FiCalendar, FiChevronLeft, FiChevronRight } from "react-icons/fi"
+import { ChevronLeftIcon, ChevronRightIcon } from "@animateicons/react/lucide"
+import { CalendarIcon } from "lucide-react"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
@@ -320,7 +321,7 @@ const TimelineView = () => {
               aria-label="Previous period"
               className="p-1.5 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
             >
-              <FiChevronLeft
+              <ChevronLeftIcon
                 className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary"
                 aria-hidden="true"
               />
@@ -334,7 +335,7 @@ const TimelineView = () => {
               aria-label="Next period"
               className="p-1.5 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
             >
-              <FiChevronRight
+              <ChevronRightIcon
                 className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary"
                 aria-hidden="true"
               />
@@ -348,7 +349,7 @@ const TimelineView = () => {
         <div className="flex-1 flex items-center justify-center py-16 px-4">
           <div className="text-center">
             <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mx-auto mb-4">
-              <FiCalendar
+              <CalendarIcon
                 className="w-8 h-8 text-light-text-tertiary opacity-40"
                 aria-hidden="true"
               />

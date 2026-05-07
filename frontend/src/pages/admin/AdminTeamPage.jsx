@@ -1,15 +1,9 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  Mail,
-  Search,
-  Shield,
-  ShieldCheck,
-  UserCheck,
-  UserX,
-} from "lucide-react"
+import { motion, useReducedMotion } from "framer-motion"
+import { ChevronLeftIcon, ChevronRightIcon, MailIcon, SearchIcon, ShieldCheckIcon, UserCheckIcon, UserXIcon } from "@animateicons/react/lucide"
+import { ShieldIcon } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import apiService from "../../../service/apiService"
+import Avatar from "../../components/auth/Avatar"
 
 const ITEMS_PER_PAGE = 10
 
@@ -20,6 +14,7 @@ export default function AdminTeamPage() {
   const [roleFilter, setRoleFilter] = useState("all")
   const [page, setPage] = useState(1)
   const [actionLoading, setActionLoading] = useState(null)
+  const reduceMotion = useReducedMotion()
 
   useEffect(() => {
     async function fetchData() {
@@ -41,10 +36,7 @@ export default function AdminTeamPage() {
     if (search) {
       const q = search.toLowerCase()
       result = result.filter(
-        (u) =>
-          u.fullname.toLowerCase().includes(q) ||
-          u.email.toLowerCase().includes(q) ||
-          u.username?.toLowerCase().includes(q)
+        (u) => u.fullname.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
       )
     }
 
@@ -58,37 +50,30 @@ export default function AdminTeamPage() {
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
 
-  const toggleRole = async (userId, currentRole) => {
-    setActionLoading(userId)
+  const handleRoleToggle = async (userId, currentRole) => {
     try {
+      setActionLoading(userId)
       const newRole = currentRole === "admin" ? "member" : "admin"
       const res = await apiService.updateUserRole(userId, newRole)
-      setUsers((prev) => prev.map((u) => (u._id === userId ? { ...u, ...res.data } : u)))
+      if (res.success) {
+        setUsers((prev) => prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u)))
+      }
     } catch (err) {
-      console.error("Failed to update user role:", err)
+      console.error("Failed to update role:", err)
     } finally {
       setActionLoading(null)
     }
   }
 
-  const avatarColors = [
-    "bg-accent-primary",
-    "bg-accent-info",
-    "bg-accent-success",
-    "bg-accent-warning",
-    "bg-accent-purple",
-    "bg-accent-danger",
-  ]
-
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="animate-pulse h-10 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-lg w-48" />
-        <div className="animate-pulse h-14 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-xl" />
-        {[1, 2, 3, 4, 5].map((i) => (
+        <div className="w-48 h-10 rounded-xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary" />
+        <div className="h-14 rounded-2xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary" />
+        {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="animate-pulse h-20 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded-xl"
+            className="h-20 rounded-xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary"
           />
         ))}
       </div>
@@ -98,224 +83,173 @@ export default function AdminTeamPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <motion.div
+        initial={reduceMotion ? {} : { opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      >
         <div>
-          <h1 className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary font-serif">
-            Team Management
+          <h1 className="font-serif text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+            Team Members
           </h1>
-          <p className="text-sm text-light-text-tertiary mt-1">
-            {filtered.length} member{filtered.length !== 1 ? "s" : ""} total
+          <p className="mt-1 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+            {filtered.length} member{filtered.length !== 1 ? "s" : ""} across the platform
           </p>
         </div>
-      </div>
-
-      {/* Stats Summary */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary/10 text-accent-primary">
-              <UserCheck size={20} />
-            </div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 px-4 py-2.5 border rounded-xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+            <UserCheckIcon size={16} className="text-accent-success" />
             <div>
-              <p className="text-sm text-light-text-tertiary">Total Members</p>
-              <p className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary font-serif">
-                {users.length}
+              <p className="text-[10px] font-medium uppercase tracking-wider text-light-text-tertiary dark:text-dark-text-tertiary">
+                Admins
               </p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-success/10 text-accent-success">
-              <ShieldCheck size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-light-text-tertiary">Admins</p>
-              <p className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary font-serif">
+              <p className="font-serif text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
                 {users.filter((u) => u.role === "admin").length}
               </p>
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-warning/10 text-accent-warning">
-              <Mail size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-light-text-tertiary">Verified</p>
-              <p className="text-2xl font-bold text-light-text-primary dark:text-dark-text-primary font-serif">
-                {users.filter((u) => u.isEmailVerified).length}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      </motion.div>
 
       {/* Search & Filter */}
-      <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-4 shadow-sm">
+      <motion.div
+        initial={reduceMotion ? {} : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        className="p-4 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+      >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
             <Search
               size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary"
+              className="absolute text-sm -translate-y-1/2 left-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary"
             />
             <input
               type="text"
-              placeholder="Search by name, email, or username..."
+              placeholder="Search by name or email..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="w-full rounded-lg border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary py-2 pl-10 pr-4 text-sm text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-1 focus:ring-accent-primary/20"
+              className="w-full rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary py-2.5 pl-10 pr-4 text-sm text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
             />
           </div>
-
           <select
             value={roleFilter}
             onChange={(e) => {
               setRoleFilter(e.target.value)
               setPage(1)
             }}
-            className="rounded-lg border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary px-3 py-2 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none focus:ring-1 focus:ring-accent-primary/20"
+            className="rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary px-3 py-2.5 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
           >
             <option value="all">All Roles</option>
             <option value="admin">Admin</option>
             <option value="member">Member</option>
           </select>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Users Table */}
-      <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary shadow-sm overflow-hidden">
+      {/* User List */}
+      <motion.div
+        initial={reduceMotion ? {} : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        className="overflow-hidden border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+      >
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-light-border dark:border-dark-border bg-light-bg-tertiary/50 dark:bg-dark-bg-tertiary/50">
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary">
-                  Member
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary">
-                  Role
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary">
-                  Tasks
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary">
-                  Completed
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary">
-                  Joined
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-light-text-tertiary">
-                  Actions
-                </th>
+              <tr className="border-b border-light-border/60 dark:border-dark-border/60 bg-light-bg-tertiary/30 dark:bg-dark-bg-tertiary/30">
+                {["User", "Email", "Role", "Joined", "Actions"].map((h) => (
+                  <th
+                    key={h}
+                    className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary dark:text-dark-text-tertiary"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-light-border dark:divide-dark-border">
+            <tbody className="divide-y divide-light-border/40 dark:divide-dark-border/40">
               {paginated.length === 0 && (
                 <tr>
                   <td
-                    colSpan={7}
-                    className="px-6 py-8 text-center text-sm text-light-text-tertiary"
+                    colSpan={5}
+                    className="px-6 py-12 text-sm text-center text-light-text-tertiary dark:text-dark-text-tertiary"
                   >
-                    No members found
+                    No users found
                   </td>
                 </tr>
               )}
-              {paginated.map((user, index) => {
+              {paginated.map((user) => {
                 const initials = (user.fullname || "U")
                   .split(" ")
                   .map((n) => n[0])
                   .join("")
                   .toUpperCase()
                   .slice(0, 2)
-                const progress =
-                  user.totalTasks > 0
-                    ? Math.round((user.completedTasks / user.totalTasks) * 100)
-                    : 0
-                const colorClass = avatarColors[index % avatarColors.length]
 
                 return (
                   <tr
                     key={user._id}
-                    className="group hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/50"
+                    className="transition-colors duration-150 group hover:bg-light-bg-hover/30 dark:hover:bg-dark-bg-hover/30"
                   >
                     <td className="px-6 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div
-                          className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-light-text-inverse flex-shrink-0 ${colorClass}`}
-                        >
-                          {initials}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                            {user.fullname}
-                          </p>
-                          <p className="text-xs text-light-text-tertiary">{user.email}</p>
-                        </div>
+                        <Avatar
+                          src={user.avatar?.url || user.avatar}
+                          alt={user.fullname || "User"}
+                          size="md"
+                        />
+                        <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                          {user.fullname}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-1.5 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                        <Mail
+                          size={14}
+                          className="text-light-text-tertiary dark:text-dark-text-tertiary"
+                        />
+                        {user.email}
                       </div>
                     </td>
                     <td className="px-6 py-3.5">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
                           user.role === "admin"
                             ? "bg-accent-primary/10 text-accent-primary"
-                            : "bg-light-bg-tertiary text-light-text-tertiary"
+                            : "bg-light-bg-tertiary text-light-text-tertiary dark:bg-dark-bg-tertiary dark:text-dark-text-tertiary"
                         }`}
                       >
-                        {user.role === "admin" && <Shield size={12} />}
+                        {user.role === "admin" && <ShieldIcon size={10} />}
                         {user.role}
                       </span>
                     </td>
                     <td className="px-6 py-3.5">
-                      <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          user.isEmailVerified
-                            ? "bg-accent-success/10 text-accent-success"
-                            : "bg-accent-warning/10 text-accent-warning"
-                        }`}
-                      >
-                        {user.isEmailVerified ? "Verified" : "Pending"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3.5">
-                      <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                        {user.totalTasks || 0}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-16 rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
-                          <div
-                            className="h-full rounded-full bg-accent-primary"
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                        <span className="text-xs text-light-text-tertiary">{progress}%</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-3.5">
-                      <span className="text-sm text-light-text-tertiary">
+                      <span className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
                         {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
                       </span>
                     </td>
-                    <td className="px-6 py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          type="button"
-                          onClick={() => toggleRole(user._id, user.role)}
-                          disabled={actionLoading === user._id}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-accent-primary disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
-                          title={user.role === "admin" ? "Remove admin" : "Make admin"}
-                        >
-                          {user.role === "admin" ? <UserX size={16} /> : <ShieldCheck size={16} />}
-                        </button>
-                      </div>
+                    <td className="px-6 py-3.5">
+                      <button
+                        type="button"
+                        onClick={() => handleRoleToggle(user._id, user.role)}
+                        disabled={actionLoading === user._id}
+                        className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-accent-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        title={user.role === "admin" ? "Remove admin" : "Make admin"}
+                      >
+                        {actionLoading === user._id ? (
+                          <div className="w-4 h-4 border-2 rounded-full animate-spin border-accent-primary/30 border-t-accent-primary" />
+                        ) : user.role === "admin" ? (
+                          <UserXIcon size={16} />
+                        ) : (
+                          <ShieldCheckIcon size={16} />
+                        )}
+                      </button>
                     </td>
                   </tr>
                 )
@@ -326,35 +260,37 @@ export default function AdminTeamPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between border-t border-light-border dark:border-dark-border px-6 py-3">
-            <p className="text-sm text-light-text-tertiary">
+          <div className="flex items-center justify-between px-6 py-3 border-t border-light-border/60 dark:border-dark-border/60">
+            <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
               Showing {(page - 1) * ITEMS_PER_PAGE + 1}–
               {Math.min(page * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
               >
-                <ChevronLeft size={16} />
+                <ChevronLeftIcon size={16} />
               </button>
               {Array.from({ length: totalPages }, (_, i) => i + 1)
-                .filter(
-                  (p, idx, arr) => idx === 0 || idx === arr.length - 1 || Math.abs(p - page) <= 1
-                )
+                .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
                 .map((p, idx, arr) => {
                   const showEllipsis = idx > 0 && p - arr[idx - 1] > 1
                   return (
                     <span key={p} className="flex items-center">
-                      {showEllipsis && <span className="px-1 text-light-text-tertiary">…</span>}
+                      {showEllipsis && (
+                        <span className="px-1 text-light-text-tertiary dark:text-dark-text-tertiary">
+                          …
+                        </span>
+                      )}
                       <button
                         type="button"
                         onClick={() => setPage(p)}
-                        className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium cursor-pointer ${
+                        className={`flex items-center justify-center w-8 h-8 text-sm font-medium rounded-lg cursor-pointer transition-all duration-150 ${
                           p === page
-                            ? "bg-accent-primary text-light-text-inverse"
+                            ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/20"
                             : "text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
                         }`}
                       >
@@ -367,14 +303,14 @@ export default function AdminTeamPage() {
                 type="button"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
               >
-                <ChevronRight size={16} />
+                <ChevronRightIcon size={16} />
               </button>
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }

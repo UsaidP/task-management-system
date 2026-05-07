@@ -1,0 +1,339 @@
+
+> task-management-system@1.0.0 test
+> node --experimental-vm-modules node_modules/.bin/jest --forceExit --detectOpenHandles project.test.js
+
+(node:57624) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+2026-05-05T08:09:52.152Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"409p0qho3v2","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:52.634Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"482ms","method":"POST","requestId":"409p0qho3v2","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:52.680Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"2mgmkx8zb7e","type":"request","url":"/api/v1/projects/create"}
+2026-05-05T08:09:52.833Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"153ms","method":"POST","requestId":"2mgmkx8zb7e","statusCode":201,"type":"response","url":"/create"}
+2026-05-05T08:09:53.318Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"enbeh2om7hp","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:53.573Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"255ms","method":"POST","requestId":"enbeh2om7hp","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:53.600Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"pqgyly7sbp","type":"request","url":"/api/v1/projects/create"}
+2026-05-05T08:09:53.640Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Project Name is required","name":"Error","stack":"Error: Project Name is required\n    at validateProjectData (/Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:13:9)\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:26:2\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:111:2\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"pqgyly7sbp","type":"error","url":"/api/v1/projects/create","user":"69f9a5d1f77b22e6048a77b3"}
+2026-05-05T08:09:53.656Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"56ms","method":"POST","requestId":"pqgyly7sbp","statusCode":400,"type":"response","url":"/api/v1/projects/create"}
+2026-05-05T08:09:53.952Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"3f0f5ygcrj","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:54.164Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"213ms","method":"POST","requestId":"3f0f5ygcrj","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:54.189Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"zm2xbh0yjx","type":"request","url":"/api/v1/projects/create"}
+2026-05-05T08:09:54.216Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Project Description is required","name":"Error","stack":"Error: Project Description is required\n    at validateProjectData (/Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:16:9)\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:26:2\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:111:2\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"zm2xbh0yjx","type":"error","url":"/api/v1/projects/create","user":"69f9a5d1f77b22e6048a77cb"}
+2026-05-05T08:09:54.229Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"40ms","method":"POST","requestId":"zm2xbh0yjx","statusCode":400,"type":"response","url":"/api/v1/projects/create"}
+2026-05-05T08:09:54.270Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"x7r0gwg36d","type":"request","url":"/api/v1/projects/create"}
+2026-05-05T08:09:54.297Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Project Description is required","name":"Error","stack":"Error: Project Description is required\n    at validateProjectData (/Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:16:9)\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:26:2\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:111:2\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"x7r0gwg36d","type":"error","url":"/api/v1/projects/create","user":"69f9a5d1f77b22e6048a77cb"}
+2026-05-05T08:09:54.308Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"38ms","method":"POST","requestId":"x7r0gwg36d","statusCode":400,"type":"response","url":"/api/v1/projects/create"}
+2026-05-05T08:09:54.789Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"n2gl8zydgej","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:54.994Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"205ms","method":"POST","requestId":"n2gl8zydgej","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:55.016Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"nk6pel5weud","type":"request","url":"/api/v1/projects/create"}
+2026-05-05T08:09:55.037Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Project Description is required","name":"Error","stack":"Error: Project Description is required\n    at validateProjectData (/Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:16:9)\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:26:2\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:111:2\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"nk6pel5weud","type":"error","url":"/api/v1/projects/create","user":"69f9a5d2f77b22e6048a77e6"}
+2026-05-05T08:09:55.046Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"30ms","method":"POST","requestId":"nk6pel5weud","statusCode":400,"type":"response","url":"/api/v1/projects/create"}
+2026-05-05T08:09:55.064Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"8p2rok1482m","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:55.297Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"233ms","method":"POST","requestId":"8p2rok1482m","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:55.320Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"0fn6l4qt6m9","type":"request","url":"/api/v1/projects/create"}
+2026-05-05T08:09:55.349Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Project Description is required","name":"Error","stack":"Error: Project Description is required\n    at validateProjectData (/Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:16:9)\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/project.controller.js:26:2\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:111:2\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"0fn6l4qt6m9","type":"error","url":"/api/v1/projects/create","user":"69f9a5d2f77b22e6048a77e9"}
+2026-05-05T08:09:55.363Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"43ms","method":"POST","requestId":"0fn6l4qt6m9","statusCode":400,"type":"response","url":"/api/v1/projects/create"}
+2026-05-05T08:09:55.446Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"wkz5qr4y6fm","type":"request","url":"/api/v1/projects/create"}
+2026-05-05T08:09:55.455Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Please login to access this resource","name":"Error","stack":"Error: Please login to access this resource\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:80:9\n    at /Volumes/E/Projects/task-management-system/backend/src/utils/async-handler.js:22:19\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:149:13)\n    at Route.dispatch (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/route.js:119:3)\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at /Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:284:15\n    at router.process_params (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:346:12)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:280:10)\n    at router.handle (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:175:3)\n    at router (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:47:12)\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:328:13)\n    at /Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:286:9\n    at router.process_params (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:346:12)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:280:10)\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/cache-control.middleware.js:17:3\n    at Layer.handle [as handle_request] (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:328:13)\n    at /Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:286:9\n    at router.process_params (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:346:12)\n    at next (/Volumes/E/Projects/task-management-system/backend/node_modules/express/lib/router/index.js:280:10)\n    at /Volumes/E/Projects/task-management-system/backend/node_modules/express-rate-limit/dist/index.mjs:678:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at /Volumes/E/Projects/task-management-system/backend/node_modules/express-rate-limit/dist/index.mjs:663:5","statusCode":401},"method":"POST","requestId":"wkz5qr4y6fm","type":"error","url":"/api/v1/projects/create","user":"anonymous"}
+2026-05-05T08:09:55.463Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"17ms","method":"POST","requestId":"wkz5qr4y6fm","statusCode":401,"type":"response","url":"/api/v1/projects/create"}
+2026-05-05T08:09:55.746Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"l7nxrd6i429","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:55.962Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"216ms","method":"POST","requestId":"l7nxrd6i429","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:55.977Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"GET","requestId":"dv6lvwpphv","type":"request","url":"/api/v1/projects/all-projects"}
+2026-05-05T08:09:56.057Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"80ms","method":"GET","requestId":"dv6lvwpphv","statusCode":200,"type":"response","url":"/all-projects"}
+2026-05-05T08:09:56.539Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"j63r8ppnr4e","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:56.782Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"243ms","method":"POST","requestId":"j63r8ppnr4e","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:56.802Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"GET","requestId":"v3jiws3ibn","type":"request","url":"/api/v1/projects/all-projects"}
+2026-05-05T08:09:56.875Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"73ms","method":"GET","requestId":"v3jiws3ibn","statusCode":200,"type":"response","url":"/all-projects"}
+2026-05-05T08:09:57.118Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"f781jbq31zt","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:57.347Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"229ms","method":"POST","requestId":"f781jbq31zt","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:57.366Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"GET","requestId":"r7ucr3gsi7o","type":"request","url":"/api/v1/projects/get-project-by-id/69f9a5d5f77b22e6048a7858"}
+2026-05-05T08:09:57.441Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"75ms","method":"GET","requestId":"r7ucr3gsi7o","statusCode":200,"type":"response","url":"/get-project-by-id/69f9a5d5f77b22e6048a7858"}
+2026-05-05T08:09:57.987Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"l9np8akossi","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:58.215Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"228ms","method":"POST","requestId":"l9np8akossi","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:58.238Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"GET","requestId":"gz58yqtsnpf","type":"request","url":"/api/v1/projects/get-project-by-id/69f9a5d5f77b22e6048a7879"}
+  console.warn
+    [RBAC DENIED] User 69f9a5d5f77b22e6048a7877 tried to access project 69f9a5d5f77b22e6048a7879 - not a member
+
+      158 | 			}
+      159 |
+    > 160 | 			console.warn(
+          | 			        ^
+      161 | 				`[RBAC DENIED] User ${req.user._id} tried to access project ${projectId} - not a member`,
+      162 | 			)
+      163 | 			throw new ApiError(403, "Access denied. You are not a member of this project.")
+
+      at src/middlewares/auth.middleware.js:160:12
+
+2026-05-05T08:09:58.331Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. You are not a member of this project.","name":"Error","stack":"Error: Access denied. You are not a member of this project.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:163:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"GET","requestId":"gz58yqtsnpf","type":"error","url":"/api/v1/projects/get-project-by-id/69f9a5d5f77b22e6048a7879","user":"69f9a5d5f77b22e6048a7877"}
+2026-05-05T08:09:58.361Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"123ms","method":"GET","requestId":"gz58yqtsnpf","statusCode":403,"type":"response","url":"/api/v1/projects/get-project-by-id/69f9a5d5f77b22e6048a7879"}
+2026-05-05T08:09:58.845Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"ovghshcizm","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:59.046Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"201ms","method":"POST","requestId":"ovghshcizm","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:59.060Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"GET","requestId":"irlfeai2pr8","type":"request","url":"/api/v1/projects/get-project-by-id/000000000000000000000000"}
+2026-05-05T08:09:59.120Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Project not found","name":"Error","stack":"Error: Project not found\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:157:11\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":404},"method":"GET","requestId":"irlfeai2pr8","type":"error","url":"/api/v1/projects/get-project-by-id/000000000000000000000000","user":"69f9a5d6f77b22e6048a7893"}
+2026-05-05T08:09:59.133Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"73ms","method":"GET","requestId":"irlfeai2pr8","statusCode":404,"type":"response","url":"/api/v1/projects/get-project-by-id/000000000000000000000000"}
+2026-05-05T08:09:59.505Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"qd8u908w2hl","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:09:59.766Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"261ms","method":"POST","requestId":"qd8u908w2hl","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:09:59.789Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"0hfeq14x672i","type":"request","url":"/api/v1/projects/update/69f9a5d7f77b22e6048a78af"}
+2026-05-05T08:09:59.868Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"79ms","method":"POST","requestId":"0hfeq14x672i","statusCode":200,"type":"response","url":"/update/69f9a5d7f77b22e6048a78af"}
+2026-05-05T08:10:00.347Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"porhriwhc48","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:00.579Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"232ms","method":"POST","requestId":"porhriwhc48","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:00.604Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"2w78ftm9oni","type":"request","url":"/api/v1/projects/update/69f9a5d8f77b22e6048a78d1"}
+2026-05-05T08:10:00.667Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"63ms","method":"POST","requestId":"2w78ftm9oni","statusCode":200,"type":"response","url":"/update/69f9a5d8f77b22e6048a78d1"}
+2026-05-05T08:10:01.105Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"wa5ilwi1rz","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:01.331Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"226ms","method":"POST","requestId":"wa5ilwi1rz","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:01.354Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"k7s5x3b0j","type":"request","url":"/api/v1/projects/update/69f9a5d9f77b22e6048a78f3"}
+  console.warn
+    [RBAC DENIED] User 69f9a5d8f77b22e6048a78f1 has role "member", needs: admin or owner or project_admin
+
+      167 |
+      168 | 		if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    > 169 | 			console.warn(
+          | 			        ^
+      170 | 				`[RBAC DENIED] User ${req.user._id} has role "${userRole}", needs: ${allowedRoles.join(" or ")}`,
+      171 | 			)
+      172 | 			throw new ApiError(
+
+      at src/middlewares/auth.middleware.js:169:12
+
+2026-05-05T08:10:01.404Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. Required: admin or owner or project_admin. Your role: member.","name":"Error","stack":"Error: Access denied. Required: admin or owner or project_admin. Your role: member.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:172:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"POST","requestId":"k7s5x3b0j","type":"error","url":"/api/v1/projects/update/69f9a5d9f77b22e6048a78f3","user":"69f9a5d8f77b22e6048a78f1"}
+2026-05-05T08:10:01.417Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"63ms","method":"POST","requestId":"k7s5x3b0j","statusCode":403,"type":"response","url":"/api/v1/projects/update/69f9a5d9f77b22e6048a78f3"}
+2026-05-05T08:10:01.728Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"tor9wcx9e7","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:01.938Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"210ms","method":"POST","requestId":"tor9wcx9e7","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:01.952Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"2vchkc6e2z3","type":"request","url":"/api/v1/projects/delete/69f9a5d9f77b22e6048a7910"}
+2026-05-05T08:10:02.005Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"53ms","method":"POST","requestId":"2vchkc6e2z3","statusCode":200,"type":"response","url":"/delete/69f9a5d9f77b22e6048a7910"}
+2026-05-05T08:10:02.493Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"g5lqhl8irr6","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:02.734Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"241ms","method":"POST","requestId":"g5lqhl8irr6","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:02.751Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"j2hy90j0tja","type":"request","url":"/api/v1/projects/delete/69f9a5daf77b22e6048a7933"}
+  console.warn
+    [RBAC DENIED] User 69f9a5daf77b22e6048a7931 has role "project_admin", needs: admin or owner
+
+      167 |
+      168 | 		if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    > 169 | 			console.warn(
+          | 			        ^
+      170 | 				`[RBAC DENIED] User ${req.user._id} has role "${userRole}", needs: ${allowedRoles.join(" or ")}`,
+      171 | 			)
+      172 | 			throw new ApiError(
+
+      at src/middlewares/auth.middleware.js:169:12
+
+2026-05-05T08:10:02.794Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. Required: admin or owner. Your role: project_admin.","name":"Error","stack":"Error: Access denied. Required: admin or owner. Your role: project_admin.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:172:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"POST","requestId":"j2hy90j0tja","type":"error","url":"/api/v1/projects/delete/69f9a5daf77b22e6048a7933","user":"69f9a5daf77b22e6048a7931"}
+2026-05-05T08:10:02.806Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"55ms","method":"POST","requestId":"j2hy90j0tja","statusCode":403,"type":"response","url":"/api/v1/projects/delete/69f9a5daf77b22e6048a7933"}
+2026-05-05T08:10:03.253Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"0gmrpd22lv2","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:03.499Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"246ms","method":"POST","requestId":"0gmrpd22lv2","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:03.516Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"84kxmenfzpu","type":"request","url":"/api/v1/projects/delete/69f9a5dbf77b22e6048a7953"}
+  console.warn
+    [RBAC DENIED] User 69f9a5dbf77b22e6048a7951 has role "member", needs: admin or owner
+
+      167 |
+      168 | 		if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    > 169 | 			console.warn(
+          | 			        ^
+      170 | 				`[RBAC DENIED] User ${req.user._id} has role "${userRole}", needs: ${allowedRoles.join(" or ")}`,
+      171 | 			)
+      172 | 			throw new ApiError(
+
+      at src/middlewares/auth.middleware.js:169:12
+
+2026-05-05T08:10:03.569Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. Required: admin or owner. Your role: member.","name":"Error","stack":"Error: Access denied. Required: admin or owner. Your role: member.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:172:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"POST","requestId":"84kxmenfzpu","type":"error","url":"/api/v1/projects/delete/69f9a5dbf77b22e6048a7953","user":"69f9a5dbf77b22e6048a7951"}
+2026-05-05T08:10:03.585Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"69ms","method":"POST","requestId":"84kxmenfzpu","statusCode":403,"type":"response","url":"/api/v1/projects/delete/69f9a5dbf77b22e6048a7953"}
+2026-05-05T08:10:04.126Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"7bbxj3d1mlw","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:04.404Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"278ms","method":"POST","requestId":"7bbxj3d1mlw","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:04.424Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"w1jr5skrokn","type":"request","url":"/api/v1/projects/delete/69f9a5dcf77b22e6048a7973"}
+2026-05-05T08:10:04.498Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"74ms","method":"POST","requestId":"w1jr5skrokn","statusCode":200,"type":"response","url":"/delete/69f9a5dcf77b22e6048a7973"}
+2026-05-05T08:10:04.959Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"8rh3x6czm2o","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:05.175Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"216ms","method":"POST","requestId":"8rh3x6czm2o","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:05.196Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"420hzev1219","type":"request","url":"/api/v1/members/69f9a5dcf77b22e6048a7993"}
+2026-05-05T08:10:05.332Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"136ms","method":"POST","requestId":"420hzev1219","statusCode":201,"type":"response","url":"/69f9a5dcf77b22e6048a7993"}
+2026-05-05T08:10:06.181Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"kzl8es8lu19","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:06.444Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"263ms","method":"POST","requestId":"kzl8es8lu19","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:06.504Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"3eclr8fja7u","type":"request","url":"/api/v1/members/69f9a5def77b22e6048a79bf"}
+  console.warn
+    [RBAC DENIED] User 69f9a5ddf77b22e6048a79ba has role "member", needs: admin or owner or project_admin
+
+      167 |
+      168 | 		if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    > 169 | 			console.warn(
+          | 			        ^
+      170 | 				`[RBAC DENIED] User ${req.user._id} has role "${userRole}", needs: ${allowedRoles.join(" or ")}`,
+      171 | 			)
+      172 | 			throw new ApiError(
+
+      at src/middlewares/auth.middleware.js:169:12
+
+2026-05-05T08:10:06.557Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. Required: admin or owner or project_admin. Your role: member.","name":"Error","stack":"Error: Access denied. Required: admin or owner or project_admin. Your role: member.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:172:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"POST","requestId":"3eclr8fja7u","type":"error","url":"/api/v1/members/69f9a5def77b22e6048a79bf","user":"69f9a5ddf77b22e6048a79ba"}
+2026-05-05T08:10:06.576Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"72ms","method":"POST","requestId":"3eclr8fja7u","statusCode":403,"type":"response","url":"/api/v1/members/69f9a5def77b22e6048a79bf"}
+2026-05-05T08:10:07.204Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"fueo6g79awk","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:07.586Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"382ms","method":"POST","requestId":"fueo6g79awk","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:07.628Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"7id3veehd8t","type":"request","url":"/api/v1/members/69f9a5dff77b22e6048a79df"}
+2026-05-05T08:10:07.708Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"User is already a member of this project.","name":"Error","stack":"Error: User is already a member of this project.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:51:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"POST","requestId":"7id3veehd8t","type":"error","url":"/api/v1/members/69f9a5dff77b22e6048a79df","user":"69f9a5def77b22e6048a79da"}
+2026-05-05T08:10:07.733Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"105ms","method":"POST","requestId":"7id3veehd8t","statusCode":400,"type":"response","url":"/api/v1/members/69f9a5dff77b22e6048a79df"}
+2026-05-05T08:10:08.029Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"z4gwuwe3zro","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:08.344Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"315ms","method":"POST","requestId":"z4gwuwe3zro","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:08.372Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"nwypz5idtfj","type":"request","url":"/api/v1/members/69f9a5dff77b22e6048a7a02"}
+2026-05-05T08:10:08.460Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"No account found with this email. Please ask them to register first.","name":"Error","stack":"Error: No account found with this email. Please ask them to register first.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:30:9\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":404},"method":"POST","requestId":"nwypz5idtfj","type":"error","url":"/api/v1/members/69f9a5dff77b22e6048a7a02","user":"69f9a5dff77b22e6048a7a00"}
+2026-05-05T08:10:08.479Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"107ms","method":"POST","requestId":"nwypz5idtfj","statusCode":404,"type":"response","url":"/api/v1/members/69f9a5dff77b22e6048a7a02"}
+2026-05-05T08:10:09.055Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"o6lvsasyxxh","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:09.359Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"304ms","method":"POST","requestId":"o6lvsasyxxh","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:09.378Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"DELETE","requestId":"3ted26xdexs","type":"request","url":"/api/v1/members/69f9a5e1f77b22e6048a7a24/69f9a5e1f77b22e6048a7a28"}
+2026-05-05T08:10:09.478Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"100ms","method":"DELETE","requestId":"3ted26xdexs","statusCode":200,"type":"response","url":"/69f9a5e1f77b22e6048a7a24/69f9a5e1f77b22e6048a7a28"}
+2026-05-05T08:10:09.898Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"8bj04yiitt","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:10.164Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"266ms","method":"POST","requestId":"8bj04yiitt","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:10.184Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"DELETE","requestId":"zi2qde8f29r","type":"request","url":"/api/v1/members/69f9a5e1f77b22e6048a7a46/69f9a5e1f77b22e6048a7a48"}
+2026-05-05T08:10:10.271Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Cannot remove last admin/owner. Transfer admin rights first or specify transferRoleTo.","name":"Error","stack":"Error: Cannot remove last admin/owner. Transfer admin rights first or specify transferRoleTo.\n    at /Volumes/E/Projects/task-management-system/backend/src/controllers/projectMember.controller.js:150:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":400},"method":"DELETE","requestId":"zi2qde8f29r","type":"error","url":"/api/v1/members/69f9a5e1f77b22e6048a7a46/69f9a5e1f77b22e6048a7a48","user":"69f9a5e1f77b22e6048a7a44"}
+2026-05-05T08:10:10.291Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"107ms","method":"DELETE","requestId":"zi2qde8f29r","statusCode":400,"type":"response","url":"/api/v1/members/69f9a5e1f77b22e6048a7a46/69f9a5e1f77b22e6048a7a48"}
+2026-05-05T08:10:11.318Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"fmo77eg8k1d","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:11.681Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"363ms","method":"POST","requestId":"fmo77eg8k1d","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:11.710Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"9js1oaeg3sm","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:11.974Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"264ms","method":"POST","requestId":"9js1oaeg3sm","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:11.992Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"4rou69yglu2","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:12.244Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"252ms","method":"POST","requestId":"4rou69yglu2","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:12.266Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"928xpoc8i27","type":"request","url":"/api/v1/projects/update/69f9a5e3f77b22e6048a7a6c"}
+2026-05-05T08:10:12.327Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"61ms","method":"POST","requestId":"928xpoc8i27","statusCode":200,"type":"response","url":"/update/69f9a5e3f77b22e6048a7a6c"}
+2026-05-05T08:10:12.352Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"hwigbr2u9n","type":"request","url":"/api/v1/projects/update/69f9a5e3f77b22e6048a7a6c"}
+2026-05-05T08:10:12.406Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"54ms","method":"POST","requestId":"hwigbr2u9n","statusCode":200,"type":"response","url":"/update/69f9a5e3f77b22e6048a7a6c"}
+2026-05-05T08:10:12.427Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"pqr664i1cua","type":"request","url":"/api/v1/projects/update/69f9a5e3f77b22e6048a7a6c"}
+  console.warn
+    [RBAC DENIED] User 69f9a5e2f77b22e6048a7a6a has role "member", needs: admin or owner or project_admin
+
+      167 |
+      168 | 		if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    > 169 | 			console.warn(
+          | 			        ^
+      170 | 				`[RBAC DENIED] User ${req.user._id} has role "${userRole}", needs: ${allowedRoles.join(" or ")}`,
+      171 | 			)
+      172 | 			throw new ApiError(
+
+      at src/middlewares/auth.middleware.js:169:12
+
+2026-05-05T08:10:12.478Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. Required: admin or owner or project_admin. Your role: member.","name":"Error","stack":"Error: Access denied. Required: admin or owner or project_admin. Your role: member.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:172:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"POST","requestId":"pqr664i1cua","type":"error","url":"/api/v1/projects/update/69f9a5e3f77b22e6048a7a6c","user":"69f9a5e2f77b22e6048a7a6a"}
+2026-05-05T08:10:12.493Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"66ms","method":"POST","requestId":"pqr664i1cua","statusCode":403,"type":"response","url":"/api/v1/projects/update/69f9a5e3f77b22e6048a7a6c"}
+2026-05-05T08:10:13.140Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"8y8xfkx2eil","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:13.391Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"251ms","method":"POST","requestId":"8y8xfkx2eil","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:13.417Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"sv9xsl27oa","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:13.667Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"250ms","method":"POST","requestId":"sv9xsl27oa","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:13.693Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"i1jec78qofg","type":"request","url":"/api/v1/auth/login"}
+2026-05-05T08:10:13.907Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"214ms","method":"POST","requestId":"i1jec78qofg","statusCode":200,"type":"response","url":"/login"}
+2026-05-05T08:10:13.919Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"zpuv41q90bm","type":"request","url":"/api/v1/projects/delete/69f9a5e5f77b22e6048a7aaf"}
+2026-05-05T08:10:13.960Z [32minfo[39m: HTTP response {"service":"taskflow-api","duration":"41ms","method":"POST","requestId":"zpuv41q90bm","statusCode":200,"type":"response","url":"/delete/69f9a5e5f77b22e6048a7aaf"}
+2026-05-05T08:10:14.012Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"lf01z2xma2","type":"request","url":"/api/v1/projects/delete/69f9a5e5f77b22e6048a7ad6"}
+  console.warn
+    [RBAC DENIED] User 69f9a5e4f77b22e6048a7aaa has role "project_admin", needs: admin or owner
+
+      167 |
+      168 | 		if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    > 169 | 			console.warn(
+          | 			        ^
+      170 | 				`[RBAC DENIED] User ${req.user._id} has role "${userRole}", needs: ${allowedRoles.join(" or ")}`,
+      171 | 			)
+      172 | 			throw new ApiError(
+
+      at src/middlewares/auth.middleware.js:169:12
+
+2026-05-05T08:10:14.043Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. Required: admin or owner. Your role: project_admin.","name":"Error","stack":"Error: Access denied. Required: admin or owner. Your role: project_admin.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:172:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"POST","requestId":"lf01z2xma2","type":"error","url":"/api/v1/projects/delete/69f9a5e5f77b22e6048a7ad6","user":"69f9a5e4f77b22e6048a7aaa"}
+2026-05-05T08:10:14.054Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"42ms","method":"POST","requestId":"lf01z2xma2","statusCode":403,"type":"response","url":"/api/v1/projects/delete/69f9a5e5f77b22e6048a7ad6"}
+2026-05-05T08:10:14.071Z [32minfo[39m: Incoming request {"service":"taskflow-api","ip":"::ffff:127.0.0.1","method":"POST","requestId":"vb6tla01zb","type":"request","url":"/api/v1/projects/delete/69f9a5e5f77b22e6048a7ad6"}
+  console.warn
+    [RBAC DENIED] User 69f9a5e4f77b22e6048a7aad has role "member", needs: admin or owner
+
+      167 |
+      168 | 		if (allowedRoles.length > 0 && !allowedRoles.includes(userRole)) {
+    > 169 | 			console.warn(
+          | 			        ^
+      170 | 				`[RBAC DENIED] User ${req.user._id} has role "${userRole}", needs: ${allowedRoles.join(" or ")}`,
+      171 | 			)
+      172 | 			throw new ApiError(
+
+      at src/middlewares/auth.middleware.js:169:12
+
+2026-05-05T08:10:14.134Z [31merror[39m: Request error {"service":"taskflow-api","error":{"message":"Access denied. Required: admin or owner. Your role: member.","name":"Error","stack":"Error: Access denied. Required: admin or owner. Your role: member.\n    at /Volumes/E/Projects/task-management-system/backend/src/middlewares/auth.middleware.js:172:10\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)","statusCode":403},"method":"POST","requestId":"vb6tla01zb","type":"error","url":"/api/v1/projects/delete/69f9a5e5f77b22e6048a7ad6","user":"69f9a5e4f77b22e6048a7aad"}
+2026-05-05T08:10:14.154Z [33mwarn[39m: HTTP response {"service":"taskflow-api","duration":"83ms","method":"POST","requestId":"vb6tla01zb","statusCode":403,"type":"response","url":"/api/v1/projects/delete/69f9a5e5f77b22e6048a7ad6"}
+FAIL tests/project.test.js (32.407 s)
+  POST /api/v1/projects/create
+    ✕ creates a project and auto-assigns creator as owner (3057 ms)
+    ✓ returns 400 when name is missing (852 ms)
+    ✕ returns 409 for duplicate project name by same user (609 ms)
+    ✕ allows two users to have projects with the same name (1058 ms)
+    ✓ returns 401 for unauthenticated request (96 ms)
+  GET /api/v1/projects/all-projects
+    ✓ returns only projects the user is a member of (593 ms)
+    ✓ returns empty array when user has no projects (817 ms)
+  GET /api/v1/projects/get-project-by-id/:id
+    ✓ returns project for a member (609 ms)
+    ✓ returns 403 for a non-member trying to access a project (892 ms)
+    ✓ returns 404 for non-existent project ID (759 ms)
+  POST /api/v1/projects/update/:id
+    ✓ allows owner to update project (731 ms)
+    ✓ allows project_admin to update project (799 ms)
+    ✓ denies member from updating project (748 ms)
+  POST /api/v1/projects/delete/:id
+    ✓ allows owner to delete their project (587 ms)
+    ✓ denies project_admin from deleting project (801 ms)
+    ✓ denies member from deleting project (791 ms)
+    ✓ allows global admin to delete any project (900 ms)
+  POST /api/v1/members/:projectId
+    ✓ allows owner to add a member (837 ms)
+    ✓ denies regular member from adding members (1248 ms)
+    ✓ returns 400 when adding a user who is already a member (1149 ms)
+    ✓ cannot add a non-existent user as member (749 ms)
+  DELETE /api/v1/members/:projectId/:memberId
+    ✓ allows owner to remove a member (998 ms)
+    ✓ prevents owner from removing themselves (must transfer first) (811 ms)
+  RBAC permission matrix
+    ✓ MATRIX: edit project — owner✅ padmin✅ member❌ (2199 ms)
+    ✓ MATRIX: delete project — owner✅ padmin❌ member❌ (1664 ms)
+
+  ● POST /api/v1/projects/create › creates a project and auto-assigns creator as owner
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "My Project"
+    Received: undefined
+
+      51 |
+      52 |     expect(res.status).toBe(201)
+    > 53 |     expect(res.body.data.name).toBe("My Project")
+         |                                ^
+      54 |     expect(res.body.data.createdBy.toString()).toBe(user._id.toString())
+      55 |   })
+      56 |
+
+      at Object.<anonymous> (tests/project.test.js:53:32)
+
+  ● POST /api/v1/projects/create › returns 409 for duplicate project name by same user
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 409
+    Received: 400
+
+      68 |
+      69 |     const res = await agent.post("/api/v1/projects/create").send({ name: "Dup Project" })
+    > 70 |     expect(res.status).toBe(409)
+         |                        ^
+      71 |   })
+      72 |
+      73 |   it("allows two users to have projects with the same name", async () => {
+
+      at Object.<anonymous> (tests/project.test.js:70:24)
+
+  ● POST /api/v1/projects/create › allows two users to have projects with the same name
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 201
+    Received: 400
+
+      80 |     const a2 = await loginAgent(u2.email, p2)
+      81 |     const res = await a2.post("/api/v1/projects/create").send({ name: "Shared Name" })
+    > 82 |     expect(res.status).toBe(201)
+         |                        ^
+      83 |   })
+      84 |
+      85 |   it("returns 401 for unauthenticated request", async () => {
+
+      at Object.<anonymous> (tests/project.test.js:82:24)
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 22 passed, 25 total
+Snapshots:   0 total
+Time:        32.689 s, estimated 41 s
+Ran all test suites matching /project.test.js/i.

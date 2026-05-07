@@ -15,8 +15,8 @@ import {
 	sendMail,
 } from "../utils/mail.js"
 
-const RESEND_COOLDOWN_MS = 60 * 1000
-const EMAIL_VERIFICATION_EXPIRY_MS = ms(process.env.EMAIL_VERIFICATION_EXPIRY || "24h")
+const RESEND_COOLDOWN_MS = ms(process.env.RESEND_COOLDOWN || "60s")
+const EMAIL_VERIFICATION_EXPIRY_MS = ms(process.env.TEMPORARY_TOKEN_EXPIRY || "1h")
 
 const getCookieOptions = (maxAge) => ({
 	httpOnly: true,
@@ -381,7 +381,7 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
 		.status(200)
 		.cookie("accessToken", newAccessToken, accessTokenOptions)
 		.cookie("refreshToken", newRefreshToken, refreshTokenOptions)
-		.json(new ApiResponse(200, {}, "Tokens refreshed"))
+		.json(new ApiResponse(200, { accessToken: newAccessToken, refreshToken: newRefreshToken }, "Tokens refreshed"))
 })
 
 // --- Password Management ---
@@ -614,7 +614,7 @@ export const updateUserRole = asyncHandler(async (req, res) => {
 
 	await logAudit({
 		actor: req.user,
-		category: "admin",
+		category: "role",
 		description: `Admin ${req.user.username} changed ${user.username} role to ${role}`,
 		event: "admin.role.change",
 		ipAddress: req.ip,

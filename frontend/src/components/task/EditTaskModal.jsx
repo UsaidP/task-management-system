@@ -1,22 +1,24 @@
 import {
-  AlertCircle,
+  TriangleAlertIcon as AlertCircle,
+  CheckIcon as Check,
+  ChevronDownIcon as ChevronDown,
+  PaperclipIcon as Paperclip,
+  PlusIcon as Plus,
+  TrashIcon as Trash2,
+  UploadIcon as Upload,
+  UserIcon as User,
+  XIcon as X,
+} from "@animateicons/react/lucide"
+import {
   AlignLeft,
   Calendar as CalendarIcon,
-  Check,
-  ChevronDown,
   Clock,
   FileText,
   Flag,
   Hash,
   ListChecks,
-  Paperclip,
-  Plus,
   Tag,
-  Trash2,
   Type,
-  Upload,
-  User,
-  X,
 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
@@ -144,8 +146,7 @@ const inputBase =
   "w-full rounded-xl px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary bg-light-bg-tertiary dark:bg-transparent placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all duration-200 shadow-sm"
 const inputNormal =
   "ring-1 ring-inset ring-transparent dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/30 dark:focus:ring-accent-primary-light/30 dark:focus:ring-offset-1 dark:focus:ring-offset-dark-bg-primary/50"
-const inputError =
-  "ring-2 ring-inset ring-accent-danger bg-accent-danger/5"
+const inputError = "ring-2 ring-inset ring-accent-danger bg-accent-danger/5"
 
 const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
   const titleRef = useRef(null)
@@ -535,13 +536,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           <div className="flex-[2] min-w-0 space-y-6">
             {/* Title */}
             {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
-            <FormField
-              label="Task Title"
-              icon={Type}
-              required
-              error={errors.title}
-              id="edit-title"
-            >
+            <FormField label="Task Title" icon={Type} required error={errors.title} id="edit-title">
               {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
               <input
                 id="edit-title"
@@ -678,8 +673,6 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               )}
             </div>
 
-            
-
             {/* Attachments */}
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -789,11 +782,11 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               )}
             </div>
 
-              {uploading && (
-                <p className="text-xs text-accent-primary dark:text-accent-primary-light mt-2 animate-pulse">
-                  Uploading attachments...
-                </p>
-              )}
+            {uploading && (
+              <p className="text-xs text-accent-primary dark:text-accent-primary-light mt-2 animate-pulse">
+                Uploading attachments...
+              </p>
+            )}
           </div>
 
           {/* ─── Right Column: Settings ──────────── */}
@@ -825,9 +818,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                           {selectedAssignees.slice(0, 3).map((a) => (
                             <div
                               key={a.value}
-                              className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary text-[10px] font-bold text-light-text-inverse border-2 border-light-bg-primary dark:border-dark-bg-primary"
+                              className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary text-white border-2 border-light-bg-primary dark:border-dark-bg-primary"
                             >
-                              {a.initials}
+                              <User size={12} />
                             </div>
                           ))}
                           {selectedAssignees.length > 3 && (
@@ -888,9 +881,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                               aria-selected={isSelected}
                             >
                               <div
-                                className={`flex h-7 w-7 items-center justify-center rounded-full ${assignee.color} text-[10px] font-bold text-light-text-inverse`}
+                                className={`flex h-7 w-7 items-center justify-center rounded-full ${assignee.color} text-white`}
                               >
-                                {assignee.initials}
+                                <User size={14} />
                               </div>
                               <div className="text-left flex-1 min-w-0">
                                 <p className="text-light-text-primary dark:text-dark-text-primary leading-tight truncate">
@@ -1022,8 +1015,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                 className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all shadow-sm ${inputNormal}`}
               />
             </div>
-
-            </div>
+          </div>
 
           {/* Tags Bento Card */}
           <div className="rounded-2xl p-6 bg-light-bg-secondary/40 dark:bg-dark-bg-secondary shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.1)] ring-1 ring-light-border/30 dark:ring-white/10 space-y-5">
@@ -1148,7 +1140,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                 )}
               </div>
             </div>
-          {/* Divider */}
+            {/* Divider */}
             <div className="pt-2">
               {/* Summary Card */}
               <div className="rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-secondary shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.1)] ring-1 ring-light-border/40 dark:ring-white/10 p-5 space-y-3">

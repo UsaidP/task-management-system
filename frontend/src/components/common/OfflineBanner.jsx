@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { WifiOff } from "lucide-react"
+import { WifiOffIcon as WifiOff } from "@animateicons/react/lucide"
 import { useOnlineStatus } from "../hooks/useOnlineStatus"
 
 /**

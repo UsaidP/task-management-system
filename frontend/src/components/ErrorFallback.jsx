@@ -1,4 +1,4 @@
-import { FiAlertTriangle } from "react-icons/fi"
+import { TriangleAlertIcon as AlertTriangle } from "@animateicons/react/lucide"
 
 const ErrorFallback = ({ error, resetErrorBoundary }) => {
   return (
@@ -6,7 +6,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => {
       role="alert"
       className="flex flex-col items-center justify-center h-screen bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary"
     >
-      <FiAlertTriangle className="w-12 h-12 text-accent-danger mb-4" />
+      <AlertTriangle className="w-12 h-12 text-accent-danger mb-4" />
       <h2 className="text-2xl font-bold text-accent-danger mb-4">Something went wrong:</h2>
       <pre className="text-sm font-mono text-accent-danger bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-accent-danger/20 dark:border-accent-danger/30 p-4 rounded-lg whitespace-pre-wrap max-w-lg">
         {error.message}

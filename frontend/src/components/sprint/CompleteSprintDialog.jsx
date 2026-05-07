@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react"
 import { Fragment, useState } from "react"
-import { FiArrowRight } from "react-icons/fi"
+import { ArrowRightIcon } from "lucide-react"
 
 const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
   const [moveOption, setMoveOption] = useState("backlog")
@@ -111,7 +111,7 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
                     className="px-4 py-2 rounded-xl bg-accent-success text-white font-medium hover:bg-accent-success/90 disabled:opacity-50 flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-success/20"
                   >
                     {loading ? "Completing..." : "Complete Sprint"}
-                    <FiArrowRight className="w-4 h-4" />
+                    <ArrowRightIcon className="w-4 h-4" />
                   </button>
                 </div>
               </Dialog.Panel>

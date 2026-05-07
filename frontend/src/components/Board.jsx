@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { FiPlus } from "react-icons/fi"
+import { PlusIcon } from "@animateicons/react/lucide"
 import apiService from "../../service/apiService.js"
 import { useAuth } from "../contexts/customHook.js"
 import { NetworkError, ServerError } from "./ErrorStates.jsx"
@@ -115,7 +115,7 @@ const Board = () => {
             }}
             className="btn-primary flex items-center gap-2"
           >
-            <FiPlus className="w-4 h-4" />
+            <PlusIcon className="w-4 h-4" />
             Add Task
           </button>
         )}
