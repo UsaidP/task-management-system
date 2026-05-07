@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import * as THREE from 'three'
 import { useTheme } from '../theme/ThemeContext'
 import ThemeToggle from '../theme/ThemeToggle'
+import Logo from '../components/common/Logo'
 
 /* ─── Animation Helpers ─── */
 const fadeUp = (delay = 0) => ({
@@ -24,10 +25,7 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-light-bg-primary/80 dark:bg-dark-bg-primary/80 backdrop-blur-xl border-b border-light-border dark:border-dark-border py-3' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 font-serif text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
-          <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-sans text-sm font-medium text-white">T</div>
-          TaskFlow
-        </Link>
+        <Logo size="lg" to="/" className="font-serif" />
         <div className="hidden md:flex items-center gap-9">
           <a href="#features" className="text-sm font-medium text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors">Features</a>
           <a href="#showcase" className="text-sm font-medium text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors">Product</a>
@@ -364,7 +362,15 @@ const Pricing = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/register" className={`block w-full py-3.5 rounded-[9px] text-center text-sm font-semibold transition-all bg-white text-accent-primary dark:bg-accent-primary dark:text-white hover:bg-white/90 dark:hover:bg-accent-primary-dark hover:-translate-y-0.5 hover:shadow-lg ${!p.featured ? 'border border-accent-primary/20 dark:border-white/10' : ''}`}>
+              <Link 
+                to="/register" 
+                className={`block w-full py-3.5 rounded-[9px] text-center text-sm font-semibold transition-all 
+                  ${p.featured 
+                    ? 'bg-white text-accent-primary hover:bg-white/90' 
+                    : 'bg-white text-accent-primary dark:bg-accent-primary dark:text-white hover:bg-white/90 dark:hover:bg-accent-primary-dark'
+                  } 
+                  hover:-translate-y-0.5 hover:shadow-lg ${!p.featured ? 'border border-accent-primary/20 dark:border-white/10' : ''}`}
+              >
                 {p.cta}
               </Link>
             </motion.div>
@@ -404,10 +410,7 @@ const Footer = () => (
     <div className="max-w-7xl mx-auto">
       <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-14">
         <div className="col-span-2 md:col-span-1">
-          <Link to="/" className="flex items-center gap-2.5 font-serif text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
-            <div className="w-7 h-7 rounded-lg bg-accent-primary flex items-center justify-center text-xs font-medium text-white">T</div>
-            TaskFlow
-          </Link>
+          <Logo size="md" to="/" className="font-serif" />
           <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary leading-relaxed mt-4 max-w-[240px]">The project management tool built for teams that move fast and ship faster.</p>
         </div>
         {[
