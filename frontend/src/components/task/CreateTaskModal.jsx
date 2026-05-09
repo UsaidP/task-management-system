@@ -456,7 +456,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
       <form onSubmit={handleSubmit} className="relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_1.2fr] gap-0 -mx-6 -mt-6">
           {/* ─── Left Column: Main Details ───────── */}
-          <div className="min-w-0 px-8 py-8 border-r space-y-7 border-light-border/20 dark:border-white/5 bg-light-bg-primary dark:bg-dark-bg-primary">
+          <div className="min-w-0 px-8 py-8 border-r space-y-6 border-light-border/20 dark:border-white/5 bg-light-bg-primary dark:bg-dark-bg-primary overflow-y-auto max-h-[calc(90vh-140px)] pb-32 scrollbar-thin scrollbar-thumb-light-border dark:scrollbar-thumb-dark-border">
             {/* Title */}
             {/* biome-ignore lint/correctness/useUniqueElementIds: modal is singleton */}
             <FormField
@@ -748,11 +748,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
               {/* Tag Input */}
               <div className="relative">
                 <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <Hash
-                      size={14}
-                      className="absolute -translate-y-1/2 pointer-events-none left-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary"
-                    />
+                  <div className="relative flex-1 group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                      <Hash
+                        size={14}
+                        className="text-light-text-tertiary dark:text-dark-text-tertiary group-focus-within:text-accent-primary transition-colors"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={newTag}
@@ -772,7 +774,7 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                         }
                       }}
                       placeholder="Type to search or create tags..."
-                      className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-transparent py-3 pl-9 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
+                      className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-transparent py-3 pl-11 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
                     />
                   </div>
                   <button
@@ -788,13 +790,13 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
 
                 {/* Tag Suggestions Dropdown */}
                 {showTagSuggestions && (
-                  <div className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_rgba(65,62,59,0.12)] border border-light-border/30 dark:border-dark-border/30 animate-scale-in origin-top overflow-hidden">
-                    <div className="px-3 py-2 border-b border-light-border/30 dark:border-dark-border/30">
-                      <p className="text-[11px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
+                  <div className="absolute left-0 right-0 top-full mt-1.5 z-20 rounded-xl bg-light-bg-primary/98 dark:bg-dark-bg-primary/98 backdrop-blur-md shadow-[0_12px_40px_rgba(65,62,59,0.2)] border border-light-border/40 dark:border-dark-border/40 animate-scale-in origin-top overflow-hidden">
+                    <div className="px-4 py-2.5 border-b border-light-border/30 dark:border-dark-border/30 bg-light-bg-tertiary/30 dark:bg-dark-bg-tertiary/30">
+                      <p className="text-[10px] font-bold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
                         Suggested Tags
                       </p>
                     </div>
-                    <div className="p-2 overflow-y-auto max-h-40">
+                    <div className="p-1.5 overflow-y-auto max-h-52">
                       {tagPresets
                         .filter((t) => t.label.toLowerCase().includes(newTag.toLowerCase()))
                         .map((tag) => {
@@ -831,9 +833,9 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
           </div>
 
           {/* ─── Right Column: Settings ──────────── */}
-          <div className="py-8 px-7 space-y-7 bg-light-bg-secondary/30 dark:bg-dark-bg-secondary/20 backdrop-blur-sm">
+          <div className="py-8 px-7 space-y-6 bg-light-bg-secondary/30 dark:bg-dark-bg-secondary/20 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-[11px] font-bold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-[0.1em]">
+              <h3 className="text-xs font-bold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-[0.15em]">
                 Task Settings
               </h3>
               <div className="flex-1 h-1 mx-4 border-b border-light-border/10 dark:border-white/5" />
@@ -1043,10 +1045,12 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                     errors.dueDate ? inputError : inputNormal
                   }`}
                 />
-                <CalendarIcon
-                  size={16}
-                  className="absolute -translate-y-1/2 pointer-events-none right-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary"
-                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <CalendarIcon
+                    size={16}
+                    className="text-light-text-tertiary dark:text-dark-text-tertiary"
+                  />
+                </div>
               </div>
             </FormField>
 
@@ -1117,15 +1121,15 @@ const CreateTaskModal = ({ isOpen, onClose, onTaskCreated, projectId, members, s
                       {selectedAssignees.length > 0 ? selectedAssignees.length : "Unassigned"}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between pt-2 text-xs border-t border-light-border/10 dark:border-dark-border/10">
+                  <div className="flex items-center justify-between pt-2.5 text-xs border-t border-light-border/10 dark:border-dark-border/10">
                     <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
                       Complexity
                     </span>
                     <div className="flex items-center gap-2">
-                      <div className="text-[10px] px-1.5 py-0.5 rounded-md bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-tertiary dark:text-dark-text-tertiary">
+                      <div className="text-[11px] px-2 py-0.5 rounded-md bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-tertiary dark:text-dark-text-tertiary border border-light-border/20 dark:border-white/5">
                         {subtasks.length} subtasks
                       </div>
-                      <div className="text-[10px] px-1.5 py-0.5 rounded-md bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-tertiary dark:text-dark-text-tertiary">
+                      <div className="text-[11px] px-2 py-0.5 rounded-md bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-tertiary dark:text-dark-text-tertiary border border-light-border/20 dark:border-white/5">
                         {attachments.length} files
                       </div>
                     </div>

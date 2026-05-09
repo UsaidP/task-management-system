@@ -50,17 +50,17 @@ export const Forget = () => {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <Link to="/" aria-label="TaskFlow Home" className="inline-block flex justify-center mb-4">
-            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-2 shadow-sm">
+          <Link to="/" aria-label="TaskFlow Home" className="inline-flex flex-col items-center mb-6">
+            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-4 shadow-sm hover:scale-105 transition-transform">
               <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
             </div>
+            <h1 className="text-3xl font-serif font-bold text-center text-light-text-primary dark:text-dark-text-primary mb-2">
+              Forgot Password
+            </h1>
+            <p className="text-center text-light-text-secondary dark:text-dark-text-secondary">
+              Enter your email address and we'll send you a link to reset your password.
+            </p>
           </Link>
-          <h1 className="text-3xl font-serif font-bold text-center text-light-text-primary dark:text-dark-text-primary mb-2">
-            Forgot Password
-          </h1>
-          <p className="text-center text-light-text-secondary dark:text-dark-text-secondary">
-            Enter your email address and we'll send you a link to reset your password.
-          </p>
         </motion.div>
 
         <motion.div
@@ -73,8 +73,10 @@ export const Forget = () => {
               <label htmlFor={`${id}-email`} className="input-label mb-2 block">
                 Email Address
               </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                  <Mail className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                </div>
                 <input
                   type="email"
                   name="email"
@@ -82,7 +84,7 @@ export const Forget = () => {
                   placeholder="Ex. name@example.com"
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="input-field pl-12 w-full"
+                  className="input-field pl-11 w-full"
                 />
               </div>
             </div>

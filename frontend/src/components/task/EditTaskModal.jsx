@@ -990,10 +990,12 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                     errors.dueDate ? inputError : inputNormal
                   }`}
                 />
-                <CalendarIcon
-                  size={16}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none"
-                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <CalendarIcon
+                    size={16}
+                    className="text-light-text-tertiary dark:text-dark-text-tertiary"
+                  />
+                </div>
               </div>
             </FormField>
 
@@ -1053,11 +1055,13 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               {/* Tag Input */}
               <div className="relative">
                 <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <Hash
-                      size={14}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary pointer-events-none"
-                    />
+                  <div className="relative flex-1 group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                      <Hash
+                        size={14}
+                        className="text-light-text-tertiary dark:text-dark-text-tertiary group-focus-within:text-accent-primary transition-colors"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={newTag}
@@ -1077,7 +1081,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                         }
                       }}
                       placeholder="Type to search or create tags..."
-                      className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-transparent py-3 pl-9 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
+                      className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-transparent py-3 pl-11 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
                     />
                   </div>
                   <button

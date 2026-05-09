@@ -220,8 +220,10 @@ export const MyTasks = () => {
 
         {/* Right: Search + Filter */}
         <div className="flex items-center gap-2 shrink-0">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-4 h-4 pointer-events-none" />
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <Search className="text-light-text-tertiary dark:text-dark-text-tertiary w-4 h-4 group-focus-within:text-accent-primary transition-colors" />
+            </div>
             <input
               type="text"
               placeholder="Search tasks..."

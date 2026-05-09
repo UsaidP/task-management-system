@@ -100,8 +100,10 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                 >
                   Start Date *
                 </label>
-                <div className="relative">
-                  <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <CalendarIcon className="w-4 h-4 text-light-text-tertiary group-focus-within:text-accent-primary transition-colors" />
+                  </div>
                   <input
                     id="start-date"
                     type="date"
@@ -109,7 +111,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, startDate: e.target.value }))
                     }
-                    className="w-full pl-10 px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors"
+                    className="w-full pl-10 px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors text-light-text-primary dark:text-dark-text-primary"
                     required
                   />
                 </div>
@@ -121,14 +123,16 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                 >
                   End Date *
                 </label>
-                <div className="relative">
-                  <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <CalendarIcon className="w-4 h-4 text-light-text-tertiary group-focus-within:text-accent-primary transition-colors" />
+                  </div>
                   <input
                     id="end-date"
                     type="date"
                     value={formData.endDate}
                     onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
-                    className="w-full pl-10 px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors"
+                    className="w-full pl-10 px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors text-light-text-primary dark:text-dark-text-primary"
                     required
                   />
                 </div>

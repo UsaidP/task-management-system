@@ -123,17 +123,17 @@ export const Signup = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-6 sm:mb-8"
         >
-          <Link to="/" aria-label="TaskFlow Home" className="inline-block flex justify-center mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-accent-primary flex items-center justify-center text-light-text-inverse mb-2 shadow-sm">
-              <span className="font-serif font-bold text-2xl sm:text-3xl leading-none pt-1">T</span>
+          <Link to="/" aria-label="TaskFlow Home" className="inline-flex flex-col items-center mb-6">
+            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-light-text-inverse mb-4 shadow-sm hover:scale-105 transition-transform">
+              <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
             </div>
+            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+              Create an Account
+            </h1>
+            <p className="text-light-text-secondary dark:text-dark-text-secondary text-base sm:text-lg">
+              Join TaskFlow to organize your work.
+            </p>
           </Link>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-            Create an Account
-          </h1>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-base sm:text-lg">
-            Join TaskFlow to organize your work.
-          </p>
         </motion.div>
 
         <div className="auth-card">
@@ -151,8 +151,10 @@ export const Signup = () => {
                   >
                     Full Name
                   </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                      <User className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                    </div>
                     <input
                       type="text"
                       name="fullname"
@@ -161,7 +163,7 @@ export const Signup = () => {
                       onChange={handleChange}
                       value={formData.fullname}
                       required
-                      className="input-field pl-12"
+                      className="input-field pl-11"
                     />
                   </div>
                 </div>
@@ -173,8 +175,10 @@ export const Signup = () => {
                   >
                     Username
                   </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                  <div className="relative group">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                      <User className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                    </div>
                     <input
                       type="text"
                       name="username"
@@ -183,7 +187,7 @@ export const Signup = () => {
                       onChange={handleChange}
                       value={formData.username}
                       required
-                      className="input-field pl-12"
+                      className="input-field pl-11"
                     />
                   </div>
                 </div>
@@ -196,8 +200,10 @@ export const Signup = () => {
                 >
                   Email Address
                 </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <Mail className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                  </div>
                   <input
                     type="email"
                     name="email"
@@ -206,7 +212,7 @@ export const Signup = () => {
                     onChange={handleChange}
                     value={formData.email}
                     required
-                    className="input-field pl-12"
+                    className="input-field pl-11"
                   />
                 </div>
               </div>
@@ -218,8 +224,10 @@ export const Signup = () => {
                 >
                   Password
                 </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <Lock className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                  </div>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
@@ -228,12 +236,12 @@ export const Signup = () => {
                     onChange={handleChange}
                     value={formData.password}
                     required
-                    className="input-field pl-12 pr-12"
+                    className="input-field pl-11 pr-11"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded p-1"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (

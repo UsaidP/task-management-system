@@ -39,6 +39,7 @@
     "concurrently": "^9.1.2"
   },
   "dependencies": {
-    "@animateicons/react": "^0.3.3"
+    "@animateicons/react": "^0.3.3",
+    "graphify": "^1.0.0"
   }
 }

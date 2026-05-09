@@ -24,6 +24,8 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
         setName("")
         setDescription("")
         onClose()
+        // Notify other components (e.g. Sidebar) to refetch projects
+        window.dispatchEvent(new CustomEvent("project:created", { detail: response.data.project }))
       }
     } catch (err) {
       const errorMessage = err.data?.message || "Failed to create project"

@@ -84,17 +84,17 @@ export const Login = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-6 sm:mb-8"
         >
-          <Link to="/" aria-label="TaskFlow Home" className="inline-block flex justify-center mb-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-accent-primary flex items-center justify-center text-light-text-inverse mb-2 shadow-sm">
-              <span className="font-serif font-bold text-2xl sm:text-3xl leading-none pt-1">T</span>
+          <Link to="/" aria-label="TaskFlow Home" className="inline-flex flex-col items-center mb-6">
+            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-light-text-inverse mb-4 shadow-sm hover:scale-105 transition-transform">
+              <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
             </div>
+            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-light-text-secondary dark:text-dark-text-secondary text-base sm:text-lg">
+              Sign in to continue to TaskFlow.
+            </p>
           </Link>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-            Welcome Back
-          </h1>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-base sm:text-lg">
-            Sign in to continue to TaskFlow.
-          </p>
         </motion.div>
 
         <div className="auth-card">
@@ -108,8 +108,10 @@ export const Login = () => {
                 <label htmlFor={`${id}-identifier`} className="input-label">
                   Email or Username
                 </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <Mail className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                  </div>
                   <input
                     type="text"
                     name="identifier"
@@ -118,7 +120,7 @@ export const Login = () => {
                     onChange={handleChange}
                     value={formData.identifier}
                     required
-                    className={`input-field pl-12 ${errors.identifier ? "border-accent-danger" : ""}`}
+                    className={`input-field pl-11 ${errors.identifier ? "border-accent-danger" : ""}`}
                   />
                 </div>
                 {errors.identifier && <p className="input-error">{errors.identifier}</p>}
@@ -128,8 +130,10 @@ export const Login = () => {
                 <label htmlFor={`${id}-password`} className="input-label">
                   Password
                 </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                    <Lock className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                  </div>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
@@ -138,12 +142,12 @@ export const Login = () => {
                     onChange={handleChange}
                     value={formData.password}
                     required
-                    className={`input-field pl-12 pr-12 ${errors.password ? "border-accent-danger" : ""}`}
+                    className={`input-field pl-11 pr-11 ${errors.password ? "border-accent-danger" : ""}`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded p-1"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
@@ -172,10 +176,10 @@ export const Login = () => {
                 )}
               </button>
 
-              <div className="text-center">
+              <div className="text-center pt-2">
                 <Link
                   to="/forget-password"
-                  className="text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors text-xs sm:text-sm"
+                  className="text-accent-primary/80 hover:text-accent-primary dark:text-accent-primary-light/80 dark:hover:text-accent-primary-light transition-colors text-xs sm:text-sm font-medium"
                 >
                   Forgot your password?
                 </Link>

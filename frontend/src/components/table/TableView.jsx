@@ -363,7 +363,9 @@ const TableView = () => {
                       columnFilters.find((f) => f.id === "status")?.value
                     : "All Status"}
                 </span>
-                <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary" />
+                </div>
               </Listbox.Button>
               <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                 {Object.entries(statusLabels).map(([key, label]) => (
@@ -399,7 +401,9 @@ const TableView = () => {
                 <span className="text-light-text-primary dark:text-dark-text-primary truncate">
                   {columnFilters.find((f) => f.id === "priority")?.value || "All Priority"}
                 </span>
-                <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary" />
+                </div>
               </Listbox.Button>
               <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                 {["", "low", "medium", "high", "urgent"].map((priority) => (
@@ -435,7 +439,9 @@ const TableView = () => {
                 <span className="text-light-text-primary dark:text-dark-text-primary truncate block">
                   {columnFilters.find((f) => f.id === "project")?.value || "All Projects"}
                 </span>
-                <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary" />
+                </div>
               </Listbox.Button>
               <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden max-h-60 overflow-auto">
                 <Listbox.Option value="" as={Fragment}>
@@ -480,7 +486,9 @@ const TableView = () => {
                 <span className="text-light-text-primary dark:text-dark-text-primary truncate">
                   {columnFilters.find((f) => f.id === "sprint")?.value || "All Sprints"}
                 </span>
-                <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary" />
+                </div>
               </Listbox.Button>
               <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
                 <Listbox.Option value="" as={Fragment}>

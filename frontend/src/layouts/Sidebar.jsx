@@ -178,6 +178,13 @@ const Sidebar = () => {
     fetchProjects()
   }, [user?._id, fetchProjects])
 
+  // Refetch projects when created from any CreateProjectModal (e.g. Overview page)
+  useEffect(() => {
+    const onProjectCreated = () => fetchProjects()
+    window.addEventListener("project:created", onProjectCreated)
+    return () => window.removeEventListener("project:created", onProjectCreated)
+  }, [fetchProjects])
+
   useEffect(() => {
     if (projects.length > 0) {
       loadRecentProjects()

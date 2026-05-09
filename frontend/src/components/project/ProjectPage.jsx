@@ -508,11 +508,13 @@ const ProjectPage = () => {
                 </button>
               )}
             </div>
-            <div className="relative flex-shrink-0">
+            <div className="relative group flex-shrink-0">
               <label htmlFor={searchId} className="sr-only">
                 Search tasks
               </label>
-              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary" />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <SearchIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary group-focus-within:text-accent-primary transition-colors" />
+              </div>
               <input
                 id={searchId}
                 type="text"

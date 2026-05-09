@@ -496,7 +496,7 @@ const TimelineView = () => {
                             transition={{ delay: idx * 0.03, duration: 0.2 }}
                             onClick={() => setSelectedTask(task)}
                             aria-label={`${task.title} – ${task.status}${task.dueDate ? `, due ${dayjs(task.dueDate).format("MMM DD")}` : ""}`}
-                            className={`absolute top-1/2 -translate-y-1/2 rounded-full border-l-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-primary/50 hover:brightness-110 transition-all ${barStyle}`}
+                            className={`absolute inset-y-0 my-auto rounded-full border-l-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-primary/50 hover:brightness-110 transition-all ${barStyle}`}
                             style={{
                               left: `${bar.left}%`,
                               width: `${bar.width}%`,
