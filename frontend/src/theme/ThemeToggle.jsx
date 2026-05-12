@@ -13,7 +13,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="relative flex h-10 w-10 items-center justify-center rounded-full bg-light-bg-hover dark:bg-dark-bg-hover p-2 text-light-text-secondary dark:text-dark-text-secondary transition-colors hover:bg-light-border dark:hover:bg-dark-border hover:text-light-text-primary dark:hover:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
+      className="relative flex h-10 w-10 items-center justify-center rounded-full bg-bg-hover p-2 text-text-secondary transition-colors hover:bg-light-border dark:hover:bg-dark-border hover:text-light-text-primary dark:hover:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
       aria-label="Toggle theme"
     >
       <div className="relative flex items-center justify-center w-5 h-5">

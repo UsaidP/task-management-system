@@ -24,7 +24,6 @@ import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
 import apiService from "../../../service/apiService"
 import Modal from "../Modal"
-import SubtaskView from "./SubtaskView"
 
 // ─── Option Data ──────────────────────────────────
 const priorityOptions = [
@@ -119,25 +118,21 @@ const FormField = ({ label, icon: Icon, required, error, children, helpText, id 
     {label && id && (
       <label
         htmlFor={id}
-        className="flex items-center gap-2 text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-2"
+        className="flex items-center gap-2 text-sm font-medium text-text-primary mb-2"
       >
-        {Icon && <Icon size={14} className="text-accent-primary dark:text-accent-primary-light" />}
+        {Icon && <Icon size={14} className="text-primary" />}
         {label}
-        {required && <span className="text-accent-danger">*</span>}
+        {required && <span className="text-danger">*</span>}
       </label>
     )}
     {children}
     {error && (
-      <p className="mt-1.5 flex items-center gap-1 text-xs text-accent-danger animate-slide-up">
+      <p className="mt-1.5 flex items-center gap-1 text-xs text-danger animate-slide-up">
         <AlertCircle size={12} />
         {error}
       </p>
     )}
-    {helpText && !error && (
-      <p className="mt-1.5 text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary">
-        {helpText}
-      </p>
-    )}
+    {helpText && !error && <p className="mt-1.5 text-[11px] text-text-muted">{helpText}</p>}
   </div>
 )
 
@@ -523,7 +518,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
     .map((id) => assigneeOptions.find((a) => a.value === id))
     .filter(Boolean)
 
-  const isDragOverClass = isDragOver
+  const _isDragOverClass = isDragOver
     ? "border-accent-primary bg-accent-primary/5"
     : "border-light-border-strong bg-light-bg-primary"
 
@@ -564,27 +559,18 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                 className={`${inputBase} ${inputNormal} resize-none`}
               />
               <div className="mt-1.5 flex items-center justify-between">
-                <p className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary">
-                  Supports markdown formatting
-                </p>
-                <p className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary">
-                  {formData.description.length}/2000
-                </p>
+                <p className="text-[11px] text-text-muted">Supports markdown formatting</p>
+                <p className="text-[11px] text-text-muted">{formData.description.length}/2000</p>
               </div>
             </FormField>
 
             {/* Subtasks / Checklist */}
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <ListChecks
-                  size={14}
-                  className="text-accent-primary dark:text-accent-primary-light"
-                />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Subtasks
-                </span>
+                <ListChecks size={14} className="text-primary" />
+                <span className="text-sm font-medium text-text-primary">Subtasks</span>
                 {subtasks.length > 0 && (
-                  <span className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary font-normal">
+                  <span className="text-[11px] text-text-muted font-normal">
                     ({completedSubtasks}/{subtasks.length} completed)
                   </span>
                 )}
@@ -596,33 +582,25 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                   {subtasks.map((subtask) => (
                     <div
                       key={subtask.id}
-                      className="group flex items-center gap-3 rounded-lg bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-3 py-3 transition-all hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
+                      className="group flex items-center gap-3 rounded-lg bg-bg-elevated dark:ring-1 dark:ring-white/20 px-3 py-3 transition-all hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
                     >
                       <button
                         type="button"
                         onClick={() => toggleSubtask(subtask.id)}
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all cursor-pointer ${
-                          subtask.completed
-                            ? "bg-accent-success border-accent-success text-light-text-inverse"
-                            : "border-light-border-strong dark:border-dark-border-strong hover:border-accent-primary dark:hover:border-accent-primary-light"
-                        }`}
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all cursor-pointer ${subtask.completed ? "bg-accent-success border-accent-success text-light-text-inverse" : "border-light-border-strong hover:border-primary dark:hover:border-accent-primary-light"}`}
                         aria-label={subtask.completed ? "Mark as incomplete" : "Mark as complete"}
                       >
                         {subtask.completed && <Check size={12} />}
                       </button>
                       <span
-                        className={`flex-1 text-sm transition-all ${
-                          subtask.completed
-                            ? "text-light-text-tertiary dark:text-dark-text-tertiary line-through"
-                            : "text-light-text-secondary dark:text-dark-text-secondary"
-                        }`}
+                        className={`flex-1 text-sm transition-all ${subtask.completed ? "text-light-text-tertiary line-through" : "text-light-text-secondary dark:text-dark-text-secondary"}`}
                       >
                         {subtask.title}
                       </span>
                       <button
                         type="button"
                         onClick={() => removeSubtask(subtask.id)}
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-light-text-tertiary dark:text-dark-text-tertiary opacity-0 group-hover:opacity-100 hover:bg-accent-danger/10 hover:text-accent-danger transition-all cursor-pointer"
+                        className="flex h-6 w-6 items-center justify-center rounded-md text-text-muted opacity-0 group-hover:opacity-100 hover:bg-accent-danger/10 hover:text-accent-danger transition-all cursor-pointer"
                         aria-label="Remove subtask"
                       >
                         <Trash2 size={13} />
@@ -645,13 +623,13 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                     }
                   }}
                   placeholder="Add a subtask and press Enter..."
-                  className="flex-1 rounded-xl bg-light-bg-tertiary dark:bg-transparent px-4 py-3 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/30 ring-1 ring-inset ring-light-border-strong/30 dark:ring-white/20 border-none"
+                  className="flex-1 rounded-xl bg-bg-elevated dark:bg-transparent px-4 py-3 text-sm text-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all focus:bg-light-bg-primary dark:focus:bg-dark-bg-primary focus:ring-2 focus:ring-accent-primary/30 ring-1 ring-inset ring-light-border-strong/30 dark:ring-white/20 border-none"
                 />
                 <button
                   type="button"
                   onClick={addSubtask}
                   disabled={!newSubtask.trim()}
-                  className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
+                  className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-bg-elevated dark:ring-1 dark:ring-white/20 text-text-muted hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
                   aria-label="Add subtask"
                 >
                   <Plus size={16} />
@@ -661,9 +639,9 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               {/* Progress bar for subtasks */}
               {subtasks.length > 0 && (
                 <div className="mt-3">
-                  <div className="h-1.5 w-full rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary overflow-hidden">
+                  <div className="h-1.5 w-full rounded-full bg-bg-elevated overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-accent-success transition-all duration-500 ease-out"
+                      className="h-full rounded-full bg-success transition-all duration-500 ease-out"
                       style={{
                         width: `${subtasks.length > 0 ? (completedSubtasks / subtasks.length) * 100 : 0}%`,
                       }}
@@ -676,15 +654,10 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             {/* Attachments */}
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Paperclip
-                  size={14}
-                  className="text-accent-primary dark:text-accent-primary-light"
-                />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Attachments
-                </span>
+                <Paperclip size={14} className="text-primary" />
+                <span className="text-sm font-medium text-text-primary">Attachments</span>
                 {attachments.length > 0 && (
-                  <span className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary font-normal">
+                  <span className="text-[11px] text-text-muted font-normal">
                     ({attachments.length} file{attachments.length !== 1 ? "s" : ""})
                   </span>
                 )}
@@ -694,11 +667,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
               <button
                 type="button"
                 tabIndex={0}
-                className={`rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary px-6 py-8 text-center transition-all duration-300 cursor-pointer ${
-                  isDragOver
-                    ? "ring-2 ring-accent-primary bg-accent-primary/5 dark:bg-accent-primary-light/10"
-                    : "ring-1 ring-light-border-strong/50 dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
-                }`}
+                className={`rounded-xl bg-bg-elevated px-6 py-8 text-center transition-all duration-300 cursor-pointer ${isDragOver ? "ring-2 ring-primary bg-accent-primary/5 dark:bg-accent-primary-light/10" : "ring-1 ring-light-border-strong/50 dark:ring-white/20 hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"}`}
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -725,13 +694,11 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                   size={20}
                   className={`mx-auto mb-2 transition-colors ${isDragOver ? "text-accent-primary" : "text-light-text-tertiary dark:text-dark-text-tertiary"}`}
                 />
-                <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
+                <p className="text-sm font-medium text-text-secondary">
                   Drag & drop files here, or{" "}
-                  <span className="text-accent-primary dark:text-accent-primary-light hover:underline">
-                    browse
-                  </span>
+                  <span className="text-primary hover:underline">browse</span>
                 </p>
-                <p className="mt-1 text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                <p className="mt-1 text-[11px] text-text-muted">
                   Supports PNG, JPG, PDF, DOC up to 10MB
                 </p>
               </button>
@@ -742,10 +709,10 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                   {attachments.map((attachment, index) => (
                     <div
                       key={`${attachment.filename}-${index}`}
-                      className="group flex items-center gap-3 rounded-lg bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-3 py-3 transition-all hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
+                      className="group flex items-center gap-3 rounded-lg bg-bg-elevated dark:ring-1 dark:ring-white/20 px-3 py-3 transition-all hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary"
                     >
                       {isImageFile(attachment.filename) ? (
-                        <div className="relative h-10 w-10 rounded-md overflow-hidden bg-light-bg-tertiary dark:bg-dark-bg-tertiary flex-shrink-0">
+                        <div className="relative h-10 w-10 rounded-md overflow-hidden bg-bg-elevated flex-shrink-0">
                           <img
                             src={attachment.url}
                             alt={attachment.filename}
@@ -753,25 +720,20 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                           />
                         </div>
                       ) : (
-                        <div className="h-10 w-10 rounded-md bg-light-bg-tertiary dark:bg-dark-bg-tertiary flex items-center justify-center flex-shrink-0">
-                          <FileText
-                            size={18}
-                            className="text-light-text-tertiary dark:text-dark-text-tertiary"
-                          />
+                        <div className="h-10 w-10 rounded-md bg-bg-elevated flex items-center justify-center flex-shrink-0">
+                          <FileText size={18} className="text-text-muted" />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-light-text-primary dark:text-dark-text-primary truncate">
-                          {attachment.filename}
-                        </p>
-                        <p className="text-[11px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <p className="text-sm text-text-primary truncate">{attachment.filename}</p>
+                        <p className="text-[11px] text-text-muted">
                           {formatFileSize(attachment.size)}
                         </p>
                       </div>
                       <button
                         type="button"
                         onClick={() => removeAttachment(index)}
-                        className="flex h-6 w-6 items-center justify-center rounded-md text-light-text-tertiary dark:text-dark-text-tertiary opacity-0 group-hover:opacity-100 hover:bg-accent-danger/10 hover:text-accent-danger transition-all cursor-pointer"
+                        className="flex h-6 w-6 items-center justify-center rounded-md text-text-muted opacity-0 group-hover:opacity-100 hover:bg-accent-danger/10 hover:text-accent-danger transition-all cursor-pointer"
                         aria-label={`Remove ${attachment.filename}`}
                       >
                         <X size={13} />
@@ -783,31 +745,27 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             </div>
 
             {uploading && (
-              <p className="text-xs text-accent-primary dark:text-accent-primary-light mt-2 animate-pulse">
-                Uploading attachments...
-              </p>
+              <p className="text-xs text-primary mt-2 animate-pulse">Uploading attachments...</p>
             )}
           </div>
 
           {/* ─── Right Column: Settings ──────────── */}
-          <div className="px-6 py-6 space-y-5 bg-light-bg-secondary/40 dark:bg-dark-bg-secondary border-l border-light-border/30 dark:border-white/20">
-            <h3 className="text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
+          <div className="px-6 py-6 space-y-5 bg-light-bg-secondary/40 border-l border-light-border/30 dark:border-white/20">
+            <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider">
               Task Settings
             </h3>
 
             {/* Assignee */}
             <div ref={assigneeRef}>
               <div className="flex items-center gap-2 mb-2">
-                <User size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Assignee
-                </span>
+                <User size={14} className="text-primary" />
+                <span className="text-sm font-medium text-text-primary">Assignee</span>
               </div>
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setShowAssigneeDropdown(!showAssigneeDropdown)}
-                  className="w-full flex items-center justify-between rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 px-4 py-3 text-sm hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-all cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-between rounded-xl bg-bg-elevated dark:ring-1 dark:ring-white/20 px-4 py-3 text-sm hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-all cursor-pointer shadow-sm"
                   aria-expanded={showAssigneeDropdown}
                   aria-haspopup="listbox"
                 >
@@ -818,32 +776,28 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                           {selectedAssignees.slice(0, 3).map((a) => (
                             <div
                               key={a.value}
-                              className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary text-white border-2 border-light-bg-primary dark:border-dark-bg-primary"
+                              className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white border-2 border-light-bg-primary dark:border-dark-bg-primary"
                             >
                               <User size={12} />
                             </div>
                           ))}
                           {selectedAssignees.length > 3 && (
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary border-2 border-light-bg-primary dark:border-dark-bg-primary">
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-bg-elevated text-[10px] text-text-muted border-2 border-light-bg-primary dark:border-dark-bg-primary">
                               +{selectedAssignees.length - 3}
                             </div>
                           )}
                         </div>
-                        <span className="text-light-text-primary dark:text-dark-text-primary">
+                        <span className="text-text-primary">
                           {formData.assignedTo.length} selected
                         </span>
                       </>
                     ) : (
-                      <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                        Assign to...
-                      </span>
+                      <span className="text-text-muted">Assign to...</span>
                     )}
                   </span>
                   <ChevronDown
                     size={14}
-                    className={`text-light-text-tertiary dark:text-dark-text-tertiary transition-transform duration-200 ${
-                      showAssigneeDropdown ? "rotate-180" : ""
-                    }`}
+                    className={`text-text-muted transition-transform duration-200 ${showAssigneeDropdown ? "rotate-180" : ""}`}
                   />
                 </button>
                 {showAssigneeDropdown && (
@@ -854,7 +808,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                   >
                     <div className="p-1.5 max-h-52 overflow-y-auto">
                       {assigneeOptions.length === 0 ? (
-                        <p className="px-3 py-4 text-center text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <p className="px-3 py-4 text-center text-sm text-text-muted">
                           No members available
                         </p>
                       ) : (
@@ -872,11 +826,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                                     : [...formData.assignedTo, assignee.value]
                                 )
                               }}
-                              className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${
-                                isSelected
-                                  ? "bg-accent-primary/10 text-accent-primary dark:bg-accent-primary-light/10 dark:text-accent-primary-light font-medium"
-                                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                              }`}
+                              className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${isSelected ? "bg-accent-primary/10 text-primary dark:bg-accent-primary-light/10 font-medium" : "text-light-text-secondary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
                               role="option"
                               aria-selected={isSelected}
                             >
@@ -886,19 +836,14 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                                 <User size={14} />
                               </div>
                               <div className="text-left flex-1 min-w-0">
-                                <p className="text-light-text-primary dark:text-dark-text-primary leading-tight truncate">
+                                <p className="text-text-primary leading-tight truncate">
                                   {assignee.label}
                                 </p>
-                                <p className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary leading-tight truncate">
+                                <p className="text-[10px] text-text-muted leading-tight truncate">
                                   {assignee.email}
                                 </p>
                               </div>
-                              {isSelected && (
-                                <Check
-                                  size={14}
-                                  className="text-accent-primary dark:text-accent-primary-light shrink-0"
-                                />
-                              )}
+                              {isSelected && <Check size={14} className="text-primary shrink-0" />}
                             </button>
                           )
                         })
@@ -912,10 +857,8 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             {/* Priority */}
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Flag size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Priority
-                </span>
+                <Flag size={14} className="text-primary" />
+                <span className="text-sm font-medium text-text-primary">Priority</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {priorityOptions.map((option) => (
@@ -931,11 +874,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                     aria-pressed={formData.priority === option.value}
                   >
                     <span
-                      className={`h-2 w-2 rounded-full ${
-                        formData.priority === option.value
-                          ? option.dot
-                          : "bg-light-text-tertiary/40 dark:bg-dark-text-tertiary/40"
-                      }`}
+                      className={`h-2 w-2 rounded-full ${formData.priority === option.value ? option.dot : "bg-light-text-tertiary/40 dark:bg-dark-text-tertiary/40"}`}
                     />
                     {option.label}
                   </button>
@@ -946,10 +885,8 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             {/* Status */}
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Clock size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Status
-                </span>
+                <Clock size={14} className="text-primary" />
+                <span className="text-sm font-medium text-text-primary">Status</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {statusOptions.map((option) => (
@@ -986,15 +923,10 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                   type="date"
                   value={formData.dueDate}
                   onChange={(e) => updateField("dueDate", e.target.value)}
-                  className={`w-full rounded-xl px-4 py-3 pr-10 text-sm bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary outline-none transition-all shadow-sm ${
-                    errors.dueDate ? inputError : inputNormal
-                  }`}
+                  className={`w-full rounded-xl px-4 py-3 pr-10 text-sm bg-bg-elevated text-text-primary outline-none transition-all shadow-sm ${errors.dueDate ? inputError : inputNormal}`}
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <CalendarIcon
-                    size={16}
-                    className="text-light-text-tertiary dark:text-dark-text-tertiary"
-                  />
+                  <CalendarIcon size={16} className="text-text-muted" />
                 </div>
               </div>
             </FormField>
@@ -1002,10 +934,8 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             {/* Estimated Hours */}
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Clock size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Estimated Hours
-                </span>
+                <Clock size={14} className="text-primary" />
+                <span className="text-sm font-medium text-text-primary">Estimated Hours</span>
               </div>
               <input
                 type="number"
@@ -1014,20 +944,18 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                 value={formData.estimatedHours}
                 onChange={(e) => updateField("estimatedHours", e.target.value)}
                 placeholder="e.g., 4.5"
-                className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary px-4 py-3 text-sm text-light-text-primary dark:text-dark-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all shadow-sm ${inputNormal}`}
+                className={`w-full rounded-xl bg-bg-elevated px-4 py-3 text-sm text-text-primary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all shadow-sm ${inputNormal}`}
               />
             </div>
           </div>
 
           {/* Tags Bento Card */}
-          <div className="rounded-2xl p-6 bg-light-bg-secondary/40 dark:bg-dark-bg-secondary shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.1)] ring-1 ring-light-border/30 dark:ring-white/10 space-y-5">
+          <div className="rounded-2xl p-6 bg-light-bg-secondary/40 shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.1)] ring-1 ring-light-border/30 dark:ring-white/10 space-y-5">
             {/* Tags */}
             <div ref={tagRef}>
               <div className="flex items-center gap-2 mb-2">
-                <Tag size={14} className="text-accent-primary dark:text-accent-primary-light" />
-                <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                  Tags
-                </span>
+                <Tag size={14} className="text-primary" />
+                <span className="text-sm font-medium text-text-primary">Tags</span>
               </div>
 
               {/* Selected Tags */}
@@ -1059,7 +987,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
                       <Hash
                         size={14}
-                        className="text-light-text-tertiary dark:text-dark-text-tertiary group-focus-within:text-accent-primary transition-colors"
+                        className="text-text-muted group-focus-within:text-accent-primary transition-colors"
                       />
                     </div>
                     <input
@@ -1081,14 +1009,14 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                         }
                       }}
                       placeholder="Type to search or create tags..."
-                      className={`w-full rounded-xl bg-light-bg-tertiary dark:bg-transparent py-3 pl-11 pr-4 text-sm text-light-text-secondary dark:text-dark-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
+                      className={`w-full rounded-xl bg-bg-elevated dark:bg-transparent py-3 pl-11 pr-4 text-sm text-text-secondary placeholder-light-text-tertiary dark:placeholder-dark-text-tertiary outline-none transition-all ${inputNormal}`}
                     />
                   </div>
                   <button
                     type="button"
                     onClick={addCustomTag}
                     disabled={!newTag.trim()}
-                    className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-light-bg-tertiary dark:bg-dark-bg-tertiary dark:ring-1 dark:ring-white/20 text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
+                    className="flex h-[44px] w-[44px] items-center justify-center rounded-xl bg-bg-elevated dark:ring-1 dark:ring-white/20 text-text-muted hover:bg-accent-primary hover:text-light-text-inverse dark:hover:text-dark-text-inverse disabled:opacity-40 disabled:hover:bg-light-bg-tertiary disabled:hover:text-light-text-tertiary transition-all cursor-pointer"
                     aria-label="Add custom tag"
                   >
                     <Plus size={16} />
@@ -1099,7 +1027,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                 {showTagSuggestions && (
                   <div className="absolute left-0 right-0 top-full mt-1.5 z-10 rounded-xl bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 backdrop-blur-md shadow-[0_12px_32px_rgba(65,62,59,0.12)] border border-light-border/30 dark:border-dark-border/30 animate-scale-in origin-top overflow-hidden">
                     <div className="px-3 py-2 border-b border-light-border/30 dark:border-dark-border/30">
-                      <p className="text-[11px] font-medium text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
+                      <p className="text-[11px] font-medium text-text-muted uppercase tracking-wider">
                         Suggested Tags
                       </p>
                     </div>
@@ -1114,11 +1042,7 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                               type="button"
                               onClick={() => addTag(tag.label, tag.color)}
                               disabled={isSelected}
-                              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${
-                                isSelected
-                                  ? "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-tertiary dark:text-dark-text-tertiary cursor-not-allowed"
-                                  : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                              }`}
+                              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer ${isSelected ? "bg-light-bg-tertiary text-text-muted cursor-not-allowed" : "text-light-text-secondary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
                             >
                               <span
                                 className={`inline-flex h-5 w-5 items-center justify-center rounded-md text-[10px] ${tag.color}`}
@@ -1126,16 +1050,14 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                                 <Tag size={10} />
                               </span>
                               {tag.label}
-                              {isSelected && (
-                                <Check size={13} className="ml-auto text-accent-success" />
-                              )}
+                              {isSelected && <Check size={13} className="ml-auto text-success" />}
                             </button>
                           )
                         })}
                       {tagPresets.filter((t) =>
                         t.label.toLowerCase().includes(newTag.toLowerCase())
                       ).length === 0 && (
-                        <p className="px-3 py-3 text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center">
+                        <p className="px-3 py-3 text-sm text-text-muted text-center">
                           No matching tags. Press Enter to create "{newTag}"
                         </p>
                       )}
@@ -1147,33 +1069,25 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
             {/* Divider */}
             <div className="pt-2">
               {/* Summary Card */}
-              <div className="rounded-2xl bg-light-bg-tertiary dark:bg-dark-bg-secondary shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.1)] ring-1 ring-light-border/40 dark:ring-white/10 p-5 space-y-3">
-                <h4 className="text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wider">
+              <div className="rounded-2xl bg-bg-elevated shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.1)] ring-1 ring-light-border/40 dark:ring-white/10 p-5 space-y-3">
+                <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider">
                   Summary
                 </h4>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Priority
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium flex items-center gap-1.5">
+                    <span className="text-text-muted">Priority</span>
+                    <span className="text-text-secondary font-medium flex items-center gap-1.5">
                       <span className={`h-2 w-2 rounded-full ${selectedPriority?.dot}`} />
                       {selectedPriority?.label}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Status
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
-                      {selectedStatus?.label}
-                    </span>
+                    <span className="text-text-muted">Status</span>
+                    <span className="text-text-secondary font-medium">{selectedStatus?.label}</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Due
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                    <span className="text-text-muted">Due</span>
+                    <span className="text-text-secondary font-medium">
                       {formData.dueDate
                         ? new Date(formData.dueDate).toLocaleDateString("en-US", {
                             month: "short",
@@ -1184,34 +1098,26 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Assignees
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                    <span className="text-text-muted">Assignees</span>
+                    <span className="text-text-secondary font-medium">
                       {selectedAssignees.length > 0 ? selectedAssignees.length : "Unassigned"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Subtasks
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                    <span className="text-text-muted">Subtasks</span>
+                    <span className="text-text-secondary font-medium">
                       {subtasks.length > 0 ? `${completedSubtasks}/${subtasks.length}` : "None"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Tags
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                    <span className="text-text-muted">Tags</span>
+                    <span className="text-text-secondary font-medium">
                       {tags.length > 0 ? tags.map((t) => t.label).join(", ") : "None"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Files
-                    </span>
-                    <span className="text-light-text-secondary dark:text-dark-text-secondary font-medium">
+                    <span className="text-text-muted">Files</span>
+                    <span className="text-text-secondary font-medium">
                       {attachments.length > 0 ? attachments.length : "None"}
                     </span>
                   </div>
@@ -1226,14 +1132,14 @@ const EditTaskModal = ({ isOpen, onClose, onTaskUpdated, task, members }) => {
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-xl px-5 py-3 text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors cursor-pointer"
+            className="rounded-xl px-5 py-3 text-sm font-semibold text-text-secondary hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting || uploading}
-            className="rounded-xl bg-gradient-to-r from-accent-primary to-accent-primary-light px-7 py-3 text-sm font-semibold text-light-text-inverse dark:text-dark-bg-primary shadow-[0_12px_32px_rgba(196,101,74,0.3)] dark:shadow-[0_12px_32px_rgba(196,101,74,0.4)] hover:shadow-[0_16px_40px_rgba(196,101,74,0.4)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2 cursor-pointer"
+            className="rounded-xl bg-gradient-to-r from-accent-primary to-accent-primary-light px-7 py-3 text-sm font-semibold text-text-inverse dark:text-dark-bg-primary shadow-[0_12px_32px_rgba(196,101,74,0.3)] dark:shadow-[0_12px_32px_rgba(196,101,74,0.4)] hover:shadow-[0_16px_40px_rgba(196,101,74,0.4)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2 cursor-pointer"
           >
             {isSubmitting || uploading ? (
               <>

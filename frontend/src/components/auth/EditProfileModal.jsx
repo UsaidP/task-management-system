@@ -1,9 +1,17 @@
+import {
+  GithubIcon as Github,
+  GlobeIcon as Globe,
+  LinkedinIcon as Linkedin,
+  MapPinIcon as MapPin,
+  PhoneIcon as Phone,
+  UserIcon as User,
+  XIcon as X,
+} from "@animateicons/react/lucide"
 import { AnimatePresence, motion } from "framer-motion"
+import { BriefcaseIcon as Briefcase } from "lucide-react"
 import { useEffect, useId, useState } from "react"
 import toast from "react-hot-toast"
 import apiService from "../../../service/apiService.js"
-import { GithubIcon as Github, GlobeIcon as Globe, LinkedinIcon as Linkedin, MapPinIcon as MapPin, PhoneIcon as Phone, UserIcon as User, XIcon as X } from "@animateicons/react/lucide"
-import { BriefcaseIcon as Briefcase } from "lucide-react"
 
 const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
   const formId = useId()
@@ -139,20 +147,18 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
           onClick={onClose}
         >
           <motion.div
-            className="bg-light-bg-secondary dark:bg-dark-bg-tertiary w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl shadow-xl border border-light-border dark:border-dark-border"
+            className="bg-bg-surface w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-xl shadow-xl border border-border"
             variants={modalVariants}
             exit="exit"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-6 border-b border-light-border dark:border-dark-border sticky top-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary z-10">
-              <h2 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary">
-                Edit Your Profile
-              </h2>
+            <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-bg-surface z-10">
+              <h2 className="text-xl font-bold text-text-primary">Edit Your Profile</h2>
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close modal"
-                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-text-muted hover:text-light-text-primary dark:hover:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 <X size={24} aria-hidden="true" />
               </button>
@@ -162,19 +168,19 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
               <div>
                 <label
                   htmlFor={`${formId}-fullname`}
-                  className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
+                  className="block text-sm font-medium text-text-primary mb-1"
                 >
                   Full Name *
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
                   <input
                     type="text"
                     name="fullname"
                     id={`${formId}-fullname`}
                     value={formData.fullname}
                     onChange={handleChange}
-                    className="w-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-12 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary"
+                    className="w-full bg-bg-elevated border border-border rounded-lg px-4 py-2 pl-12 text-sm focus:outline-none focus:border-accent-primary text-text-primary placeholder:text-light-text-tertiary"
                     required
                   />
                 </div>
@@ -183,7 +189,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
               <div>
                 <label
                   htmlFor={`${formId}-bio`}
-                  className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
+                  className="block text-sm font-medium text-text-primary mb-1"
                 >
                   Bio
                 </label>
@@ -194,7 +200,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                   value={formData.bio}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary resize-none"
+                  className="w-full bg-bg-elevated border border-border rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-accent-primary text-text-primary placeholder:text-light-text-tertiary resize-none"
                   placeholder="Tell us about yourself..."
                 />
               </div>
@@ -204,19 +210,19 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                   <div key={field.name}>
                     <label
                       htmlFor={`${formId}-${field.name}`}
-                      className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary mb-1"
+                      className="block text-sm font-medium text-text-primary mb-1"
                     >
                       {field.label}
                     </label>
                     <div className="relative">
-                      <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5" />
+                      <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5" />
                       <input
                         type={field.type}
                         name={field.name}
                         id={`${formId}-${field.name}`}
                         value={formData[field.name]}
                         onChange={handleChange}
-                        className="w-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-4 py-2 pl-12 text-sm focus:outline-none focus:border-accent-primary text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary"
+                        className="w-full bg-bg-elevated border border-border rounded-lg px-4 py-2 pl-12 text-sm focus:outline-none focus:border-accent-primary text-text-primary placeholder:text-light-text-tertiary"
                         placeholder={field.placeholder}
                       />
                     </div>
@@ -228,7 +234,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                  className="px-4 py-2 rounded-lg border border-border text-text-secondary hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
                   Cancel
                 </button>
@@ -236,7 +242,7 @@ const EditProfileModal = ({ isOpen, onClose, user, onSave }) => {
                   type="submit"
                   disabled={loading}
                   aria-busy={loading}
-                  className="px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50"
                 >
                   {loading ? "Saving..." : "Save Changes"}
                 </button>

@@ -37,7 +37,6 @@ const unregisterServiceWorkers = async () => {
       const registrations = await navigator.serviceWorker.getRegistrations()
       for (const registration of registrations) {
         await registration.unregister()
-        console.log("[TaskFlow] Service worker unregistered successfully")
       }
     } catch (error) {
       console.warn("[TaskFlow] Failed to unregister service worker:", error)

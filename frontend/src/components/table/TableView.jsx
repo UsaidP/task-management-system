@@ -1,3 +1,4 @@
+import { ChevronDownIcon, LayoutGridIcon } from "@animateicons/react/lucide"
 import { Listbox } from "@headlessui/react"
 import {
   createColumnHelper,
@@ -9,12 +10,10 @@ import {
 } from "@tanstack/react-table"
 import dayjs from "dayjs"
 import { motion } from "framer-motion"
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react"
-import { ChevronDownIcon, LayoutGridIcon, UserIcon } from "@animateicons/react/lucide"
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react"
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react"
 import apiService from "../../../service/apiService.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
-import { getOptimizedAvatarUrl } from "../../utils/imageHelpers.js"
 import Avatar from "../auth/Avatar"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../Skeleton.jsx"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
@@ -22,8 +21,8 @@ import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 const columnHelper = createColumnHelper()
 
 const TableSkeleton = () => (
-  <div className="h-full flex flex-col">
-    <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary">
+  <div className="flex flex-col h-full">
+    <div className="flex items-center justify-between p-4 border-b border-border bg-bg-surface">
       <div>
         <SkeletonText width="w-32" height="h-8" className="mb-2" />
         <SkeletonText width="w-48" height="h-4" />
@@ -36,7 +35,7 @@ const TableSkeleton = () => (
     </div>
     <div className="flex-1 overflow-auto">
       <div className="w-full">
-        <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30">
+        <div className="flex border-b border-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30">
           {["Title", "Status", "Priority", "Assignees", "Project", "Sprint", "Due Date"].map(
             (h, i) => (
               <div
@@ -49,10 +48,7 @@ const TableSkeleton = () => (
           )}
         </div>
         {Array.from({ length: 10 }).map((_, row) => (
-          <div
-            key={row}
-            className="flex items-center gap-4 px-4 py-3 border-b border-light-border dark:border-dark-border"
-          >
+          <div key={row} className="flex items-center gap-4 px-4 py-3 border-b border-border">
             <SkeletonText width="w-48" height="h-4" className="flex-1" />
             <Skeleton className="w-16 h-6 rounded-full" />
             <SkeletonText width="w-12" height="h-4" />
@@ -121,7 +117,7 @@ const AssigneeAvatar = ({ assignee }) => {
 
 const AssigneeAvatars = ({ assignees }) => {
   if (!assignees || assignees.length === 0) {
-    return <span className="text-sm text-light-text-tertiary">Unassigned</span>
+    return <span className="text-sm text-text-muted">Unassigned</span>
   }
   return (
     <div className="flex items-center -space-x-1.5">
@@ -132,7 +128,7 @@ const AssigneeAvatars = ({ assignees }) => {
         />
       ))}
       {assignees.length > 3 && (
-        <div className="w-5 h-5 rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary border-2 border-light-bg-primary dark:border-dark-bg-secondary flex items-center justify-center text-[9px] font-semibold text-light-text-tertiary dark:text-dark-text-tertiary ml-1">
+        <div className="w-5 h-5 rounded-full bg-bg-elevated border-2 border-light-bg-primary dark:border-dark-bg-secondary flex items-center justify-center text-[9px] font-semibold text-text-muted ml-1">
           +{assignees.length - 3}
         </div>
       )}
@@ -145,11 +141,9 @@ const columns = [
     header: "Title",
     cell: (info) => (
       <div>
-        <p className="font-medium text-light-text-primary dark:text-dark-text-primary line-clamp-1">
-          {info.getValue()}
-        </p>
+        <p className="font-medium text-text-primary line-clamp-1">{info.getValue()}</p>
         {info.row.original.description && (
-          <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary line-clamp-1 mt-0.5">
+          <p className="text-xs text-text-muted line-clamp-1 mt-0.5">
             {info.row.original.description}
           </p>
         )}
@@ -182,11 +176,7 @@ const columns = [
     {
       id: "project",
       header: "Project",
-      cell: (info) => (
-        <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-          {info.getValue()}
-        </span>
-      ),
+      cell: (info) => <span className="text-sm text-text-secondary">{info.getValue()}</span>,
       sortingFn: "alphanumeric",
       filterFn: (row, _columnId, filterValue) => {
         const name =
@@ -198,11 +188,7 @@ const columns = [
   columnHelper.accessor((row) => row.sprint?.name || "Backlog", {
     id: "sprint",
     header: "Sprint",
-    cell: (info) => (
-      <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-        {info.getValue()}
-      </span>
-    ),
+    cell: (info) => <span className="text-sm text-text-secondary">{info.getValue()}</span>,
     sortingFn: "alphanumeric",
     filterFn: (row, _columnId, filterValue) => {
       const name = row.original.sprint?.name || "Backlog"
@@ -213,7 +199,7 @@ const columns = [
     header: "Due Date",
     cell: (info) => {
       const date = info.getValue()
-      if (!date) return <span className="text-sm text-light-text-tertiary">—</span>
+      if (!date) return <span className="text-sm text-text-muted">—</span>
       const isOverdue = dayjs(date).isBefore(dayjs()) && info.row.original.status !== "completed"
       return (
         <span
@@ -271,7 +257,7 @@ const TableView = () => {
   useEffect(() => {
     fetchTasks()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchTasks])
 
   const tableData = useMemo(() => {
     let result = tasks
@@ -328,20 +314,18 @@ const TableView = () => {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-4 sm:px-6 py-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary gap-3 shadow-sm">
+      <div className="flex flex-col items-start justify-between gap-3 px-4 py-4 border-b shadow-sm lg:flex-row lg:items-center sm:px-6 border-border bg-bg-surface">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
-            Table
-          </h1>
-          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+          <h1 className="font-serif text-2xl font-bold text-text-primary">Table</h1>
+          <p className="text-sm text-text-secondary">
             {table.getFilteredRowModel().rows.length} of {tableData.length} tasks
           </p>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
+        <div className="flex flex-wrap items-center w-full gap-2 sm:gap-3 lg:w-auto">
           <Listbox
             value={columnFilters.find((f) => f.id === "status")?.value || ""}
             onChange={(val) => {
@@ -355,19 +339,19 @@ const TableView = () => {
             <div className="relative">
               <Listbox.Button
                 aria-label="Filter by status"
-                className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
+                className="bg-bg-surface border border-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
               >
-                <span className="text-light-text-primary dark:text-dark-text-primary truncate">
+                <span className="truncate text-text-primary">
                   {columnFilters.find((f) => f.id === "status")?.value
                     ? statusLabels[columnFilters.find((f) => f.id === "status")?.value] ||
                       columnFilters.find((f) => f.id === "status")?.value
                     : "All Status"}
                 </span>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary" />
+                  <ChevronDownIcon className="w-4 h-4 text-text-muted" />
                 </div>
               </Listbox.Button>
-              <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+              <Listbox.Options className="absolute z-50 w-full mt-1 overflow-hidden border rounded-lg shadow-lg bg-bg-surface border-border">
                 {Object.entries(statusLabels).map(([key, label]) => (
                   <Listbox.Option key={key} value={key} as={Fragment}>
                     {({ active }) => (
@@ -396,16 +380,16 @@ const TableView = () => {
             <div className="relative">
               <Listbox.Button
                 aria-label="Filter by priority"
-                className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
+                className="bg-bg-surface border border-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
               >
-                <span className="text-light-text-primary dark:text-dark-text-primary truncate">
+                <span className="truncate text-text-primary">
                   {columnFilters.find((f) => f.id === "priority")?.value || "All Priority"}
                 </span>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary" />
+                  <ChevronDownIcon className="w-4 h-4 text-text-muted" />
                 </div>
               </Listbox.Button>
-              <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+              <Listbox.Options className="absolute z-50 w-full mt-1 overflow-hidden border rounded-lg shadow-lg bg-bg-surface border-border">
                 {["", "low", "medium", "high", "urgent"].map((priority) => (
                   <Listbox.Option key={priority} value={priority} as={Fragment}>
                     {({ active }) => (
@@ -434,16 +418,16 @@ const TableView = () => {
             <div className="relative">
               <Listbox.Button
                 aria-label="Filter by project"
-                className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8 max-w-[180px]"
+                className="bg-bg-surface border border-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8 max-w-[180px]"
               >
-                <span className="text-light-text-primary dark:text-dark-text-primary truncate block">
+                <span className="block truncate text-text-primary">
                   {columnFilters.find((f) => f.id === "project")?.value || "All Projects"}
                 </span>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary" />
+                  <ChevronDownIcon className="w-4 h-4 text-text-muted" />
                 </div>
               </Listbox.Button>
-              <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden max-h-60 overflow-auto">
+              <Listbox.Options className="absolute z-50 w-full mt-1 overflow-auto overflow-hidden border rounded-lg shadow-lg bg-bg-surface border-border max-h-60">
                 <Listbox.Option value="" as={Fragment}>
                   {({ active }) => (
                     <li
@@ -481,16 +465,16 @@ const TableView = () => {
             <div className="relative">
               <Listbox.Button
                 aria-label="Filter by sprint"
-                className="bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
+                className="bg-bg-surface border border-border rounded-lg px-3 py-2 text-sm text-left cursor-pointer hover:bg-bg-hover transition-colors min-h-[44px] flex items-center gap-2 pr-8"
               >
-                <span className="text-light-text-primary dark:text-dark-text-primary truncate">
+                <span className="truncate text-text-primary">
                   {columnFilters.find((f) => f.id === "sprint")?.value || "All Sprints"}
                 </span>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary" />
+                  <ChevronDownIcon className="w-4 h-4 text-text-muted" />
                 </div>
               </Listbox.Button>
-              <Listbox.Options className="absolute z-50 mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg shadow-lg overflow-hidden">
+              <Listbox.Options className="absolute z-50 w-full mt-1 overflow-hidden border rounded-lg shadow-lg bg-bg-surface border-border">
                 <Listbox.Option value="" as={Fragment}>
                   {({ active }) => (
                     <li
@@ -519,7 +503,7 @@ const TableView = () => {
             <button
               type="button"
               onClick={clearAllFilters}
-              className="text-sm text-accent-primary hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded min-h-[44px] px-3"
+              className="text-sm text-primary hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded min-h-[44px] px-3"
             >
               Clear filters
             </button>
@@ -529,9 +513,9 @@ const TableView = () => {
 
       {/* Table */}
       <div className="flex-1 overflow-auto custom-scrollbar">
-        <div className="min-w-full inline-block">
+        <div className="inline-block min-w-full">
           <table className="w-full">
-            <thead className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-secondary border-b border-light-border dark:border-dark-border z-10">
+            <thead className="sticky top-0 z-10 border-b bg-bg-surface border-border">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -553,11 +537,7 @@ const TableView = () => {
                             : "descending"
                           : undefined
                       }
-                      className={`px-4 py-3 text-left text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary whitespace-nowrap ${
-                        header.column.getCanSort()
-                          ? "cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
-                          : ""
-                      }`}
+                      className={`px-4 py-3 text-left text-sm font-semibold text-text-secondary whitespace-nowrap ${header.column.getCanSort() ? "cursor-pointer hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded" : ""}`}
                     >
                       <div className="flex items-center gap-1">
                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -568,7 +548,7 @@ const TableView = () => {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-light-border dark:divide-dark-border">
+            <tbody className="divide-y bg-bg-surface divide-light-border dark:divide-dark-border">
               {table.getRowModel().rows.map((row) => (
                 <motion.tr
                   key={row.id}
@@ -584,7 +564,7 @@ const TableView = () => {
                   tabIndex={0}
                   role="button"
                   aria-label={`View task: ${row.original.title}`}
-                  className="hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-inset"
+                  className="transition-colors cursor-pointer hover:bg-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-inset"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-4 py-3 whitespace-nowrap">
@@ -598,21 +578,19 @@ const TableView = () => {
         </div>
 
         {table.getRowModel().rows.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 px-4">
-            <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-4">
-              <LayoutGridIcon className="w-8 h-8 text-light-text-tertiary opacity-40" aria-hidden="true" />
+          <div className="flex flex-col items-center justify-center px-4 py-16">
+            <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-bg-hover">
+              <LayoutGridIcon className="w-8 h-8 text-text-muted opacity-40" aria-hidden="true" />
             </div>
-            <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
-              No tasks found
-            </p>
-            <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary mt-1">
+            <p className="mb-1 text-lg font-medium text-text-primary">No tasks found</p>
+            <p className="mt-1 text-sm text-text-muted">
               {hasActiveFilters ? "Try adjusting your filters" : "Create tasks to see them here"}
             </p>
             {hasActiveFilters && (
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="mt-4 px-4 py-2 text-sm font-medium text-accent-primary hover:text-accent-primary-dark border border-accent-primary rounded-lg hover:bg-accent-primary/5 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 min-h-[44px]"
+                className="mt-4 px-4 py-2 text-sm font-medium text-primary hover:text-accent-primary-dark border border-primary rounded-lg hover:bg-accent-primary/5 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 min-h-[44px]"
               >
                 Clear all filters
               </button>

@@ -1,5 +1,13 @@
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MailIcon as Mail,
+  SearchIcon as Search,
+  ShieldCheckIcon,
+  UserCheckIcon,
+  UserXIcon,
+} from "@animateicons/react/lucide"
 import { motion, useReducedMotion } from "framer-motion"
-import { ChevronLeftIcon, ChevronRightIcon, MailIcon, SearchIcon, ShieldCheckIcon, UserCheckIcon, UserXIcon } from "@animateicons/react/lucide"
 import { ShieldIcon } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import apiService from "../../../service/apiService"
@@ -68,13 +76,10 @@ export default function AdminTeamPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="w-48 h-10 rounded-xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary" />
-        <div className="h-14 rounded-2xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary" />
+        <div className="w-48 h-10 rounded-xl animate-pulse bg-bg-elevated" />
+        <div className="h-14 rounded-2xl animate-pulse bg-bg-elevated" />
         {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="h-20 rounded-xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary"
-          />
+          <div key={i} className="h-20 rounded-xl animate-pulse bg-bg-elevated" />
         ))}
       </div>
     )
@@ -90,21 +95,21 @@ export default function AdminTeamPage() {
         className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
       >
         <div>
-          <h1 className="font-serif text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+          <h1 className="font-serif text-2xl font-bold tracking-tight text-text-primary">
             Team Members
           </h1>
-          <p className="mt-1 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="mt-1 text-sm text-text-secondary">
             {filtered.length} member{filtered.length !== 1 ? "s" : ""} across the platform
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-4 py-2.5 border rounded-xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
-            <UserCheckIcon size={16} className="text-accent-success" />
+          <div className="flex items-center gap-2 px-4 py-2.5 border rounded-xl border-border bg-bg-surface">
+            <UserCheckIcon size={16} className="text-success" />
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-wider text-light-text-tertiary dark:text-dark-text-tertiary">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-text-muted">
                 Admins
               </p>
-              <p className="font-serif text-lg font-bold text-light-text-primary dark:text-dark-text-primary">
+              <p className="font-serif text-lg font-bold text-text-primary">
                 {users.filter((u) => u.role === "admin").length}
               </p>
             </div>
@@ -117,13 +122,13 @@ export default function AdminTeamPage() {
         initial={reduceMotion ? {} : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="p-4 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+        className="p-4 border shadow-sm rounded-2xl border-border bg-bg-surface"
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
             <Search
               size={18}
-              className="absolute text-sm -translate-y-1/2 left-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary"
+              className="absolute text-sm -translate-y-1/2 left-3 top-1/2 text-text-muted"
             />
             <input
               type="text"
@@ -133,7 +138,7 @@ export default function AdminTeamPage() {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="w-full rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary py-2.5 pl-10 pr-4 text-sm text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
+              className="w-full rounded-xl border border-border bg-bg-canvas py-2.5 pl-10 pr-4 text-sm text-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
             />
           </div>
           <select
@@ -142,7 +147,7 @@ export default function AdminTeamPage() {
               setRoleFilter(e.target.value)
               setPage(1)
             }}
-            className="rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary px-3 py-2.5 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
+            className="rounded-xl border border-border bg-bg-canvas px-3 py-2.5 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
           >
             <option value="all">All Roles</option>
             <option value="admin">Admin</option>
@@ -156,7 +161,7 @@ export default function AdminTeamPage() {
         initial={reduceMotion ? {} : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="overflow-hidden border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+        className="overflow-hidden border shadow-sm rounded-2xl border-border bg-bg-surface"
       >
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -165,7 +170,7 @@ export default function AdminTeamPage() {
                 {["User", "Email", "Role", "Joined", "Actions"].map((h) => (
                   <th
                     key={h}
-                    className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary dark:text-dark-text-tertiary"
+                    className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-muted"
                   >
                     {h}
                   </th>
@@ -175,16 +180,13 @@ export default function AdminTeamPage() {
             <tbody className="divide-y divide-light-border/40 dark:divide-dark-border/40">
               {paginated.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={5}
-                    className="px-6 py-12 text-sm text-center text-light-text-tertiary dark:text-dark-text-tertiary"
-                  >
+                  <td colSpan={5} className="px-6 py-12 text-sm text-center text-text-muted">
                     No users found
                   </td>
                 </tr>
               )}
               {paginated.map((user) => {
-                const initials = (user.fullname || "U")
+                const _initials = (user.fullname || "U")
                   .split(" ")
                   .map((n) => n[0])
                   .join("")
@@ -203,34 +205,27 @@ export default function AdminTeamPage() {
                           alt={user.fullname || "User"}
                           size="md"
                         />
-                        <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                        <span className="text-sm font-medium text-text-primary">
                           {user.fullname}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-3.5">
-                      <div className="flex items-center gap-1.5 text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                        <Mail
-                          size={14}
-                          className="text-light-text-tertiary dark:text-dark-text-tertiary"
-                        />
+                      <div className="flex items-center gap-1.5 text-sm text-text-secondary">
+                        <Mail size={14} className="text-text-muted" />
                         {user.email}
                       </div>
                     </td>
                     <td className="px-6 py-3.5">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
-                          user.role === "admin"
-                            ? "bg-accent-primary/10 text-accent-primary"
-                            : "bg-light-bg-tertiary text-light-text-tertiary dark:bg-dark-bg-tertiary dark:text-dark-text-tertiary"
-                        }`}
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${user.role === "admin" ? "bg-accent-primary/10 text-accent-primary" : "bg-light-bg-tertiary text-text-muted dark:text-dark-text-tertiary"}`}
                       >
                         {user.role === "admin" && <ShieldIcon size={10} />}
                         {user.role}
                       </span>
                     </td>
                     <td className="px-6 py-3.5">
-                      <span className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                      <span className="text-sm text-text-muted">
                         {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
                       </span>
                     </td>
@@ -239,7 +234,7 @@ export default function AdminTeamPage() {
                         type="button"
                         onClick={() => handleRoleToggle(user._id, user.role)}
                         disabled={actionLoading === user._id}
-                        className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-accent-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-border text-text-muted hover:bg-bg-hover hover:text-accent-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
                         title={user.role === "admin" ? "Remove admin" : "Make admin"}
                       >
                         {actionLoading === user._id ? (
@@ -261,7 +256,7 @@ export default function AdminTeamPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-3 border-t border-light-border/60 dark:border-dark-border/60">
-            <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+            <p className="text-sm text-text-muted">
               Showing {(page - 1) * ITEMS_PER_PAGE + 1}–
               {Math.min(page * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
             </p>
@@ -270,7 +265,7 @@ export default function AdminTeamPage() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
+                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-border text-text-secondary hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
               >
                 <ChevronLeftIcon size={16} />
               </button>
@@ -280,19 +275,11 @@ export default function AdminTeamPage() {
                   const showEllipsis = idx > 0 && p - arr[idx - 1] > 1
                   return (
                     <span key={p} className="flex items-center">
-                      {showEllipsis && (
-                        <span className="px-1 text-light-text-tertiary dark:text-dark-text-tertiary">
-                          …
-                        </span>
-                      )}
+                      {showEllipsis && <span className="px-1 text-text-muted">…</span>}
                       <button
                         type="button"
                         onClick={() => setPage(p)}
-                        className={`flex items-center justify-center w-8 h-8 text-sm font-medium rounded-lg cursor-pointer transition-all duration-150 ${
-                          p === page
-                            ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/20"
-                            : "text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                        }`}
+                        className={`flex items-center justify-center w-8 h-8 text-sm font-medium rounded-lg cursor-pointer transition-all duration-150 ${p === page ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/20" : "text-light-text-secondary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
                       >
                         {p}
                       </button>
@@ -303,7 +290,7 @@ export default function AdminTeamPage() {
                 type="button"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
+                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-border text-text-secondary hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
               >
                 <ChevronRightIcon size={16} />
               </button>

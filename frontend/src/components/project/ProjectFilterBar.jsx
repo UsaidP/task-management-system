@@ -1,5 +1,5 @@
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import { ChevronDownIcon } from "@animateicons/react/lucide"
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import { FilterIcon } from "lucide-react"
 
 const ProjectFilterBar = ({
@@ -33,7 +33,7 @@ const ProjectFilterBar = ({
     >
       <button
         type="button"
-        className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${hasActiveFilters ? "bg-accent-primary text-white border-accent-primary hover:bg-accent-primary-dark shadow-sm" : "bg-light-bg-primary dark:bg-dark-bg-primary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:border-accent-primary/50"}`}
+        className={`flex items-center gap-1.5 px-3 py-1.5 h-9 text-xs sm:text-sm font-medium rounded-lg border transition-all appearance-none whitespace-nowrap ${hasActiveFilters ? "bg-accent-primary text-white border-primary hover:bg-accent-primary-dark shadow-sm" : "bg-light-bg-primary text-text-primary border-border hover:bg-bg-hover hover:border-accent-primary/50"}`}
         aria-label="Toggle filters"
       >
         <FilterIcon className="w-4 h-4" />
@@ -44,15 +44,15 @@ const ProjectFilterBar = ({
       <Listbox value={statusFilter} onChange={onStatusChange}>
         <div className="relative min-w-[150px] sm:min-w-[170px]">
           <ListboxButton
-            className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all"
+            className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-bg-canvas border border-border rounded-lg hover:bg-bg-hover transition-all"
             aria-label="Filter by status"
           >
             <span className="truncate capitalize">
               {statusFilter ? statusFilter.replace("-", " ") : "All Status"}
             </span>
-            <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+            <ChevronDownIcon className="w-4 h-4 text-text-muted flex-shrink-0" />
           </ListboxButton>
-          <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+          <ListboxOptions className="absolute z-[100] mt-1 w-full bg-bg-canvas border border-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
             <ListboxOption
               value=""
               className={({ active }) =>
@@ -92,13 +92,13 @@ const ProjectFilterBar = ({
       <Listbox value={priorityFilter} onChange={onPriorityChange}>
         <div className="relative min-w-[150px] sm:min-w-[170px]">
           <ListboxButton
-            className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all"
+            className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-bg-canvas border border-border rounded-lg hover:bg-bg-hover transition-all"
             aria-label="Filter by priority"
           >
             <span className="truncate capitalize">{priorityFilter || "All Priority"}</span>
-            <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+            <ChevronDownIcon className="w-4 h-4 text-text-muted flex-shrink-0" />
           </ListboxButton>
-          <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+          <ListboxOptions className="absolute z-[100] mt-1 w-full bg-bg-canvas border border-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
             <ListboxOption
               value=""
               className={({ active }) =>
@@ -138,13 +138,13 @@ const ProjectFilterBar = ({
       <Listbox value={assigneeFilter} onChange={onAssigneeChange}>
         <div className="relative min-w-[170px] sm:min-w-[190px]">
           <ListboxButton
-            className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all"
+            className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-bg-canvas border border-border rounded-lg hover:bg-bg-hover transition-all"
             aria-label="Filter by assignee"
           >
             <span className="truncate">{assigneeFilter || "All Assignees"}</span>
-            <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+            <ChevronDownIcon className="w-4 h-4 text-text-muted flex-shrink-0" />
           </ListboxButton>
-          <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+          <ListboxOptions className="absolute z-[100] mt-1 w-full bg-bg-canvas border border-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
             <ListboxOption
               value=""
               className={({ active }) =>
@@ -185,15 +185,15 @@ const ProjectFilterBar = ({
       <Listbox value={dateFilter} onChange={onDateChange}>
         <div className="relative min-w-[150px] sm:min-w-[170px]">
           <ListboxButton
-            className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all"
+            className="w-full text-left flex items-center justify-between h-9 px-3 text-xs sm:text-sm font-medium bg-bg-canvas border border-border rounded-lg hover:bg-bg-hover transition-all"
             aria-label="Filter by date"
           >
             <span className="truncate">
               {dateFilter ? dateFilter.replace("due-", "Due ").replace("_", " ") : "Any Date"}
             </span>
-            <ChevronDownIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary flex-shrink-0" />
+            <ChevronDownIcon className="w-4 h-4 text-text-muted flex-shrink-0" />
           </ListboxButton>
-          <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-primary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
+          <ListboxOptions className="absolute z-[100] mt-1 w-full bg-bg-canvas border border-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto py-1">
             <ListboxOption
               value=""
               className={({ active }) =>
@@ -238,7 +238,7 @@ const ProjectFilterBar = ({
         <button
           type="button"
           onClick={clearAll}
-          className="text-xs sm:text-sm font-medium text-accent-primary dark:text-accent-primary-light hover:underline"
+          className="text-xs sm:text-sm font-medium text-primary hover:underline"
           aria-label="Clear all filters"
         >
           Clear

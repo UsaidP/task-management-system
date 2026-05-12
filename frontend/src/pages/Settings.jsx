@@ -1,8 +1,19 @@
+import {
+  ChevronDownIcon,
+  CircleCheckIcon,
+  DashboardIcon,
+  DownloadIcon,
+  LockIcon,
+  MoonIcon,
+  SunIcon,
+  TrashIcon,
+  TriangleAlertIcon,
+  UserIcon,
+} from "@animateicons/react/lucide"
 import { motion } from "framer-motion"
+import { ShieldIcon } from "lucide-react"
 import { memo, useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
-import { TriangleAlertIcon, BellIcon, CheckIcon, CircleCheckIcon, ChevronDownIcon, DownloadIcon, GlobeIcon, DashboardIcon, LockIcon, MoonIcon, SettingsIcon, SunIcon, TrashIcon, UserIcon } from "@animateicons/react/lucide"
-import { ShieldIcon } from "lucide-react"
 import { Skeleton, SkeletonCircle, SkeletonText } from "../components/Skeleton.jsx"
 import { useAuth } from "../contexts/customHook.js"
 import { useTheme } from "../theme/ThemeContext"
@@ -37,7 +48,7 @@ const SettingsSkeleton = () => (
       {[1, 2, 3, 4, 5, 6].map((i) => (
         <div
           key={i}
-          className="border bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 rounded-2xl p-7 border-light-border dark:border-dark-border"
+          className="border bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 rounded-2xl p-7 border-border"
         >
           <div className="flex items-start gap-4 mb-6">
             <SkeletonCircle size="w-11 h-11" className="!rounded-xl" />
@@ -50,7 +61,7 @@ const SettingsSkeleton = () => (
             {[1, 2, 3].map((j) => (
               <div
                 key={j}
-                className="flex flex-col gap-4 py-4 border-b sm:flex-row border-light-border dark:border-dark-border last:border-0"
+                className="flex flex-col gap-4 py-4 border-b sm:flex-row border-border last:border-0"
               >
                 <div className="flex-1">
                   <SkeletonText width="w-32" height="h-5" className="mb-1" />
@@ -69,21 +80,15 @@ const SettingsSkeleton = () => (
 const SettingsSection = memo(({ icon, title, description, children }) => (
   <motion.div
     variants={sectionVariants}
-    className="transition-all duration-300 border shadow-sm bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 backdrop-blur-md rounded-2xl p-7 border-light-border dark:border-dark-border hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md"
+    className="transition-all duration-300 border shadow-sm bg-light-bg-primary/80 dark:bg-dark-bg-tertiary/80 backdrop-blur-md rounded-2xl p-7 border-border hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md"
   >
     <div className="flex flex-col items-start gap-4 mb-6 sm:flex-row">
-      <div className="flex items-center justify-center flex-shrink-0 text-xl w-11 h-11 bg-accent-primary/10 dark:bg-accent-primary/20 text-accent-primary dark:text-accent-primary-light rounded-xl">
+      <div className="flex items-center justify-center flex-shrink-0 text-xl w-11 h-11 bg-accent-primary/10 dark:bg-accent-primary/20 text-primary rounded-xl">
         {icon}
       </div>
       <div className="flex-1">
-        <h2 className="mb-1 font-serif text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
-          {title}
-        </h2>
-        {description && (
-          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-            {description}
-          </p>
-        )}
+        <h2 className="mb-1 font-serif text-xl font-semibold text-text-primary">{title}</h2>
+        {description && <p className="text-sm text-text-secondary">{description}</p>}
       </div>
     </div>
     <div className="flex flex-col">{children}</div>
@@ -92,16 +97,10 @@ const SettingsSection = memo(({ icon, title, description, children }) => (
 SettingsSection.displayName = "SettingsSection"
 
 const SettingItem = memo(({ label, description, children }) => (
-  <div className="flex flex-col gap-4 py-4 border-b sm:flex-row sm:justify-between sm:items-center border-light-border dark:border-dark-border first:pt-0 last:border-b-0 last:pb-0">
+  <div className="flex flex-col gap-4 py-4 border-b sm:flex-row sm:justify-between sm:items-center border-border first:pt-0 last:border-b-0 last:pb-0">
     <div className="flex flex-col flex-1 gap-1">
-      <label className="text-base font-medium text-light-text-primary dark:text-dark-text-primary">
-        {label}
-      </label>
-      {description && (
-        <span className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-          {description}
-        </span>
-      )}
+      <label className="text-base font-medium text-text-primary">{label}</label>
+      {description && <span className="text-sm text-text-muted">{description}</span>}
     </div>
     <div className="flex-shrink-0 w-full sm:w-auto">{children}</div>
   </div>
@@ -137,7 +136,7 @@ const SelectDropdown = memo(({ value, onChange, options, id }) => (
       id={id}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="appearance-none w-full sm:w-auto px-4 py-2.5 pr-10 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl text-sm font-medium text-light-text-primary dark:text-dark-text-primary cursor-pointer min-w-[180px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
+      className="appearance-none w-full sm:w-auto px-4 py-2.5 pr-10 bg-bg-surface border border-border rounded-xl text-sm font-medium text-text-primary cursor-pointer min-w-[180px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary"
     >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>
@@ -145,7 +144,7 @@ const SelectDropdown = memo(({ value, onChange, options, id }) => (
         </option>
       ))}
     </select>
-    <ChevronDownIcon className="absolute transform -translate-y-1/2 pointer-events-none right-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary" />
+    <ChevronDownIcon className="absolute transform -translate-y-1/2 pointer-events-none right-3 top-1/2 text-text-muted" />
   </div>
 ))
 SelectDropdown.displayName = "SelectDropdown"
@@ -190,13 +189,13 @@ const Settings = () => {
     localStorage.setItem("userSettings", JSON.stringify(settings))
   }, [settings])
 
-  const updateSetting = (key, value) => {
+  const _updateSetting = (key, value) => {
     setSettings((prev) => ({ ...prev, [key]: value }))
   }
 
   const [showSaveToast, setShowSaveToast] = useState(false)
 
-  const handleSaveSettings = () => {
+  const _handleSaveSettings = () => {
     setShowSaveToast(true)
     setTimeout(() => setShowSaveToast(false), 3000)
   }
@@ -222,10 +221,10 @@ const Settings = () => {
         {/* Header */}
         <div className="flex flex-col items-start justify-between gap-4 mb-10 sm:flex-row">
           <div className="flex-1">
-            <h1 className="mb-2 font-serif text-3xl font-bold sm:text-4xl text-light-text-primary dark:text-dark-text-primary">
+            <h1 className="mb-2 font-serif text-3xl font-bold sm:text-4xl text-text-primary">
               Settings
             </h1>
-            <p className="text-base text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="text-base text-text-secondary">
               Manage your preferences and account settings
             </p>
           </div>
@@ -245,14 +244,10 @@ const Settings = () => {
             description="Customize how the app looks and feels"
           >
             <SettingItem label="Theme" description="Choose between light and dark mode">
-              <div className="flex gap-2 w-full sm:w-auto bg-light-bg-secondary dark:bg-dark-bg-tertiary p-1.5 rounded-xl">
+              <div className="flex gap-2 w-full sm:w-auto bg-bg-surface p-1.5 rounded-xl">
                 <button
                   type="button"
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
-                    theme === "light"
-                      ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
-                      : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                  }`}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${theme === "light" ? "bg-light-bg-primary text-primary shadow-sm" : "text-light-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"}`}
                   onClick={() => theme !== "light" && toggleTheme()}
                 >
                   <SunIcon />
@@ -260,11 +255,7 @@ const Settings = () => {
                 </button>
                 <button
                   type="button"
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${
-                    theme === "dark"
-                      ? "bg-light-bg-primary dark:bg-dark-bg-tertiary text-accent-primary dark:text-accent-primary-light shadow-sm"
-                      : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"
-                  }`}
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent-primary/20 ${theme === "dark" ? "bg-light-bg-primary text-primary shadow-sm" : "text-light-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary"}`}
                   onClick={() => theme !== "dark" && toggleTheme()}
                 >
                   <MoonIcon />
@@ -285,7 +276,7 @@ const Settings = () => {
                 type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                className="bg-bg-surface hover:bg-bg-hover text-text-primary border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                 onClick={changePassword}
               >
                 <LockIcon />
@@ -297,7 +288,7 @@ const Settings = () => {
                 type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                className="bg-bg-surface hover:bg-bg-hover text-text-primary border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 <ShieldIcon />
                 Enable 2FA
@@ -308,7 +299,7 @@ const Settings = () => {
                 type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-secondary flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                className="bg-bg-surface hover:bg-bg-hover text-text-primary border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 <DownloadIcon />
                 Export
@@ -325,10 +316,8 @@ const Settings = () => {
             <div className="p-4 border border-dashed bg-accent-danger/5 dark:bg-accent-danger/10 border-accent-danger/30 rounded-xl">
               <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
                 <div className="flex flex-col gap-1">
-                  <label className="text-base font-medium text-light-text-primary dark:text-dark-text-primary">
-                    Delete Account
-                  </label>
-                  <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                  <label className="text-base font-medium text-text-primary">Delete Account</label>
+                  <span className="text-sm text-text-secondary">
                     Permanently delete your account and all associated data
                   </span>
                 </div>
@@ -336,7 +325,7 @@ const Settings = () => {
                   type="button"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex flex-shrink-0 items-center justify-center gap-2 px-5 py-2.5 bg-accent-danger hover:bg-accent-danger-dark dark:bg-accent-danger dark:hover:bg-accent-danger-dark text-white rounded-xl text-sm font-semibold shadow-sm dark:shadow-dark-sm transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
+                  className="flex flex-shrink-0 items-center justify-center gap-2 px-5 py-2.5 bg-danger hover:bg-accent-danger-dark dark:bg-accent-danger dark:hover:bg-accent-danger-dark text-white rounded-xl text-sm font-semibold shadow-sm dark:shadow-dark-sm transition-all duration-200 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
                 >
                   <TrashIcon />
                   Delete Account
@@ -352,7 +341,7 @@ const Settings = () => {
         <motion.div
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="fixed z-50 flex items-center gap-3 px-6 py-4 font-medium text-white transform -translate-x-1/2 shadow-xl bottom-8 left-1/2 bg-accent-success dark:bg-accent-success-dark rounded-xl backdrop-blur-md dark:shadow-dark-lg"
+          className="fixed z-50 flex items-center gap-3 px-6 py-4 font-medium text-white transform -translate-x-1/2 shadow-xl bottom-8 left-1/2 bg-success dark:bg-accent-success-dark rounded-xl backdrop-blur-md dark:shadow-dark-lg"
         >
           <CircleCheckIcon className="flex-shrink-0 text-xl" />
           <span>Settings saved successfully!</span>

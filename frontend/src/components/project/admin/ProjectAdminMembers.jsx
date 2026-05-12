@@ -1,7 +1,7 @@
+import { CheckIcon, ChevronDownIcon, UserPlusIcon, XIcon } from "@animateicons/react/lucide"
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
 import { useId, useState } from "react"
 import toast from "react-hot-toast"
-import { CheckIcon, ChevronDownIcon, UserPlusIcon, XIcon } from "@animateicons/react/lucide"
 import apiService from "../../../../service/apiService.js"
 import Avatar from "../../auth/Avatar.jsx"
 import Modal from "../../Modal.jsx"
@@ -107,17 +107,15 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
       {/* Header */}
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h2 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
+          <h2 className="text-lg font-semibold text-text-primary">
             Project Members ({members.length})
           </h2>
-          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-            Manage who has access to this project
-          </p>
+          <p className="text-sm text-text-secondary">Manage who has access to this project</p>
         </div>
         <button
           type="button"
           onClick={() => setIsAddModalOpen(true)}
-          className="btn-primary flex items-center gap-2"
+          className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer flex items-center gap-2"
         >
           <UserPlusIcon className="h-4 w-4" />
           Add Member
@@ -131,17 +129,15 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
           placeholder="Search members..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="input-field"
+          className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
         />
       </div>
 
       {/* Members List */}
       <div className="space-y-2">
         {filteredMembers.length === 0 ? (
-          <div className="rounded-xl border border-light-border bg-light-bg-secondary p-8 text-center dark:border-dark-border dark:bg-dark-bg-tertiary">
-            <p className="text-light-text-secondary dark:text-dark-text-secondary">
-              No members found
-            </p>
+          <div className="rounded-xl border border-border bg-bg-surface p-8 text-center">
+            <p className="text-text-secondary">No members found</p>
           </div>
         ) : (
           filteredMembers.map((member) => {
@@ -152,17 +148,13 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
             return (
               <div
                 key={member._id}
-                className="flex items-center justify-between rounded-xl border border-light-border bg-light-bg-secondary p-4 transition-colors hover:bg-light-bg-hover dark:border-dark-border dark:bg-dark-bg-tertiary dark:hover:bg-dark-bg-hover"
+                className="flex items-center justify-between rounded-xl border border-border bg-bg-surface p-4 transition-colors hover:bg-bg-hover"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <MemberAvatar member={member} />
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-light-text-primary dark:text-dark-text-primary">
-                      {userName}
-                    </p>
-                    <p className="truncate text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                      {userEmail}
-                    </p>
+                    <p className="truncate font-medium text-text-primary">{userName}</p>
+                    <p className="truncate text-sm text-text-secondary">{userEmail}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -178,7 +170,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                         <span className="capitalize">{member.role.replace("_", " ")}</span>
                         <ChevronDownIcon className="w-3 h-3" />
                       </ListboxButton>
-                      <ListboxOptions className="absolute z-[100] mt-1 right-0 w-40 bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
+                      <ListboxOptions className="absolute z-[100] mt-1 right-0 w-40 bg-bg-surface border border-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                         {roleOptions.map((option) => (
                           <ListboxOption
                             key={option.id}
@@ -194,16 +186,14 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                             {({ selected }) => (
                               <>
                                 <span
-                                  className={`block truncate text-light-text-primary dark:text-dark-text-primary capitalize ${
-                                    selected ? "font-semibold" : "font-normal"
-                                  }`}
+                                  className={`block truncate text-text-primary capitalize ${selected ? "font-semibold" : "font-normal"}`}
                                 >
                                   {option.name}
                                 </span>
                                 {selected ? (
                                   <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <CheckIcon
-                                      className="w-4 h-4 text-accent-primary"
+                                      className="w-4 h-4 text-primary"
                                       aria-hidden="true"
                                     />
                                   </span>
@@ -219,7 +209,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                     <button
                       type="button"
                       onClick={() => handleRemoveMember(member._id, userName)}
-                      className="rounded-full p-1.5 text-light-text-tertiary transition-colors hover:bg-accent-danger/10 hover:text-accent-danger"
+                      className="rounded-full p-1.5 text-text-muted transition-colors hover:bg-accent-danger/10 hover:text-accent-danger"
                       aria-label={`Remove ${userName}`}
                     >
                       <XIcon className="h-4 w-4" />
@@ -238,7 +228,7 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
           <div>
             <label
               htmlFor={`${uid}-member-email`}
-              className="mb-1 block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
+              className="mb-1 block text-sm font-medium text-text-primary"
             >
               Email
             </label>
@@ -248,14 +238,14 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="member@example.com"
-              className="input-field"
+              className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               required
             />
           </div>
           <div>
             <label
               htmlFor={`${uid}-member-role`}
-              className="mb-1 block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
+              className="mb-1 block text-sm font-medium text-text-primary"
             >
               Role
             </label>
@@ -263,12 +253,12 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
               <div className="relative">
                 <ListboxButton
                   id={`${uid}-member-role`}
-                  className="input-field w-full text-left flex items-center justify-between"
+                  className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all w-full text-left flex items-center justify-between"
                 >
                   <span className="truncate">{selectedRoleObject?.name}</span>
-                  <ChevronDownIcon className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary" />
+                  <ChevronDownIcon className="w-4 h-4 text-text-secondary" />
                 </ListboxButton>
-                <ListboxOptions className="absolute z-[100] mt-1 w-full bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
+                <ListboxOptions className="absolute z-[100] mt-1 w-full bg-bg-surface border border-border rounded-lg shadow-lg focus:outline-none max-h-60 overflow-auto">
                   {roleOptions
                     .filter((r) => r.id !== "owner")
                     .map((option) => (
@@ -286,18 +276,13 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
                         {({ selected }) => (
                           <>
                             <span
-                              className={`block truncate text-light-text-primary dark:text-dark-text-primary ${
-                                selected ? "font-semibold" : "font-normal"
-                              }`}
+                              className={`block truncate text-text-primary ${selected ? "font-semibold" : "font-normal"}`}
                             >
                               {option.name}
                             </span>
                             {selected ? (
                               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                                <CheckIcon
-                                  className="w-5 h-5 text-accent-primary"
-                                  aria-hidden="true"
-                                />
+                                <CheckIcon className="w-5 h-5 text-primary" aria-hidden="true" />
                               </span>
                             ) : null}
                           </>
@@ -312,11 +297,14 @@ const ProjectAdminMembers = ({ members, setMembers, projectId, onRefresh }) => {
             <button
               type="button"
               onClick={() => setIsAddModalOpen(false)}
-              className="btn-secondary"
+              className="bg-bg-surface hover:bg-bg-hover text-text-primary border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
             >
               Cancel
             </button>
-            <button type="submit" className="btn-primary">
+            <button
+              type="submit"
+              className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer"
+            >
               Add Member
             </button>
           </div>

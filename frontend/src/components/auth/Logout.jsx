@@ -37,11 +37,11 @@ const Logout = () => {
       <button
         onClick={logoutHandler}
         disabled={loading}
-        className="btn-secondary px-4 py-2 text-sm font-medium"
+        className="bg-bg-surface hover:bg-bg-hover text-text-primary border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer px-4 py-2 text-sm font-medium"
       >
         {loading ? "Logging out..." : "Logout"}
       </button>
-      {error && <p className="text-sm text-accent-danger mt-2">{error}</p>}
+      {error && <p className="text-sm text-danger mt-2">{error}</p>}
     </>
   )
 }

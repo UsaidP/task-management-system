@@ -1,5 +1,5 @@
-import { useState } from "react"
 import { PlusIcon } from "@animateicons/react/lucide"
+import { useState } from "react"
 import { useParams } from "react-router-dom"
 import useSprint from "../../hooks/useSprint.js"
 import CompleteSprintDialog from "./CompleteSprintDialog.jsx"
@@ -29,13 +29,11 @@ const SprintView = () => {
   return (
     <div className="h-full flex flex-col shadow-sm">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary shrink-0">
+      <div className="flex items-center justify-between p-4 border-b border-border bg-bg-surface shrink-0">
         <div className="flex items-center gap-4">
-          <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
-            Sprint Board
-          </h2>
+          <h2 className="text-xl font-semibold text-text-primary">Sprint Board</h2>
           {currentSprint && (
-            <span className="px-3 py-1 rounded-xl text-xs font-medium bg-accent-success/10 text-accent-success">
+            <span className="px-3 py-1 rounded-xl text-xs font-medium bg-accent-success/10 text-success">
               {currentSprint.name} (Active)
             </span>
           )}
@@ -49,7 +47,7 @@ const SprintView = () => {
               const sprint = sprints.find((s) => s._id === e.target.value)
               setCurrentSprint(sprint || null)
             }}
-            className="px-3 py-1.5 rounded-xl text-sm bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-colors"
+            className="px-3 py-1.5 rounded-xl text-sm bg-bg-canvas border border-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-colors"
           >
             <option value="">Select Sprint</option>
             {availableSprints.map((sprint) => (
@@ -66,7 +64,7 @@ const SprintView = () => {
                 setSprintToComplete(currentSprint)
                 setShowCompleteDialog(true)
               }}
-              className="px-3 py-1.5 rounded-xl text-sm border border-light-border dark:border-dark-border hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+              className="px-3 py-1.5 rounded-xl text-sm border border-border hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
             >
               Complete Sprint
             </button>
@@ -75,7 +73,7 @@ const SprintView = () => {
           <button
             type="button"
             onClick={() => setShowCreateDialog(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
           >
             <PlusIcon className="w-4 h-4" aria-hidden="true" />
             New Sprint
@@ -85,19 +83,15 @@ const SprintView = () => {
 
       {/* Sprint Info */}
       {currentSprint && (
-        <div className="p-4 border-b border-light-border dark:border-dark-border bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
+        <div className="p-4 border-b border-border bg-bg-elevated">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary">
-                {currentSprint.name}
-              </h3>
+              <h3 className="font-semibold text-text-primary">{currentSprint.name}</h3>
               {currentSprint.goal && (
-                <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                  {currentSprint.goal}
-                </p>
+                <p className="text-sm text-text-secondary">{currentSprint.goal}</p>
               )}
             </div>
-            <div className="flex items-center gap-4 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+            <div className="flex items-center gap-4 text-sm text-text-muted">
               <span>Start: {new Date(currentSprint.startDate).toLocaleDateString()}</span>
               <span>End: {new Date(currentSprint.endDate).toLocaleDateString()}</span>
             </div>
@@ -109,7 +103,7 @@ const SprintView = () => {
       {currentSprint ? (
         <SprintBoard sprintId={currentSprint._id} projectId={projectId} />
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center text-light-text-tertiary dark:text-dark-text-tertiary">
+        <div className="flex-1 flex flex-col items-center justify-center text-text-muted">
           <p className="text-lg mb-2">No active sprint selected</p>
           <p className="text-sm">Select a sprint above or create a new one</p>
         </div>

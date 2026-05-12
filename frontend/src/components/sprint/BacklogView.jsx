@@ -1,7 +1,7 @@
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import { useCallback, useEffect, useState } from "react"
 import { CircleCheckIcon, PlusIcon } from "@animateicons/react/lucide"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { CalendarIcon } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
 import apiService from "../../../service/apiService.js"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
 
@@ -82,10 +82,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
     return (
       <div className="p-6 space-y-3">
         {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="h-24 bg-light-bg-hover dark:bg-dark-bg-hover rounded-xl animate-pulse"
-          />
+          <div key={i} className="h-24 bg-bg-hover rounded-xl animate-pulse" />
         ))}
       </div>
     )
@@ -94,19 +91,17 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
   return (
     <div className="h-full flex flex-col shadow-sm">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary">
+      <div className="flex items-center justify-between p-4 border-b border-border bg-bg-canvas">
         <div>
-          <h2 className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
-            Backlog
-          </h2>
-          <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+          <h2 className="text-xl font-semibold text-text-primary">Backlog</h2>
+          <p className="text-sm text-text-muted">
             {backlogTasks.length} {backlogTasks.length === 1 ? "task" : "tasks"} not in any sprint
           </p>
         </div>
         <button
           type="button"
           onClick={onCreateSprint}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-primary text-white font-medium hover:bg-accent-primary-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-offset-2 dark:focus:ring-offset-dark-bg-primary min-h-[44px]"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-accent-primary-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:ring-offset-2 dark:focus:ring-offset-dark-bg-primary min-h-[44px]"
           aria-label="Create new sprint"
         >
           <PlusIcon className="w-4 h-4" aria-hidden="true" />
@@ -115,15 +110,13 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
       </div>
 
       {/* Task List */}
-      <div className="flex-1 overflow-y-auto p-4 bg-light-bg-secondary dark:bg-dark-bg-secondary">
+      <div className="flex-1 overflow-y-auto p-4 bg-bg-surface">
         {backlogTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-light-text-tertiary dark:text-dark-text-tertiary py-16">
-            <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mb-4">
+          <div className="flex flex-col items-center justify-center h-full text-text-muted py-16">
+            <div className="w-16 h-16 rounded-full bg-bg-hover flex items-center justify-center mb-4">
               <CircleCheckIcon className="w-8 h-8 opacity-40" aria-hidden="true" />
             </div>
-            <p className="text-lg font-medium text-light-text-primary dark:text-dark-text-primary mb-1">
-              Backlog is empty
-            </p>
+            <p className="text-lg font-medium text-text-primary mb-1">Backlog is empty</p>
             <p className="text-sm">All tasks are assigned to sprints</p>
           </div>
         ) : (
@@ -132,7 +125,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
               {backlogTasks.map((task) => (
                 <motion.div
                   key={task._id}
-                  layout={reduceMotion ? false : true}
+                  layout={!reduceMotion}
                   initial={reduceMotion ? {} : { opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={reduceMotion ? {} : { opacity: 0, scale: 0.98 }}
@@ -145,7 +138,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                       handleTaskClick(task)
                     }
                   }}
-                  className="task-card p-4 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-tertiary hover:border-accent-primary/40 dark:hover:border-accent-primary/40 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md group"
+                  className="p-4 bg-bg-surface border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all cursor-pointer p-4 rounded-xl border border-border bg-bg-canvas hover:border-accent-primary/40 dark:hover:border-accent-primary/40 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md group"
                   onClick={() => handleTaskClick(task)}
                   aria-label={`Task: ${task.title}`}
                 >
@@ -156,20 +149,20 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                           {task.status?.replace("-", " ")}
                         </span>
                         <span
-                          className={`px-2 py-0.5 rounded-md text-xs font-medium ${getPriorityClass(task.priority)} bg-light-bg-hover dark:bg-dark-bg-hover`}
+                          className={`px-2 py-0.5 rounded-md text-xs font-medium ${getPriorityClass(task.priority)} bg-bg-hover`}
                         >
                           {task.priority}
                         </span>
                       </div>
-                      <h3 className="font-semibold text-light-text-primary dark:text-dark-text-primary mb-1 group-hover:text-accent-primary transition-colors duration-200">
+                      <h3 className="font-semibold text-text-primary mb-1 group-hover:text-accent-primary transition-colors duration-200">
                         {task.title}
                       </h3>
                       {task.description && (
-                        <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary line-clamp-2 mb-2">
+                        <p className="text-sm text-text-secondary line-clamp-2 mb-2">
                           {task.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-4 text-xs text-light-text-tertiary dark:text-dark-text-tertiary flex-wrap">
+                      <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap">
                         {task.dueDate && (
                           <span className="flex items-center gap-1">
                             <CalendarIcon className="w-3 h-3" aria-hidden="true" />
@@ -189,7 +182,7 @@ const BacklogView = ({ projectId, onCreateSprint, onSelectSprint }) => {
                             handleAssignToSprint(task._id, e.target.value)
                           }
                         }}
-                        className="px-3 py-2 rounded-lg text-sm bg-light-bg-secondary dark:bg-dark-bg-secondary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary transition-colors duration-200 min-h-[44px] cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
+                        className="px-3 py-2 rounded-lg text-sm bg-bg-surface border border-border focus:outline-none focus:ring-2 focus:ring-accent-primary/30 focus:border-accent-primary transition-colors duration-200 min-h-[44px] cursor-pointer hover:bg-bg-hover"
                         defaultValue=""
                       >
                         <option value="">Add to Sprint...</option>

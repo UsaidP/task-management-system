@@ -1,14 +1,14 @@
-import { useState } from "react"
-import toast from "react-hot-toast"
 import {
-  TriangleAlertIcon,
   CheckIcon,
   EyeIcon,
   EyeOffIcon,
   TrashIcon,
+  TriangleAlertIcon,
   XIcon,
 } from "@animateicons/react/lucide"
-import { Archive, Save } from "lucide-react"
+import { Archive } from "lucide-react"
+import { useState } from "react"
+import toast from "react-hot-toast"
 import apiService from "../../../../service/apiService.js"
 
 const ProjectAdminSettings = ({ project, setProject, projectId }) => {
@@ -107,13 +107,11 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       {/* Project Details */}
-      <div className="rounded-xl border border-light-border bg-light-bg-secondary shadow-sm dark:border-dark-border dark:bg-dark-bg-tertiary">
-        <div className="flex items-center justify-between border-b border-light-border px-6 py-4 dark:border-dark-border">
+      <div className="rounded-xl border border-border bg-bg-surface shadow-sm">
+        <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div>
-            <h3 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
-              Project Details
-            </h3>
-            <p className="mt-0.5 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+            <h3 className="text-sm font-semibold text-text-primary">Project Details</h3>
+            <p className="mt-0.5 text-xs text-text-secondary">
               Basic information about your project
             </p>
           </div>
@@ -121,7 +119,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="cursor-pointer rounded-lg border border-light-border px-3 py-1.5 text-xs font-medium text-light-text-secondary transition-all duration-200 hover:bg-light-bg-hover hover:text-light-text-primary dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary"
+              className="cursor-pointer rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition-all duration-200 hover:bg-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary"
             >
               Edit
             </button>
@@ -131,9 +129,9 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
           <div>
             <label
               htmlFor="project-name"
-              className="mb-1.5 block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary"
+              className="mb-1.5 block text-sm font-medium text-text-secondary"
             >
-              Project Name <span className="text-accent-danger">*</span>
+              Project Name <span className="text-danger">*</span>
             </label>
             {isEditing ? (
               <input
@@ -142,18 +140,16 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter project name"
-                className="w-full rounded-lg border border-light-border bg-light-bg-primary px-4 py-2.5 text-sm text-light-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 dark:border-dark-border dark:bg-dark-bg-tertiary dark:text-dark-text-primary dark:placeholder:text-dark-text-tertiary"
+                className="w-full rounded-lg border border-border bg-bg-canvas px-4 py-2.5 text-sm text-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 dark:placeholder:text-dark-text-tertiary"
               />
             ) : (
-              <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                {project?.name}
-              </p>
+              <p className="text-sm font-medium text-text-primary">{project?.name}</p>
             )}
           </div>
           <div>
             <label
               htmlFor="project-desc"
-              className="mb-1.5 block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary"
+              className="mb-1.5 block text-sm font-medium text-text-secondary"
             >
               Description
             </label>
@@ -164,14 +160,12 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe what this project is about..."
                 rows={3}
-                className="w-full resize-none rounded-lg border border-light-border bg-light-bg-primary px-4 py-2.5 text-sm text-light-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 dark:border-dark-border dark:bg-dark-bg-tertiary dark:text-dark-text-primary dark:placeholder:text-dark-text-tertiary"
+                className="w-full resize-none rounded-lg border border-border bg-bg-canvas px-4 py-2.5 text-sm text-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 dark:placeholder:text-dark-text-tertiary"
               />
             ) : (
-              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="text-sm text-text-secondary">
                 {project?.description || (
-                  <span className="italic text-light-text-tertiary dark:text-dark-text-tertiary">
-                    No description provided
-                  </span>
+                  <span className="italic text-text-muted">No description provided</span>
                 )}
               </p>
             )}
@@ -182,7 +176,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving || !name.trim()}
-                className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-accent-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-accent-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <CheckIcon className="h-4 w-4" />
                 {isSaving ? "Saving..." : "Save Changes"}
@@ -190,7 +184,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
               <button
                 type="button"
                 onClick={handleCancelEdit}
-                className="flex items-center gap-2 rounded-lg border border-light-border px-4 py-2 text-sm font-medium text-light-text-secondary transition-all duration-200 hover:bg-light-bg-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover"
+                className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-secondary transition-all duration-200 hover:bg-bg-hover"
               >
                 <XIcon className="h-4 w-4" />
                 Cancel
@@ -201,35 +195,27 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
       </div>
 
       {/* Visibility */}
-      <div className="rounded-xl border border-light-border bg-light-bg-secondary shadow-sm dark:border-dark-border dark:bg-dark-bg-tertiary">
-        <div className="border-b border-light-border px-6 py-4 dark:border-dark-border">
-          <h3 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
-            Visibility
-          </h3>
-          <p className="mt-0.5 text-xs text-light-text-secondary dark:text-dark-text-secondary">
-            Control who can see this project
-          </p>
+      <div className="rounded-xl border border-border bg-bg-surface shadow-sm">
+        <div className="border-b border-border px-6 py-4">
+          <h3 className="text-sm font-semibold text-text-primary">Visibility</h3>
+          <p className="mt-0.5 text-xs text-text-secondary">Control who can see this project</p>
         </div>
         <div className="flex items-center justify-between px-6 py-5">
           <div className="flex items-center gap-3">
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-                project?.isActive !== false
-                  ? "bg-accent-success/10"
-                  : "bg-light-text-tertiary/10 dark:bg-dark-text-tertiary/10"
-              }`}
+              className={`flex h-10 w-10 items-center justify-center rounded-lg ${project?.isActive !== false ? "bg-accent-success/10" : "bg-light-text-tertiary/10 dark:bg-dark-text-tertiary/10"}`}
             >
               {project?.isActive !== false ? (
-                <EyeIcon className="h-5 w-5 text-accent-success" />
+                <EyeIcon className="h-5 w-5 text-success" />
               ) : (
-                <EyeOffIcon className="h-5 w-5 text-light-text-tertiary dark:text-dark-text-tertiary" />
+                <EyeOffIcon className="h-5 w-5 text-text-muted" />
               )}
             </div>
             <div>
-              <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+              <p className="text-sm font-medium text-text-primary">
                 {project?.isActive !== false ? "Public" : "Private"}
               </p>
-              <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="text-xs text-text-secondary">
                 {project?.isActive !== false
                   ? "Visible to all organization members"
                   : "Only visible to project members"}
@@ -239,7 +225,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
           <button
             type="button"
             onClick={handleToggleVisibility}
-            className="cursor-pointer rounded-lg border border-light-border px-4 py-2 text-xs font-medium text-light-text-secondary transition-all duration-200 hover:bg-light-bg-hover hover:text-light-text-primary dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover dark:hover:text-dark-text-primary"
+            className="cursor-pointer rounded-lg border border-border px-4 py-2 text-xs font-medium text-text-secondary transition-all duration-200 hover:bg-bg-hover hover:text-light-text-primary dark:hover:text-dark-text-primary"
           >
             {project?.isActive !== false ? "Make Private" : "Make Public"}
           </button>
@@ -250,28 +236,24 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
       <div className="rounded-xl border-2 border-accent-danger/30 bg-accent-danger/5">
         <div className="border-b border-accent-danger/30 px-6 py-4">
           <div className="flex items-center gap-2">
-            <TriangleAlertIcon className="h-4 w-4 text-accent-danger" />
-            <h3 className="text-sm font-semibold text-accent-danger">Danger Zone</h3>
+            <TriangleAlertIcon className="h-4 w-4 text-danger" />
+            <h3 className="text-sm font-semibold text-danger">Danger Zone</h3>
           </div>
-          <p className="mt-0.5 text-xs text-light-text-secondary dark:text-dark-text-secondary">
-            Irreversible and destructive actions
-          </p>
+          <p className="mt-0.5 text-xs text-text-secondary">Irreversible and destructive actions</p>
         </div>
         <div className="space-y-3 p-6">
           {/* Archive */}
-          <div className="flex flex-col gap-4 rounded-lg border border-accent-danger/20 bg-light-bg-primary p-4 dark:border-accent-danger/30 dark:bg-dark-bg-tertiary sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 rounded-lg border border-accent-danger/20 bg-bg-canvas p-4 dark:border-accent-danger/30 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
-              <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                Archive Project
-              </p>
-              <p className="mt-0.5 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="text-sm font-medium text-text-primary">Archive Project</p>
+              <p className="mt-0.5 text-xs text-text-secondary">
                 Hide this project from the main list. Can be restored later.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setShowArchiveConfirm(true)}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-accent-warning px-4 py-2 text-xs font-medium text-accent-warning transition-all duration-200 hover:bg-accent-warning/10 sm:w-auto"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-accent-warning px-4 py-2 text-xs font-medium text-warning transition-all duration-200 hover:bg-accent-warning/10 sm:w-auto"
             >
               <Archive className="h-3.5 w-3.5" />
               Archive
@@ -279,17 +261,17 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
           </div>
 
           {/* Delete */}
-          <div className="flex flex-col gap-4 rounded-lg border border-accent-danger/20 bg-light-bg-primary p-4 dark:border-accent-danger/30 dark:bg-dark-bg-tertiary sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 rounded-lg border border-accent-danger/20 bg-bg-canvas p-4 dark:border-accent-danger/30 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
-              <p className="text-sm font-medium text-accent-danger">Delete Project Permanently</p>
-              <p className="mt-0.5 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="text-sm font-medium text-danger">Delete Project Permanently</p>
+              <p className="mt-0.5 text-xs text-text-secondary">
                 This cannot be undone. All data will be lost.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-danger px-4 py-2 text-xs font-medium text-white transition-all duration-200 hover:bg-accent-danger-dark sm:w-auto"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-danger px-4 py-2 text-xs font-medium text-white transition-all duration-200 hover:bg-accent-danger-dark sm:w-auto"
             >
               <TrashIcon className="h-3.5 w-3.5" />
               Delete
@@ -301,32 +283,28 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
       {/* Archive Confirmation Modal */}
       {showArchiveConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-xl border border-light-border bg-light-bg-primary shadow-xl dark:border-dark-border dark:bg-dark-bg-primary">
-            <div className="border-b border-light-border p-6 dark:border-dark-border">
-              <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary">
-                Archive Project
-              </h3>
+          <div className="w-full max-w-md rounded-xl border border-border bg-bg-canvas shadow-xl">
+            <div className="border-b border-border p-6">
+              <h3 className="text-lg font-semibold text-text-primary">Archive Project</h3>
             </div>
             <div className="p-6">
-              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+              <p className="text-sm text-text-secondary">
                 Are you sure you want to archive{" "}
-                <strong className="text-light-text-primary dark:text-dark-text-primary">
-                  {project?.name}
-                </strong>
-                ? The project will be hidden from the main list but can be restored later.
+                <strong className="text-text-primary">{project?.name}</strong>? The project will be
+                hidden from the main list but can be restored later.
               </p>
               <div className="mt-6 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowArchiveConfirm(false)}
-                  className="rounded-lg border border-light-border px-4 py-2 text-sm font-medium text-light-text-secondary transition-colors hover:bg-light-bg-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover"
+                  className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-bg-hover"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleArchive}
-                  className="rounded-lg bg-accent-warning px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-warning-dark"
+                  className="rounded-lg bg-warning px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-warning-dark"
                 >
                   Archive Project
                 </button>
@@ -339,18 +317,16 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-xl border border-accent-danger/30 bg-light-bg-primary shadow-xl dark:bg-dark-bg-primary">
+          <div className="w-full max-w-md rounded-xl border border-accent-danger/30 bg-bg-canvas shadow-xl">
             <div className="border-b border-accent-danger/30 p-6">
-              <h3 className="text-lg font-semibold text-accent-danger">
-                Delete Project Permanently
-              </h3>
+              <h3 className="text-lg font-semibold text-danger">Delete Project Permanently</h3>
             </div>
             <div className="p-6 space-y-4">
-              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                This action <strong className="text-accent-danger">cannot be undone</strong>. This
-                will permanently delete:
+              <p className="text-sm text-text-secondary">
+                This action <strong className="text-danger">cannot be undone</strong>. This will
+                permanently delete:
               </p>
-              <ul className="list-inside list-disc space-y-1 text-xs text-light-text-secondary dark:text-dark-text-secondary">
+              <ul className="list-inside list-disc space-y-1 text-xs text-text-secondary">
                 <li>All tasks and subtasks</li>
                 <li>All sprints and notes</li>
                 <li>All member associations</li>
@@ -359,9 +335,9 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
               <div>
                 <label
                   htmlFor="delete-confirm"
-                  className="mb-1.5 block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
+                  className="mb-1.5 block text-sm font-medium text-text-primary"
                 >
-                  Type <strong className="text-accent-danger">{project?.name}</strong> to confirm
+                  Type <strong className="text-danger">{project?.name}</strong> to confirm
                 </label>
                 <input
                   id="delete-confirm"
@@ -369,7 +345,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
                   value={deleteConfirmText}
                   onChange={(e) => setDeleteConfirmText(e.target.value)}
                   placeholder="Enter project name"
-                  className="w-full rounded-lg border border-accent-danger/30 bg-light-bg-secondary px-4 py-2.5 text-sm text-light-text-primary placeholder:text-light-text-tertiary focus:border-accent-danger focus:outline-none focus:ring-2 focus:ring-accent-danger/20 dark:border-accent-danger/30 dark:bg-dark-bg-tertiary dark:text-dark-text-primary"
+                  className="w-full rounded-lg border border-accent-danger/30 bg-bg-surface px-4 py-2.5 text-sm text-text-primary placeholder:text-light-text-tertiary focus:border-accent-danger focus:outline-none focus:ring-2 focus:ring-accent-danger/20 dark:border-accent-danger/30"
                 />
               </div>
               <div className="mt-6 flex justify-end gap-2">
@@ -379,7 +355,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
                     setShowDeleteConfirm(false)
                     setDeleteConfirmText("")
                   }}
-                  className="rounded-lg border border-light-border px-4 py-2 text-sm font-medium text-light-text-secondary transition-colors hover:bg-light-bg-hover dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-bg-hover"
+                  className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-bg-hover"
                 >
                   Cancel
                 </button>
@@ -387,7 +363,7 @@ const ProjectAdminSettings = ({ project, setProject, projectId }) => {
                   type="button"
                   onClick={handleDelete}
                   disabled={deleteConfirmText !== project?.name}
-                  className="rounded-lg bg-accent-danger px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-danger-dark disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-danger-dark disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Delete Forever
                 </button>

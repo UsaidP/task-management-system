@@ -12,26 +12,21 @@ const avatarColors = [
 export default function AdminTeamMembers({ users, loading }) {
   if (loading) {
     return (
-      <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 shadow-sm">
-        <div className="animate-pulse h-6 w-32 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded mb-4" />
+      <div className="rounded-2xl border border-border bg-bg-surface p-6 shadow-sm">
+        <div className="animate-pulse h-6 w-32 bg-bg-elevated rounded mb-4" />
         {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="animate-pulse h-12 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded mb-2"
-          />
+          <div key={i} className="animate-pulse h-12 bg-bg-elevated rounded mb-2" />
         ))}
       </div>
     )
   }
 
   return (
-    <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 shadow-sm">
+    <div className="rounded-2xl border border-border bg-bg-surface p-6 shadow-sm">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h3 className="text-base font-semibold text-light-text-primary dark:text-dark-text-primary font-serif">
-            Team Members
-          </h3>
-          <p className="text-sm text-light-text-tertiary">{users?.length || 0} members</p>
+          <h3 className="text-base font-semibold text-text-primary font-serif">Team Members</h3>
+          <p className="text-sm text-text-muted">{users?.length || 0} members</p>
         </div>
       </div>
       <div className="space-y-4">
@@ -51,7 +46,7 @@ export default function AdminTeamMembers({ users, loading }) {
           return (
             <div
               key={member._id}
-              className="group flex items-center gap-3 rounded-xl p-2 hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors"
+              className="group flex items-center gap-3 rounded-xl p-2 hover:bg-bg-hover transition-colors"
             >
               <Avatar
                 src={member.avatar?.url || member.avatar}
@@ -60,13 +55,13 @@ export default function AdminTeamMembers({ users, loading }) {
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between">
-                  <p className="truncate text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
+                  <p className="truncate text-sm font-medium text-text-primary">
                     {member.fullname}
                   </p>
-                  <span className="text-xs font-medium text-light-text-tertiary">{progress}%</span>
+                  <span className="text-xs font-medium text-text-muted">{progress}%</span>
                 </div>
-                <p className="text-xs text-light-text-tertiary">{member.role}</p>
-                <div className="mt-1.5 h-1.5 w-full rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
+                <p className="text-xs text-text-muted">{member.role}</p>
+                <div className="mt-1.5 h-1.5 w-full rounded-full bg-bg-elevated">
                   <div
                     className="h-full rounded-full bg-gradient-to-r from-accent-primary to-accent-primary-light transition-all duration-500"
                     style={{ width: `${progress}%` }}
@@ -77,7 +72,7 @@ export default function AdminTeamMembers({ users, loading }) {
           )
         })}
         {(users || []).length === 0 && (
-          <p className="text-center text-sm text-light-text-tertiary py-8">No team members found</p>
+          <p className="text-center text-sm text-text-muted py-8">No team members found</p>
         )}
       </div>
     </div>

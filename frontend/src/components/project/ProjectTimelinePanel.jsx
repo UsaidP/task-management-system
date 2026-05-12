@@ -1,7 +1,7 @@
-import { useMemo } from "react"
 import dayjs from "dayjs"
 import isoWeek from "dayjs/plugin/isoWeek"
 import { motion } from "framer-motion"
+import { useMemo } from "react"
 
 dayjs.extend(isoWeek)
 
@@ -41,9 +41,9 @@ const ZOOM_OPTIONS = ["week", "month", "quarter"]
 /**
  * Generates timeline tick marks based on the current zoom level.
  */
-function getTimelineTicks(zoom, projectStart, projectEnd) {
+function getTimelineTicks(zoom, _projectStart, _projectEnd) {
   const today = dayjs()
-  const config = ZOOM_CONFIG[zoom]
+  const _config = ZOOM_CONFIG[zoom]
 
   if (zoom === "week") {
     const weekStart = today.startOf("isoWeek")
@@ -65,7 +65,10 @@ function getTimelineTicks(zoom, projectStart, projectEnd) {
     let cursor = monthStart
     let weekIndex = 0
 
-    while (cursor.isBefore(monthStart.endOf("month")) || cursor.isSame(monthStart.endOf("month"), "day")) {
+    while (
+      cursor.isBefore(monthStart.endOf("month")) ||
+      cursor.isSame(monthStart.endOf("month"), "day")
+    ) {
       const weekEnd = cursor.endOf("isoWeek").isBefore(monthStart.endOf("month"))
         ? cursor.endOf("isoWeek")
         : monthStart.endOf("month")
@@ -91,7 +94,8 @@ function getTimelineTicks(zoom, projectStart, projectEnd) {
     const quarterStart = today.startOf("quarter")
     return Array.from({ length: 3 }, (_, i) => {
       const month = quarterStart.add(i, "month")
-      const daysInQuarter = quarterStart.add(2, "month").endOf("month").diff(quarterStart, "day") + 1
+      const daysInQuarter =
+        quarterStart.add(2, "month").endOf("month").diff(quarterStart, "day") + 1
       const dayOffset = month.startOf("month").diff(quarterStart, "day")
       const daysInMonth = month.daysInMonth()
 
@@ -110,7 +114,7 @@ function getTimelineTicks(zoom, projectStart, projectEnd) {
 /**
  * Calculates project progress within the current zoom window.
  */
-function getZoomProgress(zoom, project) {
+function getZoomProgress(zoom, _project) {
   const today = dayjs()
 
   if (zoom === "week") {
@@ -124,8 +128,8 @@ function getZoomProgress(zoom, project) {
   }
 
   if (zoom === "month") {
-    const monthStart = today.startOf("month")
-    const monthEnd = today.endOf("month")
+    const _monthStart = today.startOf("month")
+    const _monthEnd = today.endOf("month")
     const dayOfMonth = today.date()
     const daysInMonth = today.daysInMonth()
     return {
@@ -163,7 +167,7 @@ const ProjectTimelinePanel = ({
         ...phase,
         count: columns[phase.status]?.tasks?.length || 0,
       })),
-    [columns],
+    [columns]
   )
 
   const totalTasksCount = statusData.reduce((sum, p) => sum + p.count, 0)
@@ -175,14 +179,15 @@ const ProjectTimelinePanel = ({
         return {
           ...phase,
           width: percentage,
-          text: phase.count > 0 ? `${phase.count} ${phase.count === 1 ? "task" : "tasks"}` : "0 tasks",
+          text:
+            phase.count > 0 ? `${phase.count} ${phase.count === 1 ? "task" : "tasks"}` : "0 tasks",
         }
       }),
-    [statusData, totalTasksCount],
+    [statusData, totalTasksCount]
   )
 
   // Project duration progress
-  const projectProgress = useMemo(() => {
+  const _projectProgress = useMemo(() => {
     if (!project?.startDate || !project?.endDate) return null
     const start = dayjs(project.startDate)
     const end = dayjs(project.endDate)
@@ -194,33 +199,30 @@ const ProjectTimelinePanel = ({
       color: progress > 75 ? "#7A9A6D" : progress > 40 ? "#D4A548" : "#C4654A",
       text: `${Math.round(progress)}% complete`,
     }
-  }, [project?.startDate, project?.endDate])
+  }, [project?.startDate, project?.endDate, today.diff])
 
   // Zoom-dependent timeline
-  const zoomProgress = useMemo(() => getZoomProgress(timelineZoom, project), [timelineZoom, project])
+  const zoomProgress = useMemo(
+    () => getZoomProgress(timelineZoom, project),
+    [timelineZoom, project]
+  )
   const timelineTicks = useMemo(
     () => getTimelineTicks(timelineZoom, project?.startDate, project?.endDate),
-    [timelineZoom, project?.startDate, project?.endDate],
+    [timelineZoom, project?.startDate, project?.endDate]
   )
 
   return (
     <div className="flex-1.5 pl-5 min-w-[380px]">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary">
-          Project Status & Timeline
-        </h2>
-        <div className="flex gap-1 bg-light-bg-hover dark:bg-dark-bg-hover p-0.5 rounded-lg">
+        <h2 className="text-sm font-bold text-text-primary">Project Status & Timeline</h2>
+        <div className="flex gap-1 bg-bg-hover p-0.5 rounded-lg">
           {ZOOM_OPTIONS.map((zoom) => (
             <button
               key={zoom}
               type="button"
               onClick={() => onZoomChange?.(zoom)}
-              className={`px-2.5 py-1 text-[10px] font-bold rounded-md transition-all ${
-                timelineZoom === zoom
-                  ? "bg-white dark:bg-dark-bg-secondary text-accent-primary shadow-sm"
-                  : "text-light-text-tertiary hover:text-light-text-primary"
-              }`}
+              className={`px-2.5 py-1 text-[10px] font-bold rounded-md transition-all ${timelineZoom === zoom ? "bg-white text-primary shadow-sm" : "text-light-text-tertiary hover:text-light-text-primary"}`}
             >
               {zoom.charAt(0).toUpperCase() + zoom.slice(1)}
             </button>
@@ -232,17 +234,17 @@ const ProjectTimelinePanel = ({
         {/* Zoom Timeline Section */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-light-text-secondary dark:text-dark-text-secondary">
+            <span className="text-[11px] font-bold text-text-secondary">
               {ZOOM_CONFIG[timelineZoom].label}
             </span>
-            <span className="text-[10px] font-bold text-accent-primary dark:text-accent-primary-light bg-accent-primary/5 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold text-primary bg-accent-primary/5 px-2 py-0.5 rounded-full">
               {zoomProgress.rangeLabel}
             </span>
           </div>
 
           {/* Timeline bar with tick marks */}
           <div className="relative">
-            <div className="h-2.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded-full relative overflow-hidden shadow-inner">
+            <div className="h-2.5 bg-bg-hover rounded-full relative overflow-hidden shadow-inner">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${zoomProgress.progress}%` }}
@@ -270,11 +272,7 @@ const ProjectTimelinePanel = ({
                   style={{ left: `${tick.position}%` }}
                 >
                   <span
-                    className={`text-[9px] font-bold leading-none ${
-                      tick.isToday
-                        ? "text-accent-primary dark:text-accent-primary-light"
-                        : "text-light-text-tertiary dark:text-dark-text-tertiary/60"
-                    }`}
+                    className={`text-[9px] font-bold leading-none ${tick.isToday ? "text-accent-primary dark:text-accent-primary-light" : "text-light-text-tertiary dark:text-dark-text-tertiary/60"}`}
                   >
                     {tick.label}
                   </span>
@@ -286,7 +284,7 @@ const ProjectTimelinePanel = ({
 
         {/* Status Breakdown Section */}
         <div className="flex flex-col gap-2 pt-2 border-t border-light-border/50 dark:border-dark-border/50">
-          <span className="text-[10px] uppercase tracking-wider font-extrabold text-light-text-tertiary dark:text-dark-text-tertiary/70 mb-1">
+          <span className="text-[10px] uppercase tracking-wider font-extrabold text-text-muted dark:text-dark-text-tertiary/70 mb-1">
             Status Breakdown
           </span>
           <div className="grid grid-cols-2 gap-x-6 gap-y-2">
@@ -301,14 +299,14 @@ const ProjectTimelinePanel = ({
               >
                 <div className="flex flex-col flex-1 gap-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-light-text-secondary dark:text-dark-text-secondary group-hover:text-accent-primary transition-colors">
+                    <span className="text-[11px] font-bold text-text-secondary group-hover:text-accent-primary transition-colors">
                       {phase.label}
                     </span>
-                    <span className="text-[10px] font-black text-light-text-primary dark:text-dark-text-primary">
+                    <span className="text-[10px] font-black text-text-primary">
                       {phase.text.split(" ")[0]}
                     </span>
                   </div>
-                  <div className="relative h-1.5 bg-light-bg-hover dark:bg-dark-bg-hover rounded-full overflow-hidden">
+                  <div className="relative h-1.5 bg-bg-hover rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${phase.width}%` }}

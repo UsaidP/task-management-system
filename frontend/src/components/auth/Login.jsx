@@ -1,8 +1,13 @@
+import {
+  EyeIcon as Eye,
+  EyeOffIcon as EyeOff,
+  LockIcon as Lock,
+  MailIcon as Mail,
+} from "@animateicons/react/lucide"
 import { motion } from "framer-motion"
+import { ArrowRightIcon as ArrowRight } from "lucide-react"
 import { useEffect, useId, useState } from "react"
 import toast from "react-hot-toast"
-import { EyeIcon as Eye, EyeOffIcon as EyeOff, LockIcon as Lock, MailIcon as Mail } from "@animateicons/react/lucide"
-import { ArrowRightIcon as ArrowRight } from "lucide-react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -76,28 +81,32 @@ export const Login = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
-      <div className="w-full max-w-md mx-auto px-4 sm:px-6 py-8 sm:py-12 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border border-light-border dark:border-dark-border">
+    <div className="auth-bg bg-bg-canvas min-h-screen">
+      <div className="w-full max-w-md mx-auto px-4 sm:px-6 py-8 sm:py-12 bg-bg-surface rounded-xl border border-border">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-6 sm:mb-8"
         >
-          <Link to="/" aria-label="TaskFlow Home" className="inline-flex flex-col items-center mb-6">
-            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-light-text-inverse mb-4 shadow-sm hover:scale-105 transition-transform">
+          <Link
+            to="/"
+            aria-label="TaskFlow Home"
+            className="inline-flex flex-col items-center mb-6"
+          >
+            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-text-inverse mb-4 shadow-sm hover:scale-105 transition-transform">
               <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-primary mb-2">
               Welcome Back
             </h1>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary text-base sm:text-lg">
+            <p className="text-text-secondary text-base sm:text-lg">
               Sign in to continue to TaskFlow.
             </p>
           </Link>
         </motion.div>
 
-        <div className="auth-card">
+        <div className="p-8 bg-bg-canvas border border-border rounded-2xl shadow-lg">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,7 +119,7 @@ export const Login = () => {
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                    <Mail className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                    <Mail className="text-text-muted w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
                   </div>
                   <input
                     type="text"
@@ -120,7 +129,7 @@ export const Login = () => {
                     onChange={handleChange}
                     value={formData.identifier}
                     required
-                    className={`input-field pl-11 ${errors.identifier ? "border-accent-danger" : ""}`}
+                    className={`w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all pl-11 ${errors.identifier ? "border-accent-danger" : ""}`}
                   />
                 </div>
                 {errors.identifier && <p className="input-error">{errors.identifier}</p>}
@@ -132,7 +141,7 @@ export const Login = () => {
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                    <Lock className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                    <Lock className="text-text-muted w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -142,19 +151,15 @@ export const Login = () => {
                     onChange={handleChange}
                     value={formData.password}
                     required
-                    className={`input-field pl-11 pr-11 ${errors.password ? "border-accent-danger" : ""}`}
+                    className={`w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all pl-11 pr-11 ${errors.password ? "border-accent-danger" : ""}`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded p-1"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded p-1"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
                 {errors.password && <p className="input-error">{errors.password}</p>}
@@ -164,7 +169,7 @@ export const Login = () => {
                 type="submit"
                 disabled={loading}
                 aria-busy={loading}
-                className="btn-primary group flex w-full items-center justify-center rounded-lg px-4 py-2.5 sm:py-3 text-sm sm:text-base disabled:cursor-not-allowed disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer group flex w-full items-center justify-center rounded-lg px-4 py-2.5 sm:py-3 text-sm sm:text-base disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-light-text-inverse" />
@@ -194,11 +199,11 @@ export const Login = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-6"
         >
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm">
+          <p className="text-text-secondary text-xs sm:text-sm">
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors font-medium"
+              className="text-primary hover:text-accent-primary-dark dark:hover:text-accent-primary transition-colors font-medium"
             >
               Sign up for free
             </Link>

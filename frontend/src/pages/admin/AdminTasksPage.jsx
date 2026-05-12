@@ -1,5 +1,5 @@
+import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "@animateicons/react/lucide"
 import { motion, useReducedMotion } from "framer-motion"
-import { ChevronLeftIcon, ChevronRightIcon, SearchIcon, XIcon } from "@animateicons/react/lucide"
 import { CalendarIcon, FilterIcon } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
@@ -83,13 +83,10 @@ export default function AdminTasksPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="w-48 h-10 rounded-xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary" />
-        <div className="h-14 rounded-2xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary" />
+        <div className="w-48 h-10 rounded-xl animate-pulse bg-bg-elevated" />
+        <div className="h-14 rounded-2xl animate-pulse bg-bg-elevated" />
         {[1, 2, 3, 4, 5].map((i) => (
-          <div
-            key={i}
-            className="h-16 rounded-xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary"
-          />
+          <div key={i} className="h-16 rounded-xl animate-pulse bg-bg-elevated" />
         ))}
       </div>
     )
@@ -105,21 +102,17 @@ export default function AdminTasksPage() {
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="font-serif text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+          <h1 className="font-serif text-2xl font-bold tracking-tight text-text-primary">
             All Tasks
           </h1>
-          <p className="mt-1 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="mt-1 text-sm text-text-secondary">
             {filtered.length} task{filtered.length !== 1 ? "s" : ""} found
           </p>
         </div>
         <button
           type="button"
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer ${
-            showFilters
-              ? "border-accent-primary/30 bg-accent-primary/10 text-accent-primary"
-              : "border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-          }`}
+          className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer ${showFilters ? "border-accent-primary/30 bg-accent-primary/10 text-accent-primary" : "border-light-border text-text-secondary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
         >
           <FilterIcon size={16} />
           Filters
@@ -131,13 +124,13 @@ export default function AdminTasksPage() {
         initial={reduceMotion ? {} : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-        className="p-4 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+        className="p-4 border shadow-sm rounded-2xl border-border bg-bg-surface"
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
             <Search
               size={18}
-              className="absolute text-sm -translate-y-1/2 left-3 top-1/2 text-light-text-tertiary dark:text-dark-text-tertiary"
+              className="absolute text-sm -translate-y-1/2 left-3 top-1/2 text-text-muted"
             />
             <input
               type="text"
@@ -147,7 +140,7 @@ export default function AdminTasksPage() {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="w-full rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary py-2.5 pl-10 pr-4 text-sm text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
+              className="w-full rounded-xl border border-border bg-bg-canvas py-2.5 pl-10 pr-4 text-sm text-text-primary placeholder:text-light-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
             />
           </div>
 
@@ -159,7 +152,7 @@ export default function AdminTasksPage() {
                   setStatusFilter(e.target.value)
                   setPage(1)
                 }}
-                className="rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary px-3 py-2.5 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
+                className="rounded-xl border border-border bg-bg-canvas px-3 py-2.5 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
               >
                 <option value="all">All Status</option>
                 <option value="todo">To Do</option>
@@ -175,7 +168,7 @@ export default function AdminTasksPage() {
                   setPriorityFilter(e.target.value)
                   setPage(1)
                 }}
-                className="rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-primary px-3 py-2.5 text-sm text-light-text-primary dark:text-dark-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
+                className="rounded-xl border border-border bg-bg-canvas px-3 py-2.5 text-sm text-text-primary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all duration-200"
               >
                 <option value="all">All Priority</option>
                 <option value="low">Low</option>
@@ -190,7 +183,7 @@ export default function AdminTasksPage() {
             <button
               type="button"
               onClick={clearFilters}
-              className="flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-sm font-medium text-accent-danger hover:bg-accent-danger/10 transition-colors duration-150 cursor-pointer"
+              className="flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-sm font-medium text-danger hover:bg-accent-danger/10 transition-colors duration-150 cursor-pointer"
             >
               <XIcon size={14} />
               Clear
@@ -204,7 +197,7 @@ export default function AdminTasksPage() {
         initial={reduceMotion ? {} : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        className="overflow-hidden border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+        className="overflow-hidden border shadow-sm rounded-2xl border-border bg-bg-surface"
       >
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -213,7 +206,7 @@ export default function AdminTasksPage() {
                 {["Task", "Project", "Assignee", "Status", "Priority", "Due Date"].map((h) => (
                   <th
                     key={h}
-                    className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-light-text-tertiary dark:text-dark-text-tertiary"
+                    className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-text-muted"
                   >
                     {h}
                   </th>
@@ -223,10 +216,7 @@ export default function AdminTasksPage() {
             <tbody className="divide-y divide-light-border/40 dark:divide-dark-border/40">
               {paginated.length === 0 && (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="px-6 py-12 text-sm text-center text-light-text-tertiary dark:text-dark-text-tertiary"
-                  >
+                  <td colSpan={6} className="px-6 py-12 text-sm text-center text-text-muted">
                     No tasks found
                   </td>
                 </tr>
@@ -242,13 +232,13 @@ export default function AdminTasksPage() {
                     <td className="px-6 py-3.5">
                       <Link
                         to={`/project/${task.project?._id}`}
-                        className="text-sm font-medium transition-colors duration-150 text-accent-primary hover:text-accent-primary-dark"
+                        className="text-sm font-medium transition-colors duration-150 text-primary hover:text-accent-primary-dark"
                       >
                         {task.title}
                       </Link>
                     </td>
                     <td className="px-6 py-3.5">
-                      <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                      <span className="text-sm text-text-secondary">
                         {task.project?.name || "—"}
                       </span>
                     </td>
@@ -259,27 +249,27 @@ export default function AdminTasksPage() {
                           alt={assignee.fullname || "User"}
                           size="sm"
                         />
-                        <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+                        <span className="text-sm text-text-secondary">
                           {assignee.fullname || "Unassigned"}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-3.5">
                       <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${statusStyles[task.status] || "bg-light-bg-tertiary text-light-text-tertiary dark:bg-dark-bg-tertiary dark:text-dark-text-tertiary"}`}
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${statusStyles[task.status] || "bg-light-bg-tertiary text-text-muted dark:text-dark-text-tertiary"}`}
                       >
                         {task.status?.replace("-", " ")}
                       </span>
                     </td>
                     <td className="px-6 py-3.5">
                       <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${priorityStyles[task.priority] || "bg-light-bg-tertiary text-light-text-tertiary dark:bg-dark-bg-tertiary dark:text-dark-text-tertiary"}`}
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${priorityStyles[task.priority] || "bg-light-bg-tertiary text-text-muted dark:text-dark-text-tertiary"}`}
                       >
                         {task.priority}
                       </span>
                     </td>
                     <td className="px-6 py-3.5">
-                      <div className="flex items-center gap-1.5 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                      <div className="flex items-center gap-1.5 text-sm text-text-muted">
                         <CalendarIcon size={14} />
                         {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "—"}
                       </div>
@@ -294,7 +284,7 @@ export default function AdminTasksPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-3 border-t border-light-border/60 dark:border-dark-border/60">
-            <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+            <p className="text-sm text-text-muted">
               Showing {(page - 1) * ITEMS_PER_PAGE + 1}–
               {Math.min(page * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
             </p>
@@ -303,7 +293,7 @@ export default function AdminTasksPage() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
+                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-border text-text-secondary hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
               >
                 <ChevronLeftIcon size={16} />
               </button>
@@ -313,19 +303,11 @@ export default function AdminTasksPage() {
                   const showEllipsis = idx > 0 && p - arr[idx - 1] > 1
                   return (
                     <span key={p} className="flex items-center">
-                      {showEllipsis && (
-                        <span className="px-1 text-light-text-tertiary dark:text-dark-text-tertiary">
-                          …
-                        </span>
-                      )}
+                      {showEllipsis && <span className="px-1 text-text-muted">…</span>}
                       <button
                         type="button"
                         onClick={() => setPage(p)}
-                        className={`flex items-center justify-center w-8 h-8 text-sm font-medium rounded-lg cursor-pointer transition-all duration-150 ${
-                          p === page
-                            ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/20"
-                            : "text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                        }`}
+                        className={`flex items-center justify-center w-8 h-8 text-sm font-medium rounded-lg cursor-pointer transition-all duration-150 ${p === page ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/20" : "text-light-text-secondary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
                       >
                         {p}
                       </button>
@@ -336,7 +318,7 @@ export default function AdminTasksPage() {
                 type="button"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-light-border dark:border-dark-border text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
+                className="flex items-center justify-center w-8 h-8 text-sm transition-all duration-150 border rounded-lg cursor-pointer border-border text-text-secondary hover:bg-bg-hover disabled:cursor-not-allowed disabled:opacity-40 active:scale-95"
               >
                 <ChevronRightIcon size={16} />
               </button>

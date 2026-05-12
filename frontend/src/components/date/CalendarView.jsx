@@ -1,8 +1,8 @@
+import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@animateicons/react/lucide"
 import dayjs from "dayjs"
 import { AnimatePresence, motion } from "framer-motion"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "@animateicons/react/lucide"
 import { CalendarIcon } from "lucide-react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
@@ -28,20 +28,20 @@ const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 const CalendarSkeleton = () => (
   <div className="flex flex-col h-full">
-    <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border border-light-border dark:border-dark-border">
+    <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full bg-bg-surface rounded-xl border border-border">
       <div>
         <SkeletonText width="w-32 sm:w-40" height="h-7 sm:h-8" className="mb-1" />
         <SkeletonText width="w-48 sm:w-64" height="h-4" />
       </div>
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <Skeleton className="w-40 h-9 rounded-lg" />
-        <Skeleton className="w-20 h-9 rounded-lg" />
-        <Skeleton className="w-9 h-9 rounded-lg" />
-        <Skeleton className="w-32 h-9 rounded-lg" />
-        <Skeleton className="w-9 h-9 rounded-lg" />
+        <Skeleton className="w-40 rounded-lg h-9" />
+        <Skeleton className="w-20 rounded-lg h-9" />
+        <Skeleton className="rounded-lg w-9 h-9" />
+        <Skeleton className="w-32 rounded-lg h-9" />
+        <Skeleton className="rounded-lg w-9 h-9" />
       </div>
     </div>
-    <div className="flex-1 p-4 sm:p-6 overflow-auto">
+    <div className="flex-1 p-4 overflow-auto sm:p-6">
       <div className="grid grid-cols-7 gap-px mb-2">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day} className="p-2 text-center">
@@ -49,9 +49,9 @@ const CalendarSkeleton = () => (
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-px bg-light-border dark:bg-dark-border rounded-xl overflow-hidden border border-light-border dark:border-dark-border">
+      <div className="grid grid-cols-7 gap-px overflow-hidden border bg-light-border dark:bg-dark-border rounded-xl border-border">
         {Array.from({ length: 35 }).map((_, i) => (
-          <div key={i} className="min-h-[100px] p-2 bg-light-bg-primary dark:bg-dark-bg-secondary">
+          <div key={i} className="min-h-[100px] p-2 bg-bg-canvas">
             <SkeletonText width="w-6" height="h-3" className="mb-2" />
             <div className="space-y-1">
               <Skeleton className="w-full h-5 rounded" />
@@ -96,7 +96,7 @@ const CalendarView = () => {
   useEffect(() => {
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchData])
 
   const filteredTasks = useMemo(() => {
     let result = tasks
@@ -200,42 +200,32 @@ const CalendarView = () => {
   }, [currentDate])
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full rounded-xl bg-bg-surface">
       {isLoading ? (
         <CalendarSkeleton />
       ) : (
         <>
           {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border border-light-border dark:border-dark-border">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full rounded-xl border ">
             <div>
-              <h1 className="mb-1 font-serif text-2xl font-bold sm:text-3xl text-light-text-primary dark:text-dark-text-primary">
+              <h1 className="mb-1 font-serif text-2xl font-bold sm:text-3xl text-text-primary">
                 Calendar
               </h1>
-              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                View and manage your tasks by date
-              </p>
+              <p className="text-sm text-text-secondary">View and manage your tasks by date</p>
             </div>
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <div className="flex items-center gap-1 p-1 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+              <div className="flex items-center gap-1 p-1 rounded-lg bg-bg-surface">
                 <button
                   type="button"
                   onClick={() => setViewMode("month")}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
-                    viewMode === "month"
-                      ? "bg-accent-primary text-white shadow-sm"
-                      : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                  }`}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${viewMode === "month" ? "bg-accent-primary text-white shadow-sm" : "text-light-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
                 >
                   Month
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode("week")}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
-                    viewMode === "week"
-                      ? "bg-accent-primary text-white shadow-sm"
-                      : "text-light-text-secondary dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                  }`}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${viewMode === "week" ? "bg-accent-primary text-white shadow-sm" : "text-light-text-secondary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
                 >
                   Week
                 </button>
@@ -244,7 +234,7 @@ const CalendarView = () => {
               <button
                 type="button"
                 onClick={() => setCurrentDate(dayjs())}
-                className="btn-secondary text-sm px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                className="bg-bg-surface hover:bg-bg-hover text-text-primary border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer text-sm px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 Today
               </button>
@@ -252,11 +242,11 @@ const CalendarView = () => {
                 type="button"
                 onClick={() => setCurrentDate(currentDate.add(-1, viewMode))}
                 aria-label={`Previous ${viewMode}`}
-                className="btn-ghost p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                className="bg-transparent hover:bg-bg-hover text-text-secondary focus:outline-none transition-all cursor-pointer p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
               </button>
-              <span className="text-sm sm:text-base font-semibold text-light-text-primary dark:text-dark-text-primary min-w-[180px] sm:min-w-[220px] text-center">
+              <span className="text-sm sm:text-base font-semibold text-text-primary min-w-[180px] sm:min-w-[220px] text-center">
                 {viewMode === "month"
                   ? currentDate.format("MMMM YYYY")
                   : `${currentDate.startOf("week").format("MMM D")} – ${currentDate.endOf("week").format("MMM D, YYYY")}`}
@@ -265,7 +255,7 @@ const CalendarView = () => {
                 type="button"
                 onClick={() => setCurrentDate(currentDate.add(1, viewMode))}
                 aria-label={`Next ${viewMode}`}
-                className="btn-ghost p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                className="bg-transparent hover:bg-bg-hover text-text-secondary focus:outline-none transition-all cursor-pointer p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
               </button>
@@ -275,7 +265,7 @@ const CalendarView = () => {
                   setSelectedDate(dayjs())
                   setIsModalOpen(true)
                 }}
-                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-accent-primary text-white text-sm sm:text-base font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-primary text-white text-sm sm:text-base font-medium hover:bg-accent-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 <PlusIcon className="w-4 h-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Add Task</span>
@@ -284,13 +274,13 @@ const CalendarView = () => {
             </div>
           </div>
 
-          <div className="flex-1 p-4 overflow-y-auto sm:p-6 bg-light-bg-primary dark:bg-dark-bg-primary">
+          <div className="flex-1 p-4 overflow-y-auto sm:p-6 bg-surface">
             <div className="max-w-[1400px] mx-auto">
               {viewMode === "week" ? (
-                <div className="overflow-hidden overflow-x-auto border bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border-light-border dark:border-dark-border">
-                  <div className="grid grid-cols-7 text-center text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide border-b border-light-border dark:border-dark-border min-w-[700px]">
+                <div className="overflow-hidden overflow-x-auto border bg-bg-surface rounded-xl border-border">
+                  <div className="grid grid-cols-7 text-center text-xs font-semibold text-text-muted uppercase tracking-wide border-b border-border min-w-[700px]">
                     {weekDays.map((day) => (
-                      <div key={day} className="py-3 bg-light-bg-hover dark:bg-dark-bg-hover">
+                      <div key={day} className="py-3 bg-bg-hover">
                         {day}
                       </div>
                     ))}
@@ -319,18 +309,10 @@ const CalendarView = () => {
                           tabIndex={0}
                           role="button"
                           aria-label={`View tasks for ${date.format("MMMM D, YYYY")}`}
-                          className={`min-h-[200px] sm:min-h-[300px] p-2 border-b border-r border-light-border dark:border-dark-border cursor-pointer transition-colors last:border-r-0 ${
-                            isToday
-                              ? "bg-accent-primary/10 dark:bg-accent-primary/20"
-                              : "hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/30"
-                          }`}
+                          className={`min-h-[200px] sm:min-h-[300px] p-2 border-b border-r border-border cursor-pointer transition-colors last:border-r-0 ${isToday ? "bg-accent-primary/10 dark:bg-accent-primary/20" : "hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/30"}`}
                         >
                           <div
-                            className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-xs sm:text-sm font-medium mb-2 ${
-                              isToday
-                                ? "bg-accent-primary text-white"
-                                : "text-light-text-primary dark:text-dark-text-primary"
-                            }`}
+                            className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-xs sm:text-sm font-medium mb-2 ${isToday ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
                           >
                             {dayNum}
                           </div>
@@ -350,10 +332,7 @@ const CalendarView = () => {
                                 tabIndex={0}
                                 role="button"
                                 aria-label={`Task: ${task.title}`}
-                                className={`text-[9px] sm:text-xs p-1 rounded-lg truncate cursor-pointer transition-all hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
-                                  priorityStyles[task.priority] ||
-                                  "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
-                                } ${statusBorderClasses[task.status] || ""}`}
+                                className={`text-[9px] sm:text-xs p-1 rounded-lg truncate cursor-pointer transition-all hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${priorityStyles[task.priority] || "bg-light-bg-tertiary text-text-secondary dark:text-dark-text-secondary"} ${statusBorderClasses[task.status] || ""}`}
                               >
                                 <div className="font-medium truncate">{task.title}</div>
                               </motion.div>
@@ -365,13 +344,10 @@ const CalendarView = () => {
                   </div>
                 </div>
               ) : (
-                <div className="overflow-hidden overflow-x-auto border bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border-light-border dark:border-dark-border">
-                  <div className="grid grid-cols-7 text-center text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary uppercase tracking-wide border-b border-light-border dark:border-dark-border min-w-[700px]">
+                <div className="overflow-hidden overflow-x-auto border bg-bg-surface rounded-xl border-border">
+                  <div className="grid grid-cols-7 text-center text-xs font-semibold text-text-muted uppercase tracking-wide border-b border-border min-w-[700px]">
                     {weekDays.map((day) => (
-                      <div
-                        key={day}
-                        className="py-2 sm:py-3 bg-light-bg-hover dark:bg-dark-bg-hover"
-                      >
+                      <div key={day} className="py-2 sm:py-3 bg-bg-hover">
                         {day}
                       </div>
                     ))}
@@ -382,7 +358,7 @@ const CalendarView = () => {
                         return (
                           <div
                             key={`empty-${index}`}
-                            className="min-h-[100px] sm:min-h-[120px] bg-light-bg-primary dark:bg-dark-bg-primary/30"
+                            className="min-h-[100px] sm:min-h-[120px] bg-bg-canvas dark:bg-dark-bg-primary/30"
                           />
                         )
                       }
@@ -409,18 +385,10 @@ const CalendarView = () => {
                           tabIndex={0}
                           role="button"
                           aria-label={`View tasks for ${currentDate.date(item.day).format("MMMM D, YYYY")}`}
-                          className={`relative min-h-[100px] sm:min-h-[120px] p-1.5 sm:p-2 border-b border-r border-light-border dark:border-dark-border cursor-pointer transition-colors last:border-r-0 ${
-                            isToday
-                              ? "bg-accent-primary/10 dark:bg-accent-primary/20"
-                              : "hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/30"
-                          }`}
+                          className={`relative min-h-[100px] sm:min-h-[120px] p-1.5 sm:p-2 border-b border-r border-border cursor-pointer transition-colors last:border-r-0 ${isToday ? "bg-accent-primary/10 dark:bg-accent-primary/20" : "hover:bg-light-bg-hover/50 dark:hover:bg-dark-bg-hover/30"}`}
                         >
                           <div
-                            className={`flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full text-xs sm:text-sm font-medium mb-1 sm:mb-2 ${
-                              isToday
-                                ? "bg-accent-primary text-white"
-                                : "text-light-text-primary dark:text-dark-text-primary"
-                            }`}
+                            className={`flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full text-xs sm:text-sm font-medium mb-1 sm:mb-2 ${isToday ? "bg-accent-primary text-white" : "text-light-text-primary dark:text-dark-text-primary"}`}
                           >
                             {item.day}
                           </div>
@@ -440,16 +408,13 @@ const CalendarView = () => {
                                 tabIndex={0}
                                 role="button"
                                 aria-label={`Task: ${task.title}`}
-                                className={`text-[9px] sm:text-xs p-1 rounded-lg truncate cursor-pointer transition-all hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
-                                  priorityStyles[task.priority] ||
-                                  "bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary"
-                                } ${statusBorderClasses[task.status] || ""}`}
+                                className={`text-[9px] sm:text-xs p-1 rounded-lg truncate cursor-pointer transition-all hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${priorityStyles[task.priority] || "bg-light-bg-tertiary text-text-secondary dark:text-dark-text-secondary"} ${statusBorderClasses[task.status] || ""}`}
                               >
                                 <div className="font-medium truncate">{task.title}</div>
                               </motion.div>
                             ))}
                             {dayTasks.length > 3 && (
-                              <div className="text-[9px] sm:text-xs text-light-text-tertiary dark:text-dark-text-tertiary pl-1">
+                              <div className="text-[9px] sm:text-xs text-text-muted pl-1">
                                 +{dayTasks.length - 3} more
                               </div>
                             )}
@@ -463,9 +428,9 @@ const CalendarView = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 4 }}
                                 transition={{ duration: 0.15 }}
-                                className="absolute z-40 w-56 p-3 mb-2 overflow-y-auto -translate-x-1/2 border rounded-lg shadow-lg pointer-events-auto bottom-full left-1/2 bg-light-bg-secondary dark:bg-dark-bg-secondary border-light-border dark:border-dark-border max-h-64"
+                                className="absolute z-40 w-56 p-3 mb-2 overflow-y-auto -translate-x-1/2 border rounded-lg shadow-lg pointer-events-auto bottom-full left-1/2 bg-bg-surface border-border max-h-64"
                               >
-                                <h3 className="mb-2 text-xs font-semibold text-light-text-primary dark:text-dark-text-primary">
+                                <h3 className="mb-2 text-xs font-semibold text-text-primary">
                                   {currentDate.date(item.day).format("MMM D")}
                                 </h3>
                                 <div className="space-y-1.5">
@@ -478,14 +443,12 @@ const CalendarView = () => {
                                         setSelectedTask(task)
                                         setHoveredDay(null)
                                       }}
-                                      className={`p-1.5 rounded cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 w-full text-left ${
-                                        priorityStyles[task.priority] || ""
-                                      }`}
+                                      className={`p-1.5 rounded cursor-pointer hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 w-full text-left ${priorityStyles[task.priority] || ""}`}
                                     >
-                                      <div className="text-xs font-medium truncate text-light-text-primary dark:text-dark-text-primary">
+                                      <div className="text-xs font-medium truncate text-text-primary">
                                         {task.title}
                                       </div>
-                                      <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary">
+                                      <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-text-muted">
                                         <span className="capitalize">
                                           {task.status?.replace("-", " ")}
                                         </span>
@@ -508,26 +471,22 @@ const CalendarView = () => {
               {isLoading && (
                 <div className="flex items-center justify-center py-12">
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-10 h-10 rounded-full border-3 border-accent-primary border-t-transparent animate-spin" />
-                    <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-                      Loading tasks...
-                    </p>
+                    <div className="w-10 h-10 rounded-full border-3 border-primary border-t-transparent animate-spin" />
+                    <p className="text-sm text-text-muted">Loading tasks...</p>
                   </div>
                 </div>
               )}
 
               {!isLoading && filteredTasks.length === 0 && (
                 <div className="flex flex-col items-center justify-center px-4 py-16">
-                  <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover">
+                  <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-bg-hover">
                     <CalendarIcon
-                      className="w-8 h-8 text-light-text-tertiary opacity-40"
+                      className="w-8 h-8 text-text-muted opacity-40"
                       aria-hidden="true"
                     />
                   </div>
-                  <p className="mb-1 text-lg font-medium text-light-text-primary dark:text-dark-text-primary">
-                    No tasks found
-                  </p>
-                  <p className="mt-1 text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <p className="mb-1 text-lg font-medium text-text-primary">No tasks found</p>
+                  <p className="mt-1 text-sm text-text-muted">
                     Create a task to see it on the calendar
                   </p>
                 </div>

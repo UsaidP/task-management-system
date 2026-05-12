@@ -1,25 +1,27 @@
+import {
+  CircleCheckIcon,
+  LayersIcon,
+  PlusIcon,
+  TriangleAlertIcon,
+  UserPlusIcon,
+  UsersIcon,
+  ZapIcon,
+} from "@animateicons/react/lucide"
+import { ClockIcon } from "lucide-react"
 import { useState } from "react"
 import toast from "react-hot-toast"
-import { TriangleAlertIcon, CircleCheckIcon, LayersIcon, PlusIcon, UserPlusIcon, UsersIcon, ZapIcon } from "@animateicons/react/lucide"
-import { ClockIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import CreateTaskModal from "../../task/CreateTaskModal"
 
 const StatCard = ({ icon: Icon, label, value, color, bgGradient, trend }) => (
-  <div className="group relative overflow-hidden rounded-xl border border-light-border bg-light-bg-secondary p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-dark-border dark:bg-dark-bg-tertiary">
+  <div className="group relative overflow-hidden rounded-xl border border-border bg-bg-surface p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
     <div className="flex items-start justify-between">
       <div className="flex-1">
-        <p className="text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary">
-          {label}
-        </p>
-        <p className="mt-2 text-3xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
-          {value ?? 0}
-        </p>
+        <p className="text-sm font-medium text-text-secondary">{label}</p>
+        <p className="mt-2 text-3xl font-bold tracking-tight text-text-primary">{value ?? 0}</p>
         {trend !== undefined && (
           <p
-            className={`mt-1 flex items-center gap-1 text-xs font-medium ${
-              trend >= 0 ? "text-accent-success" : "text-accent-danger"
-            }`}
+            className={`mt-1 flex items-center gap-1 text-xs font-medium ${trend >= 0 ? "text-accent-success" : "text-accent-danger"}`}
           >
             {trend >= 0 ? "↑" : "↓"} {Math.abs(trend)}% from last week
           </p>
@@ -56,15 +58,11 @@ const QuickAction = ({
       <Icon className={`h-5 w-5 ${color}`} />
     </div>
     <div className="flex-1">
-      <span className="block text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
-        {label}
-      </span>
-      <span className="mt-0.5 block text-xs text-light-text-secondary dark:text-dark-text-secondary">
-        {description}
-      </span>
+      <span className="block text-sm font-semibold text-text-primary">{label}</span>
+      <span className="mt-0.5 block text-xs text-text-secondary">{description}</span>
     </div>
     <svg
-      className="absolute right-4 top-4 h-4 w-4 text-light-text-tertiary transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-accent-primary dark:text-dark-text-tertiary dark:group-hover:text-accent-primary"
+      className="absolute right-4 top-4 h-4 w-4 text-text-muted transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-accent-primary dark:group-hover:text-accent-primary"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -84,7 +82,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
     setIsCreateModalOpen(true)
   }
 
-  const handleTaskCreated = (newTask) => {
+  const handleTaskCreated = (_newTask) => {
     toast.success("Task created successfully!")
     setIsCreateModalOpen(false)
     // Refresh the stats
@@ -137,36 +135,30 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
 
       {/* Secondary Stats */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <div className="p-4 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
+        <div className="p-4 border shadow-sm rounded-xl border-border bg-bg-surface">
           <div className="flex items-center gap-2">
-            <UsersIcon className="w-4 h-4 text-accent-info" />
-            <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-              Members
-            </span>
+            <UsersIcon className="w-4 h-4 text-info" />
+            <span className="text-sm text-text-secondary">Members</span>
           </div>
-          <p className="mt-2 text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+          <p className="mt-2 text-2xl font-bold tracking-tight text-text-primary">
             {stats?.memberCount ?? 0}
           </p>
         </div>
-        <div className="p-4 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
+        <div className="p-4 border shadow-sm rounded-xl border-border bg-bg-surface">
           <div className="flex items-center gap-2">
-            <ZapIcon className="w-4 h-4 text-accent-warning" />
-            <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-              Active Sprints
-            </span>
+            <ZapIcon className="w-4 h-4 text-warning" />
+            <span className="text-sm text-text-secondary">Active Sprints</span>
           </div>
-          <p className="mt-2 text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+          <p className="mt-2 text-2xl font-bold tracking-tight text-text-primary">
             {stats?.sprintCount ?? 0}
           </p>
         </div>
-        <div className="p-4 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
+        <div className="p-4 border shadow-sm rounded-xl border-border bg-bg-surface">
           <div className="flex items-center gap-2">
             <CircleCheckIcon className="w-4 h-4 text-accent-purple" />
-            <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-              Under Review
-            </span>
+            <span className="text-sm text-text-secondary">Under Review</span>
           </div>
-          <p className="mt-2 text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+          <p className="mt-2 text-2xl font-bold tracking-tight text-text-primary">
             {taskStatus["under-review"] ?? 0}
           </p>
         </div>
@@ -174,15 +166,13 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
 
       {/* Progress Bar */}
       {stats?.totalTasks > 0 && (
-        <div className="p-5 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
-          <h3 className="mb-3 text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
-            Task Progress
-          </h3>
-          <div className="flex h-3 overflow-hidden rounded-full bg-light-bg-primary dark:bg-dark-bg-primary">
+        <div className="p-5 border shadow-sm rounded-xl border-border bg-bg-surface">
+          <h3 className="mb-3 text-sm font-semibold text-text-primary">Task Progress</h3>
+          <div className="flex h-3 overflow-hidden rounded-full bg-bg-canvas">
             {stats.totalTasks > 0 && (
               <>
                 <div
-                  className="transition-all duration-300 bg-accent-success"
+                  className="transition-all duration-300 bg-success"
                   style={{ width: `${(taskStatus.completed / stats.totalTasks) * 100}%` }}
                   title={`Completed: ${taskStatus.completed}`}
                   role="progressbar"
@@ -192,7 +182,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
                   aria-label={`Completed: ${taskStatus.completed}`}
                 />
                 <div
-                  className="transition-all duration-300 bg-accent-warning"
+                  className="transition-all duration-300 bg-warning"
                   style={{ width: `${(taskStatus["in-progress"] / stats.totalTasks) * 100}%` }}
                   title={`In Progress: ${taskStatus["in-progress"]}`}
                   role="progressbar"
@@ -202,7 +192,7 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
                   aria-label={`In Progress: ${taskStatus["in-progress"]}`}
                 />
                 <div
-                  className="transition-all duration-300 bg-accent-primary"
+                  className="transition-all duration-300 bg-primary"
                   style={{ width: `${(taskStatus["under-review"] / stats.totalTasks) * 100}%` }}
                   title={`Under Review: ${taskStatus["under-review"]}`}
                   role="progressbar"
@@ -224,17 +214,17 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
               </>
             )}
           </div>
-          <div className="flex flex-wrap mt-3 text-xs gap-x-4 gap-y-2 text-light-text-secondary dark:text-dark-text-secondary">
+          <div className="flex flex-wrap mt-3 text-xs gap-x-4 gap-y-2 text-text-secondary">
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-accent-success" /> Completed (
+              <span className="h-2.5 w-2.5 rounded-full bg-success" /> Completed (
               {taskStatus.completed})
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-accent-warning" /> In Progress (
+              <span className="h-2.5 w-2.5 rounded-full bg-warning" /> In Progress (
               {taskStatus["in-progress"]})
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-accent-primary" /> Under Review (
+              <span className="h-2.5 w-2.5 rounded-full bg-primary" /> Under Review (
               {taskStatus["under-review"]})
             </span>
             <span className="flex items-center gap-1.5">
@@ -246,13 +236,9 @@ const ProjectAdminOverview = ({ stats, projectId, onTabChange }) => {
       )}
 
       {/* Quick Actions */}
-      <div className="p-5 border shadow-sm rounded-xl border-light-border bg-light-bg-secondary dark:border-dark-border dark:bg-dark-bg-tertiary">
-        <h3 className="mb-1 text-sm font-semibold text-light-text-primary dark:text-dark-text-primary">
-          Quick Actions
-        </h3>
-        <p className="mb-4 text-xs text-light-text-secondary dark:text-dark-text-secondary">
-          Common tasks to get you started
-        </p>
+      <div className="p-5 border shadow-sm rounded-xl border-border bg-bg-surface">
+        <h3 className="mb-1 text-sm font-semibold text-text-primary">Quick Actions</h3>
+        <p className="mb-4 text-xs text-text-secondary">Common tasks to get you started</p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <QuickAction
             icon={PlusIcon}

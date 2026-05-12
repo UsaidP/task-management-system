@@ -66,17 +66,14 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="w-full max-w-lg p-8 bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-2xl shadow-xl dark:shadow-dark-lg"
+            className="w-full max-w-lg p-8 bg-bg-canvas border border-border rounded-2xl shadow-xl dark:shadow-dark-lg"
           >
-            <h2 className="mb-6 text-2xl font-bold text-center text-light-text-primary dark:text-dark-text-primary">
+            <h2 className="mb-6 text-2xl font-bold text-center text-text-primary">
               Create New Project
             </h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
-                >
+                <label htmlFor="name" className="block text-sm font-medium text-text-primary">
                   Project Name
                 </label>
                 <input
@@ -85,13 +82,13 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="input-field"
+                  className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 />
               </div>
               <div>
                 <label
                   htmlFor="description"
-                  className="block text-sm font-medium text-light-text-primary dark:text-dark-text-primary"
+                  className="block text-sm font-medium text-text-primary"
                 >
                   Description
                 </label>
@@ -101,18 +98,22 @@ const CreateProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
                   onChange={(e) => setDescription(e.target.value)}
                   rows="4"
                   required
-                  className="input-field"
+                  className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                 />
               </div>
-              {error && <p className="text-sm text-accent-danger">{error}</p>}
+              {error && <p className="text-sm text-danger">{error}</p>}
               <div className="flex items-center justify-end space-x-4">
-                <button type="button" onClick={onClose} className="btn-secondary text-sm">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="bg-bg-surface flex items-center px-4 py-2 rounded-xl hover:bg-bg-hover text-text-primary border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer text-sm"
+                >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn-primary text-sm disabled:opacity-50"
+                  className="bg-primary flex items-center px-4 py-2 rounded-xl hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer text-sm disabled:opacity-50"
                 >
                   {loading ? "Creating..." : "Create Project"}
                 </button>

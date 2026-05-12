@@ -1,37 +1,32 @@
-
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import { memo, useEffect, useId, useState } from "react"
 import {
   CheckIcon,
-
   ChevronDownIcon as FiChevronDown,
   GlobeIcon as FiGlobe,
   DashboardIcon as FiLayout,
   MoonIcon as FiMoon,
-  PaperclipIcon,
   LayoutGridIcon as FiTrello,
   UsersIcon as FiUsers,
   ZapIcon as FiZap,
 } from "@animateicons/react/lucide"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import {
   ArrowDownIcon,
   ArrowRightIcon,
   BriefcaseIcon as FiBriefcase,
   CalendarIcon as FiCalendar,
   ListIcon as FiList,
-  MessageCircleIcon,
-  ShieldIcon,
   TargetIcon as FiTarget,
 } from "lucide-react"
+import { memo, useEffect, useId, useState } from "react"
 import { Link } from "react-router-dom"
 import { Hero3D } from "../components/landing-page/Hero3D"
 
 import {
+  faqData,
   featureData,
   pricingData,
   teamTypes,
   testimonialData,
-  faqData,
 } from "../components/landing-page/landingPageComponent.js"
 
 // ─── Animation Variants ──────────────────────────────────────────
@@ -77,21 +72,24 @@ const Ticker = () => {
         transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
       >
         {[...Array(2)].map((_, i) => (
-          <div key={i} className="flex items-center gap-12 text-[#8BAF88]/70 text-sm font-medium tracking-widest uppercase">
+          <div
+            key={i}
+            className="flex items-center gap-12 text-[#8BAF88]/70 text-sm font-medium tracking-widest uppercase"
+          >
             <span>Join 10k+ Teams</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]" />
             <span>Zero Learning Curve</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]" />
             <span>Shipped in 30s</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]" />
             <span>Made for Makers</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]" />
             <span>Join 10k+ Teams</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]" />
             <span>Zero Learning Curve</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]" />
             <span>Shipped in 30s</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E8603A]" />
             <span>Made for Makers</span>
           </div>
         ))}
@@ -112,9 +110,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-[#08080F]/90 backdrop-blur-md border-b border-white/5 shadow-sm py-3" : "bg-transparent py-5"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#08080F]/90 backdrop-blur-md border-b border-white/5 shadow-sm py-3" : "bg-transparent py-5"}`}
       aria-label="Main navigation"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
@@ -162,7 +158,12 @@ const Hero = ({ variants, reduced }) => (
     />
 
     <div className="relative z-10 max-w-5xl px-4 mx-auto text-center sm:px-6 pointer-events-none pt-24 pb-16">
-      <motion.div variants={variants} initial="hidden" animate="visible" className="pointer-events-auto">
+      <motion.div
+        variants={variants}
+        initial="hidden"
+        animate="visible"
+        className="pointer-events-auto"
+      >
         <motion.div
           className="inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full border backdrop-blur-md"
           style={{
@@ -173,10 +174,7 @@ const Hero = ({ variants, reduced }) => (
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduced ? 0 : 0.5, delay: 0.1 }}
         >
-          <span
-            className="w-2 h-2 rounded-full bg-[#E8603A] animate-pulse"
-            aria-hidden="true"
-          />
+          <span className="w-2 h-2 rounded-full bg-[#E8603A] animate-pulse" aria-hidden="true" />
           <span className="text-xs font-semibold uppercase tracking-wider text-[#E8603A]">
             TaskFlow 2.0 is here
           </span>
@@ -246,7 +244,10 @@ const Features = ({ variants, id }) => (
         className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-3 bg-white/5 border border-white/5 rounded-3xl overflow-hidden"
       >
         {featureData.map((feature) => (
-          <div key={feature.title} className="bg-[#10101A] p-8 hover:bg-[#151522] transition-colors">
+          <div
+            key={feature.title}
+            className="bg-[#10101A] p-8 hover:bg-[#151522] transition-colors"
+          >
             <div className="w-12 h-12 rounded-2xl bg-[#E8603A]/10 flex items-center justify-center mb-6">
               <SectionIcon name={feature.icon} className="w-6 h-6 text-[#E8603A]" />
             </div>
@@ -293,12 +294,8 @@ const Teams = ({ variants, id }) => {
               <div className="w-16 h-16 rounded-full bg-[#E8603A]/5 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <SectionIcon name={team.icon} className="w-8 h-8 text-[#E8603A]" />
               </div>
-              <h3 className="mb-3 text-lg font-serif font-bold text-[#F5EDE0]">
-                {team.label}
-              </h3>
-              <p className="text-[#F5EDE0]/60 font-light">
-                {team.description}
-              </p>
+              <h3 className="mb-3 text-lg font-serif font-bold text-[#F5EDE0]">{team.label}</h3>
+              <p className="text-[#F5EDE0]/60 font-light">{team.description}</p>
             </motion.div>
           ))}
         </div>
@@ -331,10 +328,14 @@ const Testimonials = ({ variants, id }) => (
           <div key={t.name} className="bg-[#10101A] p-8 rounded-3xl border border-white/5 relative">
             <div className="text-[#E8603A] mb-4">
               {[...Array(5)].map((_, i) => (
-                <span key={i} className="inline-block mr-1">★</span>
+                <span key={i} className="inline-block mr-1">
+                  ★
+                </span>
               ))}
             </div>
-            <p className="text-[#F5EDE0]/80 italic mb-6 leading-relaxed font-serif text-lg">"{t.quote}"</p>
+            <p className="text-[#F5EDE0]/80 italic mb-6 leading-relaxed font-serif text-lg">
+              "{t.quote}"
+            </p>
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-[#E8603A]/20 flex items-center justify-center text-[#E8603A] font-bold font-serif">
                 {t.name.charAt(0)}
@@ -375,40 +376,54 @@ const Pricing = ({ variants, id }) => (
       </div>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3 items-center">
         {pricingData.map((plan) => (
-          <div 
-            key={plan.name} 
-            className={`p-8 rounded-3xl border ${plan.popular ? 'bg-[#E8603A] border-[#E8603A] transform md:-translate-y-4 shadow-[0_0_40px_rgba(232,96,58,0.2)]' : 'bg-[#08080F] border-white/10'}`}
+          <div
+            key={plan.name}
+            className={`p-8 rounded-3xl border ${plan.popular ? "bg-[#E8603A] border-[#E8603A] transform md:-translate-y-4 shadow-[0_0_40px_rgba(232,96,58,0.2)]" : "bg-[#08080F] border-white/10"}`}
           >
             {plan.popular && (
               <div className="bg-[#08080F]/20 text-[#08080F] text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full inline-block mb-4">
                 Most Popular
               </div>
             )}
-            <h3 className={`text-2xl font-serif font-bold mb-2 ${plan.popular ? 'text-[#08080F]' : 'text-[#F5EDE0]'}`}>
+            <h3
+              className={`text-2xl font-serif font-bold mb-2 ${plan.popular ? "text-[#08080F]" : "text-[#F5EDE0]"}`}
+            >
               {plan.name}
             </h3>
             <div className="mb-6">
-              <span className={`text-4xl font-bold ${plan.popular ? 'text-[#08080F]' : 'text-[#F5EDE0]'}`}>{plan.price}</span>
-              <span className={`text-sm ${plan.popular ? 'text-[#08080F]/70' : 'text-[#F5EDE0]/50'}`}>{plan.interval}</span>
+              <span
+                className={`text-4xl font-bold ${plan.popular ? "text-[#08080F]" : "text-[#F5EDE0]"}`}
+              >
+                {plan.price}
+              </span>
+              <span
+                className={`text-sm ${plan.popular ? "text-[#08080F]/70" : "text-[#F5EDE0]/50"}`}
+              >
+                {plan.interval}
+              </span>
             </div>
-            <p className={`mb-8 text-sm leading-relaxed ${plan.popular ? 'text-[#08080F]/80' : 'text-[#F5EDE0]/60'}`}>
+            <p
+              className={`mb-8 text-sm leading-relaxed ${plan.popular ? "text-[#08080F]/80" : "text-[#F5EDE0]/60"}`}
+            >
               {plan.description}
             </p>
             <ul className="space-y-4 mb-8">
               {plan.features.map((feat) => (
                 <li key={feat} className="flex items-start gap-3">
-                  <CheckIcon className={`w-5 h-5 shrink-0 ${plan.popular ? 'text-[#08080F]' : 'text-[#E8603A]'}`} />
-                  <span className={`text-sm ${plan.popular ? 'text-[#08080F]/90' : 'text-[#F5EDE0]/80'}`}>{feat}</span>
+                  <CheckIcon
+                    className={`w-5 h-5 shrink-0 ${plan.popular ? "text-[#08080F]" : "text-[#E8603A]"}`}
+                  />
+                  <span
+                    className={`text-sm ${plan.popular ? "text-[#08080F]/90" : "text-[#F5EDE0]/80"}`}
+                  >
+                    {feat}
+                  </span>
                 </li>
               ))}
             </ul>
             <Link
               to="/register"
-              className={`block w-full py-4 rounded-full text-center font-bold transition-all ${
-                plan.popular 
-                  ? 'bg-[#08080F] text-[#F5EDE0] hover:bg-black' 
-                  : 'bg-white/5 text-[#F5EDE0] hover:bg-white/10'
-              }`}
+              className={`block w-full py-4 rounded-full text-center font-bold transition-all ${plan.popular ? "bg-[#08080F] text-[#F5EDE0] hover:bg-black" : "bg-white/5 text-[#F5EDE0] hover:bg-white/10"}`}
             >
               {plan.cta}
             </Link>
@@ -422,7 +437,7 @@ const Pricing = ({ variants, id }) => (
 // ─── FAQ ─────────────────────────────────────────────────────────
 const FAQAccordion = memo(({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(false)
-  
+
   return (
     <div className="border-b border-white/5">
       <button
@@ -442,9 +457,7 @@ const FAQAccordion = memo(({ question, answer }) => {
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-[#F5EDE0]/60 font-light leading-relaxed">
-              {answer}
-            </p>
+            <p className="pb-6 text-[#F5EDE0]/60 font-light leading-relaxed">{answer}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -489,10 +502,7 @@ const CTA = ({ variants }) => (
     viewport={{ once: true, margin: "-80px" }}
     className="relative px-4 py-24 overflow-hidden sm:py-32 sm:px-6"
   >
-    <div
-      className="absolute inset-0 bg-[#E8603A]"
-      aria-hidden="true"
-    />
+    <div className="absolute inset-0 bg-[#E8603A]" aria-hidden="true" />
     <div
       className="absolute inset-0 opacity-20"
       style={{
@@ -532,33 +542,81 @@ const Footer = () => {
           <div>
             <h4 className="mb-6 font-serif text-lg font-bold text-[#F5EDE0]">Product</h4>
             <ul className="space-y-4 text-sm text-[#F5EDE0]/60">
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Features</a></li>
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">FAQ</a></li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  FAQ
+                </a>
+              </li>
             </ul>
           </div>
           <div>
             <h4 className="mb-6 font-serif text-lg font-bold text-[#F5EDE0]">Resources</h4>
             <ul className="space-y-4 text-sm text-[#F5EDE0]/60">
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Documentation</a></li>
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">API</a></li>
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Guides</a></li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Documentation
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  API
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Guides
+                </a>
+              </li>
             </ul>
           </div>
           <div>
             <h4 className="mb-6 font-serif text-lg font-bold text-[#F5EDE0]">Company</h4>
             <ul className="space-y-4 text-sm text-[#F5EDE0]/60">
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">About</a></li>
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Careers</a></li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  About
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Careers
+                </a>
+              </li>
             </ul>
           </div>
           <div>
             <h4 className="mb-6 font-serif text-lg font-bold text-[#F5EDE0]">Legal</h4>
             <ul className="space-y-4 text-sm text-[#F5EDE0]/60">
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Privacy</a></li>
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Terms</a></li>
-              <li><a href="#" className="hover:text-[#E8603A] transition-colors">Contact</a></li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Privacy
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Terms
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-[#E8603A] transition-colors">
+                  Contact
+                </a>
+              </li>
             </ul>
           </div>
         </div>

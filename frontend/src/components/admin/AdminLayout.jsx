@@ -7,7 +7,7 @@ const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false)
 
   return (
-    <div className="min-h-screen bg-light-bg-primary dark:bg-dark-bg-primary">
+    <div className="min-h-screen bg-bg-canvas">
       <AdminSidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
       <div
         className="transition-all duration-300"

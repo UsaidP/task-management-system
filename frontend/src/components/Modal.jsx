@@ -1,6 +1,6 @@
+import { XIcon as X } from "@animateicons/react/lucide"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useId, useRef } from "react"
-import { XIcon as X } from "@animateicons/react/lucide"
 
 const Modal = ({ isOpen, onClose, title, children, size = "md" }) => {
   const modalRef = useRef(null)
@@ -79,27 +79,21 @@ const Modal = ({ isOpen, onClose, title, children, size = "md" }) => {
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`relative bg-light-bg-primary dark:bg-dark-bg-primary rounded-2xl shadow-[0_12px_32px_rgba(44,36,32,0.08)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.45)] w-full ${sizeClasses[size] || sizeClasses.md} m-4 outline-none ring-1 ring-light-border/30 dark:ring-dark-border/30`}
+            className={`relative bg-bg-canvas rounded-2xl shadow-[0_12px_32px_rgba(44,36,32,0.08)] dark:shadow-[0_12px_32px_rgba(0,0,0,0.45)] w-full ${sizeClasses[size] || sizeClasses.md} m-4 outline-none ring-1 ring-light-border/30 dark:ring-dark-border/30`}
             onClick={(e) => e.stopPropagation()}
             tabIndex={-1}
           >
-            <div className="flex items-center justify-between p-4 border-b border-light-border dark:border-dark-border">
-              <h2
-                id={modalTitleId}
-                className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary"
-              >
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 id={modalTitleId} className="text-xl font-bold text-text-primary">
                 {title}
               </h2>
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close modal"
-                className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
-                <X
-                  className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary"
-                  aria-hidden="true"
-                />
+                <X className="w-5 h-5 text-text-secondary" aria-hidden="true" />
               </button>
             </div>
             <div className="p-6 max-h-[80vh] overflow-y-auto">{children}</div>

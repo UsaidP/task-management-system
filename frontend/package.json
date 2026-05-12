@@ -12,7 +12,9 @@
     "format": "biome format --write",
     "check": "biome check --write .",
     "ci:check": "biome ci .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "theme:light": "echo 'document.documentElement.classList.remove(\"dark\")' > public/theme.js",
+    "theme:dark": "echo 'document.documentElement.classList.add(\"dark\")' > public/theme.js"
   },
   "dependencies": {
     "@animateicons/react": "^0.3.3",
@@ -39,6 +41,7 @@
     "react-router-dom": "^7.9.1",
     "recharts": "^2.15.4",
     "tailwindcss": "^3.4.18",
+    "tailwindcss-animate": "^1.0.7",
     "three": "^0.184.0"
   },
   "devDependencies": {

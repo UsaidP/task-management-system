@@ -1,6 +1,6 @@
+import { ActivityIcon, UserIcon } from "@animateicons/react/lucide"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
-import { UserIcon, ActivityIcon } from "@animateicons/react/lucide"
 import { motion } from "framer-motion"
 
 dayjs.extend(relativeTime)
@@ -13,10 +13,10 @@ const ProjectActivityPanel = ({ tasks, members }) => {
   return (
     <div className="flex-1 min-w-[320px] max-w-[340px] border-r border-light-border/50 dark:border-dark-border/50 pr-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex items-center gap-2">
+        <h2 className="text-sm font-bold text-text-primary flex items-center gap-2">
           Recent Activity
         </h2>
-        <span className="text-[11px] text-accent-primary dark:text-accent-primary-light cursor-pointer font-bold hover:underline">
+        <span className="text-[11px] text-primary cursor-pointer font-bold hover:underline">
           View All
         </span>
       </div>
@@ -24,13 +24,11 @@ const ProjectActivityPanel = ({ tasks, members }) => {
         {recentTasks.length === 0 ? (
           <div className="py-4 flex flex-col items-center gap-2">
             <ActivityIcon className="w-8 h-8 text-light-text-tertiary/30" />
-            <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary italic">
-              No recent activity
-            </p>
+            <p className="text-xs text-text-muted italic">No recent activity</p>
           </div>
         ) : (
           recentTasks.map((task, idx) => {
-            const member = members.find((m) => (m.user?._id || m.user) === task.createdBy)
+            const _member = members.find((m) => (m.user?._id || m.user) === task.createdBy)
             const colorClass =
               task.status === "completed"
                 ? "from-accent-success to-accent-success-light shadow-accent-success/20"
@@ -54,16 +52,16 @@ const ProjectActivityPanel = ({ tasks, members }) => {
                   <UserIcon className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
-                    <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+                  <p className="text-xs text-text-secondary leading-relaxed">
+                    <span className="font-semibold text-text-primary">
                       {task.status === "completed" ? "Completed" : "Updated"}
                     </span>{" "}
                     task{" "}
-                    <span className="text-accent-primary dark:text-accent-primary-light font-medium truncate inline-block max-w-[150px] align-bottom">
+                    <span className="text-primary font-medium truncate inline-block max-w-[150px] align-bottom">
                       {task.title}
                     </span>
                   </p>
-                  <p className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5 font-medium flex items-center gap-1">
+                  <p className="text-[10px] text-text-muted mt-0.5 font-medium flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-light-text-tertiary/40" />
                     {dayjs(task.updatedAt).fromNow()}
                   </p>

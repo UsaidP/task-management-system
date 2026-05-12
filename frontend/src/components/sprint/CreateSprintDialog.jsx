@@ -1,8 +1,8 @@
+import { XIcon } from "@animateicons/react/lucide"
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react"
+import { CalendarIcon } from "lucide-react"
 import { useState } from "react"
 import toast from "react-hot-toast"
-import { XIcon } from "@animateicons/react/lucide"
-import { CalendarIcon } from "lucide-react"
 import apiService from "../../../service/apiService"
 
 const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => {
@@ -45,16 +45,16 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-utility-overlay backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="w-full max-w-md rounded-xl bg-light-bg-primary dark:bg-dark-bg-tertiary p-6 shadow-xl border border-light-border dark:border-dark-border">
+        <DialogPanel className="w-full max-w-md rounded-xl bg-bg-canvas p-6 shadow-xl border border-border">
           <div className="flex items-center justify-between mb-4">
-            <DialogTitle className="text-xl font-semibold text-light-text-primary dark:text-dark-text-primary">
+            <DialogTitle className="text-xl font-semibold text-text-primary">
               Create New Sprint
             </DialogTitle>
             <button
               type="button"
               onClick={onClose}
               aria-label="Close dialog"
-              className="p-1 rounded-xl hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+              className="p-1 rounded-xl hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
             >
               <XIcon className="w-5 h-5" />
             </button>
@@ -64,7 +64,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
             <div>
               <label
                 htmlFor="sprint-name"
-                className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1"
+                className="block text-sm font-medium text-text-secondary mb-1"
               >
                 Sprint Name *
               </label>
@@ -74,13 +74,13 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                 value={formData.name}
                 onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="e.g., Sprint 1"
-                className="w-full px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors"
+                className="w-full px-4 py-2 rounded-xl bg-bg-surface border border-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1">
+              <label className="block text-sm font-medium text-text-secondary mb-1">
                 Sprint Goal
               </label>
               <textarea
@@ -88,7 +88,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                 onChange={(e) => setFormData((prev) => ({ ...prev, goal: e.target.value }))}
                 placeholder="What do you want to achieve this sprint?"
                 rows={3}
-                className="w-full px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary resize-none transition-colors"
+                className="w-full px-4 py-2 rounded-xl bg-bg-surface border border-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary resize-none transition-colors"
               />
             </div>
 
@@ -96,13 +96,13 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
               <div>
                 <label
                   htmlFor="start-date"
-                  className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1"
+                  className="block text-sm font-medium text-text-secondary mb-1"
                 >
                   Start Date *
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <CalendarIcon className="w-4 h-4 text-light-text-tertiary group-focus-within:text-accent-primary transition-colors" />
+                    <CalendarIcon className="w-4 h-4 text-text-muted group-focus-within:text-accent-primary transition-colors" />
                   </div>
                   <input
                     id="start-date"
@@ -111,7 +111,7 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
                     onChange={(e) =>
                       setFormData((prev) => ({ ...prev, startDate: e.target.value }))
                     }
-                    className="w-full pl-10 px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors text-light-text-primary dark:text-dark-text-primary"
+                    className="w-full pl-10 px-4 py-2 rounded-xl bg-bg-surface border border-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors text-text-primary"
                     required
                   />
                 </div>
@@ -119,20 +119,20 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
               <div>
                 <label
                   htmlFor="end-date"
-                  className="block text-sm font-medium text-light-text-secondary dark:text-dark-text-secondary mb-1"
+                  className="block text-sm font-medium text-text-secondary mb-1"
                 >
                   End Date *
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <CalendarIcon className="w-4 h-4 text-light-text-tertiary group-focus-within:text-accent-primary transition-colors" />
+                    <CalendarIcon className="w-4 h-4 text-text-muted group-focus-within:text-accent-primary transition-colors" />
                   </div>
                   <input
                     id="end-date"
                     type="date"
                     value={formData.endDate}
                     onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
-                    className="w-full pl-10 px-4 py-2 rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors text-light-text-primary dark:text-dark-text-primary"
+                    className="w-full pl-10 px-4 py-2 rounded-xl bg-bg-surface border border-border focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-colors text-text-primary"
                     required
                   />
                 </div>
@@ -143,14 +143,14 @@ const CreateSprintDialog = ({ isOpen, onClose, projectId, onSprintCreated }) => 
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 rounded-xl border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                className="flex-1 px-4 py-2 rounded-xl border border-border text-text-secondary hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-4 py-2 rounded-xl bg-accent-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                className="flex-1 px-4 py-2 rounded-xl bg-primary text-white font-medium hover:bg-accent-primary/90 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
               >
                 {loading ? "Creating..." : "Create Sprint"}
               </button>

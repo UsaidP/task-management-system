@@ -43,7 +43,14 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "react-router-dom", "framer-motion", "@animateicons/react", "dayjs"],
+    include: [
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "framer-motion",
+      "@animateicons/react",
+      "dayjs",
+    ],
     // Pre-bundle these to avoid 504 on lazy-load
     entries: ["./src/**/*.jsx", "./src/**/*.js"],
   },
@@ -71,7 +78,7 @@ export default defineConfig({
         chunkFileNames: "assets/js/[name]-[hash].js",
         entryFileNames: "assets/js/[name]-[hash].js",
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name && assetInfo.name.endsWith(".css")) {
+          if (assetInfo.name?.endsWith(".css")) {
             return "assets/css/[name]-[hash][extname]"
           }
           return "assets/[ext]/[name]-[hash][extname]"

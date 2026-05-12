@@ -1,5 +1,6 @@
 import { BellIcon } from "@animateicons/react/lucide"
 import { useAuth } from "../../contexts/customHook.js"
+import { capitalizeName } from "../../utils/stringHelpers.js"
 import Avatar from "../auth/Avatar"
 
 export default function AdminHeader() {
@@ -16,12 +17,12 @@ export default function AdminHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-light-border dark:border-dark-border bg-light-bg-secondary/80 dark:bg-dark-bg-secondary/80 px-6 backdrop-blur-md">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-light-bg-secondary/80 dark:bg-dark-bg-secondary/80 px-6 backdrop-blur-md">
       <div>
-        <h1 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary font-serif">
-          Welcome back, {user?.fullname || "Admin"}
+        <h1 className="text-lg font-semibold text-text-primary font-serif">
+          Welcome back, {capitalizeName(user?.fullname) || "Admin"}
         </h1>
-        <p className="text-xs text-light-text-tertiary">
+        <p className="text-xs text-text-muted">
           Here&apos;s what&apos;s happening with your tasks today.
         </p>
       </div>
@@ -30,10 +31,10 @@ export default function AdminHeader() {
         <button
           type="button"
           aria-label="View notifications"
-          className="relative flex h-9 w-9 items-center justify-center rounded-xl text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-secondary"
+          className="relative flex h-9 w-9 items-center justify-center rounded-xl text-text-muted hover:bg-bg-hover hover:text-light-text-secondary"
         >
           <BellIcon size={18} />
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent-danger text-[9px] font-bold text-light-text-inverse">
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[9px] font-bold text-text-inverse">
             0
           </span>
         </button>
@@ -41,14 +42,14 @@ export default function AdminHeader() {
         <div className="flex items-center gap-2.5 ml-2">
           <Avatar
             src={user?.avatar?.url || user?.avatar}
-            alt={user?.fullname || "Admin"}
+            alt={capitalizeName(user?.fullname) || "Admin"}
             size="sm"
           />
           <div className="hidden md:block">
-            <p className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary leading-tight">
-              {user?.fullname || "Admin"}
+            <p className="text-sm font-semibold text-text-primary leading-tight">
+              {capitalizeName(user?.fullname) || "Admin"}
             </p>
-            <p className="text-[11px] text-light-text-tertiary leading-tight">
+            <p className="text-[11px] text-text-muted leading-tight">
               {user?.email || "admin@taskflow.io"}
             </p>
           </div>

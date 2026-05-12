@@ -7,17 +7,13 @@ export const FeaturesSection = () => {
       {featureData.map((feature) => (
         <div
           key={feature.title}
-          className="card p-6 flex flex-col items-start gap-3 hover:scale-[1.02] transition-transform duration-fast"
+          className="p-6 bg-bg-surface border border-border rounded-xl shadow-sm p-6 flex flex-col items-start gap-3 hover:scale-[1.02] transition-transform duration-fast"
         >
-          <div className="p-3 rounded-xl bg-accent-primary/10 text-accent-primary">
+          <div className="p-3 rounded-xl bg-accent-primary/10 text-primary">
             <Icon name={feature.icon} size={24} />
           </div>
-          <h3 className="text-lg font-serif font-semibold text-light-text-primary dark:text-dark-text-primary">
-            {feature.title}
-          </h3>
-          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
-            {feature.description}
-          </p>
+          <h3 className="text-lg font-serif font-semibold text-text-primary">{feature.title}</h3>
+          <p className="text-sm text-text-secondary leading-relaxed">{feature.description}</p>
         </div>
       ))}
     </section>

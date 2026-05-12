@@ -29,9 +29,13 @@ const AddSubtask = ({ onAddSubtask }) => {
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={handleKeyPress}
         placeholder="Add a new subtask"
-        className="flex-grow p-2 border border-light-border dark:border-dark-border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary dark:bg-dark-bg-secondary dark:text-dark-text-primary transition-all duration-fast"
+        className="flex-grow p-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary transition-all duration-fast"
       />
-      <button type="button" onClick={handleAddNewSubtask} className="btn-primary px-4 py-2 text-sm">
+      <button
+        type="button"
+        onClick={handleAddNewSubtask}
+        className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer px-4 py-2 text-sm"
+      >
         Add
       </button>
     </div>

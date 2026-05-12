@@ -1,5 +1,4 @@
 import dayjs from "dayjs"
-import { UserIcon } from "@animateicons/react/lucide"
 import SharedAvatar from "../auth/Avatar"
 
 const priorityStyles = {
@@ -34,34 +33,21 @@ const Avatar = ({ member }) => (
 
 const ListViewTable = ({ tasks, members, onTaskClick }) => {
   return (
-    <div className="flex-1 overflow-auto custom-scrollbar p-4 sm:p-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary">
-      <table className="w-full border border-light-border dark:border-dark-border rounded-lg overflow-hidden shadow-md dark:shadow-dark-md bg-light-bg-primary dark:bg-dark-bg-primary">
-        <thead className="sticky top-0 bg-light-bg-primary dark:bg-dark-bg-primary border-b border-light-border dark:border-dark-border z-10">
+    <div className="flex-1 overflow-auto custom-scrollbar p-4 sm:p-6 bg-bg-surface">
+      <table className="w-full border border-border rounded-lg overflow-hidden shadow-md dark:shadow-dark-md bg-bg-canvas">
+        <thead className="sticky top-0 bg-bg-canvas border-b border-border z-10">
           <tr>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
-              Task
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
-              Status
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
-              Priority
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
-              Assignees
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-semibold text-light-text-tertiary dark:text-dark-text-tertiary">
-              Due Date
-            </th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted">Task</th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted">Status</th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted">Priority</th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted">Assignees</th>
+            <th className="px-4 py-3 text-left text-xs font-semibold text-text-muted">Due Date</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-light-border dark:divide-dark-border">
           {tasks.length === 0 ? (
             <tr>
-              <td
-                colSpan={5}
-                className="px-4 py-12 text-center text-light-text-tertiary dark:text-dark-text-tertiary"
-              >
+              <td colSpan={5} className="px-4 py-12 text-center text-text-muted">
                 No tasks found
               </td>
             </tr>
@@ -73,15 +59,13 @@ const ListViewTable = ({ tasks, members, onTaskClick }) => {
                 <tr
                   key={task._id}
                   onClick={() => onTaskClick(task)}
-                  className="hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover cursor-pointer transition-colors"
+                  className="hover:bg-bg-hover cursor-pointer transition-colors"
                 >
                   <td className="px-4 py-3">
                     <div>
-                      <p className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                        {task.title}
-                      </p>
+                      <p className="text-sm font-medium text-text-primary">{task.title}</p>
                       {task.description && (
-                        <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-0.5 line-clamp-1">
+                        <p className="text-xs text-text-secondary mt-0.5 line-clamp-1">
                           {task.description}
                         </p>
                       )}
@@ -109,21 +93,17 @@ const ListViewTable = ({ tasks, members, onTaskClick }) => {
                           return <Avatar key={i} member={userObj} />
                         })
                       ) : (
-                        <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-                          Unassigned
-                        </span>
+                        <span className="text-xs text-text-muted">Unassigned</span>
                       )}
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     {task.dueDate ? (
-                      <span className="text-xs text-light-text-secondary dark:text-dark-text-secondary">
+                      <span className="text-xs text-text-secondary">
                         {dayjs(task.dueDate).format("MMM DD, YYYY")}
                       </span>
                     ) : (
-                      <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-                        —
-                      </span>
+                      <span className="text-xs text-text-muted">—</span>
                     )}
                   </td>
                 </tr>

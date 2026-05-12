@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react"
-import toast from "react-hot-toast"
 import {
   CheckIcon as Check,
   PlusIcon as Plus,
   TrashIcon as Trash2,
 } from "@animateicons/react/lucide"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 import apiService from "../../../service/apiService.js"
 
 const SubtaskView = ({ taskId }) => {
@@ -29,7 +29,7 @@ const SubtaskView = ({ taskId }) => {
       fetchSubtasks()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [taskId])
+  }, [taskId, fetchSubtasks])
 
   const handleAddSubtask = async (e) => {
     e.preventDefault()
@@ -75,10 +75,7 @@ const SubtaskView = ({ taskId }) => {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="h-12 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover animate-pulse"
-          />
+          <div key={i} className="h-12 rounded-lg bg-bg-hover animate-pulse" />
         ))}
       </div>
     )
@@ -90,16 +87,14 @@ const SubtaskView = ({ taskId }) => {
       {subtasks.length > 0 && (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary">
-              Progress
-            </span>
-            <span className="text-xs font-medium text-light-text-secondary dark:text-dark-text-secondary">
+            <span className="text-xs font-medium text-text-muted">Progress</span>
+            <span className="text-xs font-medium text-text-secondary">
               {completedCount}/{subtasks.length} completed
             </span>
           </div>
-          <div className="w-full h-2 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover">
+          <div className="w-full h-2 rounded-full bg-bg-hover">
             <div
-              className="h-2 transition-all duration-300 rounded-full bg-accent-primary"
+              className="h-2 transition-all duration-300 rounded-full bg-primary"
               style={{ width: `${(completedCount / subtasks.length) * 100}%` }}
             />
           </div>
@@ -117,13 +112,13 @@ const SubtaskView = ({ taskId }) => {
           value={newSubtask}
           onChange={(e) => setNewSubtask(e.target.value)}
           placeholder="Add a subtask..."
-          className="flex-1 px-4 py-2.5 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl text-sm text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
+          className="flex-1 px-4 py-2.5 bg-bg-surface border border-border rounded-xl text-sm text-text-primary placeholder:text-light-text-tertiary focus:outline-none focus:border-accent-primary transition-colors"
         />
         <button
           type="submit"
           disabled={!newSubtask.trim()}
           aria-label="Add subtask"
-          className="btn-primary px-4 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer px-4 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -131,7 +126,7 @@ const SubtaskView = ({ taskId }) => {
 
       {/* Subtasks List */}
       {subtasks.length === 0 ? (
-        <div className="py-8 text-center text-light-text-tertiary dark:text-dark-text-tertiary">
+        <div className="py-8 text-center text-text-muted">
           <p className="text-sm">No subtasks yet</p>
           <p className="mt-1 text-xs">Add subtasks to track progress</p>
         </div>
@@ -140,30 +135,20 @@ const SubtaskView = ({ taskId }) => {
           {subtasks.map((subtask) => (
             <li
               key={subtask._id}
-              className="flex items-center justify-between p-3 transition-colors border bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border-light-border dark:border-dark-border hover:border-accent-primary/30 group"
+              className="flex items-center justify-between p-3 transition-colors border bg-bg-surface rounded-xl border-border hover:border-accent-primary/30 group"
             >
               <button
                 type="button"
                 onClick={() => handleToggleComplete(subtask._id, subtask.isCompleted)}
-                className={`flex items-center gap-3 flex-1 text-left ${
-                  subtask.isCompleted ? "opacity-60" : ""
-                }`}
+                className={`flex items-center gap-3 flex-1 text-left ${subtask.isCompleted ? "opacity-60" : ""}`}
               >
                 <div
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                    subtask.isCompleted
-                      ? "bg-accent-primary border-accent-primary"
-                      : "border-light-text-tertiary dark:border-dark-text-tertiary"
-                  }`}
+                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${subtask.isCompleted ? "bg-accent-primary border-accent-primary" : "border-light-text-tertiary dark:border-dark-text-tertiary"}`}
                 >
                   {subtask.isCompleted && <Check className="w-3 h-3 text-white" />}
                 </div>
                 <span
-                  className={`text-sm font-medium transition-all ${
-                    subtask.isCompleted
-                      ? "text-light-text-tertiary dark:text-dark-text-tertiary line-through"
-                      : "text-light-text-primary dark:text-dark-text-primary"
-                  }`}
+                  className={`text-sm font-medium transition-all ${subtask.isCompleted ? "text-light-text-tertiary line-through" : "text-light-text-primary dark:text-dark-text-primary"}`}
                 >
                   {subtask.title}
                 </span>
@@ -172,7 +157,7 @@ const SubtaskView = ({ taskId }) => {
                 type="button"
                 onClick={() => handleDeleteSubtask(subtask._id)}
                 aria-label={`Delete subtask: ${subtask.title}`}
-                className="p-2 transition-all rounded-lg opacity-0 text-light-text-tertiary hover:text-error hover:bg-error/10 group-hover:opacity-100"
+                className="p-2 transition-all rounded-lg opacity-0 text-text-muted hover:text-error hover:bg-error/10 group-hover:opacity-100"
               >
                 <Trash2 className="w-4 h-4" />
               </button>

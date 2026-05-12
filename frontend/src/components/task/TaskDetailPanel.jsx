@@ -1,8 +1,3 @@
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
-import dayjs from "dayjs"
-import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useMemo, useState } from "react"
-import toast from "react-hot-toast"
 import {
   TriangleAlertIcon as AlertCircle,
   CheckIcon as Check,
@@ -12,12 +7,12 @@ import {
   UserIcon as User,
   XIcon as X,
 } from "@animateicons/react/lucide"
-import {
-  Calendar as CalendarIcon,
-  FileText,
-  Save,
-  Tag,
-} from "lucide-react"
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
+import dayjs from "dayjs"
+import { AnimatePresence, motion } from "framer-motion"
+import { Calendar as CalendarIcon, FileText, Save, Tag } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
+import toast from "react-hot-toast"
 import apiService from "../../../service/apiService"
 import { useAuth } from "../../contexts/customHook"
 import Avatar from "../auth/Avatar"
@@ -248,10 +243,10 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
             animate={{ x: 0, boxShadow: "-10px 0 30px rgba(0,0,0,0.1)" }}
             exit={{ x: "100%", boxShadow: "-10px 0 30px rgba(0,0,0,0)" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 bottom-0 w-full max-w-[500px] bg-light-bg-primary dark:bg-dark-bg-tertiary z-50 flex flex-col border-l border-light-border dark:border-dark-border overflow-hidden"
+            className="fixed right-0 top-0 bottom-0 w-full max-w-[500px] bg-bg-canvas z-50 flex flex-col border-l border-border overflow-hidden"
           >
             {/* Header / Actions */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-light-border dark:border-dark-border">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <div className="flex items-center gap-2 flex-wrap">
                 {/* Status Badge */}
                 <Listbox
@@ -264,7 +259,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     >
                       {statusOptions.find((o) => o.id === formData.status)?.name || "Status"}
                     </ListboxButton>
-                    <ListboxOptions className="absolute left-0 mt-1 w-36 bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+                    <ListboxOptions className="absolute left-0 mt-1 w-36 bg-bg-canvas border border-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
                       {statusOptions.map((option) => (
                         <ListboxOption
                           key={option.id}
@@ -294,7 +289,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                           "Priority"}
                       </span>
                     </ListboxButton>
-                    <ListboxOptions className="absolute left-0 mt-1 w-40 bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+                    <ListboxOptions className="absolute left-0 mt-1 w-40 bg-bg-canvas border border-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
                       {priorityOptions.map((option) => (
                         <ListboxOption
                           key={option.id}
@@ -322,7 +317,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   type="button"
                   onClick={handleUpdate}
                   disabled={isUpdating}
-                  className="btn-primary py-1.5 px-3 text-sm flex items-center gap-1.5"
+                  className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer py-1.5 px-3 text-sm flex items-center gap-1.5"
                 >
                   <Save aria-hidden="true" className="w-3.5 h-3.5" />
                   {isUpdating ? "Saving..." : "Update"}
@@ -347,7 +342,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       }
                     }
                   }}
-                  className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center text-light-text-tertiary hover:text-accent-danger hover:bg-accent-danger/10 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                  className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center text-text-muted hover:text-accent-danger hover:bg-accent-danger/10 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
                   <Trash2 aria-hidden="true" className="w-4 h-4" />
                 </button>
@@ -355,7 +350,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   type="button"
                   aria-label="Close panel"
                   onClick={onClose}
-                  className="min-h-[44px] min-w-[44px] p-2 text-light-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                  className="min-h-[44px] min-w-[44px] p-2 text-text-secondary hover:bg-bg-hover rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                 >
                   <X aria-hidden="true" className="w-5 h-5" />
                 </button>
@@ -372,14 +367,14 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     value={formData.title}
                     onChange={(e) => handleFieldChange("title", e.target.value)}
                     aria-label="Task title"
-                    className="w-full text-2xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-4 py-3 mb-3 placeholder:text-light-text-tertiary transition-colors"
+                    className="w-full text-2xl font-serif font-bold text-text-primary bg-bg-surface border border-border hover:border-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-4 py-3 mb-3 placeholder:text-light-text-tertiary transition-colors"
                     placeholder="Task Title"
                   />
                   <textarea
                     value={formData.description}
                     onChange={(e) => handleFieldChange("description", e.target.value)}
                     aria-label="Task description"
-                    className="w-full text-sm text-light-text-secondary dark:text-dark-text-secondary bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-4 py-3 resize-none min-h-[100px] placeholder:text-light-text-tertiary selection:bg-accent-primary/20 transition-colors"
+                    className="w-full text-sm text-text-secondary bg-bg-surface border border-border hover:border-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-4 py-3 resize-none min-h-[100px] placeholder:text-light-text-tertiary selection:bg-accent-primary/20 transition-colors"
                     placeholder="Add a description..."
                   />
                 </div>
@@ -387,7 +382,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 {/* Meta Attributes Grid */}
                 <div className="grid grid-cols-[120px_1fr] gap-y-4 text-sm items-center">
                   {/* Assignees */}
-                  <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
+                  <div className="text-text-muted flex items-center gap-2">
                     <User aria-hidden="true" className="w-4 h-4" /> Assignees
                   </div>
                   <div>
@@ -397,9 +392,9 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       multiple
                     >
                       <div className="relative inline-block w-full">
-                        <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary px-3 py-2 rounded-xl transition-colors w-full text-left">
+                        <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-bg-surface border border-border hover:border-primary dark:hover:border-accent-primary px-3 py-2 rounded-xl transition-colors w-full text-left">
                           {assignedToIds.length === 0 ? (
-                            <span className="text-light-text-tertiary italic text-sm pl-1">
+                            <span className="text-text-muted italic text-sm pl-1">
                               Click to add assignees...
                             </span>
                           ) : (
@@ -420,7 +415,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                             </div>
                           )}
                         </ListboxButton>
-                        <ListboxOptions className="absolute left-0 mt-1 w-64 max-h-48 overflow-y-auto bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1">
+                        <ListboxOptions className="absolute left-0 mt-1 w-64 max-h-48 overflow-y-auto bg-bg-canvas border border-border rounded-xl shadow-lg z-50 py-1">
                           {assigneeOptions.map((option) => {
                             const selected = assignedToIds.includes(option.id)
                             return (
@@ -431,7 +426,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                   `flex items-center gap-3 px-4 py-2 text-sm cursor-pointer transition-colors text-light-text-secondary dark:text-dark-text-secondary ${active ? "bg-light-bg-hover dark:bg-dark-bg-hover" : ""}`
                                 }
                               >
-                                <div className="flex-1 flex items-center gap-2 text-light-text-secondary dark:text-dark-text-secondary">
+                                <div className="flex-1 flex items-center gap-2 text-text-secondary">
                                   <Avatar
                                     src={option.user?.avatar?.url || option.user?.avatar}
                                     alt={option.name}
@@ -440,10 +435,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                   <span className="truncate">{option.name}</span>
                                 </div>
                                 {selected && (
-                                  <Check
-                                    aria-hidden="true"
-                                    className="text-accent-primary w-4 h-4"
-                                  />
+                                  <Check aria-hidden="true" className="text-primary w-4 h-4" />
                                 )}
                               </ListboxOption>
                             )
@@ -454,7 +446,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                   </div>
 
                   {/* Due Date */}
-                  <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
+                  <div className="text-text-muted flex items-center gap-2">
                     <CalendarIcon aria-hidden="true" className="w-4 h-4" /> Due Date
                   </div>
                   <div>
@@ -462,12 +454,12 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       type="date"
                       value={formData.dueDate ? dayjs(formData.dueDate).format("YYYY-MM-DD") : ""}
                       onChange={(e) => handleFieldChange("dueDate", e.target.value)}
-                      className="text-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-3 py-2 text-light-text-secondary dark:text-dark-text-secondary cursor-pointer transition-colors w-full"
+                      className="text-sm bg-bg-surface border border-border hover:border-primary dark:hover:border-accent-primary focus:border-accent-primary rounded-xl px-3 py-2 text-text-secondary cursor-pointer transition-colors w-full"
                     />
                   </div>
 
                   {/* Priority */}
-                  <div className="text-light-text-tertiary dark:text-dark-text-tertiary flex items-center gap-2">
+                  <div className="text-text-muted flex items-center gap-2">
                     <Tag aria-hidden="true" className="w-4 h-4" /> Priority
                   </div>
                   <div>
@@ -476,7 +468,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       onChange={(val) => handleFieldChange("priority", val)}
                     >
                       <div className="relative inline-block w-full">
-                        <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border hover:border-accent-primary dark:hover:border-accent-primary px-3 py-2 rounded-xl transition-colors w-full text-left">
+                        <ListboxButton className="flex items-center gap-2 min-h-[40px] bg-bg-surface border border-border hover:border-primary dark:hover:border-accent-primary px-3 py-2 rounded-xl transition-colors w-full text-left">
                           <span
                             className={`px-2.5 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider ${priorityOptions.find((p) => p.id === formData.priority)?.bg || "bg-light-bg-hover dark:bg-dark-bg-hover"} ${priorityOptions.find((p) => p.id === formData.priority)?.text || "text-light-text-primary dark:text-dark-text-primary"}`}
                           >
@@ -484,7 +476,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                               "Set Priority"}
                           </span>
                         </ListboxButton>
-                        <ListboxOptions className="absolute left-0 mt-1 w-40 bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+                        <ListboxOptions className="absolute left-0 mt-1 w-40 bg-bg-canvas border border-border rounded-xl shadow-lg z-50 py-1 overflow-hidden">
                           {priorityOptions.map((option) => (
                             <ListboxOption
                               key={option.id}
@@ -507,10 +499,10 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                 </div>
 
                 {/* Tabs for Subtasks / Comments */}
-                <div className="border-t border-light-border dark:border-dark-border pt-6 mt-6 !mb-0" />
+                <div className="border-t border-border pt-6 mt-6 !mb-0" />
 
                 <div
-                  className="flex border-b border-light-border dark:border-dark-border"
+                  className="flex border-b border-border"
                   role="tablist"
                   aria-label="Task details sections"
                 >
@@ -519,7 +511,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     onClick={() => setActiveTab("subtasks")}
                     role="tab"
                     aria-selected={activeTab === "subtasks"}
-                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 min-h-[44px] ${activeTab === "subtasks" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
+                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 min-h-[44px] ${activeTab === "subtasks" ? "border-accent-primary text-accent-primary" : "border-transparent text-text-muted hover:text-light-text-secondary"}`}
                   >
                     Subtasks
                   </button>
@@ -528,10 +520,10 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     onClick={() => setActiveTab("comments")}
                     role="tab"
                     aria-selected={activeTab === "comments"}
-                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 min-h-[44px] ${activeTab === "comments" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
+                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 min-h-[44px] ${activeTab === "comments" ? "border-accent-primary text-accent-primary" : "border-transparent text-text-muted hover:text-light-text-secondary"}`}
                   >
                     Activity{" "}
-                    <span className="text-xs bg-light-bg-hover dark:bg-dark-bg-hover px-1.5 py-0.5 rounded-full text-light-text-secondary">
+                    <span className="text-xs bg-bg-hover px-1.5 py-0.5 rounded-full text-text-secondary">
                       {formData.comments?.length || 0}
                     </span>
                   </button>
@@ -540,10 +532,10 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                     onClick={() => setActiveTab("attachments")}
                     role="tab"
                     aria-selected={activeTab === "attachments"}
-                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 min-h-[44px] ${activeTab === "attachments" ? "border-accent-primary text-accent-primary" : "border-transparent text-light-text-tertiary hover:text-light-text-secondary"}`}
+                    className={`pb-3 px-4 text-sm font-medium transition-colors border-b-2 flex items-center gap-2 min-h-[44px] ${activeTab === "attachments" ? "border-accent-primary text-accent-primary" : "border-transparent text-text-muted hover:text-light-text-secondary"}`}
                   >
                     Attachments{" "}
-                    <span className="text-xs bg-light-bg-hover dark:bg-dark-bg-hover px-1.5 py-0.5 rounded-full text-light-text-secondary">
+                    <span className="text-xs bg-bg-hover px-1.5 py-0.5 rounded-full text-text-secondary">
                       {formData.attachments?.length || 0}
                     </span>
                   </button>
@@ -571,7 +563,7 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
 
                               <div className="flex-1">
                                 <div className="flex items-center justify-between gap-2 mb-1">
-                                  <span className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary">
+                                  <span className="font-medium text-sm text-text-primary">
                                     {author.name}
                                   </span>
                                   {isCommentOwner(comment) && (
@@ -579,13 +571,13 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                                       type="button"
                                       aria-label={`Delete comment by ${author.name}`}
                                       onClick={() => handleDeleteComment(comment._id)}
-                                      className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center text-light-text-tertiary hover:text-accent-danger transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
+                                      className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center text-text-muted hover:text-accent-danger transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30 rounded"
                                     >
                                       <Trash2 aria-hidden="true" className="w-3 h-3" />
                                     </button>
                                   )}
                                 </div>
-                                <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary bg-light-bg-secondary dark:bg-dark-bg-tertiary p-3 rounded-tr-xl rounded-b-xl rounded-bl-sm">
+                                <div className="text-sm text-text-secondary bg-bg-surface p-3 rounded-tr-xl rounded-b-xl rounded-bl-sm">
                                   {comment.content}
                                 </div>
                               </div>
@@ -593,26 +585,26 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                           )
                         })}
                         {(!formData.comments || formData.comments.length === 0) && (
-                          <div className="text-sm text-light-text-tertiary text-center py-8">
+                          <div className="text-sm text-text-muted text-center py-8">
                             No comments yet. Start the conversation!
                           </div>
                         )}
                       </div>
 
                       {/* Add Comment Input */}
-                      <div className="relative mt-auto border-t border-light-border dark:border-dark-border pt-4">
+                      <div className="relative mt-auto border-t border-border pt-4">
                         <textarea
                           value={newComment}
                           onChange={(e) => setNewComment(e.target.value)}
                           aria-label="Write a comment"
                           placeholder="Write a comment..."
-                          className="w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent-primary resize-none min-h-[80px]"
+                          className="w-full bg-bg-surface border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent-primary resize-none min-h-[80px]"
                         />
                         <button
                           type="button"
                           onClick={handleAddComment}
                           disabled={!newComment.trim() || isSubmitting}
-                          className="absolute right-3 bottom-5 btn-primary py-1.5 px-3 text-xs"
+                          className="absolute right-3 bottom-5 bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer py-1.5 px-3 text-xs"
                         >
                           Send
                         </button>
@@ -642,10 +634,10 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                           <div className="text-center py-8">
                             <FileText
                               aria-hidden="true"
-                              className="w-12 h-12 mx-auto mb-2 text-light-text-tertiary opacity-50"
+                              className="w-12 h-12 mx-auto mb-2 text-text-muted opacity-50"
                             />
-                            <p className="text-sm text-light-text-tertiary">No attachments yet.</p>
-                            <p className="text-xs text-light-text-tertiary mt-1">
+                            <p className="text-sm text-text-muted">No attachments yet.</p>
+                            <p className="text-xs text-text-muted mt-1">
                               Upload files to attach to this task
                             </p>
                           </div>
@@ -653,12 +645,10 @@ const TaskDetailPanel = ({ isOpen, onClose, task, members, onTaskUpdated }) => {
                       </div>
 
                       {/* Upload Button */}
-                      <div className="border-t border-light-border dark:border-dark-border pt-4">
-                        <label className="flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] border-2 border-dashed border-light-border dark:border-dark-border rounded-xl cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
-                          <Plus aria-hidden="true" className="w-5 h-5 text-light-text-tertiary" />
-                          <span className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                            Add Attachment
-                          </span>
+                      <div className="border-t border-border pt-4">
+                        <label className="flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-bg-hover transition-colors">
+                          <Plus aria-hidden="true" className="w-5 h-5 text-text-muted" />
+                          <span className="text-sm text-text-secondary">Add Attachment</span>
                           <input
                             type="file"
                             className="hidden"
@@ -777,7 +767,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
           return (
             <div
               key={i}
-              className="relative aspect-square rounded-xl overflow-hidden border border-light-border dark:border-dark-border hover:border-accent-primary transition-colors group bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+              className="relative aspect-square rounded-xl overflow-hidden border border-border hover:border-primary transition-colors group bg-bg-surface"
             >
               <img
                 src={proxyUrl}
@@ -798,7 +788,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                     window.open(proxyUrl, "_blank")
                   }}
                 >
-                  <Download aria-hidden="true" className="w-4 h-4 text-light-text-primary" />
+                  <Download aria-hidden="true" className="w-4 h-4 text-text-primary" />
                 </a>
                 <button
                   type="button"
@@ -816,7 +806,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                   className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-primary/20 rounded-full hover:bg-accent-danger/50 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
                   title="Delete"
                 >
-                  <Trash2 aria-hidden="true" className="w-4 h-4 text-light-text-primary" />
+                  <Trash2 aria-hidden="true" className="w-4 h-4 text-text-primary" />
                 </button>
               </div>
             </div>
@@ -826,21 +816,21 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
         return (
           <div
             key={i}
-            className="flex flex-col items-center gap-2 p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-xl border border-light-border dark:border-dark-border hover:border-accent-primary transition-colors group relative"
+            className="flex flex-col items-center gap-2 p-4 bg-bg-surface rounded-xl border border-border hover:border-primary transition-colors group relative"
           >
             {isImage && hasError ? (
-              <AlertCircle aria-hidden="true" className="w-8 h-8 text-accent-info" />
+              <AlertCircle aria-hidden="true" className="w-8 h-8 text-info" />
             ) : (
-              <FileText aria-hidden="true" className="w-8 h-8 text-light-text-tertiary" />
+              <FileText aria-hidden="true" className="w-8 h-8 text-text-muted" />
             )}
             <span
-              className="text-xs text-light-text-secondary dark:text-dark-text-secondary text-center truncate w-full"
+              className="text-xs text-text-secondary text-center truncate w-full"
               title={attachment.filename}
             >
               {attachment.filename || "Attachment"}
             </span>
             {isImage && hasError && (
-              <span className="text-xs text-accent-info text-center">Image not accessible</span>
+              <span className="text-xs text-info text-center">Image not accessible</span>
             )}
             <div className="flex gap-2 mt-2">
               <a
@@ -848,7 +838,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Download ${attachment.filename || "attachment"}`}
-                className="min-h-[44px] px-3 py-1.5 text-xs bg-accent-primary text-white rounded-lg hover:bg-accent-primary/80 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                className="min-h-[44px] px-3 py-1.5 text-xs bg-primary text-white rounded-lg hover:bg-accent-primary/80 transition-colors flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 <Download aria-hidden="true" className="w-3.5 h-3.5" />
                 {isImage && hasError ? "Open" : "Download"}
@@ -858,7 +848,7 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Preview ${attachment.filename || "attachment"}`}
-                className="min-h-[44px] px-3 py-1.5 text-xs bg-light-bg-hover dark:bg-dark-bg-hover text-light-text-secondary dark:text-dark-text-secondary rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+                className="min-h-[44px] px-3 py-1.5 text-xs bg-bg-hover text-text-secondary rounded-lg hover:bg-light-border dark:hover:bg-dark-border transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               >
                 Preview
               </a>
@@ -876,10 +866,10 @@ const AttachmentGrid = ({ attachments, projectId, taskId, onDelete }) => {
                   toast.error(err.message || "Failed to remove attachment", { id: toastId })
                 }
               }}
-              className="absolute top-2 right-2 p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center bg-light-bg-hover dark:bg-dark-bg-hover rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-accent-danger/20 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+              className="absolute top-2 right-2 p-1.5 min-h-[44px] min-w-[44px] flex items-center justify-center bg-bg-hover rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-accent-danger/20 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
               title="Delete"
             >
-              <Trash2 aria-hidden="true" className="w-3.5 h-3.5 text-accent-danger" />
+              <Trash2 aria-hidden="true" className="w-3.5 h-3.5 text-danger" />
             </button>
           </div>
         )

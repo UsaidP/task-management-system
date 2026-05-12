@@ -1,13 +1,13 @@
 import {
   DashboardIcon,
-  LayoutGridIcon,
-  UsersIcon,
-  MoonIcon,
-  ZapIcon,
   GlobeIcon,
-  TriangleAlertIcon
+  LayoutGridIcon,
+  MoonIcon,
+  TriangleAlertIcon,
+  UsersIcon,
+  ZapIcon,
 } from "@animateicons/react/lucide"
-import { CalendarIcon, ListIcon, BriefcaseIcon, TargetIcon } from "lucide-react"
+import { BriefcaseIcon, CalendarIcon, ListIcon, TargetIcon } from "lucide-react"
 
 const ICON_MAP = {
   FiLayout: DashboardIcon,

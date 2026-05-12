@@ -1,5 +1,5 @@
-import { TriangleAlertIcon, CircleCheckIcon } from "@animateicons/react/lucide"
-import { SquareCheckIcon, ClockIcon } from "lucide-react"
+import { CircleCheckIcon, TriangleAlertIcon } from "@animateicons/react/lucide"
+import { ClockIcon, SquareCheckIcon } from "lucide-react"
 
 const iconMap = {
   total: <SquareCheckIcon size={22} />,
@@ -15,7 +15,7 @@ export default function AdminStatsCards({ stats, loading }) {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="h-32 p-5 border animate-pulse rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+            className="h-32 p-5 border animate-pulse rounded-2xl border-border bg-bg-surface"
           />
         ))}
       </div>
@@ -67,14 +67,12 @@ export default function AdminStatsCards({ stats, loading }) {
         return (
           <div
             key={card.title}
-            className="relative p-5 overflow-hidden transition-all duration-300 border shadow-sm group rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary hover:shadow-md"
+            className="relative p-5 overflow-hidden transition-all duration-300 border shadow-sm group rounded-2xl border-border bg-bg-surface hover:shadow-md"
           >
             <div className="flex items-start justify-between">
               <div className="space-y-3">
-                <p className="text-sm font-medium text-light-text-tertiary">{card.title}</p>
-                <p className="font-serif text-3xl font-bold text-light-text-primary dark:text-dark-text-primary">
-                  {card.value}
-                </p>
+                <p className="text-sm font-medium text-text-muted">{card.title}</p>
+                <p className="font-serif text-3xl font-bold text-text-primary">{card.value}</p>
               </div>
               <div
                 className={`flex h-12 w-12 items-center justify-center rounded-xl ${card.bgLight} ${card.textColor}`}
@@ -83,7 +81,7 @@ export default function AdminStatsCards({ stats, loading }) {
               </div>
             </div>
 
-            <div className="w-full h-1 mt-4 rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
+            <div className="w-full h-1 mt-4 rounded-full bg-bg-elevated">
               <div
                 className={`h-full rounded-full bg-gradient-to-r ${card.color}`}
                 style={{ width: `${pct}%` }}

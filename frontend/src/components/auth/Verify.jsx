@@ -1,7 +1,7 @@
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
 import { CircleCheckIcon as CheckCircle } from "@animateicons/react/lucide"
+import { motion } from "framer-motion"
 import { CircleXIcon as XCircle } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
 
@@ -43,40 +43,36 @@ export const Verify = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
+    <div className="auth-bg bg-bg-canvas min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md auth-card space-y-6 text-center"
+        className="w-full max-w-md p-8 bg-bg-canvas border border-border rounded-2xl shadow-lg space-y-6 text-center"
       >
         {status === "verifying" && (
           <>
-            <div className="w-20 h-20 bg-accent-primary/10 dark:bg-accent-primary/20 text-accent-primary dark:text-accent-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-accent-primary/10 dark:bg-accent-primary/20 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-current" />
             </div>
 
-            <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+            <h1 className="text-3xl font-serif font-bold text-text-primary mb-2">
               Verifying Your Email
             </h1>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary">
-              Please wait while we verify your email address...
-            </p>
+            <p className="text-text-secondary">Please wait while we verify your email address...</p>
           </>
         )}
 
         {status === "success" && (
           <>
-            <div className="w-20 h-20 bg-accent-success/10 dark:bg-accent-success/20 text-accent-success rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-accent-success/10 dark:bg-accent-success/20 text-success rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-10 h-10" />
             </div>
 
-            <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+            <h1 className="text-3xl font-serif font-bold text-text-primary mb-2">
               Email Verified!
             </h1>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary mb-4">
-              {message}
-            </p>
+            <p className="text-text-secondary mb-4">{message}</p>
 
             <div className="pt-4">
               <button
@@ -84,7 +80,7 @@ export const Verify = () => {
                 onClick={handleRedirect}
                 disabled={isRedirecting}
                 aria-busy={isRedirecting}
-                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
+                className="w-full px-4 py-3 font-semibold text-white bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
               >
                 {isRedirecting ? (
                   <div className="flex items-center justify-center">
@@ -99,7 +95,7 @@ export const Verify = () => {
             <div className="pt-4">
               <Link
                 to="/register"
-                className="inline-block text-sm font-medium text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors"
+                className="inline-block text-sm font-medium text-primary hover:text-accent-primary-dark dark:hover:text-accent-primary transition-colors"
               >
                 Create another account
               </Link>
@@ -109,16 +105,14 @@ export const Verify = () => {
 
         {status === "error" && (
           <>
-            <div className="w-20 h-20 bg-accent-danger/10 dark:bg-accent-danger/20 text-accent-danger rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-accent-danger/10 dark:bg-accent-danger/20 text-danger rounded-full flex items-center justify-center mx-auto mb-6">
               <XCircle className="w-10 h-10" />
             </div>
 
-            <h1 className="text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+            <h1 className="text-3xl font-serif font-bold text-text-primary mb-2">
               Verification Failed
             </h1>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary mb-4">
-              {message}
-            </p>
+            <p className="text-text-secondary mb-4">{message}</p>
 
             <div className="pt-4 space-y-3">
               <button
@@ -126,7 +120,7 @@ export const Verify = () => {
                 onClick={handleRedirect}
                 disabled={isRedirecting}
                 aria-busy={isRedirecting}
-                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
+                className="w-full px-4 py-3 font-semibold text-white bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
               >
                 {isRedirecting ? (
                   <div className="flex items-center justify-center">
@@ -139,7 +133,7 @@ export const Verify = () => {
 
               <Link
                 to="/register"
-                className="inline-block text-sm font-medium text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors"
+                className="inline-block text-sm font-medium text-primary hover:text-accent-primary-dark dark:hover:text-accent-primary transition-colors"
               >
                 Create a new account
               </Link>

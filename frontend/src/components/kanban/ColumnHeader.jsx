@@ -25,10 +25,10 @@ const ColumnHeader = ({
       <div className="flex items-center gap-2">
         <div className={`w-2.5 h-2.5 rounded-full ${colors.dot}`} aria-hidden="true" />
         <div>
-          <h2 className="text-sm font-semibold text-light-text-primary dark:text-dark-text-primary uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
             {title}
           </h2>
-          <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+          <span className="text-xs text-text-muted">
             {showFilterCount
               ? `${count} of ${totalCount} ${taskText(totalCount)}`
               : `${count} ${taskText(count)}`}

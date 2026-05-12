@@ -32,8 +32,8 @@ const Logo = ({ size = "md", iconOnly = false, className = "", to }) => {
       {/* Wordmark */}
       {!iconOnly && (
         <span className={`${s.text} font-extrabold tracking-tight select-none whitespace-nowrap`}>
-          <span className="text-light-text-primary dark:text-dark-text-primary">Task</span>
-          <span className="text-accent-primary">flow</span>
+          <span className="text-text-primary">Task</span>
+          <span className="text-primary">flow</span>
         </span>
       )}
     </div>

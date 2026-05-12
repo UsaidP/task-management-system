@@ -1,4 +1,9 @@
-import { CircleCheckIcon, MessageCircleIcon, PlusIcon, UserPlusIcon } from "@animateicons/react/lucide"
+import {
+  CircleCheckIcon,
+  MessageCircleIcon,
+  PlusIcon,
+  UserPlusIcon,
+} from "@animateicons/react/lucide"
 import { ArrowRightIcon } from "lucide-react"
 import Avatar from "../auth/Avatar"
 
@@ -38,13 +43,10 @@ function _getActivityColor(status) {
 export default function AdminActivityFeed({ tasks, loading }) {
   if (loading) {
     return (
-      <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 shadow-sm">
-        <div className="animate-pulse h-6 w-32 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded mb-4" />
+      <div className="rounded-2xl border border-border bg-bg-surface p-6 shadow-sm">
+        <div className="animate-pulse h-6 w-32 bg-bg-elevated rounded mb-4" />
         {[1, 2, 3, 4, 5].map((i) => (
-          <div
-            key={i}
-            className="animate-pulse h-10 bg-light-bg-tertiary dark:bg-dark-bg-tertiary rounded mb-2"
-          />
+          <div key={i} className="animate-pulse h-10 bg-bg-elevated rounded mb-2" />
         ))}
       </div>
     )
@@ -75,19 +77,17 @@ export default function AdminActivityFeed({ tasks, loading }) {
   }
 
   return (
-    <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 shadow-sm">
+    <div className="rounded-2xl border border-border bg-bg-surface p-6 shadow-sm">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h3 className="text-base font-semibold text-light-text-primary dark:text-dark-text-primary font-serif">
-            Recent Activity
-          </h3>
-          <p className="text-sm text-light-text-tertiary">Latest team updates</p>
+          <h3 className="text-base font-semibold text-text-primary font-serif">Recent Activity</h3>
+          <p className="text-sm text-text-muted">Latest team updates</p>
         </div>
       </div>
 
       <div className="space-y-0">
         {activities.length === 0 && (
-          <p className="text-sm text-light-text-tertiary text-center py-8">No recent activity</p>
+          <p className="text-sm text-text-muted text-center py-8">No recent activity</p>
         )}
         {activities.map((activity, index) => (
           <div
@@ -105,14 +105,14 @@ export default function AdminActivityFeed({ tasks, loading }) {
             />
 
             <div className="min-w-0 flex-1 pt-0.5">
-              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
-                <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
+              <p className="text-sm text-text-secondary">
+                <span className="font-semibold text-text-primary">
                   {activity.user.fullname || "Unknown"}
                 </span>{" "}
                 {activity.action === "completed" ? "completed" : "created"}{" "}
-                <span className="font-medium text-accent-primary">{activity.target}</span>
+                <span className="font-medium text-primary">{activity.target}</span>
               </p>
-              <p className="mt-1 flex items-center gap-2 text-xs text-light-text-tertiary">
+              <p className="mt-1 flex items-center gap-2 text-xs text-text-muted">
                 {timeAgo(activity.createdAt)}
               </p>
             </div>

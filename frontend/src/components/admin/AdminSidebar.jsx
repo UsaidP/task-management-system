@@ -1,4 +1,11 @@
-import { TrendingUpIcon, ChevronLeftIcon, ChevronRightIcon, FolderOpenIcon, DashboardIcon, UsersIcon, ZapIcon } from "@animateicons/react/lucide"
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DashboardIcon,
+  FolderOpenIcon,
+  TrendingUpIcon,
+  UsersIcon,
+} from "@animateicons/react/lucide"
 import { SquareCheckIcon } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import Logo from "../common/Logo.jsx"
@@ -14,19 +21,17 @@ const mainNav = [
 export default function AdminSidebar({ collapsed, onToggle }) {
   return (
     <aside
-      className={`fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary transition-all duration-300 ${
-        collapsed ? "w-[72px]" : "w-64"
-      }`}
+      className={`fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border bg-bg-surface transition-all duration-300 ${collapsed ? "w-[72px]" : "w-64"}`}
     >
       {/* Logo */}
-      <div className="flex items-center justify-between h-16 px-4 border-b border-light-border dark:border-dark-border">
+      <div className="flex items-center justify-between h-16 px-4 border-b border-border">
         <div className="flex items-center gap-3 overflow-hidden">
           <Logo size="md" iconOnly={collapsed} to="/admin" />
         </div>
         <button
           type="button"
           onClick={onToggle}
-          className="flex items-center justify-center flex-shrink-0 rounded-md cursor-pointer h-7 w-7 text-light-text-tertiary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover hover:text-light-text-secondary"
+          className="flex items-center justify-center flex-shrink-0 rounded-md cursor-pointer h-7 w-7 text-text-muted hover:bg-bg-hover hover:text-light-text-secondary"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <ChevronRightIcon size={16} /> : <ChevronLeftIcon size={16} />}
@@ -36,7 +41,7 @@ export default function AdminSidebar({ collapsed, onToggle }) {
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {!collapsed && (
-          <div className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-light-text-tertiary">
+          <div className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
             Admin Panel
           </div>
         )}

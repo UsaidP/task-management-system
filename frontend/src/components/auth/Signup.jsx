@@ -1,8 +1,15 @@
+import {
+  CheckIcon as Check,
+  EyeIcon as Eye,
+  EyeOffIcon as EyeOff,
+  LockIcon as Lock,
+  MailIcon as Mail,
+  UserIcon as User,
+} from "@animateicons/react/lucide"
 import { motion } from "framer-motion"
+import { ArrowRightIcon as ArrowRight } from "lucide-react"
 import { useId, useState } from "react"
 import toast from "react-hot-toast"
-import { CheckIcon as Check, EyeIcon as Eye, EyeOffIcon as EyeOff, LockIcon as Lock, MailIcon as Mail, UserIcon as User } from "@animateicons/react/lucide"
-import { ArrowRightIcon as ArrowRight } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -49,13 +56,7 @@ const PasswordStrengthIndicator = ({ password }) => {
           />
         </div>
         <span
-          className={`text-xs font-medium ${
-            strength <= 2
-              ? "text-accent-danger"
-              : strength <= 3
-                ? "text-accent-warning"
-                : "text-accent-success"
-          }`}
+          className={`text-xs font-medium ${strength <= 2 ? "text-accent-danger" : strength <= 3 ? "text-accent-warning" : "text-accent-success"}`}
         >
           {getLabel()}
         </span>
@@ -115,28 +116,32 @@ export const Signup = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
-      <div className="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6 bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-xl border border-light-border dark:border-dark-border">
+    <div className="auth-bg bg-bg-canvas min-h-screen">
+      <div className="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-6 bg-bg-surface rounded-xl border border-border">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-6 sm:mb-8"
         >
-          <Link to="/" aria-label="TaskFlow Home" className="inline-flex flex-col items-center mb-6">
-            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-light-text-inverse mb-4 shadow-sm hover:scale-105 transition-transform">
+          <Link
+            to="/"
+            aria-label="TaskFlow Home"
+            className="inline-flex flex-col items-center mb-6"
+          >
+            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-text-inverse mb-4 shadow-sm hover:scale-105 transition-transform">
               <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
+            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-primary mb-2">
               Create an Account
             </h1>
-            <p className="text-light-text-secondary dark:text-dark-text-secondary text-base sm:text-lg">
+            <p className="text-text-secondary text-base sm:text-lg">
               Join TaskFlow to organize your work.
             </p>
           </Link>
         </motion.div>
 
-        <div className="auth-card">
+        <div className="p-8 bg-bg-canvas border border-border rounded-2xl shadow-lg">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -153,7 +158,7 @@ export const Signup = () => {
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                      <User className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                      <User className="text-text-muted w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
                     </div>
                     <input
                       type="text"
@@ -163,7 +168,7 @@ export const Signup = () => {
                       onChange={handleChange}
                       value={formData.fullname}
                       required
-                      className="input-field pl-11"
+                      className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all pl-11"
                     />
                   </div>
                 </div>
@@ -177,7 +182,7 @@ export const Signup = () => {
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                      <User className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                      <User className="text-text-muted w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
                     </div>
                     <input
                       type="text"
@@ -187,7 +192,7 @@ export const Signup = () => {
                       onChange={handleChange}
                       value={formData.username}
                       required
-                      className="input-field pl-11"
+                      className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all pl-11"
                     />
                   </div>
                 </div>
@@ -202,7 +207,7 @@ export const Signup = () => {
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                    <Mail className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                    <Mail className="text-text-muted w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
                   </div>
                   <input
                     type="email"
@@ -212,7 +217,7 @@ export const Signup = () => {
                     onChange={handleChange}
                     value={formData.email}
                     required
-                    className="input-field pl-11"
+                    className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all pl-11"
                   />
                 </div>
               </div>
@@ -226,7 +231,7 @@ export const Signup = () => {
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                    <Lock className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                    <Lock className="text-text-muted w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -236,19 +241,15 @@ export const Signup = () => {
                     onChange={handleChange}
                     value={formData.password}
                     required
-                    className="input-field pl-11 pr-11"
+                    className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all pl-11 pr-11"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded p-1"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-light-text-primary dark:hover:text-dark-text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/50 rounded p-1"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
                 <PasswordStrengthIndicator password={formData.password} />
@@ -259,19 +260,19 @@ export const Signup = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   role="alert"
-                  className="p-3 bg-accent-danger/10 border border-accent-danger/20 rounded-lg text-accent-danger text-sm"
+                  className="p-3 bg-accent-danger/10 border border-accent-danger/20 rounded-lg text-danger text-sm"
                 >
                   {error}
                 </motion.div>
               )}
 
-              <div className="text-xs text-light-text-secondary dark:text-dark-text-secondary space-y-2">
+              <div className="text-xs text-text-secondary space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-accent-success" />
+                  <Check className="w-4 h-4 text-success" />
                   <span>Free forever, no credit card required</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-accent-success" />
+                  <Check className="w-4 h-4 text-success" />
                   <span>Unlimited projects and tasks</span>
                 </div>
               </div>
@@ -280,7 +281,7 @@ export const Signup = () => {
                 type="submit"
                 disabled={loading}
                 aria-busy={loading}
-                className="btn-primary group w-full py-2.5 sm:py-3 text-sm sm:text-base disabled:cursor-not-allowed disabled:opacity-50"
+                className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer group w-full py-2.5 sm:py-3 text-sm sm:text-base disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
@@ -303,11 +304,11 @@ export const Signup = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-6"
         >
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-xs sm:text-sm">
+          <p className="text-text-secondary text-xs sm:text-sm">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors font-medium"
+              className="text-primary hover:text-accent-primary-dark dark:hover:text-accent-primary transition-colors font-medium"
             >
               Sign in
             </Link>

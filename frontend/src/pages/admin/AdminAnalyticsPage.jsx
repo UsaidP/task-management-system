@@ -1,5 +1,10 @@
+import {
+  CircleCheckIcon,
+  FolderOpenIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
+} from "@animateicons/react/lucide"
 import { motion, useReducedMotion } from "framer-motion"
-import { CircleCheckIcon, FolderOpenIcon, TrendingDownIcon, TrendingUpIcon } from "@animateicons/react/lucide"
 import { ClockIcon, SquareCheckIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import {
@@ -65,18 +70,18 @@ export default function AdminAnalyticsPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="w-48 h-10 rounded-xl animate-pulse bg-light-bg-tertiary dark:bg-dark-bg-tertiary" />
+        <div className="w-48 h-10 rounded-xl animate-pulse bg-bg-elevated" />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-32 p-6 border animate-pulse rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+              className="h-32 p-6 border animate-pulse rounded-2xl border-border bg-bg-surface"
             />
           ))}
         </div>
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <div className="p-6 border animate-pulse h-80 rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary" />
-          <div className="p-6 border animate-pulse h-80 rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary" />
+          <div className="p-6 border animate-pulse h-80 rounded-2xl border-border bg-bg-surface" />
+          <div className="p-6 border animate-pulse h-80 rounded-2xl border-border bg-bg-surface" />
         </div>
       </div>
     )
@@ -90,10 +95,10 @@ export default function AdminAnalyticsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-        <h1 className="font-serif text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+        <h1 className="font-serif text-2xl font-bold tracking-tight text-text-primary">
           Analytics
         </h1>
-        <p className="mt-1 text-sm text-light-text-secondary dark:text-dark-text-secondary">
+        <p className="mt-1 text-sm text-text-secondary">
           Platform-wide insights and performance metrics
         </p>
       </motion.div>
@@ -141,16 +146,14 @@ export default function AdminAnalyticsPage() {
             initial={reduceMotion ? {} : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: kpi.delay, ease: [0.16, 1, 0.3, 1] }}
-            className="relative p-5 overflow-hidden border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary interactive-card group"
+            className="relative p-5 overflow-hidden border shadow-sm rounded-2xl border-border bg-bg-surface interactive-card group"
           >
             <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-br from-accent-primary/5 via-transparent to-transparent group-hover:opacity-100" />
             <div className="relative">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-                    {kpi.label}
-                  </p>
-                  <p className="mt-2 font-serif text-3xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+                  <p className="text-sm text-text-muted">{kpi.label}</p>
+                  <p className="mt-2 font-serif text-3xl font-bold tracking-tight text-text-primary">
                     {kpi.value}
                   </p>
                 </div>
@@ -165,20 +168,16 @@ export default function AdminAnalyticsPage() {
                 {kpi.trend !== undefined && (
                   <>
                     {kpi.trend ? (
-                      <TrendingUpIcon size={14} className="text-accent-success" />
+                      <TrendingUpIcon size={14} className="text-success" />
                     ) : (
-                      <TrendingDownIcon size={14} className="text-accent-danger" />
+                      <TrendingDownIcon size={14} className="text-danger" />
                     )}
                     <span className={kpi.trend ? "text-accent-success" : "text-accent-danger"}>
                       {kpi.trendLabel}
                     </span>
                   </>
                 )}
-                {kpi.sub && (
-                  <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                    {kpi.sub}
-                  </span>
-                )}
+                {kpi.sub && <span className="text-text-muted">{kpi.sub}</span>}
               </div>
             </div>
           </motion.div>
@@ -193,12 +192,12 @@ export default function AdminAnalyticsPage() {
         className="grid grid-cols-1 gap-6 xl:grid-cols-2"
       >
         {/* Weekly Trend */}
-        <div className="p-6 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary">
+        <div className="p-6 border shadow-sm rounded-2xl border-border bg-bg-surface">
           <div className="mb-4">
-            <h3 className="font-serif text-base font-semibold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+            <h3 className="font-serif text-base font-semibold tracking-tight text-text-primary">
               Weekly Task Trend
             </h3>
-            <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+            <p className="text-sm text-text-muted">
               Task creation vs completion over the last 7 days
             </p>
           </div>
@@ -254,14 +253,12 @@ export default function AdminAnalyticsPage() {
         </div>
 
         {/* Priority Distribution */}
-        <div className="p-6 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary">
+        <div className="p-6 border shadow-sm rounded-2xl border-border bg-bg-surface">
           <div className="mb-4">
-            <h3 className="font-serif text-base font-semibold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+            <h3 className="font-serif text-base font-semibold tracking-tight text-text-primary">
               Priority Distribution
             </h3>
-            <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-              Tasks broken down by priority level
-            </p>
+            <p className="text-sm text-text-muted">Tasks broken down by priority level</p>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
@@ -304,15 +301,13 @@ export default function AdminAnalyticsPage() {
         initial={reduceMotion ? {} : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="p-6 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+        className="p-6 border shadow-sm rounded-2xl border-border bg-bg-surface"
       >
         <div className="mb-4">
-          <h3 className="font-serif text-base font-semibold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+          <h3 className="font-serif text-base font-semibold tracking-tight text-text-primary">
             Task Status Breakdown
           </h3>
-          <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-            Distribution of tasks across all statuses
-          </p>
+          <p className="text-sm text-text-muted">Distribution of tasks across all statuses</p>
         </div>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart
@@ -361,21 +356,17 @@ export default function AdminAnalyticsPage() {
         initial={reduceMotion ? {} : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="p-6 border shadow-sm rounded-2xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
+        className="p-6 border shadow-sm rounded-2xl border-border bg-bg-surface"
       >
         <div className="mb-4">
-          <h3 className="font-serif text-base font-semibold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+          <h3 className="font-serif text-base font-semibold tracking-tight text-text-primary">
             Top Projects by Task Count
           </h3>
-          <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
-            Most active projects across the platform
-          </p>
+          <p className="text-sm text-text-muted">Most active projects across the platform</p>
         </div>
         <div className="space-y-4">
           {topProjects.length === 0 && (
-            <p className="py-8 text-sm text-center text-light-text-tertiary dark:text-dark-text-tertiary">
-              No projects found
-            </p>
+            <p className="py-8 text-sm text-center text-text-muted">No projects found</p>
           )}
           {topProjects.map((project, index) => {
             const projectColors = [
@@ -391,20 +382,16 @@ export default function AdminAnalyticsPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className={`w-2.5 h-2.5 rounded-full ${colorClass} shadow-sm`} />
-                    <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-primary">
-                      {project.name}
-                    </span>
+                    <span className="text-sm font-medium text-text-primary">{project.name}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
-                      {project.totalTasks} tasks
-                    </span>
-                    <span className="text-sm font-semibold text-light-text-secondary dark:text-dark-text-secondary">
+                    <span className="text-xs text-text-muted">{project.totalTasks} tasks</span>
+                    <span className="text-sm font-semibold text-text-secondary">
                       {project.progress}%
                     </span>
                   </div>
                 </div>
-                <div className="w-full h-2 rounded-full bg-light-bg-tertiary dark:bg-dark-bg-tertiary">
+                <div className="w-full h-2 rounded-full bg-bg-elevated">
                   <div
                     className={`h-full rounded-full ${colorClass} transition-all duration-700`}
                     style={{ width: `${project.progress}%` }}

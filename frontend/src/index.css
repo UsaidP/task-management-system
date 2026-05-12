@@ -2,12 +2,108 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ═══════════════════════════════════════════
-   TaskFlow — "Work that feels human"
-   Warm earth-tone design system
-   ═══════════════════════════════════════════ */
-
 @layer base {
+  :root {
+    /* 🎨 Core Semantic Colors (RGB format for opacity modifiers) */
+    --color-primary: 196 101 74;      /* #C4654A */
+    --color-success: 122 154 109;     /* #7A9A6D */
+    --color-warning: 212 163 115;     /* #D4A373 */
+    --color-danger: 196 74 74;        /* #C44A4A */
+    --color-info: 109 152 186;        /* #6D98BA */
+
+    /* 🧱 Backgrounds (Light Mode) */
+    --bg-canvas: 250 246 241;         /* #FAF6F1 */
+    --bg-surface: 255 255 255;        /* #FFFFFF */
+    --bg-elevated: 245 237 227;       /* #F5EDE3 */
+    --bg-hover: 235 225 210;          /* #EBE1D2 */
+
+    /* 🖋️ Typography (Light Mode) */
+    --text-primary: 44 36 32;         /* #2C2420 */
+    --text-secondary: 92 84 80;       /* #5C5450 */
+    --text-muted: 153 145 140;        /* #99918C */
+    --text-inverse: 250 246 241;      /* #FAF6F1 */
+
+    /* 🔲 Borders (Light Mode) */
+    --border-color: 201 186 168;      /* #C9BAA8 */
+    --border-default: 201 186 168;    /* alias for tailwind config */
+    --border-strong: 168 153 138;     /* #A8998A */
+    --border-focus: 196 101 74;       /* primary color as focus ring */
+
+    /* 🔗 Accent Palette */
+    --color-accent-primary: 196 101 74;   /* #C4654A — terracotta */
+    --color-accent-secondary: 109 140 120; /* #6D8C78 — sage green */
+    --color-accent-tertiary: 186 152 109;  /* #BA986D — warm gold */
+    --color-accent-success: 100 160 120;   /* #64A078 — vibrant sage */
+    --color-accent-warning: 200 155 90;    /* #C89B5A — golden amber */
+    --color-accent-danger: 185 70 70;      /* #B94646 — warm crimson */
+    --color-accent-info: 90 140 180;       /* #5A8CB4 — slate blue */
+
+    /* 🌍 Legacy backward-compat tokens (light mode) */
+    --light-bg-primary: 250 246 241;
+    --light-bg-secondary: 245 237 227;
+    --light-bg-tertiary: 235 225 210;
+    --light-text-primary: 44 36 32;
+    --light-text-secondary: 92 84 80;
+    --light-text-tertiary: 153 145 140;
+    --light-border: 201 186 168;
+    --light-border-strong: 168 153 138;
+    --dark-bg-primary: 26 22 20;
+    --dark-bg-secondary: 35 31 28;
+    --dark-bg-tertiary: 45 40 36;
+    --dark-text-primary: 250 246 241;
+    --dark-text-secondary: 180 175 170;
+    --dark-text-tertiary: 130 125 120;
+    --dark-border: 61 53 48;
+    --dark-border-strong: 90 80 75;
+  }
+
+  .dark {
+    /* 🧱 Backgrounds (Dark Mode) */
+    --bg-canvas: 26 22 20;            /* #1A1614 */
+    --bg-surface: 35 31 28;           /* #231F1C */
+    --bg-elevated: 45 40 36;          /* #2D2824 */
+    --bg-hover: 55 50 45;             /* #37322D */
+
+    /* 🖋️ Typography (Dark Mode) */
+    --text-primary: 250 246 241;      /* #FAF6F1 */
+    --text-secondary: 180 175 170;    /* #B4AFAA */
+    --text-muted: 130 125 120;        /* #827D78 */
+    --text-inverse: 26 22 20;         /* #1A1614 */
+
+    /* 🔲 Borders (Dark Mode) */
+    --border-color: 61 53 48;         /* #3D3530 */
+    --border-default: 61 53 48;       /* alias for tailwind config */
+    --border-strong: 90 80 75;        /* #5A504B */
+    --border-focus: 212 133 106;      /* primary-dark as focus ring */
+    
+    /* 🔥 Adjusted Core Colors for Dark Mode (Slightly brighter/desaturated) */
+    --color-primary: 212 133 106;     /* #D4856A */
+    --color-success: 144 184 129;     /* #90B881 */
+    --color-warning: 232 183 135;     /* #E8B787 */
+    --color-danger: 212 106 106;      /* #D46A6A */
+    --color-info: 129 172 206;        /* #81ACCE */
+
+    /* 🔗 Accent Palette (Dark Mode — slightly brighter) */
+    --color-accent-primary: 212 133 106;   /* #D4856A */
+    --color-accent-secondary: 130 165 140; /* #82A58C */
+    --color-accent-tertiary: 210 175 130;  /* #D2AF82 */
+    --color-accent-success: 120 185 140;   /* #78B98C */
+    --color-accent-warning: 225 180 110;   /* #E1B46E */
+    --color-accent-danger: 210 95 95;      /* #D25F5F */
+    --color-accent-info: 110 165 210;      /* #6EA5D2 */
+
+    /* 🌍 Legacy backward-compat tokens (dark mode overrides) */
+    --light-bg-primary: 26 22 20;
+    --light-bg-secondary: 35 31 28;
+    --light-bg-tertiary: 45 40 36;
+    --dark-bg-primary: 26 22 20;
+    --dark-bg-secondary: 35 31 28;
+    --dark-bg-tertiary: 45 40 36;
+    --light-border: 61 53 48;
+    --light-border-strong: 90 80 75;
+    --dark-border: 61 53 48;
+    --dark-border-strong: 90 80 75;
+  }
 
   html {
     scroll-behavior: smooth;
@@ -17,694 +113,126 @@
   }
 
   body {
-    @apply font-sans antialiased transition-colors bg-light-bg-primary text-light-text-secondary dark:bg-dark-bg-primary dark:text-dark-text-secondary duration-fast;
+    @apply font-sans antialiased transition-colors duration-200 bg-bg-canvas text-text-secondary;
     overflow-x: hidden;
   }
 
-  /* Selection color — terracotta tint */
+  /* Selection color */
   ::selection {
-    background-color: rgba(196, 101, 74, 0.2);
-    color: #2C2420;
+    background-color: rgb(var(--color-primary) / 0.2);
+    color: inherit;
   }
 
-  .dark ::selection {
-    background-color: rgba(212, 133, 106, 0.25);
-    color: #F5EDE3;
+  h1, h2, h3 {
+    @apply font-serif font-semibold tracking-tight text-text-primary;
   }
 
-  h1,
-  h2,
-  h3 {
-    @apply font-serif font-semibold tracking-tight text-light-text-primary dark:text-dark-text-primary;
-  }
-
-  h1 {
-    @apply text-4xl leading-tight;
-  }
-
-  h2 {
-    @apply text-3xl leading-tight;
-  }
-
-  h3 {
-    @apply text-2xl;
-  }
-
-  h4,
-  h5,
-  h6 {
-    @apply font-sans font-semibold text-light-text-primary dark:text-dark-text-primary;
-  }
+  h1 { @apply text-4xl leading-tight; }
+  h2 { @apply text-3xl leading-tight; }
+  h3 { @apply text-2xl; }
+  h4, h5, h6 { @apply font-sans font-semibold text-text-primary; }
 
   a {
-    @apply transition-colors text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary duration-fast;
-  }
-
-  a[class*="btn-"] {
-    @apply no-underline;
-    transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  a[class*="btn-"]:hover {
-    @apply no-underline;
-  }
-
-  /* Focus-visible global style */
-  :focus-visible {
-    outline: 2px solid rgba(196, 101, 74, 0.5);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  /* Smooth image rendering */
-  img {
-    @apply transition-opacity duration-fast;
-  }
-
-  /* Respect reduced motion preference */
-  @media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-}
-
-/* ════════════════════════════════════════════
-   🧩 REUSABLE COMPONENTS
-   ════════════════════════════════════════════ */
-
-@layer components {
-
-  /* ── Buttons ─────────────────────────────── */
-
-  .btn-primary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
-    background-color: #C4654A;
-    color: #FAF6F1;
-  }
-
-  .btn-primary:hover {
-    background-color: #A8503A;
-    color: #FAF6F1;
-  }
-
-  .dark .btn-primary {
-    background-color: #D4856A;
-    color: #1A1614;
-  }
-
-  .dark .btn-primary:hover {
-    background-color: #C4654A;
-    color: #1A1614;
-  }
-
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold shadow-sm hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
-    background-color: #FFFFFF !important;
-    color: #2C2420 !important;
-    border: 2px solid #C9BAA8;
-  }
-
-  .btn-secondary:hover {
-    background-color: #F5EDE3 !important;
-    color: #2C2420 !important;
-  }
-
-  .dark .btn-secondary {
-    background-color: #FFFFFF !important;
-    color: #1A1614 !important;
-    border-color: #3D3530;
-  }
-
-  .dark .btn-secondary:hover {
-    background-color: #E8E8E8 !important;
-    color: #1A1614 !important;
-  }
-
-  .btn-danger {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse shadow-md hover:shadow-lg dark:shadow-dark-md dark:hover:shadow-dark-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
-    background-color: #C44A4A;
-  }
-
-  .btn-danger:hover {
-    background-color: #A83030;
-  }
-
-  .dark .btn-danger {
-    background-color: #D46A6A;
-  }
-
-  .dark .btn-danger:hover {
-    background-color: #C44A4A;
-  }
-
-  .btn-ghost {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-secondary hover:text-light-text-secondary dark:text-dark-text-secondary dark:hover:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors duration-fast cursor-pointer focus-visible-ring;
-  }
-
-  .btn-accent {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-sans font-semibold text-light-text-inverse shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-fast cursor-pointer focus-visible-ring;
-    background-color: #D4A548;
-  }
-
-  .btn-accent:hover {
-    background-color: #B88A30;
-  }
-
-  /* ── Forms ────────────────────────────────── */
-
-  .input-field {
-    @apply w-full px-4 py-3 transition-all border-2 rounded-lg bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary duration-fast focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary dark:focus:ring-accent-primary-light/20 dark:focus:border-accent-primary-light;
-  }
-
-  .select-field {
-    @apply appearance-none bg-[url('data:image/svg+xml')] bg-no-repeat bg-[center_right_1rem];
-  }
-
-  .checkbox {
-    @apply w-5 h-5 transition-all duration-200 border-2 rounded cursor-pointer bg-light-bg-secondary dark:bg-dark-bg-secondary border-light-border dark:border-dark-border text-accent-primary focus:ring-2 focus:ring-accent-primary/30 focus:ring-offset-0 checked:bg-accent-primary checked:border-accent-primary hover:border-accent-primary dark:hover:border-accent-primary-light;
-  }
-
-  .input-label {
-    @apply block mb-2 font-sans text-sm font-medium text-light-text-primary dark:text-dark-text-primary;
-  }
-
-  .input-error {
-    @apply mt-1 text-sm text-accent-danger;
-  }
-
-  /* ── Cards ────────────────────────────────── */
-
-  .card {
-    @apply p-6 transition-all duration-200 border shadow-sm bg-light-bg-secondary dark:bg-dark-bg-tertiary border-light-border dark:border-dark-border rounded-xl hover:shadow-md dark:shadow-dark-sm dark:hover:shadow-dark-md;
-  }
-
-  .card-interactive {
-    @apply card cursor-pointer hover:scale-[1.01] hover:border-accent-primary/40 dark:hover:border-accent-primary-light/40 active:scale-[0.99];
-  }
-
-  /* ── Auth Pages ──────────────────────────── */
-
-  .auth-bg {
-    @apply relative flex items-center justify-center min-h-screen p-6;
-  }
-
-  .auth-bg::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0.35;
-    pointer-events: none;
-    z-index: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 200px 200px;
-  }
-
-  .dark .auth-bg::before {
-    opacity: 0.12;
-  }
-
-  .auth-bg>* {
-    position: relative;
-    z-index: 1;
-  }
-
-  .auth-card {
-    @apply p-8 border shadow-lg bg-light-bg-primary dark:bg-dark-bg-primary border-light-border dark:border-dark-border rounded-2xl dark:shadow-dark-md;
-  }
-
-  /* ── Modals ───────────────────────────────── */
-
-  .modal-overlay {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-utility-overlay dark:bg-utility-overlay-dark backdrop-blur-sm animate-fade-in;
-  }
-
-  .modal-content {
-    @apply w-full max-w-lg p-6 mx-4 border shadow-xl bg-light-bg-primary dark:bg-dark-bg-primary border-light-border dark:border-dark-border rounded-2xl dark:shadow-dark-lg animate-scale-in;
-  }
-
-  /* ── Task Cards ───────────────────────────── */
-
-  .task-card {
-    @apply flex flex-col gap-3 p-4 transition-all duration-200 border shadow-sm cursor-pointer bg-light-bg-primary dark:bg-dark-bg-tertiary rounded-xl border-light-border dark:border-dark-border;
-  }
-
-  .task-card:hover {
-    @apply -translate-y-0.5 shadow-md dark:shadow-dark-md border-accent-primary/30 dark:border-accent-primary-light/30;
-  }
-
-  .task-card-header {
-    @apply flex items-center justify-between;
-  }
-
-  .task-card-body .task-title {
-    @apply mb-1 font-sans text-base font-semibold text-light-text-primary dark:text-dark-text-primary;
-  }
-
-  .task-card-body .task-description {
-    @apply text-sm leading-relaxed text-light-text-secondary dark:text-dark-text-secondary;
-  }
-
-  .task-card-metadata {
-    @apply flex items-center justify-between;
-  }
-
-  .due-date {
-    @apply flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary;
-  }
-
-  .task-card-progress .progress-label {
-    @apply flex justify-between mb-2 text-xs text-light-text-secondary dark:text-dark-text-secondary;
-  }
-
-  .progress-bar-track {
-    @apply h-2 overflow-hidden rounded-full bg-light-bg-hover dark:bg-dark-bg-hover;
-  }
-
-  .progress-bar-fill {
-    @apply h-full transition-all rounded-full bg-accent-primary dark:bg-accent-primary-light duration-slow;
-  }
-
-  .task-card-footer {
-    @apply flex items-center justify-between pt-3 border-t border-light-border dark:border-dark-border;
-  }
-
-  .task-meta-icons {
-    @apply flex gap-4;
-  }
-
-  .icon-group {
-    @apply flex items-center text-sm text-light-text-secondary dark:text-dark-text-secondary;
-  }
-
-  .icon-group i {
-    @apply mr-2;
-  }
-
-  /* ── Badges ───────────────────────────────── */
-
-  .badge-priority-urgent {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-urgent/10 text-task-priority-urgent dark:bg-task-priority-urgent/20;
-  }
-
-  .badge-priority-high {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-high/10 text-task-priority-high dark:bg-task-priority-high/20;
-  }
-
-  .badge-priority-medium {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-medium/10 text-task-priority-medium dark:bg-task-priority-medium/20;
-  }
-
-  .badge-priority-low {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-priority-low/10 text-task-priority-low dark:bg-task-priority-low/20;
-  }
-
-  .badge-status-done {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-done/10 text-task-status-done dark:bg-task-status-done/20;
-  }
-
-  .badge-status-progress {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-progress/10 text-task-status-progress dark:bg-task-status-progress/20;
-  }
-
-  .badge-status-review {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-review/10 text-task-status-review dark:bg-task-status-review/20;
-  }
-
-  .badge-status-todo {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-task-status-todo/10 text-task-status-todo dark:bg-task-status-todo/20;
-  }
-
-  /* ── Avatars ──────────────────────────────── */
-
-  .avatar-group {
-    @apply flex;
-  }
-
-  .avatar {
-    @apply w-8 h-8 -ml-2 bg-center bg-cover border-2 rounded-full border-light-bg-primary dark:border-dark-bg-primary first:ml-0;
-  }
-
-  /* ── Tags & Labels ────────────────────────── */
-
-  .tag {
-    @apply inline-block px-3 py-1 text-xs font-medium rounded-full;
-  }
-
-  .tag-category {
-    @apply bg-accent-purple/10 text-accent-purple dark:bg-accent-purple/20 dark:text-accent-purple-light;
-  }
-
-  .tag-project {
-    @apply bg-accent-info/10 text-accent-info dark:bg-accent-info/20 dark:text-accent-info-light;
-  }
-
-  .tag-sprint {
-    @apply bg-accent-warning/10 text-accent-warning dark:bg-accent-warning/20 dark:text-accent-warning-light;
-  }
-
-  /* ── Utility Components ───────────────────── */
-
-  .divider {
-    @apply border-t border-light-border dark:border-dark-border;
-  }
-
-  .skeleton {
-    @apply rounded animate-pulse bg-light-bg-hover dark:bg-dark-bg-hover;
-  }
-
-  .tooltip {
-    @apply absolute z-50 px-3 py-2 text-xs font-medium rounded-lg shadow-lg bg-light-text-primary dark:bg-dark-bg-tertiary text-light-text-inverse dark:text-dark-text-primary dark:shadow-dark-md animate-fade-in;
-  }
-
-  .focus-visible-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-light-bg-primary dark:focus-visible:ring-offset-dark-bg-primary;
-  }
-
-  /* ── Status & Priority Utility Classes ───── */
-
-  .status-in-progress {
-    @apply bg-task-status-progress/10 text-task-status-progress dark:bg-task-status-progress/20;
-  }
-
-  .status-under-review {
-    @apply bg-task-status-review/10 text-task-status-review dark:bg-task-status-review/20;
-  }
-
-  .status-completed {
-    @apply bg-task-status-done/10 text-task-status-done dark:bg-task-status-done/20;
-  }
-
-  .status-todo {
-    @apply bg-task-status-todo/10 text-task-status-todo dark:bg-task-status-todo/20;
-  }
-
-  .priority-urgent {
-    @apply bg-task-priority-urgent/10 text-task-priority-urgent dark:bg-task-priority-urgent/20;
-  }
-
-  .priority-high {
-    @apply bg-task-priority-high/10 text-task-priority-high dark:bg-task-priority-high/20;
-  }
-
-  .priority-medium {
-    @apply bg-task-priority-medium/10 text-task-priority-medium dark:bg-task-priority-medium/20;
-  }
-
-  .priority-low {
-    @apply bg-task-priority-low/10 text-task-priority-low dark:bg-task-priority-low/20;
-  }
-
-  /* ── Delete Button ────────────────────────── */
-
-  .delete-task-btn {
-    @apply flex items-center justify-center p-1 transition-colors duration-200 bg-transparent border-0 rounded-full cursor-pointer hover:bg-accent-danger/10 dark:hover:bg-accent-danger/20;
-  }
-
-  .delete-icon {
-    @apply transition-colors duration-200 text-light-text-tertiary dark:text-dark-text-tertiary;
-  }
-
-  .delete-task-btn:hover .delete-icon {
-    @apply text-accent-danger dark:text-accent-danger-light;
-  }
-
-  /* ── Filter Dropdown (Kanban) ─────────────── */
-
-  .filter-dropdown {
-    @apply flex items-center justify-center h-10 gap-2 overflow-hidden transition-colors border cursor-pointer w-36 border-light-border dark:border-dark-border rounded-xl bg-light-bg-primary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover focus:outline-none focus:ring-2 focus:ring-accent-primary/20;
-  }
-
-  .filter-dropdown-options {
-    @apply z-50 p-2 overflow-auto border shadow-lg bg-light-bg-primary dark:bg-dark-bg-tertiary border-light-border dark:border-dark-border rounded-xl max-h-60;
-  }
-
-  .filter-dropdown-item {
-    @apply px-3 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer border-b last:border-b-0;
+    @apply transition-colors duration-200 text-primary hover:text-primary/80;
   }
 }
 
 /* ════════════════════════════════════════════
    🎯 SCROLLBAR STYLING
    ════════════════════════════════════════════ */
-
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-
 ::-webkit-scrollbar-track {
   @apply bg-transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-light-border-strong dark:bg-dark-border-strong;
+  @apply rounded-full bg-border-strong;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-light-text-tertiary dark:bg-dark-text-tertiary;
+  @apply bg-text-muted;
 }
-
-/* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: theme("colors.light.border.strong") transparent;
+  scrollbar-color: rgb(var(--border-strong)) transparent;
 }
 
-.dark * {
-  scrollbar-color: theme("colors.dark.border.strong") transparent;
+@layer components {
+  .auth-bg {
+    @apply relative flex items-center justify-center min-h-screen p-6;
+  }
+  .auth-bg::before {
+    content: ""; position: absolute; inset: 0; opacity: 0.35; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat; background-size: 200px 200px;
+  }
+  .dark .auth-bg::before { opacity: 0.12; }
+  .auth-bg > * { position: relative; z-index: 1; }
+  
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in;
+  }
+  .modal-content {
+    @apply w-full max-w-lg p-6 mx-4 border shadow-xl bg-bg-canvas border-border rounded-2xl animate-in zoom-in-95;
+  }
+  .avatar-group { @apply flex; }
+  .avatar {
+    @apply w-8 h-8 -ml-2 bg-center bg-cover border-2 rounded-full border-bg-canvas first:ml-0;
+  }
+  .divider { @apply border-t border-border; }
+  .skeleton { @apply rounded animate-pulse bg-bg-hover; }
+  .tooltip {
+    @apply absolute z-50 px-3 py-2 text-xs font-medium rounded-lg shadow-lg bg-text-primary text-bg-surface animate-in fade-in;
+  }
 }
-
-/* ════════════════════════════════════════════
-   ✨ MICRO-INTERACTION UTILITIES
-   ════════════════════════════════════════════ */
 
 @layer utilities {
-
-  /* ── Interactive Card States ──────────────── */
-
   .interactive-card {
     @apply transition-all duration-200 cursor-pointer;
     transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
-
   .interactive-card:hover {
-    @apply -translate-y-0.5;
-    box-shadow: 0 8px 25px -5px rgba(44, 36, 32, 0.12),
-                0 4px 10px -3px rgba(44, 36, 32, 0.06);
+    @apply -translate-y-0.5 shadow-md;
   }
-
-  .dark .interactive-card:hover {
-    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.35),
-                0 4px 10px -3px rgba(0, 0, 0, 0.25);
-  }
-
   .interactive-card:active {
-    @apply translate-y-0 scale-[0.99];
-    box-shadow: 0 2px 8px -2px rgba(44, 36, 32, 0.1),
-                inset 0 1px 2px rgba(44, 36, 32, 0.06);
+    @apply translate-y-0 scale-[0.99] shadow-sm;
   }
-
-  /* ── Button Press Feedback ────────────────── */
-
   .btn-press {
     @apply transition-all duration-150;
     transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
-
-  .btn-press:hover {
-    @apply -translate-y-px;
-  }
-
-  .btn-press:active {
-    @apply translate-y-0 scale-[0.98];
-  }
-
-  /* ── Smooth Scale ─────────────────────────── */
-
+  .btn-press:hover { @apply -translate-y-px; }
+  .btn-press:active { @apply translate-y-0 scale-[0.98]; }
+  
   .hover-scale {
     @apply transition-transform duration-200;
     transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-
-  .hover-scale:hover {
-    @apply scale-[1.03];
-  }
-
-  .hover-scale:active {
-    @apply scale-[0.97];
-  }
-
-  /* ── Shimmer Loading Effect ───────────────── */
-
+  .hover-scale:hover { @apply scale-[1.03]; }
+  .hover-scale:active { @apply scale-[0.97]; }
+  
   .shimmer {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(196, 101, 74, 0.04) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg, transparent 0%, rgba(var(--color-primary), 0.04) 50%, transparent 100%);
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
   }
-
   .dark .shimmer {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(196, 101, 74, 0.06) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg, transparent 0%, rgba(var(--color-primary), 0.06) 50%, transparent 100%);
     background-size: 200% 100%;
   }
-
-  /* ── Glow Effects on Hover ────────────────── */
-
-  .glow-hover {
-    @apply transition-shadow duration-300;
-  }
-
-  .glow-hover:hover {
-    box-shadow: 0 0 20px rgba(196, 101, 74, 0.2),
-                0 4px 12px rgba(44, 36, 32, 0.08);
-  }
-
-  .glow-success-hover:hover {
-    box-shadow: 0 0 20px rgba(122, 154, 109, 0.2),
-                0 4px 12px rgba(44, 36, 32, 0.08);
-  }
-
-  .glow-danger-hover:hover {
-    box-shadow: 0 0 20px rgba(196, 74, 74, 0.2),
-                0 4px 12px rgba(44, 36, 32, 0.08);
-  }
-
-  /* ── Status Dot Pulse ─────────────────────── */
-
-  .status-dot {
-    @apply relative inline-block w-2 h-2 rounded-full;
-  }
-
+  .status-dot { @apply relative inline-block w-2 h-2 rounded-full; }
   .status-dot::after {
-    content: "";
-    @apply absolute inset-0 rounded-full animate-ping;
-    @apply opacity-75;
+    content: ""; @apply absolute inset-0 rounded-full opacity-75 animate-ping;
   }
-
-  .status-dot-active::after {
-    @apply bg-accent-success;
-  }
-
-  .status-dot-warning::after {
-    @apply bg-accent-warning;
-  }
-
-  .status-dot-danger::after {
-    @apply bg-accent-danger;
-  }
-
-  /* ── Text Highlight ───────────────────────── */
-
-  .text-highlight {
-    @apply relative inline-block;
-  }
-
-  .text-highlight::after {
-    content: "";
-    @apply absolute bottom-0 left-0 w-full h-0.5 bg-accent-primary/30 rounded-full;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .text-highlight:hover::after {
-    transform: scaleX(1);
-  }
-
-  /* ── Stagger Children Animation ───────────── */
-
-  .stagger-children > * {
-    opacity: 0;
-    animation: staggerIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-children > *:nth-child(2) { animation-delay: 50ms; }
-  .stagger-children > *:nth-child(3) { animation-delay: 100ms; }
-  .stagger-children > *:nth-child(4) { animation-delay: 150ms; }
-  .stagger-children > *:nth-child(5) { animation-delay: 200ms; }
-  .stagger-children > *:nth-child(6) { animation-delay: 250ms; }
-  .stagger-children > *:nth-child(7) { animation-delay: 300ms; }
-  .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
-
-  /* ── Smooth Container Resize ──────────────── */
-
-  .smooth-resize {
-    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                margin 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-                padding 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  /* ── Overlay Backdrop ─────────────────────── */
-
-  .backdrop-scrim {
-    @apply fixed inset-0 z-40;
-    background: rgba(26, 22, 20, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-
-  .dark .backdrop-scrim {
-    background: rgba(0, 0, 0, 0.6);
-  }
-
-  /* ── Focus Ring Override ──────────────────── */
-
-  .ring-terracotta {
-    @apply outline-none ring-2 ring-accent-primary/40 ring-offset-2 ring-offset-light-bg-primary;
-  }
-
-  .dark .ring-terracotta {
-    @apply ring-offset-dark-bg-primary;
-  }
-
-  /* ── Glassmorphism Card ───────────────────── */
-
+  .status-dot-active::after { @apply bg-success; }
+  .status-dot-warning::after { @apply bg-warning; }
+  .status-dot-danger::after { @apply bg-danger; }
+  
   .glass-card {
-    background: rgba(245, 237, 227, 0.8);
+    background: rgba(var(--bg-elevated), 0.8);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    @apply border border-light-border/50 rounded-xl;
-  }
-
-  .dark .glass-card {
-    background: rgba(35, 31, 28, 0.85);
-    @apply border-dark-border/50;
-  }
-
-  /* ── Ripple Effect ────────────────────────── */
-
-  .ripple {
-    @apply relative overflow-hidden;
-  }
-
-  .ripple::before {
-    content: "";
-    @apply absolute inset-0 rounded-[inherit] opacity-0;
-    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
-                rgba(196, 101, 74, 0.15) 0%,
-                transparent 70%);
-    transition: opacity 0.4s ease;
-  }
-
-  .ripple:active::before {
-    @apply opacity-100;
+    @apply border border-border/50 rounded-xl;
   }
 }

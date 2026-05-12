@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { Fragment, useState } from "react"
 import { ArrowRightIcon } from "lucide-react"
+import { Fragment, useState } from "react"
 
 const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
   const [moveOption, setMoveOption] = useState("backlog")
@@ -45,50 +45,46 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-light-bg-secondary dark:bg-dark-bg-tertiary p-6 shadow-xl transition-all border border-light-border dark:border-dark-border">
-                <Dialog.Title className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-4">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-xl bg-bg-surface p-6 shadow-xl transition-all border border-border">
+                <Dialog.Title className="text-lg font-semibold text-text-primary mb-4">
                   Complete Sprint: {sprint.name}
                 </Dialog.Title>
 
                 <div className="mb-6">
-                  <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary mb-4">
+                  <p className="text-sm text-text-secondary mb-4">
                     What would you like to do with the incomplete tasks in this sprint?
                   </p>
 
                   <div className="space-y-3">
-                    <label className="flex items-center gap-3 p-3 rounded-xl border border-light-border dark:border-dark-border cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+                    <label className="flex items-center gap-3 p-3 rounded-xl border border-border cursor-pointer hover:bg-bg-hover transition-colors">
                       <input
                         type="radio"
                         name="moveOption"
                         value="backlog"
                         checked={moveOption === "backlog"}
                         onChange={(e) => setMoveOption(e.target.value)}
-                        className="w-4 h-4 text-accent-primary focus:ring-accent-primary/20"
+                        className="w-4 h-4 text-primary focus:ring-accent-primary/20"
                       />
                       <div>
-                        <div className="font-medium text-light-text-primary dark:text-dark-text-primary">
-                          Move to Backlog
-                        </div>
-                        <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <div className="font-medium text-text-primary">Move to Backlog</div>
+                        <div className="text-xs text-text-muted">
                           Tasks will be moved back to the project backlog with "To Do" status
                         </div>
                       </div>
                     </label>
 
-                    <label className="flex items-center gap-3 p-3 rounded-xl border border-light-border dark:border-dark-border cursor-pointer hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors">
+                    <label className="flex items-center gap-3 p-3 rounded-xl border border-border cursor-pointer hover:bg-bg-hover transition-colors">
                       <input
                         type="radio"
                         name="moveOption"
                         value="next"
                         checked={moveOption === "next"}
                         onChange={(e) => setMoveOption(e.target.value)}
-                        className="w-4 h-4 text-accent-primary focus:ring-accent-primary/20"
+                        className="w-4 h-4 text-primary focus:ring-accent-primary/20"
                       />
                       <div>
-                        <div className="font-medium text-light-text-primary dark:text-dark-text-primary">
-                          Move to Next Sprint
-                        </div>
-                        <div className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                        <div className="font-medium text-text-primary">Move to Next Sprint</div>
+                        <div className="text-xs text-text-muted">
                           Tasks will be moved to the next backlog sprint (if one exists)
                         </div>
                       </div>
@@ -100,7 +96,7 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2 rounded-xl border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                    className="px-4 py-2 rounded-xl border border-border text-text-secondary hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                   >
                     Cancel
                   </button>
@@ -108,7 +104,7 @@ const CompleteSprintDialog = ({ isOpen, onClose, onComplete, sprint }) => {
                     type="button"
                     onClick={handleComplete}
                     disabled={loading}
-                    className="px-4 py-2 rounded-xl bg-accent-success text-white font-medium hover:bg-accent-success/90 disabled:opacity-50 flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-success/20"
+                    className="px-4 py-2 rounded-xl bg-success text-white font-medium hover:bg-accent-success/90 disabled:opacity-50 flex items-center gap-2 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-success/20"
                   >
                     {loading ? "Completing..." : "Complete Sprint"}
                     <ArrowRightIcon className="w-4 h-4" />

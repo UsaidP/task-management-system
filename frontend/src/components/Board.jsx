@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react"
 import { PlusIcon } from "@animateicons/react/lucide"
+import { useCallback, useEffect, useState } from "react"
 import apiService from "../../service/apiService.js"
 import { useAuth } from "../contexts/customHook.js"
 import { NetworkError, ServerError } from "./ErrorStates.jsx"
@@ -16,10 +16,7 @@ const BoardSkeleton = () => (
       >
         <SkeletonText width="w-1/2" height="h-8" className="mb-2" />
         {[1, 2, 3].map((card) => (
-          <div
-            key={card}
-            className="p-3 rounded-lg bg-light-bg-hover dark:bg-dark-bg-hover space-y-3"
-          >
+          <div key={card} className="p-3 rounded-lg bg-bg-hover space-y-3">
             <SkeletonText width="w-3/4" height="h-4" />
             <div className="flex items-center gap-2">
               <Skeleton className="w-12 h-4 rounded-full" />
@@ -98,12 +95,12 @@ const Board = () => {
   return (
     <div className="h-full flex flex-col pt-0 shadow-sm">
       {/* Board Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 p-4 sm:p-6 shrink-0 max-w-[1400px] mx-auto w-full bg-bg-surface">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary mb-1 flex items-center">
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-text-primary mb-1 flex items-center">
             Global Board
           </h1>
-          <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="text-sm text-text-secondary">
             Drag and drop tasks across all your projects.
           </p>
         </div>
@@ -113,7 +110,7 @@ const Board = () => {
             onClick={() => {
               setIsEditModalOpen(true)
             }}
-            className="btn-primary flex items-center gap-2"
+            className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer flex items-center gap-2"
           >
             <PlusIcon className="w-4 h-4" />
             Add Task

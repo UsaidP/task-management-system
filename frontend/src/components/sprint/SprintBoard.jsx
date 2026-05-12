@@ -1,9 +1,9 @@
+import { CircleCheckIcon, EyeIcon, PlusIcon } from "@animateicons/react/lucide"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { ClockIcon } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { DndProvider, useDrag, useDrop } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
-import { CircleCheckIcon, EyeIcon, PlusIcon } from "@animateicons/react/lucide"
-import { ClockIcon } from "lucide-react"
 import apiService from "../../../service/apiService.js"
 import Avatar from "../auth/Avatar"
 import TaskDetailPanel from "../task/TaskDetailPanel.jsx"
@@ -54,9 +54,7 @@ const TaskCard = ({ task, onTaskClick }) => {
       animate={{ opacity: isDragging ? 0.4 : 1, y: 0 }}
       exit={reduceMotion ? {} : { opacity: 0, scale: 0.95 }}
       transition={{ duration: reduceMotion ? 0 : 0.15 }}
-      className={`task-card p-3 rounded-xl border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-tertiary hover:border-accent-primary/40 dark:hover:border-accent-primary/40 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md ${
-        isDragging ? "opacity-40 scale-95 ring-2 ring-accent-primary/30" : ""
-      }`}
+      className={`p-4 bg-bg-surface border border-border rounded-xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all cursor-pointer p-3 rounded-xl border border-border bg-bg-canvas hover:border-accent-primary/40 dark:hover:border-accent-primary/40 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md ${isDragging ? "opacity-40 scale-95 ring-2 ring-accent-primary/30" : ""}`}
       onClick={() => onTaskClick(task)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -73,18 +71,14 @@ const TaskCard = ({ task, onTaskClick }) => {
           {task.status?.replace("-", " ")}
         </span>
         <span
-          className={`px-2 py-0.5 rounded-md text-xs font-medium ${getPriorityClass(task.priority)} bg-light-bg-hover dark:bg-dark-bg-hover`}
+          className={`px-2 py-0.5 rounded-md text-xs font-medium ${getPriorityClass(task.priority)} bg-bg-hover`}
         >
           {task.priority}
         </span>
       </div>
-      <h4 className="font-medium text-sm text-light-text-primary dark:text-dark-text-primary mb-1 line-clamp-2">
-        {task.title}
-      </h4>
+      <h4 className="font-medium text-sm text-text-primary mb-1 line-clamp-2">{task.title}</h4>
       {task.description && (
-        <p className="text-xs text-light-text-tertiary dark:text-dark-text-tertiary line-clamp-2 mb-2">
-          {task.description}
-        </p>
+        <p className="text-xs text-text-muted line-clamp-2 mb-2">{task.description}</p>
       )}
       {task.assignedTo?.length > 0 && (
         <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-light-border/50 dark:border-dark-border/50">
@@ -102,9 +96,7 @@ const TaskCard = ({ task, onTaskClick }) => {
             })}
           </div>
           {task.assignedTo.length > 3 && (
-            <span className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary ml-1">
-              +{task.assignedTo.length - 3}
-            </span>
+            <span className="text-[10px] text-text-muted ml-1">+{task.assignedTo.length - 3}</span>
           )}
         </div>
       )}
@@ -155,11 +147,7 @@ const Column = ({ status, tasks, onTaskClick, onDropTask }) => {
   return (
     <div
       ref={drop}
-      className={`w-[300px] flex-shrink-0 flex flex-col rounded-xl border transition-all duration-200 ${
-        isOver
-          ? "border-accent-primary border-dashed bg-accent-primary/5 dark:bg-accent-primary/10"
-          : "border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary"
-      }`}
+      className={`w-[300px] flex-shrink-0 flex flex-col rounded-xl border transition-all duration-200 ${isOver ? "border-accent-primary border-dashed bg-accent-primary/5 dark:bg-accent-primary/10" : "border-light-border bg-bg-surface dark:bg-dark-bg-secondary"}`}
       aria-label={`${config.title} column, ${tasks.length} tasks`}
     >
       {/* Column Header */}
@@ -167,9 +155,7 @@ const Column = ({ status, tasks, onTaskClick, onDropTask }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Icon className={`w-4 h-4 ${config.bg.replace("bg-", "text-")}`} />
-            <h4 className="font-semibold text-light-text-primary dark:text-dark-text-primary text-sm">
-              {config.title}
-            </h4>
+            <h4 className="font-semibold text-text-primary text-sm">{config.title}</h4>
           </div>
           <span
             className={`px-2 py-0.5 rounded-md ${config.bg}/20 dark:${config.bg}/30 ${config.bg.replace("bg-", "text-")} text-xs font-semibold`}
@@ -181,15 +167,13 @@ const Column = ({ status, tasks, onTaskClick, onDropTask }) => {
 
       {/* Task List */}
       <div
-        className={`flex-1 p-2 space-y-2 overflow-y-auto min-h-[150px] max-h-[calc(100vh-280px)] transition-colors duration-200 ${
-          isOver ? "bg-accent-primary/5" : ""
-        }`}
+        className={`flex-1 p-2 space-y-2 overflow-y-auto min-h-[150px] max-h-[calc(100vh-280px)] transition-colors duration-200 ${isOver ? "bg-accent-primary/5" : ""}`}
       >
         {tasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-32 text-light-text-tertiary dark:text-dark-text-tertiary">
+          <div className="flex flex-col items-center justify-center h-32 text-text-muted">
             <Icon className="w-8 h-8 mb-2 opacity-30" aria-hidden="true" />
             <p className="text-xs">No tasks</p>
-            {isOver && <p className="text-[10px] text-accent-primary mt-1">Drop here</p>}
+            {isOver && <p className="text-[10px] text-primary mt-1">Drop here</p>}
           </div>
         ) : (
           <AnimatePresence>
@@ -256,7 +240,7 @@ const SprintBoard = ({ sprintId, projectId }) => {
         {["todo", "in-progress", "under-review", "completed"].map((status) => (
           <div
             key={status}
-            className="w-[300px] flex-shrink-0 h-64 bg-light-bg-hover dark:bg-dark-bg-hover rounded-xl animate-pulse"
+            className="w-[300px] flex-shrink-0 h-64 bg-bg-hover rounded-xl animate-pulse"
           />
         ))}
       </div>

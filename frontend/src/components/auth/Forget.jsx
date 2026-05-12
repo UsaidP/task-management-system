@@ -1,7 +1,7 @@
+import { ChevronLeftIcon as ArrowLeft, MailIcon as Mail } from "@animateicons/react/lucide"
 import { motion } from "framer-motion"
 import { useId, useState } from "react"
 import toast from "react-hot-toast"
-import { ChevronLeftIcon as ArrowLeft, MailIcon as Mail } from "@animateicons/react/lucide"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/customHook.js"
 
@@ -42,22 +42,26 @@ export const Forget = () => {
   }
 
   return (
-    <div className="auth-bg bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen">
-      <div className="w-full max-w-md auth-card space-y-6">
+    <div className="auth-bg bg-bg-canvas min-h-screen">
+      <div className="w-full max-w-md p-8 bg-bg-canvas border border-border rounded-2xl shadow-lg space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <Link to="/" aria-label="TaskFlow Home" className="inline-flex flex-col items-center mb-6">
-            <div className="w-12 h-12 rounded-xl bg-accent-primary flex items-center justify-center text-white mb-4 shadow-sm hover:scale-105 transition-transform">
+          <Link
+            to="/"
+            aria-label="TaskFlow Home"
+            className="inline-flex flex-col items-center mb-6"
+          >
+            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white mb-4 shadow-sm hover:scale-105 transition-transform">
               <span className="font-serif font-bold text-3xl leading-none pt-1">T</span>
             </div>
-            <h1 className="text-3xl font-serif font-bold text-center text-light-text-primary dark:text-dark-text-primary mb-2">
+            <h1 className="text-3xl font-serif font-bold text-center text-text-primary mb-2">
               Forgot Password
             </h1>
-            <p className="text-center text-light-text-secondary dark:text-dark-text-secondary">
+            <p className="text-center text-text-secondary">
               Enter your email address and we'll send you a link to reset your password.
             </p>
           </Link>
@@ -75,7 +79,7 @@ export const Forget = () => {
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                  <Mail className="text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
+                  <Mail className="text-text-muted w-5 h-5 group-focus-within:text-accent-primary transition-colors" />
                 </div>
                 <input
                   type="email"
@@ -84,19 +88,19 @@ export const Forget = () => {
                   placeholder="Ex. name@example.com"
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="input-field pl-11 w-full"
+                  className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all pl-11 w-full"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="p-3 bg-accent-danger/10 border border-accent-danger/20 rounded-lg text-accent-danger text-sm">
+              <div className="p-3 bg-accent-danger/10 border border-accent-danger/20 rounded-lg text-danger text-sm">
                 {error}
               </div>
             )}
 
             {responseMsg && (
-              <div className="p-3 bg-accent-success/10 border border-accent-success/20 rounded-lg text-accent-success text-sm">
+              <div className="p-3 bg-accent-success/10 border border-accent-success/20 rounded-lg text-success text-sm">
                 {responseMsg}
               </div>
             )}
@@ -106,7 +110,7 @@ export const Forget = () => {
                 type="submit"
                 disabled={loading}
                 aria-busy={loading}
-                className="w-full px-4 py-3 font-semibold text-white btn-primary rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
+                className="w-full px-4 py-3 font-semibold text-white bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer rounded-xl disabled:opacity-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
@@ -120,7 +124,7 @@ export const Forget = () => {
             <div className="text-sm text-center">
               <Link
                 to="/login"
-                className="flex items-center justify-center font-medium text-accent-primary hover:text-accent-primary-dark dark:text-accent-primary-light dark:hover:text-accent-primary transition-colors"
+                className="flex items-center justify-center font-medium text-primary hover:text-accent-primary-dark dark:hover:text-accent-primary transition-colors"
               >
                 <ArrowLeft className="mr-2" /> Back to Login
               </Link>

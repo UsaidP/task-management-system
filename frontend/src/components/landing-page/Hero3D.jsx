@@ -1,14 +1,14 @@
-import { useRef, useMemo, useEffect, useState } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Float, MeshDistortMaterial, Sparkles, Environment, OrbitControls, Stars, useTexture } from '@react-three/drei'
-import * as THREE from 'three'
-import { useReducedMotion } from 'framer-motion'
+import { Float, MeshDistortMaterial, OrbitControls, Sparkles, Stars } from "@react-three/drei"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
+import { useReducedMotion } from "framer-motion"
+import { useEffect, useMemo, useRef, useState } from "react"
+import * as THREE from "three"
 
 // Floating Task Card Component
 function TaskCard({ position, color, delay = 0, distort = 0.3 }) {
   const meshRef = useRef()
   const reduced = useReducedMotion()
-  
+
   useFrame((state) => {
     if (reduced) return
     const time = state.clock.elapsedTime + delay
@@ -47,7 +47,7 @@ function TaskCard({ position, color, delay = 0, distort = 0.3 }) {
 function Particles({ count = 200 }) {
   const reduced = useReducedMotion()
   const meshRef = useRef()
-  
+
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
@@ -73,13 +73,7 @@ function Particles({ count = 200 }) {
           itemSize={3}
         />
       </bufferGeometry>
-      <pointsMaterial
-        size={0.06}
-        color="#E8603A"
-        transparent
-        opacity={0.4}
-        sizeAttenuation
-      />
+      <pointsMaterial size={0.06} color="#E8603A" transparent opacity={0.4} sizeAttenuation />
     </points>
   )
 }
@@ -107,25 +101,12 @@ function Scene() {
   return (
     <>
       <ambientLight intensity={0.4} />
-      
-      <pointLight
-        position={[2, 2, 2]}
-        color="#E8603A"
-        intensity={1.5}
-        castShadow
-      />
-      
-      <pointLight
-        position={[-2, -2, 2]}
-        color="#8BAF88"
-        intensity={0.8}
-      />
 
-      <pointLight
-        position={[0, 3, -2]}
-        color="#6888A0"
-        intensity={0.6}
-      />
+      <pointLight position={[2, 2, 2]} color="#E8603A" intensity={1.5} castShadow />
+
+      <pointLight position={[-2, -2, 2]} color="#8BAF88" intensity={0.8} />
+
+      <pointLight position={[0, 3, -2]} color="#6888A0" intensity={0.6} />
 
       <CameraController />
 
@@ -142,14 +123,7 @@ function Scene() {
 
       {/* Sparkles effect */}
       {!reduced && (
-        <Sparkles
-          count={80}
-          scale={12}
-          size={2}
-          speed={0.2}
-          opacity={0.3}
-          color="#E8603A"
-        />
+        <Sparkles count={80} scale={12} size={2} speed={0.2} opacity={0.3} color="#E8603A" />
       )}
 
       {/* Background stars */}
@@ -163,12 +137,7 @@ function Scene() {
         speed={reduced ? 0 : 0.5}
       />
 
-      <OrbitControls
-        enableZoom={false}
-        enablePan={false}
-        enableRotate={false}
-        makeDefault
-      />
+      <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} makeDefault />
     </>
   )
 }
@@ -199,23 +168,24 @@ export const Hero3D = () => {
         }}
         dpr={[1, 2]}
         camera={{ position: [0, 0, 5], fov: 60 }}
-        style={{ background: 'transparent' }}
+        style={{ background: "transparent" }}
       >
-        <fog attach="fog" args={['#08080F', 5, 20]} />
+        <fog attach="fog" args={["#08080F", 5, 20]} />
         <Scene />
       </Canvas>
 
       {/* Gradient overlays */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(to bottom, transparent 0%, #08080F 75%)'
+          background: "linear-gradient(to bottom, transparent 0%, #08080F 75%)",
         }}
       />
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none opacity-20"
         style={{
-          backgroundImage: 'radial-gradient(circle at center, rgba(232, 96, 58, 0.15) 0%, transparent 60%)'
+          backgroundImage:
+            "radial-gradient(circle at center, rgba(232, 96, 58, 0.15) 0%, transparent 60%)",
         }}
       />
     </div>

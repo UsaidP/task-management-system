@@ -27,31 +27,27 @@ export function AdminAreaChart({ weeklyData, loading }) {
   const gradCompleted = `${uid}-completed`
 
   if (loading) {
-    return (
-      <div className="animate-pulse rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 h-72" />
-    )
+    return <div className="animate-pulse rounded-2xl border border-border bg-bg-surface p-6 h-72" />
   }
 
   return (
-    <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 shadow-sm">
+    <div className="rounded-2xl border border-border bg-bg-surface p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h3 className="text-base font-semibold text-light-text-primary dark:text-dark-text-primary font-serif">
-            Task Overview
-          </h3>
-          <p className="text-sm text-light-text-tertiary">Weekly task creation & completion</p>
+          <h3 className="text-base font-semibold text-text-primary font-serif">Task Overview</h3>
+          <p className="text-sm text-text-muted">Weekly task creation & completion</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: COLORS.created }} />
-            <span className="text-xs text-light-text-tertiary">Created</span>
+            <span className="text-xs text-text-muted">Created</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div
               className="h-2.5 w-2.5 rounded-full"
               style={{ backgroundColor: COLORS.completed }}
             />
-            <span className="text-xs text-light-text-tertiary">Completed</span>
+            <span className="text-xs text-text-muted">Completed</span>
           </div>
         </div>
       </div>
@@ -105,9 +101,7 @@ export function AdminAreaChart({ weeklyData, loading }) {
 
 export function AdminPieChart({ distribution, loading }) {
   if (loading) {
-    return (
-      <div className="animate-pulse rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 h-72" />
-    )
+    return <div className="animate-pulse rounded-2xl border border-border bg-bg-surface p-6 h-72" />
   }
 
   const pieData = (distribution || []).map((item) => ({
@@ -116,12 +110,10 @@ export function AdminPieChart({ distribution, loading }) {
   }))
 
   return (
-    <div className="rounded-2xl border border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-secondary p-6 shadow-sm">
+    <div className="rounded-2xl border border-border bg-bg-surface p-6 shadow-sm">
       <div className="mb-6">
-        <h3 className="text-base font-semibold text-light-text-primary dark:text-dark-text-primary font-serif">
-          Task Distribution
-        </h3>
-        <p className="text-sm text-light-text-tertiary">By priority</p>
+        <h3 className="text-base font-semibold text-text-primary font-serif">Task Distribution</h3>
+        <p className="text-sm text-text-muted">By priority</p>
       </div>
       <ResponsiveContainer width="100%" height={280}>
         <PieChart>

@@ -1,7 +1,7 @@
+import { UserPlusIcon, XIcon } from "@animateicons/react/lucide"
 import { Listbox } from "@headlessui/react" // 1. Import Listbox
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { UserPlusIcon, XIcon } from "@animateicons/react/lucide"
 import apiService from "../../../service/apiService.js"
 import Avatar from "../auth/Avatar"
 import Modal from "../Modal"
@@ -79,7 +79,7 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Member's email"
-            className="input-field"
+            className="w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
             required
           />
 
@@ -88,12 +88,12 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
             <div className="relative">
               <Listbox.Button
                 aria-label="Select role"
-                className="w-full text-left input-field sm:w-40"
+                className="w-full text-left w-full px-4 py-3 bg-bg-surface text-text-primary border border-border rounded-lg placeholder:text-text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all sm:w-40"
               >
                 <span className="block truncate">{selectedRoleObject?.name}</span>
                 {/* You can add a chevron icon here if you want */}
               </Listbox.Button>
-              <Listbox.Options className="absolute z-[100] mt-1 w-full max-h-60 overflow-auto rounded-md border border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary shadow-lg focus:outline-none">
+              <Listbox.Options className="absolute z-[100] mt-1 w-full max-h-60 overflow-auto rounded-md border border-border bg-bg-canvas shadow-lg focus:outline-none">
                 {availableRoles.map((roleItem) => (
                   <Listbox.Option
                     key={roleItem.id}
@@ -121,14 +121,14 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
 
           <button
             type="submit"
-            className="flex items-center justify-center gap-2 px-4 py-2 font-semibold transition-colors rounded-lg btn-primary"
+            className="flex items-center justify-center gap-2 px-4 py-2 font-semibold transition-colors rounded-lg bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer"
           >
             <UserPlusIcon aria-hidden="true" />
             Add
           </button>
         </form>
 
-        {error && <p className="mb-4 text-sm text-center text-accent-danger">{error}</p>}
+        {error && <p className="mb-4 text-sm text-center text-danger">{error}</p>}
 
         {/* Members List */}
         <ul className="pr-2 space-y-2 overflow-y-auto max-h-80" aria-label="Project members list">
@@ -137,7 +137,7 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
             return (
               <li
                 key={rowKey}
-                className="flex items-center justify-between p-3 border shadow-sm rounded-xl border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary"
+                className="flex items-center justify-between p-3 border shadow-sm rounded-xl border-border bg-bg-surface"
               >
                 <div className="flex items-center min-w-0">
                   <Avatar
@@ -151,12 +151,12 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                     className="mr-3"
                   />
                   <div className="min-w-0">
-                    <p className="font-semibold truncate text-light-text-primary dark:text-dark-text-primary">
+                    <p className="font-semibold truncate text-text-primary">
                       {typeof member?.user === "object" && member.user?.email
                         ? member.user.email
                         : "—"}
                     </p>
-                    <p className="text-sm capitalize text-light-text-secondary dark:text-dark-text-secondary">
+                    <p className="text-sm capitalize text-text-secondary">
                       {member.role.replace("_", " ")}
                     </p>
                   </div>
@@ -164,7 +164,7 @@ const ProjectMembers = ({ isOpen, onClose, projectId, members, setMembers }) => 
                 <button
                   type="button"
                   onClick={() => handleRemoveMember(member._id)}
-                  className="flex-shrink-0 p-1 transition-colors rounded-full text-light-text-secondary hover:bg-accent-danger/10 hover:text-accent-danger dark:text-dark-text-secondary"
+                  className="flex-shrink-0 p-1 transition-colors rounded-full text-text-secondary hover:bg-accent-danger/10 hover:text-accent-danger"
                   aria-label={`Remove ${typeof member.user === "object" ? member.user?.fullname || member.user?.email || "member" : "member"}`}
                 >
                   <XIcon size={20} aria-hidden="true" />

@@ -1,17 +1,18 @@
 // --- FIX 1: Removed stray comma in import ---
-import { Listbox } from "@headlessui/react"
-import { AnimatePresence, motion } from "framer-motion"
-import { Fragment, useCallback, useMemo, useState } from "react"
-import { DndProvider } from "react-dnd"
-import { HTML5Backend } from "react-dnd-html5-backend"
-import toast from "react-hot-toast"
-import apiService from "../../../service/apiService"
-import { Filter } from "lucide-react"
+
 import {
   ChevronDownIcon as ChevronDown,
   PlusIcon as Plus,
   SearchIcon as Search,
 } from "@animateicons/react/lucide"
+import { Listbox } from "@headlessui/react"
+import { AnimatePresence, motion } from "framer-motion"
+import { Filter } from "lucide-react"
+import { Fragment, useCallback, useMemo, useState } from "react"
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
+import toast from "react-hot-toast"
+import apiService from "../../../service/apiService"
 import Column from "./Column"
 import ColumnHeader from "./ColumnHeader"
 import TaskCard from "./TaskCard"
@@ -197,11 +198,11 @@ const KanbanBoard = ({
     <div className="flex h-full flex-col relative">
       {/* Fixed Filter Section */}
       <div className="pb-4 px-1 md:px-4">
-        <div className="rounded-xl p-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border shadow-sm">
+        <div className="rounded-xl p-4 bg-bg-surface border border-border shadow-sm">
           <div className="flex flex-col md:flex-row items-center gap-3 mb-3">
             <div className="w-full md:flex-1 relative">
               <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-tertiary dark:text-dark-text-tertiary w-5 h-5"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted w-5 h-5"
                 aria-hidden="true"
               />
               <input
@@ -210,7 +211,7 @@ const KanbanBoard = ({
                 aria-label="Search kanban tasks"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl px-4 py-2 pl-10 text-sm focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary transition-colors"
+                className="w-full bg-bg-canvas border border-border rounded-xl px-4 py-2 pl-10 text-sm focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 text-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary transition-colors"
               />
             </div>
 
@@ -219,7 +220,7 @@ const KanbanBoard = ({
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
                 aria-expanded={showFilters}
-                className={`w-full md:w-auto px-4 py-2 rounded-xl flex items-center justify-center gap-2 border border-light-border dark:border-dark-border text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 ${showFilters || hasActiveFilters ? "border-accent-primary text-accent-primary" : ""}`}
+                className={`w-full md:w-auto px-4 py-2 rounded-xl flex items-center justify-center gap-2 border border-border text-text-secondary hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20 ${showFilters || hasActiveFilters ? "border-accent-primary text-accent-primary" : ""}`}
               >
                 <Filter className="w-4 h-4" aria-hidden="true" />
                 <span>Filters</span>
@@ -229,7 +230,7 @@ const KanbanBoard = ({
                 <button
                   type="button"
                   onClick={onCreateTask}
-                  className="btn-primary w-full md:w-auto px-4 py-2 flex items-center justify-center gap-2 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                  className="bg-primary hover:bg-primary/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer w-full md:w-auto px-4 py-2 flex items-center justify-center gap-2 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                 >
                   <Plus className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden sm:inline">New Task</span>
@@ -246,9 +247,9 @@ const KanbanBoard = ({
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="pt-3  flex flex-col gap-3"
+                className="pt-3 flex flex-col gap-3"
               >
-                <div className="flex items-center justify-end pr-5 gap-3 flex-wrap ">
+                <div className="flex items-center justify-end pr-5 gap-3 flex-wrap">
                   {/* Priority Filter */}
                   <div className="relative">
                     <label htmlFor="priority" className="sr-only">
@@ -258,34 +259,25 @@ const KanbanBoard = ({
                       <Listbox.Button
                         id="priority"
                         onClick={() => setIsPriorityMenuOpen(!isPriorityMenuOpen)}
-                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-light-border dark:border-dark-border rounded-xl overflow-hidden bg-light-bg-primary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-border rounded-xl overflow-hidden bg-bg-canvas text-text-secondary hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                       >
                         <span className="truncate capitalize">
                           {selectedPriorityObject?.name || "Priority"}
                         </span>
                         <ChevronDown
-                          className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary
-                             transition-transform duration-200 ${
-                               isPriorityMenuOpen ? "rotate-180" : ""
-                             }`}
+                          className={`w-4 h-4 text-text-muted transition-transform duration-200 ${isPriorityMenuOpen ? "rotate-180" : ""}`}
                           aria-hidden="true"
                         />
                       </Listbox.Button>
-                      <Listbox.Options className="absolute top-full mt-2 w-full filter-dropdown-options p-2 bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl cursor-pointer shadow-lg max-h-60 overflow-auto z-50">
+                      <Listbox.Options className="absolute top-full mt-2 w-full filter-dropdown-options p-2 bg-bg-canvas border border-border rounded-xl cursor-pointer shadow-lg max-h-60 overflow-auto z-50">
                         {priorityOptions.map((option) => (
                           <Listbox.Option key={option.id} value={option.id} as={Fragment}>
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item px-3 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer border-b last:border-b-0 ${
-                                  active
-                                    ? "bg-accent-primary text-white"
-                                    : "text-light-text-secondary dark:text-dark-text-secondary"
-                                }`}
+                                className={`filter-dropdown-item px-3 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer border-b last:border-b-0 ${active ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary"}`}
                               >
                                 <span
-                                  className={`block truncate ${
-                                    selected ? "font-semibold" : "font-normal"
-                                  }`}
+                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
                                 >
                                   {option.name}
                                 </span>
@@ -306,35 +298,26 @@ const KanbanBoard = ({
                       <Listbox.Button
                         id="assignee"
                         onClick={() => setIsAssigneeMenuOpen(!isAssigneeMenuOpen)}
-                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-light-border dark:border-dark-border rounded-xl overflow-hidden bg-light-bg-primary dark:bg-dark-bg-tertiary text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
+                        className="filter-dropdown w-36 h-10 flex items-center justify-center mb-2 gap-2 border border-border rounded-xl overflow-hidden bg-bg-canvas text-text-secondary hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/20"
                       >
                         <span className="truncate">
                           {selectedAssigneeObject?.name || "Assignee"}
                         </span>
                         <ChevronDown
-                          className={`w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary
-                             transition-transform duration-200 ${
-                               isAssigneeMenuOpen ? "rotate-180" : ""
-                             }`}
+                          className={`w-4 h-4 text-text-muted transition-transform duration-200 ${isAssigneeMenuOpen ? "rotate-180" : ""}`}
                           aria-hidden="true"
                         />
                       </Listbox.Button>
                       {/* --- FIX 3: Copied styling from Priority dropdown for consistency --- */}
-                      <Listbox.Options className="absolute top-full mt-2 min-w-[10rem] filter-dropdown-options p-2 bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-xl shadow-lg focus:outline-none max-h-60 overflow-auto z-50">
+                      <Listbox.Options className="absolute top-full mt-2 min-w-[10rem] filter-dropdown-options p-2 bg-bg-canvas border border-border rounded-xl shadow-lg focus:outline-none max-h-60 overflow-auto z-50">
                         {assigneeOptions.map((option) => (
                           <Listbox.Option key={option.id} value={option.id} as={Fragment}>
                             {({ active, selected }) => (
                               <li
-                                className={`filter-dropdown-item px-3 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer border-b last:border-b-0 ${
-                                  active
-                                    ? "bg-accent-primary text-white"
-                                    : "text-light-text-secondary dark:text-dark-text-secondary"
-                                }`}
+                                className={`filter-dropdown-item px-3 py-1.5 rounded-lg transition-colors duration-150 cursor-pointer border-b last:border-b-0 ${active ? "bg-accent-primary text-white" : "text-light-text-secondary dark:text-dark-text-secondary"}`}
                               >
                                 <span
-                                  className={`block truncate ${
-                                    selected ? "font-semibold" : "font-normal"
-                                  }`}
+                                  className={`block truncate ${selected ? "font-semibold" : "font-normal"}`}
                                 >
                                   {option.name}
                                 </span>
@@ -350,7 +333,7 @@ const KanbanBoard = ({
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="btn-ghost text-sm text-accent-danger hover:bg-accent-danger/10 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
+                      className="bg-transparent hover:bg-bg-hover text-text-secondary focus:outline-none transition-all cursor-pointer text-sm text-danger hover:bg-accent-danger/10 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-danger/20"
                     >
                       Clear All
                     </button>
@@ -386,7 +369,7 @@ const KanbanBoard = ({
                     }}
                     className="w-full md:w-[280px] xl:w-[320px] flex-shrink-0"
                   >
-                    <div className="flex p-3 h-full flex-col rounded-xl bg-light-bg-primary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border overflow-visible">
+                    <div className="flex p-3 h-full flex-col rounded-xl bg-bg-canvas border border-border overflow-visible">
                       <ColumnHeader
                         title={column.title}
                         count={tasksToRender.length}
@@ -411,7 +394,7 @@ const KanbanBoard = ({
                           ) : (
                             <motion.div
                               layout
-                              className="flex items-center justify-center text-sm text-light-text-tertiary dark:text-dark-text-tertiary text-center h-32 p-4 border-2 border-dashed border-light-border dark:border-dark-border rounded-xl"
+                              className="flex items-center justify-center text-sm text-text-muted text-center h-32 p-4 border-2 border-dashed border-border rounded-xl"
                             >
                               {hasActiveFilters
                                 ? "No tasks match your filters."

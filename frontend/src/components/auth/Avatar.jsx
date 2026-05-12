@@ -1,5 +1,5 @@
-import { useState } from "react"
 import { UserIcon as User } from "@animateicons/react/lucide"
+import { useState } from "react"
 
 /**
  * Avatar component — displays a user profile image with a refined icon fallback.
@@ -67,13 +67,7 @@ const Avatar = ({
   return (
     <div className={`relative inline-flex flex-shrink-0 ${className}`}>
       <div
-        className={`
-          ${sizePx[size] || sizePx.md}
-          rounded-full overflow-hidden
-          flex items-center justify-center
-          bg-light-bg-tertiary dark:bg-dark-bg-tertiary
-          ring-1 ring-inset ring-black/5 dark:ring-white/10
-        `}
+        className={`${sizePx[size] || sizePx.md} rounded-full overflow-hidden flex items-center justify-center bg-bg-elevated ring-1 ring-inset ring-black/5 dark:ring-white/10`}
       >
         {isValidSrc ? (
           // biome-ignore lint/a11y/noNoninteractiveElementInteractions: onError is a native event handler
@@ -87,25 +81,14 @@ const Avatar = ({
           />
         ) : (
           <span className="flex items-center justify-center w-full h-full bg-gradient-to-br from-accent-primary/20 to-accent-primary/10 dark:from-accent-primary/30 dark:to-accent-primary/15">
-            <User
-              className={`${iconPx[size] || iconPx.md} text-accent-primary dark:text-accent-primary-light`}
-              aria-hidden="true"
-            />
+            <User className={`${iconPx[size] || iconPx.md} text-primary`} aria-hidden="true" />
           </span>
         )}
       </div>
 
       {showStatus && (
         <span
-          className={`
-            absolute -bottom-0.5 -right-0.5 rounded-full
-            ${statusPx[size] || statusPx.md}
-            ${
-              isOnline
-                ? "bg-accent-success border-light-bg-primary dark:border-dark-bg-secondary"
-                : "bg-light-border dark:bg-dark-border border-light-bg-primary dark:border-dark-bg-secondary"
-            }
-          `}
+          className={`absolute -bottom-0.5 -right-0.5 rounded-full ${statusPx[size] || statusPx.md} ${isOnline ? "bg-accent-success border-light-bg-primary dark:border-dark-bg-secondary" : "bg-light-border dark:bg-dark-border border-light-bg-primary dark:border-dark-bg-secondary"}`}
           aria-label={isOnline ? "Online" : "Offline"}
         />
       )}

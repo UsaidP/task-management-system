@@ -52,12 +52,10 @@ export default function AdminDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       >
-        <h1 className="font-serif text-2xl font-bold tracking-tight text-light-text-primary dark:text-dark-text-primary">
+        <h1 className="font-serif text-2xl font-bold tracking-tight text-text-primary">
           Admin Dashboard
         </h1>
-        <p className="mt-1 text-sm text-light-text-secondary dark:text-dark-text-secondary">
-          Platform-wide overview and management
-        </p>
+        <p className="mt-1 text-sm text-text-secondary">Platform-wide overview and management</p>
       </motion.div>
 
       <AdminStatsCards stats={stats} loading={loading} />

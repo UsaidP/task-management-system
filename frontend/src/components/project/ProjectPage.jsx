@@ -1,11 +1,18 @@
+import {
+  CircleCheckIcon,
+  LockIcon,
+  PlusIcon,
+  SearchIcon,
+  SettingsIcon,
+  UsersIcon,
+} from "@animateicons/react/lucide"
 import dayjs from "dayjs"
 import quarterOfYear from "dayjs/plugin/quarterOfYear"
 import relativeTime from "dayjs/plugin/relativeTime"
 import weekOfYear from "dayjs/plugin/weekOfYear"
+import { CalendarIcon, Circle, ClockIcon } from "lucide-react"
 import { useCallback, useEffect, useId, useMemo, useState } from "react"
 import toast from "react-hot-toast"
-import { CircleCheckIcon, LockIcon, PlusIcon, SearchIcon, SettingsIcon, UserIcon, UsersIcon } from "@animateicons/react/lucide"
-import { Circle, CalendarIcon, ClockIcon } from "lucide-react"
 import { useNavigate, useParams } from "react-router-dom"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
@@ -104,7 +111,7 @@ const ProjectPage = () => {
   useEffect(() => {
     fetchProjectData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId])
+  }, [fetchProjectData])
 
   // ── Task CRUD Handlers ─────────────────────────────────────────────────
   const handleTaskCreated = (newTask) => {
@@ -379,26 +386,26 @@ const ProjectPage = () => {
   // ── Error State ────────────────────────────────────────────────────────
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-4 bg-light-bg-primary dark:bg-dark-bg-primary">
-        <h1 className="text-2xl font-bold text-accent-danger dark:text-accent-danger-dark mb-2">
+      <div className="flex flex-col items-center justify-center h-full text-center p-4 bg-bg-canvas">
+        <h1 className="text-2xl font-bold text-danger dark:text-accent-danger-dark mb-2">
           Error Loading Project
         </h1>
-        <p className="text-light-text-secondary dark:text-dark-text-secondary max-w-md">{error}</p>
+        <p className="text-text-secondary max-w-md">{error}</p>
       </div>
     )
   }
 
   // ── Render ─────────────────────────────────────────────────────────────
   return (
-    <div className="h-full flex flex-col bg-light-bg-primary dark:bg-dark-bg-primary">
+    <div className="h-full flex flex-col bg-bg-canvas">
       {/* Header */}
-      <header className="flex items-center justify-between px-4 sm:px-6 h-[56px] flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
+      <header className="flex items-center justify-between px-4 sm:px-6 h-[56px] flex-shrink-0 bg-bg-surface border-b border-border">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {loading ? (
             <Skeleton className="h-5 w-32" />
           ) : (
             <>
-              <h1 className="text-base sm:text-lg font-bold text-light-text-primary dark:text-dark-text-primary truncate">
+              <h1 className="text-base sm:text-lg font-bold text-text-primary truncate">
                 {project?.name}
               </h1>
               <span
@@ -426,7 +433,7 @@ const ProjectPage = () => {
                       toast.error("Failed to update project status", { id: toastId })
                     }
                   }}
-                  className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors cursor-pointer ${project?.isActive !== false ? "bg-accent-warning/10 text-accent-warning hover:bg-accent-warning/20" : "bg-accent-success/10 text-accent-success hover:bg-accent-success/20"}`}
+                  className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors cursor-pointer ${project?.isActive !== false ? "bg-accent-warning/10 text-warning hover:bg-accent-warning/20" : "bg-accent-success/10 text-success hover:bg-accent-success/20"}`}
                   aria-label={
                     project?.isActive !== false ? "Deactivate project" : "Activate project"
                   }
@@ -450,7 +457,7 @@ const ProjectPage = () => {
                 />
               ))}
               {members.length > 4 && (
-                <div className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-xs text-light-text-tertiary dark:text-dark-text-tertiary font-medium">
+                <div className="w-7 h-7 rounded-full border-2 border-light-bg-secondary dark:border-dark-bg-tertiary bg-light-border dark:bg-dark-border flex items-center justify-center text-xs text-text-muted font-medium">
                   +{members.length - 4}
                 </div>
               )}
@@ -459,7 +466,7 @@ const ProjectPage = () => {
           <button
             type="button"
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-accent-primary text-white hover:bg-accent-primary-dark transition-all border-none cursor-pointer shadow-sm hover:shadow-md"
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-primary text-white hover:bg-accent-primary-dark transition-all border-none cursor-pointer shadow-sm hover:shadow-md"
           >
             <PlusIcon className="w-4 h-4" />
             <span className="hidden sm:inline">Add Task</span>
@@ -467,7 +474,7 @@ const ProjectPage = () => {
           <button
             type="button"
             onClick={() => setIsMembersModalOpen(true)}
-            className="hidden md:flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border text-light-text-primary dark:text-dark-text-primary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-all cursor-pointer"
+            className="hidden md:flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold bg-bg-canvas border border-border text-text-primary hover:bg-bg-hover transition-all cursor-pointer"
           >
             <UsersIcon className="w-4 h-4" />
             <span className="hidden lg:inline">Members</span>
@@ -477,10 +484,10 @@ const ProjectPage = () => {
 
       {/* View Tabs & Filter Bar */}
       {(activeTab === "board" || activeTab === "list") && (
-        <div className="flex flex-col gap-3 px-4 sm:px-6 py-4 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border">
+        <div className="flex flex-col gap-3 px-4 sm:px-6 py-4 bg-bg-surface border-b border-border">
           {/* Top Row: View Tabs + Search */}
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-1 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-bg-canvas rounded-lg p-1">
               {[
                 { id: "board", icon: Circle, label: "Board" },
                 { id: "list", icon: CircleCheckIcon, label: "List" },
@@ -491,7 +498,7 @@ const ProjectPage = () => {
                   key={id}
                   type="button"
                   onClick={() => setActiveTab(id)}
-                  className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${activeTab === id ? "bg-accent-primary text-white shadow-sm" : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"}`}
+                  className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 ${activeTab === id ? "bg-accent-primary text-white shadow-sm" : "text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"}`}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{label}</span>
@@ -501,7 +508,7 @@ const ProjectPage = () => {
                 <button
                   type="button"
                   onClick={() => navigate(`/project/${projectId}/admin`)}
-                  className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+                  className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 text-text-muted hover:text-light-text-secondary"
                 >
                   <SettingsIcon className="w-4 h-4" />
                   <span className="hidden sm:inline">Admin</span>
@@ -513,7 +520,7 @@ const ProjectPage = () => {
                 Search tasks
               </label>
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <SearchIcon className="w-4 h-4 text-light-text-tertiary dark:text-dark-text-tertiary group-focus-within:text-accent-primary transition-colors" />
+                <SearchIcon className="w-4 h-4 text-text-muted group-focus-within:text-accent-primary transition-colors" />
               </div>
               <input
                 id={searchId}
@@ -521,7 +528,7 @@ const ProjectPage = () => {
                 placeholder="Search tasks..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-40 sm:w-56 lg:w-64 pl-9 pr-3 py-2 h-9 text-sm bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border rounded-lg text-light-text-primary dark:text-dark-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all"
+                className="w-40 sm:w-56 lg:w-64 pl-9 pr-3 py-2 h-9 text-sm bg-bg-canvas border border-border rounded-lg text-text-primary placeholder:text-light-text-tertiary dark:placeholder:text-dark-text-tertiary focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all"
               />
             </div>
           </div>
@@ -544,7 +551,7 @@ const ProjectPage = () => {
 
       {/* Simple View Tabs for Timeline/Calendar */}
       {(activeTab === "timeline" || activeTab === "calendar") && (
-        <div className="flex items-center gap-1 px-4 sm:px-6 py-3 bg-light-bg-secondary dark:bg-dark-bg-tertiary border-b border-light-border dark:border-dark-border overflow-x-auto">
+        <div className="flex items-center gap-1 px-4 sm:px-6 py-3 bg-bg-surface border-b border-border overflow-x-auto">
           {[
             { id: "board", icon: Circle },
             { id: "list", icon: CircleCheckIcon },
@@ -555,7 +562,7 @@ const ProjectPage = () => {
               key={id}
               type="button"
               onClick={() => setActiveTab(id)}
-              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === id ? "bg-accent-primary text-white shadow-sm" : "text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"}`}
+              className={`px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === id ? "bg-accent-primary text-white shadow-sm" : "text-light-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"}`}
             >
               <Icon className="w-4 h-4" />
               <span className="hidden sm:inline">
@@ -573,7 +580,7 @@ const ProjectPage = () => {
             <button
               type="button"
               onClick={() => navigate(`/project/${projectId}/admin`)}
-              className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 text-light-text-tertiary dark:text-dark-text-tertiary hover:text-light-text-secondary dark:hover:text-dark-text-secondary"
+              className="px-3 sm:px-4 h-9 text-xs sm:text-sm font-medium rounded-md transition-all flex items-center gap-2 flex-shrink-0 text-text-muted hover:text-light-text-secondary"
             >
               <SettingsIcon className="w-4 h-4" />
               <span className="hidden sm:inline">Admin</span>
@@ -583,17 +590,17 @@ const ProjectPage = () => {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto min-h-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+      <main className="flex-1 overflow-auto min-h-0 bg-bg-surface">
         {loading ? (
           <div className="flex gap-4 p-4 sm:p-6 min-w-max">
             {["todo", "in-progress", "under-review", "completed"].map((col) => (
               <div
                 key={col}
-                className="w-72 flex-shrink-0 bg-light-bg-secondary dark:bg-dark-bg-tertiary border border-light-border dark:border-dark-border rounded-lg p-4"
+                className="w-72 flex-shrink-0 bg-bg-surface border border-border rounded-lg p-4"
               >
                 <div className="flex items-center gap-2 mb-4 px-1">
                   <div className="w-2.5 h-2.5 rounded-full bg-light-text-tertiary dark:bg-dark-text-tertiary" />
-                  <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1">
+                  <span className="text-sm font-bold text-text-primary flex-1">
                     {col === "in-progress"
                       ? "In Progress"
                       : col === "under-review"
@@ -602,7 +609,7 @@ const ProjectPage = () => {
                           ? "Completed"
                           : "To Do"}
                   </span>
-                  <div className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border dark:bg-dark-border text-xs text-light-text-tertiary dark:text-dark-text-tertiary">
+                  <div className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border dark:bg-dark-border text-xs text-text-muted">
                     {col === "todo"
                       ? 5
                       : col === "in-progress"
@@ -622,11 +629,9 @@ const ProjectPage = () => {
         ) : !canViewBoard ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-md p-6">
-              <LockIcon className="w-12 h-12 mx-auto mb-4 text-light-text-tertiary dark:text-dark-text-tertiary opacity-50" />
-              <h3 className="text-xl font-bold text-light-text-primary dark:text-dark-text-primary mb-2">
-                Board Access Restricted
-              </h3>
-              <p className="text-sm text-light-text-secondary dark:text-dark-text-secondary">
+              <LockIcon className="w-12 h-12 mx-auto mb-4 text-text-muted opacity-50" />
+              <h3 className="text-xl font-bold text-text-primary mb-2">Board Access Restricted</h3>
+              <p className="text-sm text-text-secondary">
                 You are not a member of this project. Contact your project admin for access.
               </p>
             </div>
@@ -652,7 +657,7 @@ const ProjectPage = () => {
             onTaskClick={openEditModal}
           />
         ) : (
-          <div className="flex-1 overflow-x-auto p-4 sm:p-6 bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+          <div className="flex-1 overflow-x-auto p-4 sm:p-6 bg-bg-surface">
             <div className="flex gap-4 min-w-[288px]">
               {Object.entries(filteredColumns).map(([status, column]) => (
                 <BoardColumn
@@ -679,7 +684,7 @@ const ProjectPage = () => {
       </main>
 
       {/* Footer: Stats Bar + Bottom Panels */}
-      <footer className="flex-shrink-0 border-t border-light-border dark:border-dark-border bg-light-bg-secondary dark:bg-dark-bg-tertiary">
+      <footer className="flex-shrink-0 border-t border-border bg-bg-surface">
         <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-2.5 text-xs flex-wrap">
           {[
             { color: "#8B8178", label: "To Do", count: counts.todo },
@@ -689,21 +694,15 @@ const ProjectPage = () => {
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />
-              <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-                {s.label}:&nbsp;
-              </span>
-              <span className="font-semibold text-light-text-primary dark:text-dark-text-primary">
-                {s.count}
-              </span>
+              <span className="text-text-muted">{s.label}:&nbsp;</span>
+              <span className="font-semibold text-text-primary">{s.count}</span>
             </div>
           ))}
           <div className="flex-1" />
-          <span className="text-light-text-tertiary dark:text-dark-text-tertiary">
-            Progress: {completedPercent}%
-          </span>
-          <div className="w-28 h-1 bg-light-bg-hover dark:bg-dark-bg-hover rounded-full overflow-hidden">
+          <span className="text-text-muted">Progress: {completedPercent}%</span>
+          <div className="w-28 h-1 bg-bg-hover rounded-full overflow-hidden">
             <div
-              className="h-full bg-accent-primary rounded-full transition-all"
+              className="h-full bg-primary rounded-full transition-all"
               style={{ width: `${completedPercent}%` }}
             />
           </div>
@@ -752,18 +751,22 @@ const ProjectPage = () => {
         title="Delete Task"
       >
         <div>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary">
+          <p className="text-text-secondary">
             Are you sure you want to delete the task titled "{selectedTask?.title}"?
           </p>
           <div className="flex justify-end space-x-4 mt-4">
             <button
               type="button"
               onClick={() => setIsDeleteModalOpen(false)}
-              className="btn-secondary"
+              className="bg-bg-surface hover:bg-bg-hover text-text-primary border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
             >
               Cancel
             </button>
-            <button type="button" onClick={handleDelete} className="btn-danger">
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="bg-danger hover:bg-danger/90 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-danger/50 transition-all cursor-pointer"
+            >
               Delete
             </button>
           </div>

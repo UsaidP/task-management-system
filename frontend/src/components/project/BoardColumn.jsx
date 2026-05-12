@@ -1,11 +1,11 @@
-import { memo, useCallback, useRef, useState } from "react"
 import { PlusIcon } from "@animateicons/react/lucide"
+import { memo, useCallback, useRef, useState } from "react"
 import TaskCard from "./TaskCard"
 
 const DropIndicator = () => (
   <div className="flex items-center gap-1 py-0.5 pointer-events-none" aria-hidden="true">
-    <div className="w-2 h-2 rounded-full bg-accent-primary flex-shrink-0" />
-    <div className="h-0.5 flex-1 bg-accent-primary rounded-full" />
+    <div className="w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+    <div className="h-0.5 flex-1 bg-primary rounded-full" />
   </div>
 )
 
@@ -79,11 +79,7 @@ const BoardColumn = memo(
 
     return (
       <div
-        className={`w-72 flex-shrink-0 flex flex-col gap-3 transition-all duration-200 ${
-          isDragOver
-            ? "ring-2 ring-accent-primary ring-offset-2 ring-offset-light-bg-primary dark:ring-offset-dark-bg-primary rounded-lg"
-            : ""
-        }`}
+        className={`w-72 flex-shrink-0 flex flex-col gap-3 transition-all duration-200 ${isDragOver ? "ring-2 ring-primary ring-offset-2 ring-offset-light-bg-primary dark:ring-offset-dark-bg-primary rounded-lg" : ""}`}
         onDragOver={handleColumnDragOver}
         onDragLeave={handleColumnDragLeave}
         onDrop={handleColumnDrop}
@@ -93,30 +89,30 @@ const BoardColumn = memo(
           <button
             type="button"
             onClick={() => onHeaderClick(columnId)}
-            className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border w-full cursor-pointer hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 px-3 py-2.5 bg-bg-canvas rounded-lg border border-border w-full cursor-pointer hover:opacity-90 transition-opacity"
             title={`Filter by ${column.title}`}
           >
             <span
               className="w-2.5 h-2.5 rounded-full flex-shrink-0"
               style={{ backgroundColor: column.color }}
             />
-            <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1 truncate">
+            <span className="text-sm font-bold text-text-primary flex-1 truncate">
               {column.title}
             </span>
-            <span className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border/50 dark:bg-dark-border/50 text-xs font-bold text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0">
+            <span className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border/50 dark:bg-dark-border/50 text-xs font-bold text-text-secondary flex-shrink-0">
               {tasks.length}
             </span>
           </button>
         ) : (
-          <div className="flex items-center gap-2 px-3 py-2.5 bg-light-bg-primary dark:bg-dark-bg-primary rounded-lg border border-light-border dark:border-dark-border">
+          <div className="flex items-center gap-2 px-3 py-2.5 bg-bg-canvas rounded-lg border border-border">
             <span
               className="w-2.5 h-2.5 rounded-full flex-shrink-0"
               style={{ backgroundColor: column.color }}
             />
-            <span className="text-sm font-bold text-light-text-primary dark:text-dark-text-primary flex-1 truncate">
+            <span className="text-sm font-bold text-text-primary flex-1 truncate">
               {column.title}
             </span>
-            <span className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border/50 dark:bg-dark-border/50 text-xs font-bold text-light-text-secondary dark:text-dark-text-secondary flex-shrink-0">
+            <span className="w-6 h-6 flex items-center justify-center rounded-md bg-light-border/50 dark:bg-dark-border/50 text-xs font-bold text-text-secondary flex-shrink-0">
               {tasks.length}
             </span>
           </div>
@@ -141,7 +137,7 @@ const BoardColumn = memo(
           <button
             type="button"
             onClick={onAddTask}
-            className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-light-border dark:border-dark-border text-light-text-tertiary dark:text-dark-text-tertiary hover:bg-light-bg-primary dark:hover:bg-dark-bg-primary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-primary/50 transition-all w-full text-sm font-medium bg-light-bg-primary dark:bg-dark-bg-primary"
+            className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-dashed border-border text-text-muted hover:bg-light-bg-primary dark:hover:bg-dark-bg-primary hover:text-light-text-primary dark:hover:text-dark-text-primary hover:border-accent-primary/50 transition-all w-full text-sm font-medium bg-bg-canvas"
           >
             <PlusIcon className="w-4 h-4" />
             Add Task

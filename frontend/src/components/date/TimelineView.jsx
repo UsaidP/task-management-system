@@ -1,9 +1,9 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "@animateicons/react/lucide"
 import dayjs from "dayjs"
 import weekOfYear from "dayjs/plugin/weekOfYear"
 import { motion } from "framer-motion"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { ChevronLeftIcon, ChevronRightIcon } from "@animateicons/react/lucide"
 import { CalendarIcon } from "lucide-react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import apiService from "../../../service/apiService.js"
 import { useAuth } from "../../contexts/customHook.js"
 import { useFilter } from "../../contexts/FilterContext.jsx"
@@ -108,21 +108,21 @@ const HDR_H = 52 // px — height of the date header strip
 // ─── component ───────────────────────────────────────────────────────────────
 
 const TimelineSkeleton = () => (
-  <div className="h-full flex flex-col">
-    <div className="flex items-center justify-between p-5 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary shrink-0">
+  <div className="flex flex-col h-full">
+    <div className="flex items-center justify-between p-5 border-b border-border bg-bg-surface shrink-0">
       <div>
         <SkeletonText width="w-32" height="h-7" className="mb-1" />
         <SkeletonText width="w-48" height="h-4" />
       </div>
       <div className="flex gap-2">
-        <Skeleton className="w-24 h-9 rounded-lg" />
-        <Skeleton className="w-24 h-9 rounded-lg" />
-        <Skeleton className="w-9 h-9 rounded-lg" />
-        <Skeleton className="w-32 h-9 rounded-lg" />
-        <Skeleton className="w-9 h-9 rounded-lg" />
+        <Skeleton className="w-24 rounded-lg h-9" />
+        <Skeleton className="w-24 rounded-lg h-9" />
+        <Skeleton className="rounded-lg w-9 h-9" />
+        <Skeleton className="w-32 rounded-lg h-9" />
+        <Skeleton className="rounded-lg w-9 h-9" />
       </div>
     </div>
-    <div className="flex items-center gap-3 p-4 border-b border-light-border dark:border-dark-border bg-light-bg-hover/30 dark:bg-dark-bg-hover/20 shrink-0">
+    <div className="flex items-center gap-3 p-4 border-b border-border bg-light-bg-hover/30 dark:bg-dark-bg-hover/20 shrink-0">
       <SkeletonText width="w-20" height="h-4" />
       <div className="flex gap-2">
         <Skeleton className="w-20 h-8 rounded-full" />
@@ -131,16 +131,13 @@ const TimelineSkeleton = () => (
       </div>
     </div>
     <div className="flex-1 overflow-hidden">
-      <div className="flex border-b border-light-border dark:border-dark-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30 shrink-0">
-        <div className="w-[220px] p-3 border-r border-light-border dark:border-dark-border">
+      <div className="flex border-b border-border bg-light-bg-hover/50 dark:bg-dark-bg-hover/30 shrink-0">
+        <div className="w-[220px] p-3 border-r border-border">
           <SkeletonText width="w-16" height="h-4" />
         </div>
-        <div className="flex-1 flex">
+        <div className="flex flex-1">
           {Array.from({ length: 12 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex-1 p-2 border-r border-light-border dark:border-dark-border text-center"
-            >
+            <div key={i} className="flex-1 p-2 text-center border-r border-border">
               <SkeletonText width="w-8" height="h-3" className="mx-auto" />
               <SkeletonText width="w-6" height="h-3" className="mx-auto mt-1" />
             </div>
@@ -149,13 +146,13 @@ const TimelineSkeleton = () => (
       </div>
       <div className="overflow-auto">
         {Array.from({ length: 6 }).map((_, group) => (
-          <div key={group} className="border-b border-light-border dark:border-dark-border">
-            <div className="w-[220px] p-3 border-r border-light-border dark:border-dark-border bg-light-bg-primary/50 dark:bg-dark-bg-primary/50">
+          <div key={group} className="border-b border-border">
+            <div className="w-[220px] p-3 border-r border-border bg-light-bg-primary/50 dark:bg-dark-bg-primary/50">
               <SkeletonText width="w-24" height="h-5" />
             </div>
-            <div className="relative h-11 p-2">
+            <div className="relative p-2 h-11">
               <Skeleton
-                className="absolute h-7 rounded-lg"
+                className="absolute rounded-lg h-7"
                 style={{
                   left: `${(group * 15) % 70}%`,
                   width: `${20 + (group % 3) * 10}%`,
@@ -264,31 +261,23 @@ const TimelineView = () => {
   const LEFT_COL_W = 220 // px — frozen left label column width
 
   return (
-    <div className="h-full flex flex-col bg-light-bg-primary dark:bg-dark-bg-primary overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden bg-bg-surface">
       {/* ── top header bar ── */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-5 py-4 border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary gap-3 shrink-0">
+      <div className="flex flex-col items-start justify-between gap-3 px-5 py-4 border-b lg:flex-row lg:items-center border-border bg-bg-surface shrink-0">
         <div>
-          <h1 className="text-xl font-serif font-bold text-light-text-primary dark:text-dark-text-primary">
-            Timeline
-          </h1>
-          <p className="text-xs text-light-text-secondary dark:text-dark-text-secondary mt-0.5">
-            Visualize your project schedule
-          </p>
+          <h1 className="font-serif text-xl font-bold text-text-primary">Timeline</h1>
+          <p className="text-xs text-text-secondary mt-0.5">Visualize your project schedule</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Group By */}
-          <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1">
+          <div className="flex items-center gap-1 p-1 rounded-lg bg-bg-surface">
             {["project", "sprint"].map((g) => (
               <button
                 key={g}
                 type="button"
                 onClick={() => setGroupBy(g)}
-                className={`px-3 py-1.5 text-xs rounded-md capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
-                  groupBy === g
-                    ? "bg-accent-primary text-white font-medium"
-                    : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                }`}
+                className={`px-3 py-1.5 text-xs rounded-md capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${groupBy === g ? "bg-accent-primary text-white font-medium" : "text-light-text-secondary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
               >
                 {g}
               </button>
@@ -296,17 +285,13 @@ const TimelineView = () => {
           </div>
 
           {/* Zoom */}
-          <div className="flex items-center gap-1 bg-light-bg-secondary dark:bg-dark-bg-tertiary rounded-lg p-1">
+          <div className="flex items-center gap-1 p-1 rounded-lg bg-bg-surface">
             {["day", "week", "month"].map((z) => (
               <button
                 key={z}
                 type="button"
                 onClick={() => setZoom(z)}
-                className={`px-3 py-1.5 text-xs rounded-md capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${
-                  zoom === z
-                    ? "bg-accent-primary text-white font-medium"
-                    : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover"
-                }`}
+                className={`px-3 py-1.5 text-xs rounded-md capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30 ${zoom === z ? "bg-accent-primary text-white font-medium" : "text-light-text-secondary hover:bg-bg-hover dark:hover:bg-dark-bg-hover"}`}
               >
                 {z}
               </button>
@@ -319,26 +304,20 @@ const TimelineView = () => {
               type="button"
               onClick={() => navigateDate(-1)}
               aria-label="Previous period"
-              className="p-1.5 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+              className="p-1.5 rounded-lg hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
             >
-              <ChevronLeftIcon
-                className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary"
-                aria-hidden="true"
-              />
+              <ChevronLeftIcon className="w-4 h-4 text-text-secondary" aria-hidden="true" />
             </button>
-            <span className="text-xs font-medium text-light-text-primary dark:text-dark-text-primary min-w-[140px] text-center">
+            <span className="text-xs font-medium text-text-primary min-w-[140px] text-center">
               {getDateLabel()}
             </span>
             <button
               type="button"
               onClick={() => navigateDate(1)}
               aria-label="Next period"
-              className="p-1.5 rounded-lg hover:bg-light-bg-hover dark:hover:bg-dark-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
+              className="p-1.5 rounded-lg hover:bg-bg-hover transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary/30"
             >
-              <ChevronRightIcon
-                className="w-4 h-4 text-light-text-secondary dark:text-dark-text-secondary"
-                aria-hidden="true"
-              />
+              <ChevronRightIcon className="w-4 h-4 text-text-secondary" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -346,18 +325,13 @@ const TimelineView = () => {
 
       {/* ── main grid ── */}
       {filteredTasks.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center py-16 px-4">
+        <div className="flex items-center justify-center flex-1 px-4 py-16">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-light-bg-hover dark:bg-dark-bg-hover flex items-center justify-center mx-auto mb-4">
-              <CalendarIcon
-                className="w-8 h-8 text-light-text-tertiary opacity-40"
-                aria-hidden="true"
-              />
+            <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-bg-hover">
+              <CalendarIcon className="w-8 h-8 text-text-muted opacity-40" aria-hidden="true" />
             </div>
-            <h3 className="text-lg font-semibold text-light-text-primary dark:text-dark-text-primary mb-2">
-              No tasks yet
-            </h3>
-            <p className="text-sm text-light-text-tertiary dark:text-dark-text-tertiary">
+            <h3 className="mb-2 text-lg font-semibold text-text-primary">No tasks yet</h3>
+            <p className="text-sm text-text-muted">
               Create tasks with due dates to see them on the timeline
             </p>
           </div>
@@ -369,35 +343,35 @@ const TimelineView = () => {
           <div style={{ minWidth: LEFT_COL_W + columns.length * 60 }}>
             {/* ─── sticky date-header ─────────────────────────────────── */}
             <div
-              className="sticky top-0 z-30 flex border-b border-light-border dark:border-dark-border bg-light-bg-primary dark:bg-dark-bg-secondary"
+              className="sticky top-0 z-30 flex border-b border-border bg-bg-surface"
               style={{ height: HDR_H }}
             >
               {/* frozen top-left corner */}
               <div
-                className="shrink-0 flex items-end pb-2 px-3 border-r border-light-border dark:border-dark-border text-xs font-medium text-light-text-tertiary dark:text-dark-text-tertiary"
+                className="flex items-end px-3 pb-2 text-xs font-medium border-r shrink-0 border-border text-text-muted"
                 style={{ width: LEFT_COL_W }}
               >
                 {groupBy === "sprint" ? "Sprint / Task" : "Project / Task"}
               </div>
 
               {/* date columns */}
-              <div className="flex flex-1 relative">
+              <div className="relative flex flex-1">
                 {/* today needle in header */}
                 {todayPct !== null && (
                   <div
-                    className="absolute top-0 bottom-0 w-px bg-accent-primary/60 z-10 pointer-events-none"
+                    className="absolute top-0 bottom-0 z-10 w-px pointer-events-none bg-accent-primary/60"
                     style={{ left: `${todayPct}%` }}
                   />
                 )}
                 {columns.map((col) => (
                   <div
                     key={col.start.toISOString()}
-                    className="flex-1 flex flex-col items-center justify-end pb-2 border-r border-light-border/50 dark:border-dark-border/50 last:border-r-0"
+                    className="flex flex-col items-center justify-end flex-1 pb-2 border-r border-light-border/50 dark:border-dark-border/50 last:border-r-0"
                   >
-                    <span className="text-[11px] font-semibold text-light-text-primary dark:text-dark-text-primary leading-none">
+                    <span className="text-[11px] font-semibold text-text-primary leading-none">
                       {col.label}
                     </span>
-                    <span className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary mt-0.5 uppercase tracking-wide">
+                    <span className="text-[10px] text-text-muted mt-0.5 uppercase tracking-wide">
                       {col.sublabel}
                     </span>
                   </div>
@@ -410,17 +384,17 @@ const TimelineView = () => {
               <div key={groupName}>
                 {/* group header row */}
                 <div
-                  className="sticky left-0 z-20 flex items-center px-3 border-b border-light-border dark:border-dark-border bg-light-bg-secondary/80 dark:bg-dark-bg-tertiary/80 backdrop-blur-sm"
+                  className="sticky left-0 z-20 flex items-center px-3 border-b border-border bg-surface dark:bg-dark-bg-tertiary/80 backdrop-blur-sm"
                   style={{ height: 36 }}
                 >
                   <div
                     style={{ width: LEFT_COL_W - 12 }}
-                    className="shrink-0 flex items-center gap-2"
+                    className="flex items-center gap-2 shrink-0"
                   >
-                    <span className="text-xs font-semibold text-light-text-primary dark:text-dark-text-primary truncate">
+                    <span className="text-xs font-semibold truncate text-text-primary">
                       {groupName}
                     </span>
-                    <span className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary shrink-0">
+                    <span className="text-[10px] text-text-muted shrink-0">
                       {groupTasks.length} task{groupTasks.length !== 1 ? "s" : ""}
                     </span>
                   </div>
@@ -438,18 +412,18 @@ const TimelineView = () => {
                   return (
                     <div
                       key={task._id}
-                      className="flex border-b border-light-border/40 dark:border-dark-border/40 hover:bg-light-bg-hover/30 dark:hover:bg-dark-bg-hover/30 transition-colors"
+                      className="flex transition-colors border-b border-light-border/40 dark:border-dark-border/40 hover:bg-light-bg-hover/30 dark:hover:bg-dark-bg-hover/30"
                       style={{ height: ROW_H }}
                     >
                       {/* ── left label column (sticky) ── */}
                       <div
-                        className="sticky left-0 z-10 shrink-0 flex items-center gap-2 px-3 bg-light-bg-primary dark:bg-dark-bg-primary border-r border-light-border dark:border-dark-border"
+                        className="sticky left-0 z-10 flex items-center gap-2 px-3 border-r shrink-0 bg-bg-surface border-border"
                         style={{ width: LEFT_COL_W }}
                       >
                         <span className={`shrink-0 w-2 h-2 rounded-full ${dotStyle}`} />
                         <button
                           type="button"
-                          className="flex-1 text-left text-xs text-light-text-primary dark:text-dark-text-primary truncate cursor-pointer hover:text-accent-primary transition-colors focus:outline-none"
+                          className="flex-1 text-xs text-left truncate transition-colors cursor-pointer text-text-primary hover:text-accent-primary focus:outline-none"
                           onClick={() => setSelectedTask(task)}
                         >
                           {task.title}
@@ -464,11 +438,11 @@ const TimelineView = () => {
                       </div>
 
                       {/* ── gantt bar area ── */}
-                      <div className="flex-1 relative">
+                      <div className="relative flex-1">
                         {/* today needle */}
                         {todayPct !== null && (
                           <div
-                            className="absolute top-0 bottom-0 w-px bg-accent-primary/40 z-10 pointer-events-none"
+                            className="absolute top-0 bottom-0 z-10 w-px pointer-events-none bg-accent-primary/40"
                             style={{ left: `${todayPct}%` }}
                           />
                         )}
@@ -478,11 +452,7 @@ const TimelineView = () => {
                           {columns.map((col, ci) => (
                             <div
                               key={col.start.toISOString()}
-                              className={`flex-1 border-r border-light-border/30 dark:border-dark-border/30 ${
-                                ci % 2 === 0
-                                  ? ""
-                                  : "bg-light-bg-secondary/20 dark:bg-dark-bg-secondary/20"
-                              }`}
+                              className={`flex-1 border-r border-light-border/30 dark:border-dark-border/30 ${ci % 2 === 0 ? "" : "bg-light-bg-secondary/20 dark:bg-dark-bg-secondary/20"}`}
                             />
                           ))}
                         </div>
@@ -513,9 +483,7 @@ const TimelineView = () => {
                         {/* no-date pill */}
                         {!bar && (
                           <div className="absolute inset-0 flex items-center px-3">
-                            <span className="text-[10px] text-light-text-tertiary dark:text-dark-text-tertiary italic">
-                              No dates set
-                            </span>
+                            <span className="text-[10px] text-text-muted italic">No dates set</span>
                           </div>
                         )}
                       </div>
